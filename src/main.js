@@ -1,5 +1,13 @@
-import { createApp } from "vue";
+import {createApp} from "vue";
 import "./styles.css";
+import antDesignVue from 'ant-design-vue';
 import App from "./App.vue";
+import store from "./store/store.js";
 
-createApp(App).mount("#app");
+import 'ant-design-vue/dist/antd.variable.min.css';
+import './assets/style/global.less';
+
+let app = createApp(App);
+app.use(antDesignVue);
+app.use(store);
+app.mount("#app");

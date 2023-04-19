@@ -25,7 +25,7 @@ const resize = async () => {
   </div>
 
   <p>{{ greetMsg }}</p>
-  <input v-model="width" type="number" placeholder="width">
-  <input v-model="height" type="number" placeholder="width">
-  <button type="button" @click="resize()">Resize</button>
+  <a-input v-model:value="width" type="number" placeholder="width"/>
+  <a-input v-model:value="height" type="number" placeholder="width"/>
+  <a-button type="primary" @click="resize()">Resize</a-button>
 </template>
