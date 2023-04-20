@@ -1,10 +1,16 @@
 <script setup>
 import {computed, ref, onMounted, onUnmounted} from "vue";
-import BScroll from '@better-scroll/core';
 import ChatInputBlock from "./ChatInputBlock.vue";
 import {request} from "../util/OpenAiUtil.js";
 import {useStore} from "vuex";
+import BScroll from '@better-scroll/core';
+import MouseWheel from '@better-scroll/mouse-wheel';
+import ScrollBar from '@better-scroll/scroll-bar';
 
+BScroll.use(MouseWheel);
+BScroll.use(ScrollBar);
+
+const store = useStore();
 const chatBoxScrollBoxRefs = ref(null);
 let bScroll = null;
 onMounted(() => {
@@ -17,7 +23,6 @@ onMounted(() => {
     scrollY: true,
   });
 });
-
 onUnmounted(() => {
   if (bScroll) {
     bScroll.destroy();
@@ -38,26 +43,51 @@ const changeRobot = (index, item) => {
   activeTabIndex.value = 0;
 };
 
-const chatBoxContent = ref("");
-
 const chatMsgDone = ref(true);
-
 const commitContent = (content) => {
   console.log(content);
-  chatBoxContent.value = "";
+  // 添加新用户消息
+  console.log("addChatMsg", chatHistoryIndex.value, activeTabIndex.value);
+  store.commit("addChatMsg", {
+    chatIndex: chatHistoryIndex.value,
+    tabIndex: activeTabIndex.value,
+    message: {
+      role: "user",
+      content: content,
+    }
+  });
+  // 添加新ai消息
+  store.commit("addChatMsg", {
+    chatIndex: chatHistoryIndex.value,
+    tabIndex: activeTabIndex.value,
+    message: {
+      role: "robot",
+      content: "",
+    }
+  });
   chatMsgDone.value = false;
   request(content, (success, data, done) => {
+    console.log("request", success, data, done);
+    if (bScroll) {
+      bScroll.refresh();
+    }
     if (success) {
-      chatBoxContent.value += data;
+      store.commit("setChatContent", {
+        chatIndex: chatHistoryIndex.value,
+        tabIndex: activeTabIndex.value,
+        content: data,
+      });
       chatMsgDone.value = done;
     } else {
-      chatBoxContent.value = data;
+      store.commit("setChatContent", {
+        chatIndex: chatHistoryIndex.value,
+        tabIndex: activeTabIndex.value,
+        content: data,
+      });
       chatMsgDone.value = true;
     }
   });
 };
-
-const store = useStore();
 
 const onEdit = (targetKey, action) => {
   console.log(targetKey, action);
@@ -78,7 +108,8 @@ defineExpose({
   <div class="chat-box-block flex-column">
     <div class="chat-box-title">{{ chatBoxTitle }}</div>
     <div ref="chatBoxScrollBoxRefs" class="chat-box-content">
-      <a-tabs v-model:activeKey="activeTabIndex" type="editable-card" @edit="onEdit" size="small">
+      <a-tabs class="chat-scroll-content" v-model:activeKey="activeTabIndex" type="editable-card" @edit="onEdit"
+              size="small">
         <a-tab-pane v-for="(chatTab, chatTabIndex) in chatTabList" :key="chatTabIndex" :tab="chatTab.name">
           <div v-for="(item, index) in chatTab.chat" :key="index" class="message-item flex-row">
             <div class="avatar-img">
@@ -110,6 +141,11 @@ defineExpose({
   .chat-box-content {
     flex: 1;
     padding: 10px 0;
+    overflow: hidden;
+
+    .chat-scroll-content {
+      padding-bottom: 100px;
+    }
 
     .message-item {
       margin-bottom: 10px;

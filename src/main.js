@@ -1,5 +1,4 @@
 import {createApp} from "vue";
-import "./styles.css";
 import antDesignVue from 'ant-design-vue';
 import App from "./App.vue";
 import store from "./store/store.js";

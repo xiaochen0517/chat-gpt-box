@@ -44,6 +44,15 @@ const store = createStore({
       const robotInfo = state.robotList[chatIndex];
       state.chatHistory[chatIndex].push({name: "default", chat: [{role: "system", content: robotInfo.prompt}]});
     },
+    // 添加新消息
+    addChatMsg(state, {chatIndex, tabIndex, message}) {
+      state.chatHistory[chatIndex][tabIndex].chat.push(message);
+    },
+    // 设置指定的content内容
+    setChatContent(state, {chatIndex, tabIndex, content}) {
+      const msgIndex = state.chatHistory[chatIndex][tabIndex].chat.length - 1;
+      state.chatHistory[chatIndex][tabIndex].chat[msgIndex].content += content;
+    },
     // 从本地存储中加载状态
     initState(state) {
       const savedState = localStorage.getItem("vuex");

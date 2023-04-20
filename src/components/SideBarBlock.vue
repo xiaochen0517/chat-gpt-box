@@ -4,6 +4,7 @@ import {useStore} from "vuex";
 import BScroll from '@better-scroll/core';
 import MouseWheel from '@better-scroll/mouse-wheel';
 import ScrollBar from '@better-scroll/scroll-bar';
+import KeySettingDialog from "./KeySettingDialog.vue";
 
 BScroll.use(MouseWheel);
 BScroll.use(ScrollBar);
@@ -56,13 +57,9 @@ const robotListClick = (index, item) => {
   instance.emit("onClick", index, item);
 };
 
-const key = ref("");
-const saveApiKey = () => {
-  console.log("key", key.value);
-  if (key.value.length <= 0) {
-    return;
-  }
-  store.commit("setApiKey", key.value);
+const keySettingDialogRefs = ref(null);
+const openKeySettingDialog = () => {
+  keySettingDialogRefs.value.show();
 };
 </script>
 
@@ -78,7 +75,9 @@ const saveApiKey = () => {
     </div>
     <div class="control-box position-absolute">
       <a-button class="add-robot-button" type="primary" @click="addRobotClick">Add Robot</a-button>
+      <a-button class="add-robot-button" type="primary" @click="openKeySettingDialog">Key Setting</a-button>
     </div>
+    <KeySettingDialog ref="keySettingDialogRefs"/>
   </div>
 </template>
 
@@ -89,12 +88,12 @@ const saveApiKey = () => {
   max-height: 100%;
 
   .robot-list {
-    max-height: 90%;
+    max-height: 100%;
     position: relative;
     overflow: hidden;
 
     .robot-content {
-      margin-bottom: 100px;
+      padding-bottom: 100px;
 
       .robot-list-item {
         padding: 10px;
@@ -108,10 +107,12 @@ const saveApiKey = () => {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 10%;
+    height: 100px;
     padding: 10px;
     background-color: white;
     display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
 
     .add-robot-button {
