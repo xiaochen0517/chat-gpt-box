@@ -4,7 +4,8 @@ import {useStore} from "vuex";
 import BScroll from '@better-scroll/core';
 import MouseWheel from '@better-scroll/mouse-wheel';
 import ScrollBar from '@better-scroll/scroll-bar';
-import KeySettingDialog from "./KeySettingDialog.vue";
+import {tauri} from "@tauri-apps/api";
+import {WebviewWindow} from '@tauri-apps/api/window';
 
 BScroll.use(MouseWheel);
 BScroll.use(ScrollBar);
@@ -57,9 +58,24 @@ const robotListClick = (index, item) => {
   instance.emit("onClick", index, item);
 };
 
-const keySettingDialogRefs = ref(null);
-const openKeySettingDialog = () => {
-  keySettingDialogRefs.value.show();
+let settingsWindow = null;
+const openSettingsWindow = () => {
+  if (settingsWindow != null) {
+    settingsWindow.setFocus();
+  } else {
+    settingsWindow = new WebviewWindow("设置", {
+      url: "/settings",
+      title: 'test',
+      width: 800,
+      height: 600,
+      resizable: false,
+      center: true,
+    });
+    settingsWindow.onCloseRequested((event) => {
+      settingsWindow = null;
+      event.preventDefault();
+    });
+  }
 };
 </script>
 
@@ -75,9 +91,8 @@ const openKeySettingDialog = () => {
     </div>
     <div class="control-box position-absolute">
       <a-button class="add-robot-button" type="primary" @click="addRobotClick">Add Robot</a-button>
-      <a-button class="add-robot-button" type="primary" @click="openKeySettingDialog">Key Setting</a-button>
+      <a-button class="add-robot-button" type="primary" @click="openSettingsWindow">Open Settings</a-button>
     </div>
-    <KeySettingDialog ref="keySettingDialogRefs"/>
   </div>
 </template>
 

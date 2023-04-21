@@ -1,6 +1,7 @@
 import {createApp} from "vue";
 import antDesignVue from 'ant-design-vue';
 import store from "./store/store.js";
+import router from "./router/router.js";
 
 import 'ant-design-vue/dist/antd.variable.min.css';
 import './assets/style/global.less';
@@ -20,5 +21,6 @@ import App from "./App.vue";
 let app = createApp(App);
 app.use(antDesignVue);
 app.use(store);
+app.use(router);
 app.use(VMdPreview);
 app.mount("#app");
