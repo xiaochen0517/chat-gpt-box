@@ -22,6 +22,8 @@ const commitContent = () => {
 <style lang="less" scoped>
 .chat-input-block {
   position: relative;
+  padding: 10px 40px;
+  border-top: 1px solid #e8e8e8;
 
   .chat-input {
     padding-right: 30px;
@@ -32,7 +34,7 @@ const commitContent = () => {
     color: #00000030;
     cursor: pointer;
     position: absolute;
-    right: 10px;
+    right: 50px;
     top: 50%-8px;
 
     &:hover {

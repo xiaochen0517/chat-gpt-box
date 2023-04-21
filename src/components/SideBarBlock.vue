@@ -86,6 +86,7 @@ const openKeySettingDialog = () => {
   width: 20%;
   min-height: 100%;
   max-height: 100%;
+  border-right: 1px solid #e8e8e8;
 
   .robot-list {
     max-height: 100%;
