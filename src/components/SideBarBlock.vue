@@ -4,17 +4,24 @@ import {useStore} from "vuex";
 import BScroll from '@better-scroll/core';
 import MouseWheel from '@better-scroll/mouse-wheel';
 import ScrollBar from '@better-scroll/scroll-bar';
-import {tauri} from "@tauri-apps/api";
+import {listen} from '@tauri-apps/api/event';
 import {WebviewWindow} from '@tauri-apps/api/window';
 
+/**
+ * 初始化BScroll和监听窗口关闭事件
+ */
+const robotListRefs = ref(null);
 BScroll.use(MouseWheel);
 BScroll.use(ScrollBar);
-
-const store = useStore();
 let bScroll = null;
-const robotListRefs = ref(null);
-onMounted(() => {
-  bScroll = new BScroll(robotListRefs.value, {
+let settingsWindowCloseUnListenFunc = null;
+onMounted(async () => {
+  bScroll = createBScroll();
+  // 不知道为什么在子窗口中调用close方法onCloseRequested回调不执行，只有在点击右上角关闭按钮时才会执行
+  settingsWindowCloseUnListenFunc = await createSettingsWindowCloseListener();
+});
+const createBScroll = () => {
+  return new BScroll(robotListRefs.value, {
     disableMouse: false,
     disableTouch: false,
     bounce: false,
@@ -26,14 +33,25 @@ onMounted(() => {
       easeTime: 300
     }
   });
-});
-
+};
+const createSettingsWindowCloseListener = async () => {
+  return await listen('resetSettingsWindow', () => {
+    settingsWindow = null;
+  });
+};
 onBeforeUnmount(() => {
   if (bScroll) {
     bScroll.destroy();
   }
+  if (settingsWindowCloseUnListenFunc) {
+    settingsWindowCloseUnListenFunc();
+  }
 });
 
+/**
+ * 初始化机器人列表
+ */
+const store = useStore();
 const robotList = computed(() => {
   return store.state.robotList;
 });
@@ -52,31 +70,38 @@ const addRobotClick = () => {
     });
   }
 };
+
+/**
+ * 机器人列表点击事件，触发父组件的onClick事件
+ */
 const instance = getCurrentInstance();
 const robotListClick = (index, item) => {
   console.log(index, item);
   instance.emit("onClick", index, item);
 };
 
+/**
+ * 打开设置窗口
+ */
 let settingsWindow = null;
 const openSettingsWindow = () => {
   if (settingsWindow != null) {
     settingsWindow.setFocus();
   } else {
-    settingsWindow = new WebviewWindow("设置", {
-      url: "/settings",
-      title: 'test',
-      width: 800,
-      height: 600,
-      resizable: false,
-      center: true,
-    });
-    settingsWindow.onCloseRequested((event) => {
-      settingsWindow = null;
-      event.preventDefault();
-    });
+    settingsWindow = createSettingsWindow();
   }
 };
+const createSettingsWindow = () => {
+  return new WebviewWindow("settings", {
+    url: "/settings",
+    title: 'test',
+    width: 800,
+    height: 600,
+    resizable: false,
+    center: true,
+  });
+};
+
 </script>
 
 <template>

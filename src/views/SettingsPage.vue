@@ -1,6 +1,8 @@
 <script setup>
 import {ref, onMounted} from "vue";
 import BScroll from "@better-scroll/core";
+import {emit} from "@tauri-apps/api/event";
+import {appWindow} from "@tauri-apps/api/window";
 
 const scrollWrapperRefs = ref(null);
 let bScroll = null;
@@ -17,11 +19,22 @@ onMounted(() => {
       easeTime: 300
     }
   });
+  appWindow.onCloseRequested(() => {
+    emit("resetSettingsWindow");
+  });
 });
 
 const formData = ref({
   apiKey: ""
 });
+
+const submit = () => {
+};
+
+const cancel = () => {
+  emit("resetSettingsWindow");
+  appWindow.close();
+};
 </script>
 
 <template>
@@ -29,9 +42,13 @@ const formData = ref({
     <h1>Settings Page</h1>
     <div ref="scrollWrapperRefs" class="scroll-wrapper">
       <div class="settings-form-box wrapper-content">
-        <a-form :model="form" label-align="left">
+        <a-form :model="formData" label-align="left">
           <a-form-item label="ApiKey">
             <a-input v-model:value="formData.apiKey" placeholder="请输入ApiKey"/>
+          </a-form-item>
+          <a-form-item>
+            <a-button @click="cancel">取消</a-button>
+            <a-button type="primary" @click="submit">提交</a-button>
           </a-form-item>
         </a-form>
       </div>
@@ -45,7 +62,7 @@ const formData = ref({
   max-height: 100%;
   min-height: 100%;
 
-  .settings-form-box{
+  .settings-form-box {
     padding: 20px 60px;
   }
 }
