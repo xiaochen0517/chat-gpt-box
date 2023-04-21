@@ -19,6 +19,11 @@ const store = createStore({
         }
       ],
     ],
+    // 软件配置
+    config: {
+      // 聊天输入框enter键发送消息
+      enterSend: true,
+    }
   },
   mutations: {
     // 同步修改状态

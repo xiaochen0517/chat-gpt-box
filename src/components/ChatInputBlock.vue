@@ -1,6 +1,9 @@
 <script setup>
 import {SendOutlined} from "@ant-design/icons-vue";
-import {ref, getCurrentInstance} from "vue";
+import {ref, getCurrentInstance, nextTick, computed} from "vue";
+import {useStore} from "vuex";
+
+const store = useStore();
 
 const instance = getCurrentInstance();
 
@@ -15,19 +18,28 @@ const breakLine = () => {
   chatInputContent.value += "\n";
 };
 
-const onKeyEvent = (event) => {
-  if (event.shiftKey && event.key === 'Enter') {
-    // breakLine();
-  } else if (event.key === 'Enter') {
+const enterSend = computed(() => store.state.config.enterSend);
+const enterKeyDown = (event) => {
+  if (enterSend.value) {
+    commitContent();
+  } else {
+    breakLine();
+  }
+};
+const shiftEnterKeyDown = (event) => {
+  if (enterSend.value) {
+    breakLine();
+  } else {
     commitContent();
   }
 };
+
 </script>
 
 <template>
   <div class="chat-input-block">
-    <a-textarea class="chat-input" v-model:value="chatInputContent" :autoSize="{ minRows: 4, maxRows: 4 }"
-                @keydown.enter.capture="commitContent" @keydown.shift.enter.capture="breakLine"/>
+    <textarea class="chat-input" v-model="chatInputContent"
+              @keydown.enter.prevent.exact="enterKeyDown" @keydown.shift.enter.prevent.exact="shiftEnterKeyDown"/>
     <send-outlined class="send-icon" @click.stop="commitContent"/>
   </div>
 </template>
@@ -41,6 +53,16 @@ const onKeyEvent = (event) => {
 
   .chat-input {
     padding-right: 30px;
+    width: 100%;
+    height: 100px;
+    border: 1px solid #e8e8e8;
+    resize: none;
+    border-radius: 5px;
+
+    &:focus {
+      outline: none;
+      border: 1px solid #d7d7d7;
+    }
   }
 
   .send-icon {

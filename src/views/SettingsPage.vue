@@ -1,8 +1,11 @@
 <script setup>
-import {ref, onMounted} from "vue";
+import {ref, onMounted, computed} from "vue";
 import BScroll from "@better-scroll/core";
 import {emit} from "@tauri-apps/api/event";
 import {appWindow} from "@tauri-apps/api/window";
+import {useStore} from "vuex";
+
+const store = useStore();
 
 const scrollWrapperRefs = ref(null);
 let bScroll = null;
@@ -28,6 +31,8 @@ const formData = ref({
   apiKey: ""
 });
 
+const enterSend = computed(() => store.state.config.enterSend);
+
 const submit = () => {
 };
 
@@ -45,6 +50,9 @@ const cancel = () => {
         <a-form :model="formData" label-align="left">
           <a-form-item label="ApiKey">
             <a-input v-model:value="formData.apiKey" placeholder="请输入ApiKey"/>
+          </a-form-item>
+          <a-form-item label="回车键发送消息：">
+            <a-switch v-model:checked="enterSend"/>
           </a-form-item>
           <a-form-item>
             <a-button @click="cancel">取消</a-button>
