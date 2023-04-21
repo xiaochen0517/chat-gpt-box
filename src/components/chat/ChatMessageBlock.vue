@@ -30,7 +30,7 @@ defineProps({
             <setting-outlined/>
           </a-avatar>
         </div>
-        <div class="chat-gpt-avatar" v-if="message.role === 'robot'">
+        <div class="chat-gpt-avatar" v-if="message.role === 'assistant'">
           <img src="../../assets/images/chat_gpt.svg" alt="avatar"/>
         </div>
         <div class="user-avatar" v-if="message.role === 'user'">
@@ -39,16 +39,16 @@ defineProps({
         </div>
       </div>
       <div class="message-content">
-        <v-md-preview :text="message.content"></v-md-preview>
+        <v-md-preview :text="message.content"/>
       </div>
     </div>
     <div class="message-control-box flex-row">
-      <a-button class="control-button" type="dashed" size="small">
+      <a-button class="control-button" type="dashed" size="small" @click="$emit('delete', message, index)">
         <template #icon>
           <delete-outlined/>
         </template>
       </a-button>
-      <a-button class="control-button" type="dashed" size="small">
+      <a-button class="control-button" type="dashed" size="small" @click="$emit('edit', message, index)">
         <template #icon>
           <edit-outlined/>
         </template>

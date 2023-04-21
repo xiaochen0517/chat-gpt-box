@@ -1,24 +1,29 @@
 <script setup>
-import {computed, ref, onMounted, onUnmounted} from "vue";
+import {computed, ref, onMounted, onUnmounted, nextTick} from "vue";
 import ChatInputBlock from "./ChatInputBlock.vue";
 import {request} from "../util/OpenAiUtil.js";
 import {useStore} from "vuex";
 import BScroll from '@better-scroll/core';
 import MouseWheel from '@better-scroll/mouse-wheel';
 import ScrollBar from '@better-scroll/scroll-bar';
-import {SettingOutlined} from "@ant-design/icons-vue";
 import ChatMessageBlock from "./chat/ChatMessageBlock.vue";
 
 BScroll.use(MouseWheel);
 BScroll.use(ScrollBar);
 
 const store = useStore();
-const chatBoxScrollBoxRefs = ref(null);
+const chatBoxScrollBoxRefs = ref([]);
 let bScroll = null;
 onMounted(() => {
-  console.log("chatBoxScrollBoxRefs", chatBoxScrollBoxRefs.value);
-  bScroll = new BScroll(chatBoxScrollBoxRefs.value, {
-    disableMouse: false,
+  console.log("refs", chatBoxScrollBoxRefs.value);
+  bScroll = createBScroll(`.tab-scroll-wrapper-${activeTabIndex.value}`);
+});
+const createBScroll = (refs) => {
+  if (bScroll != null) {
+    bScroll = null;
+  }
+  return new BScroll(refs, {
+    disableMouse: true,
     disableTouch: false,
     bounce: false,
     scrollY: true,
@@ -29,12 +34,17 @@ onMounted(() => {
       easeTime: 300
     }
   });
-});
+};
 onUnmounted(() => {
   if (bScroll) {
     bScroll.destroy();
   }
 });
+const chatTabChange = (index) => {
+  nextTick(() => {
+    bScroll = createBScroll(`.tab-scroll-wrapper-${index}`);
+  });
+};
 
 const chatBoxTitle = ref("聊天机器人");
 const chatHistoryIndex = ref(0);
@@ -51,10 +61,9 @@ const changeRobot = (index, item) => {
 };
 
 const chatMsgDone = ref(true);
-const commitContent = (content) => {
-  console.log(content);
-  // 添加新用户消息
-  console.log("addChatMsg", chatHistoryIndex.value, activeTabIndex.value);
+
+
+const addUserMessage = (content) => {
   store.commit("addChatMsg", {
     chatIndex: chatHistoryIndex.value,
     tabIndex: activeTabIndex.value,
@@ -63,37 +72,52 @@ const commitContent = (content) => {
       content: content,
     }
   });
-  // 添加新ai消息
+};
+const addRobotMessage = () => {
   store.commit("addChatMsg", {
     chatIndex: chatHistoryIndex.value,
     tabIndex: activeTabIndex.value,
     message: {
-      role: "robot",
+      role: "assistant",
       content: "",
     }
   });
-  chatMsgDone.value = false;
-  request(content, (success, data, done) => {
-    console.log("request", success, data, done);
+};
+
+const refreshAndScrollBottom = () => {
+  nextTick(() => {
     if (bScroll) {
+      // 刷新滚动组件
       bScroll.refresh();
-    }
-    if (success) {
-      store.commit("setChatContent", {
-        chatIndex: chatHistoryIndex.value,
-        tabIndex: activeTabIndex.value,
-        content: data,
-      });
-      chatMsgDone.value = done;
-    } else {
-      store.commit("setChatContent", {
-        chatIndex: chatHistoryIndex.value,
-        tabIndex: activeTabIndex.value,
-        content: data,
-      });
-      chatMsgDone.value = true;
+      // 将滚动区域滚动到底部
+      bScroll.scrollTo(0, bScroll.maxScrollY, 300);
     }
   });
+};
+
+const addMessageContent = (data) => {
+  store.commit("setChatContent", {
+    chatIndex: chatHistoryIndex.value,
+    tabIndex: activeTabIndex.value,
+    content: data,
+  });
+};
+
+const openaiResultFunction = (success, data, done) => {
+  console.log("request", success, data, done);
+  refreshAndScrollBottom();
+  addMessageContent(data);
+  chatMsgDone.value = done;
+};
+const commitContent = (content) => {
+  chatMsgDone.value = false;
+  // 添加新用户消息
+  addUserMessage(content);
+  // 添加新ai消息
+  addRobotMessage();
+  // 刷新并滚动到底部
+  refreshAndScrollBottom();
+  request(chatTabList.value[activeTabIndex.value].chat, openaiResultFunction);
 };
 
 const onEdit = (targetKey, action) => {
@@ -105,6 +129,22 @@ const onEdit = (targetKey, action) => {
   }
 };
 
+const deleteMessageClick = (message, index) => {
+  store.commit("removeChatMessage", {
+    chatIndex: chatHistoryIndex.value,
+    tabIndex: activeTabIndex.value,
+    msgIndex: index,
+  });
+};
+
+const cleanAllMessage = () => {
+  store.commit("cleanAllMessage", {
+    chatIndex: chatHistoryIndex.value,
+    tabIndex: activeTabIndex.value,
+  });
+  refreshAndScrollBottom();
+};
+
 defineExpose({
   changeRobot
 });
@@ -113,22 +153,31 @@ defineExpose({
 
 <template>
   <div class="chat-box-block flex-column">
-    <div class="chat-box-title">{{ chatBoxTitle }}</div>
-    <div ref="chatBoxScrollBoxRefs" class="chat-box-content">
+    <div class="chat-top-bar flex-row">
+      <div class="chat-box-title" @click="test">{{ chatBoxTitle }}</div>
+      <a-button type="primary" size="small" @click="cleanAllMessage">清除所有消息</a-button>
+      <a-button type="primary" size="small" @click="refreshAndScrollBottom">滚动到底部</a-button>
+    </div>
+    <div class="chat-box-content">
       <a-tabs class="chat-scroll-content" v-model:activeKey="activeTabIndex" type="editable-card" @edit="onEdit"
-              size="small">
-        <a-tab-pane v-for="(chatTab, chatTabIndex) in chatTabList" :key="chatTabIndex" :tab="chatTab.name">
-          <ChatMessageBlock v-for="(item, index) in chatTab.chat" :key="index" :message="item" :index="index"/>
+              size="small" @change="chatTabChange">
+        <a-tab-pane v-for="(chatTab, chatTabIndex) in chatTabList" :key="chatTabIndex" class="tab-scroll-wrapper"
+                    :class="'tab-scroll-wrapper-'+chatTabIndex" :tab="chatTab.name">
+          <div class="scroll-content">
+            <ChatMessageBlock v-for="(item, index) in chatTab.chat" :key="index" :message="item" :index="index"
+                              @delete="deleteMessageClick"/>
+          </div>
         </a-tab-pane>
       </a-tabs>
       <p>{{ chatMsgDone }}</p>
     </div>
-    <ChatInputBlock @commit="commitContent"/>
+    <ChatInputBlock class="chat-input-block" @commit="commitContent"/>
   </div>
 </template>
 
 <style lang="less" scoped>
 .chat-box-block {
+  max-height: 100%;
   padding: 10px;
   margin-right: 10px;
 
@@ -143,10 +192,18 @@ defineExpose({
   .chat-box-content {
     flex: 1;
     padding: 10px 0;
-    overflow: hidden;
+    position: relative;
 
-    .chat-scroll-content {
-      padding-bottom: 100px;
+    .tab-scroll-wrapper {
+      height: 100%;
+      position: absolute;
+      top: 40px;
+      left: 0;
+      overflow: hidden;
+
+      .scroll-content {
+        padding-bottom: 100px;
+      }
     }
   }
 }

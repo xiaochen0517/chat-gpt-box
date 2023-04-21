@@ -15,7 +15,7 @@ const store = createStore({
         {
           name: "TestRobot",
           // 指定index tab页的聊天记录
-          chat: [{role: "user", content: "你好"}, {role: "robot", content: "你好"}],
+          chat: [{role: "user", content: "你好"}, {role: "assistant", content: "你好"}],
         }
       ],
     ],
@@ -52,6 +52,15 @@ const store = createStore({
     setChatContent(state, {chatIndex, tabIndex, content}) {
       const msgIndex = state.chatHistory[chatIndex][tabIndex].chat.length - 1;
       state.chatHistory[chatIndex][tabIndex].chat[msgIndex].content += content;
+    },
+    // 移除指定聊天记录
+    removeChatMessage(state, {chatIndex, tabIndex, msgIndex}) {
+      state.chatHistory[chatIndex][tabIndex].chat.splice(msgIndex, 1);
+    },
+    // 清除指定聊天记录
+    cleanAllMessage(state, {chatIndex, tabIndex}) {
+      const msgCount = state.chatHistory[chatIndex][tabIndex].chat.length;
+      state.chatHistory[chatIndex][tabIndex].chat.splice(1, msgCount - 1);
     },
     // 从本地存储中加载状态
     initState(state) {

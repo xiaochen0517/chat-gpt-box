@@ -10,11 +10,24 @@ const commitContent = () => {
   instance.emit("commit", chatInputContent.value);
   chatInputContent.value = "";
 };
+
+const breakLine = () => {
+  chatInputContent.value += "\n";
+};
+
+const onKeyEvent = (event) => {
+  if (event.shiftKey && event.key === 'Enter') {
+    // breakLine();
+  } else if (event.key === 'Enter') {
+    commitContent();
+  }
+};
 </script>
 
 <template>
   <div class="chat-input-block">
-    <a-textarea class="chat-input" v-model:value="chatInputContent" :autoSize="{ minRows: 4, maxRows: 4 }"></a-textarea>
+    <a-textarea class="chat-input" v-model:value="chatInputContent" :autoSize="{ minRows: 4, maxRows: 4 }"
+                @keydown.enter.capture="commitContent" @keydown.shift.enter.capture="breakLine"/>
     <send-outlined class="send-icon" @click.stop="commitContent"/>
   </div>
 </template>
@@ -24,6 +37,7 @@ const commitContent = () => {
   position: relative;
   padding: 10px 40px;
   border-top: 1px solid #e8e8e8;
+  background-color: white;
 
   .chat-input {
     padding-right: 30px;

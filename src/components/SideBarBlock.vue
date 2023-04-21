@@ -22,7 +22,7 @@ onMounted(async () => {
 });
 const createBScroll = () => {
   return new BScroll(robotListRefs.value, {
-    disableMouse: false,
+    disableMouse: true,
     disableTouch: false,
     bounce: false,
     scrollY: true,
