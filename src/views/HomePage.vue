@@ -1,13 +1,24 @@
 <script setup>
-import {nextTick, ref} from "vue";
+import {nextTick, onMounted, ref} from "vue";
 import {ConfigProvider} from 'ant-design-vue';
 import SideBarBlock from "../components/SideBarBlock.vue";
 import ChatBoxBlock from "../components/ChatBoxBlock.vue";
+import {appWindow} from "@tauri-apps/api/window";
+import {exit} from '@tauri-apps/api/process';
 
 ConfigProvider.config({
   theme: {
     primaryColor: '#25b864',
   },
+});
+
+/**
+ * 监听窗口关闭事件，直接退出程序
+ */
+onMounted(() => {
+  appWindow.onCloseRequested(async (event) => {
+    await exit(0);
+  });
 });
 
 const chatBoxBlockRefs = ref(null);
