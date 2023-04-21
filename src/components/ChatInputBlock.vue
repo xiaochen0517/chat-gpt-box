@@ -1,6 +1,6 @@
 <script setup>
 import {SendOutlined} from "@ant-design/icons-vue";
-import {ref, getCurrentInstance, nextTick, computed} from "vue";
+import {ref, getCurrentInstance, computed} from "vue";
 import {useStore} from "vuex";
 
 const store = useStore();
@@ -19,14 +19,14 @@ const breakLine = () => {
 };
 
 const enterSend = computed(() => store.state.config.enterSend);
-const enterKeyDown = (event) => {
+const enterKeyDown = () => {
   if (enterSend.value) {
     commitContent();
   } else {
     breakLine();
   }
 };
-const shiftEnterKeyDown = (event) => {
+const shiftEnterKeyDown = () => {
   if (enterSend.value) {
     breakLine();
   } else {
