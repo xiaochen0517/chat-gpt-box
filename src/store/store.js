@@ -6,7 +6,7 @@ const store = createStore({
     apiKey: "",
     // 机器人列表
     robotList: [
-      {prompt: "Test", name: "TestRobot", options: {model: "gpt-3.5-turbo"}},
+      {prompt: "You are a helpful assistant.", name: "TestRobot", options: {model: "gpt-3.5-turbo", max_tokens: 2048}},
     ],
     // 聊天记录
     chatHistory: [
@@ -14,6 +14,8 @@ const store = createStore({
       [
         {
           name: "TestRobot",
+          // 当前是否处于生成中
+          generating: false,
           // 指定index tab页的聊天记录
           chat: [{role: "user", content: "你好"}, {role: "assistant", content: "你好"}],
         }
@@ -41,13 +43,17 @@ const store = createStore({
       state.chatHistory.push([{name: "default", chat: [{role: "system", content: robot.prompt}]}]);
     },
     // 删除聊天tab页
-    removeChatTab(state, chatIndex, tabIndex) {
-      state.chatHistory[chatIndex].splice(tabIndex, 1);
+    removeChatTab(state, {robotIndex, tabIndex}) {
+      state.chatHistory[robotIndex].splice(tabIndex, 1);
     },
     // 添加聊天tab页
-    addChatTab(state, chatIndex) {
-      const robotInfo = state.robotList[chatIndex];
-      state.chatHistory[chatIndex].push({name: "default", chat: [{role: "system", content: robotInfo.prompt}]});
+    addChatTab(state, {robotIndex, tabName}) {
+      const robotInfo = state.robotList[robotIndex];
+      state.chatHistory[robotIndex].push({
+        name: tabName,
+        generating: false,
+        chat: [{role: "system", content: robotInfo.prompt}]
+      });
     },
     // 添加新消息
     addChatMsg(state, {chatIndex, tabIndex, message}) {
@@ -59,13 +65,35 @@ const store = createStore({
       state.chatHistory[chatIndex][tabIndex].chat[msgIndex].content += content;
     },
     // 移除指定聊天记录
-    removeChatMessage(state, {chatIndex, tabIndex, msgIndex}) {
-      state.chatHistory[chatIndex][tabIndex].chat.splice(msgIndex, 1);
+    removeChatMessage(state, {robotIndex, tabIndex, msgIndex}) {
+      state.chatHistory[robotIndex][tabIndex].chat.splice(msgIndex, 1);
     },
     // 清除指定聊天记录
     cleanAllMessage(state, {chatIndex, tabIndex}) {
       const msgCount = state.chatHistory[chatIndex][tabIndex].chat.length;
       state.chatHistory[chatIndex][tabIndex].chat.splice(1, msgCount - 1);
+    },
+    // 添加一个用户消息
+    addUserMessage(state, {robotIndex, tabIndex, content}) {
+      state.chatHistory[robotIndex][tabIndex].chat.push({role: "user", content});
+    },
+    // 添加一个空白的机器人消息
+    addAssistantMessage(state, {robotIndex, tabIndex}) {
+      state.chatHistory[robotIndex][tabIndex].chat.push({role: "assistant", content: ""});
+    },
+    // 机器人消息新增
+    addAssistantMsgContent(state, {robotIndex, tabIndex, content}) {
+      const msgIndex = state.chatHistory[robotIndex][tabIndex].chat.length - 1;
+      state.chatHistory[robotIndex][tabIndex].chat[msgIndex].content += content;
+    },
+    // 设置机器人消息
+    setAssistantMsgContent(state, {robotIndex, tabIndex, content}) {
+      const msgIndex = state.chatHistory[robotIndex][tabIndex].chat.length - 1;
+      state.chatHistory[robotIndex][tabIndex].chat[msgIndex].content = content;
+    },
+    // 设置是否正在生成中
+    setGenerating(state, {robotIndex, tabIndex, generating}) {
+      state.chatHistory[robotIndex][tabIndex].generating = generating;
     },
     // 从本地存储中加载状态
     initState(state) {

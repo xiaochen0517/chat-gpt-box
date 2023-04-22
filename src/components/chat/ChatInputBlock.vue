@@ -9,7 +9,7 @@ const instance = getCurrentInstance();
 
 const chatInputContent = ref("");
 const commitContent = () => {
-  if (chatInputContent.value.length <= 0) return;
+  if (chatInputContent.value.length <= 0 || /^\s*$/.test(chatInputContent.value)) return;
   instance.emit("commit", chatInputContent.value);
   chatInputContent.value = "";
 };
@@ -52,6 +52,7 @@ const shiftEnterKeyDown = () => {
   background-color: white;
 
   .chat-input {
+    padding: 5px;
     padding-right: 30px;
     width: 100%;
     height: 100px;

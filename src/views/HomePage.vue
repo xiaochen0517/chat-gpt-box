@@ -2,9 +2,9 @@
 import {nextTick, onMounted, ref} from "vue";
 import {ConfigProvider} from 'ant-design-vue';
 import SideBarBlock from "../components/SideBarBlock.vue";
-import ChatBoxBlock from "../components/ChatBoxBlock.vue";
 import {appWindow} from "@tauri-apps/api/window";
 import {exit} from '@tauri-apps/api/process';
+import ChatContentBlock from "../components/chat/ChatContentBlock.vue";
 
 ConfigProvider.config({
   theme: {
@@ -16,7 +16,7 @@ ConfigProvider.config({
  * 监听窗口关闭事件，直接退出程序
  */
 onMounted(() => {
-  appWindow.onCloseRequested(async (event) => {
+  appWindow.onCloseRequested(async () => {
     await exit(0);
   });
 });
@@ -35,7 +35,8 @@ const changeRobotClick = (index, item) => {
 <template>
   <div class="home-page flex-row">
     <SideBarBlock @onClick="changeRobotClick"/>
-    <ChatBoxBlock ref="chatBoxBlockRefs" class="flex-1"/>
+<!--    <ChatBoxBlock ref="chatBoxBlockRefs" class="flex-1"/>-->
+    <ChatContentBlock class="flex-1"/>
   </div>
 </template>
 

@@ -6,6 +6,7 @@ import {appWindow} from "@tauri-apps/api/window";
 import {useStore} from "vuex";
 
 const store = useStore();
+let apiKey = ref("");
 
 const scrollWrapperRefs = ref(null);
 let bScroll = null;
@@ -25,15 +26,16 @@ onMounted(() => {
   appWindow.onCloseRequested(() => {
     emit("resetSettingsWindow");
   });
-});
-
-const formData = ref({
-  apiKey: ""
+  apiKey.value = store.state.config.apiKey;
 });
 
 const enterSend = computed(() => store.state.config.enterSend);
 
 const submit = () => {
+  if (apiKey.value === "") {
+    return;
+  }
+  store.commit("setApiKey", apiKey.value);
 };
 
 const cancel = () => {
@@ -47,9 +49,9 @@ const cancel = () => {
     <h1>Settings Page</h1>
     <div ref="scrollWrapperRefs" class="scroll-wrapper">
       <div class="settings-form-box wrapper-content">
-        <a-form :model="formData" label-align="left">
+        <a-form label-align="left">
           <a-form-item label="ApiKey">
-            <a-input v-model:value="formData.apiKey" placeholder="请输入ApiKey"/>
+            <a-input v-model:value="apiKey" placeholder="请输入ApiKey"/>
           </a-form-item>
           <a-form-item label="回车键发送消息：">
             <a-switch v-model:checked="enterSend"/>

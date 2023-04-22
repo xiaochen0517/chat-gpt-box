@@ -100,5 +100,3 @@ const readResponse = (result) => {
   // 继续读取剩余的数据
   reader.read().then(readResponse);
 };
-
-export default request;

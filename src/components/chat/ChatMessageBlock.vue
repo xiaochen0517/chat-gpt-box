@@ -58,7 +58,7 @@ defineProps({
 
 <style lang="less" scoped>
 .chat-message-block {
-  padding: 20px 0;
+  padding: 5px 0;
   border-bottom: 1px solid #e8e8e8;
 
   .chat-message-main {
