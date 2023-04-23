@@ -4,15 +4,20 @@ import BScroll from "@better-scroll/core";
 import {emit} from "@tauri-apps/api/event";
 import {appWindow} from "@tauri-apps/api/window";
 import {useStore} from "vuex";
+import {notification} from 'ant-design-vue';
 
 const store = useStore();
-let apiKey = ref("");
-
-const scrollWrapperRefs = ref(null);
 let bScroll = null;
 onMounted(() => {
-  bScroll = new BScroll(scrollWrapperRefs.value, {
-    disableMouse: false,
+  bScroll = createBScroll();
+  createAppCloseListener();
+  initSettingsData();
+});
+
+const scrollWrapperRefs = ref(null);
+const createBScroll = () => {
+  return new BScroll(scrollWrapperRefs.value, {
+    disableMouse: true,
     disableTouch: false,
     bounce: false,
     scrollY: true,
@@ -23,19 +28,42 @@ onMounted(() => {
       easeTime: 300
     }
   });
+};
+const createAppCloseListener = () => {
   appWindow.onCloseRequested(() => {
     emit("resetSettingsWindow");
   });
-  apiKey.value = store.state.config.apiKey;
-});
+};
 
-const enterSend = computed(() => store.state.config.enterSend);
+// 请求openai的apiKey
+const storeApiKey = computed(() => store.state.apiKey);
+let apiKey = ref("");
+// 是否按下enter键发送消息
+const storeEnterSend = computed(() => store.state.config.enterSend);
+let enterSend = ref(true);
+const initSettingsData = () => {
+  apiKey.value = storeApiKey.value;
+  enterSend.value = storeEnterSend.value;
+};
+
+const openNotification = (type, message) => {
+  notification[type]({
+    message: message,
+    description: "",
+  });
+};
 
 const submit = () => {
-  if (apiKey.value === "") {
+  if (apiKey.value == "") {
+    openNotification("error", "ApiKey不能为空");
+    return;
+  }
+  if (enterSend.value == undefined) {
+    openNotification("error", "消息发送方式不能为空");
     return;
   }
   store.commit("setApiKey", apiKey.value);
+  store.commit("setEnterSend", enterSend.value);
 };
 
 const cancel = () => {
@@ -57,8 +85,10 @@ const cancel = () => {
             <a-switch v-model:checked="enterSend"/>
           </a-form-item>
           <a-form-item>
-            <a-button @click="cancel">取消</a-button>
-            <a-button type="primary" @click="submit">提交</a-button>
+            <div class="commit-button-box flex-row">
+              <a-button @click="cancel">取消</a-button>
+              <a-button type="primary" @click="submit" style="margin-left: 50px">提交</a-button>
+            </div>
           </a-form-item>
         </a-form>
       </div>
@@ -74,6 +104,10 @@ const cancel = () => {
 
   .settings-form-box {
     padding: 20px 60px;
+
+    .commit-button-box {
+      justify-content: center;
+    }
   }
 }
 </style>

@@ -102,6 +102,10 @@ const store = createStore({
         this.replaceState(Object.assign(state, JSON.parse(savedState)));
       }
     },
+    // 设置消息发送方式
+    setEnterSend(state, enterSend) {
+      state.config.enterSend = enterSend;
+    }
   },
   actions: {
     // 保存状态到本地存储
