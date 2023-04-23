@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from "vue";
+import {nextTick, ref} from "vue";
 import ChatTabsBlock from "./ChatTabsBlock.vue";
 import ChatInputBlock from "./ChatInputBlock.vue";
 import {useStore} from "vuex";
@@ -10,9 +10,7 @@ const store = useStore();
 const robotIndex = ref(0);
 const chatTabsBlockRefs = ref(null);
 const commitMsgContent = (msgContent) => {
-  console.log("commitMsgContent", msgContent);
   const tabIndex = chatTabsBlockRefs.value.getTabIndex();
-  console.log("tabIndex", tabIndex);
   sendRequest({
     robotIndex: robotIndex.value,
     tabIndex: tabIndex,
@@ -21,6 +19,17 @@ const commitMsgContent = (msgContent) => {
     chatTabsBlockRefs.value.scrollToBottom();
   });
 };
+
+const changeRobot = (index, item) => {
+  robotIndex.value = index;
+  nextTick(() => {
+    chatTabsBlockRefs.value.scrollToBottom();
+  });
+};
+
+defineExpose({
+  changeRobot
+});
 </script>
 
 <template>

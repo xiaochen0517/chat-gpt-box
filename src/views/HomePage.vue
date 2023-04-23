@@ -21,12 +21,11 @@ onMounted(() => {
   });
 });
 
-const chatBoxBlockRefs = ref(null);
+const chatContentBlockRefs = ref(null);
 const changeRobotClick = (index, item) => {
   nextTick(() => {
-    if (chatBoxBlockRefs.value) {
-      console.log("chatBoxBlockRefs", chatBoxBlockRefs.value);
-      chatBoxBlockRefs.value.changeRobot(index, item);
+    if (chatContentBlockRefs.value) {
+      chatContentBlockRefs.value.changeRobot(index, item);
     }
   });
 };
@@ -35,8 +34,7 @@ const changeRobotClick = (index, item) => {
 <template>
   <div class="home-page flex-row">
     <SideBarBlock @onClick="changeRobotClick"/>
-<!--    <ChatBoxBlock ref="chatBoxBlockRefs" class="flex-1"/>-->
-    <ChatContentBlock class="flex-1"/>
+    <ChatContentBlock ref="chatContentBlockRefs" class="flex-1"/>
   </div>
 </template>
 

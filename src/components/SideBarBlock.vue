@@ -72,15 +72,6 @@ const addRobotClick = () => {
 };
 
 /**
- * 机器人列表点击事件，触发父组件的onClick事件
- */
-const instance = getCurrentInstance();
-const robotListClick = (index, item) => {
-  console.log(index, item);
-  instance.emit("onClick", index, item);
-};
-
-/**
  * 打开设置窗口
  */
 let settingsWindow = null;
@@ -109,7 +100,7 @@ const createSettingsWindow = () => {
     <div ref="robotListRefs" class="robot-list scroll-wrapper">
       <div class="robot-content scroll-content">
         <div v-for="(item, index) in robotList" :key="index" class="robot-list-item scroll-item"
-             @click="robotListClick(index, item)">
+             @click="$emit('onClick', index, item)">
           {{ item.name }}
         </div>
       </div>
