@@ -3,6 +3,7 @@ import {ref, onMounted, onBeforeUnmount, nextTick} from "vue";
 import {useStore} from "vuex";
 import {listen} from '@tauri-apps/api/event';
 import {WebviewWindow} from '@tauri-apps/api/window';
+import AddRobotDialog from "../dialog/AddRobotDialog.vue";
 
 /**
  * 初始化BScroll和监听窗口关闭事件
@@ -29,12 +30,11 @@ onBeforeUnmount(() => {
  * 初始化机器人列表
  */
 const store = useStore();
+const addRobotDialogRefs = ref(null);
 const addRobotClick = () => {
-  store.commit("addRobot", {
-    prompt: "test",
-    name: "test",
-    options: {
-      model: "gpt-3.5-turbo"
+  nextTick(() => {
+    if (addRobotDialogRefs.value) {
+      addRobotDialogRefs.value.show();
     }
   });
 };
@@ -70,6 +70,7 @@ const createSettingsWindow = () => {
       </a-button>
       <a-button class="add-robot-button" type="primary" @click="openSettingsWindow">Open Settings</a-button>
     </div>
+    <AddRobotDialog ref="addRobotDialogRefs"/>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from "vue";
+import {getCurrentInstance} from "vue";
 import {useStore} from "vuex";
 import RobotListBlock from "./RobotListBlock.vue";
 import MenuListBlock from "./MenuListBlock.vue";
@@ -9,11 +9,17 @@ import MenuListBlock from "./MenuListBlock.vue";
  */
 const store = useStore();
 
+const {emit} = getCurrentInstance();
+const onRobotClick = (index, item) => {
+  console.log("onRobotClick", index, item);
+  emit('onClick', index, item);
+};
+
 </script>
 
 <template>
   <div class="side-bar-block position-relative flex-column">
-    <RobotListBlock/>
+    <RobotListBlock @on-click="onRobotClick"/>
     <MenuListBlock/>
   </div>
 </template>
