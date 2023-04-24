@@ -1,10 +1,18 @@
 <script setup>
-import {ref} from "vue";
+import {getCurrentInstance, ref} from "vue";
 import {useStore} from "vuex";
 import {Form} from 'ant-design-vue';
+import _ from "lodash";
 
 const store = useStore();
 const useForm = Form.useForm;
+
+const props = defineProps({
+  isEdit: {
+    type: Boolean,
+    default: false
+  }
+});
 
 const dialogVisible = ref(false);
 const formData = ref({
@@ -46,20 +54,16 @@ const formRules = ref({
 });
 
 const {resetFields, validate} = useForm(formData, formRules);
-const onSubmit = () => {
-};
 
+const robotIndex = ref(null);
+const instance = getCurrentInstance();
 const commit = () => {
-  console.log("commit", formData.value);
   validate().then(() => {
-    store.commit("addRobot", {
-      prompt: formData.value.prompt,
-      name: formData.value.name,
-      options: {
-        model: formData.value.model,
-        max_tokens: formData.value.max_tokens
-      }
-    });
+    if (props.isEdit) {
+      updateRobot();
+    } else {
+      addRobot();
+    }
     resetFields();
     dialogVisible.value = false;
   }).catch(err => {
@@ -67,7 +71,44 @@ const commit = () => {
   });
 };
 
-const show = () => {
+const updateRobot = () => {
+  if (robotIndex.value == null) {
+    return;
+  }
+  store.commit("updateRobot", {
+    robotIndex: robotIndex,
+    robot: {
+      prompt: formData.value.prompt,
+      name: formData.value.name,
+      options: {
+        model: formData.value.model,
+        max_tokens: formData.value.max_tokens
+      }
+    }
+  });
+};
+
+const addRobot = () => {
+  store.commit("addRobot", {
+    prompt: formData.value.prompt,
+    name: formData.value.name,
+    options: {
+      model: formData.value.model,
+      max_tokens: formData.value.max_tokens
+    }
+  });
+  instance.emit("commit", formData.value);
+};
+
+const show = (index) => {
+  if (props.isEdit) {
+    robotIndex.value = index;
+    const robotInfo = _.cloneDeep(store.state.robotList[index]);
+    formData.value.name = robotInfo.name;
+    formData.value.prompt = robotInfo.prompt;
+    formData.value.model = robotInfo.options.model;
+    formData.value.max_tokens = robotInfo.options.max_tokens;
+  }
   dialogVisible.value = true;
 };
 

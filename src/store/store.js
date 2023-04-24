@@ -42,6 +42,11 @@ const store = createStore({
       state.robotList.push(robot);
       state.chatHistory.push([{name: "default", chat: [{role: "system", content: robot.prompt}]}]);
     },
+    // 更新机器人
+    updateRobot(state, {robotIndex, robot}) {
+      // 先删除再添加
+      state.robotList.splice(robotIndex, 1, robot);
+    },
     // 删除聊天tab页
     removeChatTab(state, {robotIndex, tabIndex}) {
       state.chatHistory[robotIndex].splice(tabIndex, 1);

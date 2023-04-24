@@ -1,5 +1,5 @@
 <script setup>
-import {getCurrentInstance} from "vue";
+import {getCurrentInstance, ref} from "vue";
 import {useStore} from "vuex";
 import RobotListBlock from "./RobotListBlock.vue";
 import MenuListBlock from "./MenuListBlock.vue";
@@ -15,12 +15,17 @@ const onRobotClick = (index, item) => {
   emit('onClick', index, item);
 };
 
+const robotListBlockRefs = ref(null);
+const robotListScrollToBottom = () => {
+  robotListBlockRefs.value.scrollToBottom();
+};
+
 </script>
 
 <template>
   <div class="side-bar-block position-relative flex-column">
-    <RobotListBlock @on-click="onRobotClick"/>
-    <MenuListBlock/>
+    <RobotListBlock ref="robotListBlockRefs" @on-click="onRobotClick"/>
+    <MenuListBlock @added-robot="robotListScrollToBottom"/>
   </div>
 </template>
 
@@ -30,6 +35,5 @@ const onRobotClick = (index, item) => {
   min-height: 100vh;
   max-height: 100vh;
   border-right: 1px solid #e8e8e8;
-  position: relative;
 }
 </style>

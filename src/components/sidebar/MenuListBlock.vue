@@ -3,7 +3,7 @@ import {ref, onMounted, onBeforeUnmount, nextTick} from "vue";
 import {useStore} from "vuex";
 import {listen} from '@tauri-apps/api/event';
 import {WebviewWindow} from '@tauri-apps/api/window';
-import AddRobotDialog from "../dialog/AddRobotDialog.vue";
+import AddRobotDialog from "../dialog/EditRobotDialog.vue";
 
 /**
  * 初始化BScroll和监听窗口关闭事件
@@ -70,7 +70,7 @@ const createSettingsWindow = () => {
       </a-button>
       <a-button class="add-robot-button" type="primary" @click="openSettingsWindow">Open Settings</a-button>
     </div>
-    <AddRobotDialog ref="addRobotDialogRefs"/>
+    <AddRobotDialog ref="addRobotDialogRefs" @commit="$emit('addedRobot')"/>
   </div>
 </template>
 
