@@ -3,7 +3,7 @@ import {nextTick, ref} from "vue";
 import ChatTabsBlock from "./ChatTabsBlock.vue";
 import ChatInputBlock from "./ChatInputBlock.vue";
 import {useStore} from "vuex";
-import {sendRequest} from "../../util/RequestUtil.js";
+import {RequestUtil} from "../../util/RequestUtil.js";
 
 const store = useStore();
 
@@ -11,7 +11,8 @@ const robotIndex = ref(0);
 const chatTabsBlockRefs = ref(null);
 const commitMsgContent = (msgContent) => {
   const tabIndex = chatTabsBlockRefs.value.getTabIndex();
-  sendRequest({
+  let requestUtil = new RequestUtil();
+  requestUtil.sendRequest({
     robotIndex: robotIndex.value,
     tabIndex: tabIndex,
     content: msgContent,
