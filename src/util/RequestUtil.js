@@ -105,7 +105,8 @@ const checkRequestData = (robotIndex, tabIndex, content) => {
 };
 
 const buildHeaders = () => {
-  if (store.state.apiKey.length < 3) {
+  const apiKey = store.state.apiKey;
+  if (apiKey == "" || apiKey.length < 3) {
     throw Error("请输入正确的ApiKey");
   }
   return {
