@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "tauri": "tauri dev"
+    "tauri": "tauri dev",
+    "build-windows": "yarn tauri build"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",
