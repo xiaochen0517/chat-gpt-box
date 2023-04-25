@@ -1,5 +1,5 @@
 <script setup>
-import {nextTick, onMounted, onUnmounted, ref, computed} from "vue";
+import {nextTick, onMounted, onUnmounted, ref, computed, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
 import {useStore} from "vuex";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
@@ -10,26 +10,32 @@ const props = defineProps({
     default: 0
   },
 });
-
-const activeTabIndex = ref(0);
 onMounted(() => {
 });
 onUnmounted(() => {
 });
-const chatTabsChange = (index) => {
-  activeTabIndex.value = index;
-  nextTick(() => {
+
+const activeTabIndex = ref(0);
+watch(
+  () => activeTabIndex.value,
+  (newVal, oldVal) => {
     scrollToBottom();
-  });
-};
+  }
+);
 
 const store = useStore();
 const chatTabsSize = computed(() => store.state.chatHistory[props.robotIndex].length);
 const addTabDialogRefs = ref(null);
 const chatTabsEdit = (targetKey, action) => {
-  console.log("action", targetKey, action);
   if (action === "remove") {
-    console.log("remove", props.robotIndex, targetKey);
+    if (activeTabIndex.value == targetKey) {
+      // 切换tab
+      if (targetKey == chatTabsSize.value - 1) {
+        activeTabIndex.value = targetKey - 1;
+      } else {
+        activeTabIndex.value = targetKey;
+      }
+    }
     store.commit("removeChatTab", {
       robotIndex: props.robotIndex,
       tabIndex: targetKey
@@ -55,7 +61,12 @@ const getTabIndex = () => {
 };
 const chatMsgListBlockRefs = ref([]);
 const scrollToBottom = () => {
-  chatMsgListBlockRefs.value[activeTabIndex.value].scrollToBottom();
+  nextTick(() => {
+    let refs = chatMsgListBlockRefs.value[activeTabIndex.value];
+    if (refs != undefined) {
+      refs.scrollToBottom();
+    }
+  });
 };
 
 defineExpose({
@@ -66,9 +77,9 @@ defineExpose({
 
 <template>
   <div class="chat-tabs-block">
-    <a-tabs class="chat-scroll-content" v-model:activeKey="activeTabIndex" type="editable-card" @edit="chatTabsEdit"
-            size="small" @change="chatTabsChange">
-      <a-tab-pane v-for="(item, index) in chatTabsSize" :key="index" :tab="chatTabNameList[index]">
+    <a-tabs class="chat-scroll-content" type="editable-card" v-model:activeKey="activeTabIndex" @edit="chatTabsEdit"
+            size="small">
+      <a-tab-pane v-for="(item, index) in chatTabsSize" :key="index" :tab="chatTabNameList[index]" :forceRender="true">
         <ChatMsgListBlock ref="chatMsgListBlockRefs" :robotIndex="props.robotIndex" :tabIndex="index"/>
       </a-tab-pane>
     </a-tabs>
