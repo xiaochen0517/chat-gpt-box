@@ -1,6 +1,9 @@
 <script setup>
-import {ref} from "vue";
+import {nextTick, onMounted, ref} from "vue";
 import {useStore} from "vuex";
+import {Form} from 'ant-design-vue';
+
+const useForm = Form.useForm;
 
 const store = useStore();
 
@@ -11,25 +14,50 @@ const props = defineProps({
   },
 });
 
+onMounted(() => {
+});
+
 const dialogVisible = ref(false);
-const tabName = ref("");
-const title = ref("Add Tab");
+const formData = ref({
+  name: ""
+});
+const formRules = ref({
+  name: [
+    {
+      required: true,
+      message: "Please input tab name",
+      trigger: "blur"
+    }
+  ]
+});
+const {resetFields, validate} = useForm(formData, formRules);
 const commit = () => {
-  console.log("commit", tabName.value);
-  if (tabName.value === "") {
-    return;
-  }
+  validate().then(() => {
+    console.log("validate success");
+    addTab();
+  }).catch(() => {
+    console.log("validate fail");
+  });
+};
+const addTab = () => {
   store.commit("addChatTab", {
     robotIndex: props.robotIndex,
-    tabName: tabName.value
+    tabName: formData.value.name,
   });
-  tabName.value = "";
+  resetFields();
   dialogVisible.value = false;
 };
 
+const addTabInputRefs = ref(null);
+const focusNameInput = () => {
+  nextTick(() => {
+    addTabInputRefs.value.focus();
+  });
+};
 const show = () => {
   console.log("show");
   dialogVisible.value = true;
+  focusNameInput();
 };
 defineExpose({
   show
@@ -38,10 +66,10 @@ defineExpose({
 
 <template>
   <div class="add-tab-dialog">
-    <a-modal v-model:visible="dialogVisible" :title="title" @ok="commit" @cancel="dialogVisible = false">
-      <a-form>
-        <a-form-item label="Tab Name">
-          <a-input v-model:value="tabName"/>
+    <a-modal v-model:visible="dialogVisible" title="Add Tab" @ok="commit" @cancel="dialogVisible = false">
+      <a-form :model="formData" :rules="formRules">
+        <a-form-item label="Tab Name" name="name">
+          <a-input ref="addTabInputRefs" v-model:value="formData.name" @pressEnter="commit"/>
         </a-form-item>
       </a-form>
     </a-modal>
