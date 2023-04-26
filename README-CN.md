@@ -6,7 +6,7 @@
     English | <a href="./README-CN.md">简体中文</a>
 </p>
 <p align="center">
-    <em>Your Ultimate Copilot on the Desktop. ChatGPTBox is a desktop app for GPT-3.5 (OpenAI API).</em>
+    <em>PC ChatGPT 聊天工具.</em>
 </p>
 
 <p align="center">
@@ -14,21 +14,20 @@
 </p>
 
 
-## Features
+## 特性
 
 - xxx
 
-## Roadmap
+## 规划
 
 - [x] xxx
 
-## Contact
+## 联系我
 
-- [Twitter]()
-- [Email](mailto:xiaochen0517@qq.com)
-- [Blog]()
+- [推特]()
+- [邮箱](mailto:xiaochen0517@qq.com)
+- [博客]()
 
-## License
+## 许可证
 
 [Apache License v2.0](./LICENSE)
-
