@@ -25,6 +25,19 @@ const store = createStore({
     config: {
       // 聊天输入框enter键发送消息
       enterSend: true,
+      // 快捷键配置
+      shortcut: {
+        // 添加tab
+        addTab: ["ctrl", "t"],
+        // 删除tab
+        removeTab: ["ctrl", "w"],
+        // 清空当前tab页聊天记录
+        cleanTab: ["ctrl", "e"],
+        // 新增机器人
+        addRobot: ["ctrl", "n"],
+        // 切换机器人
+        switchRobot: ["ctrl", "tab"],
+      }
     }
   },
   mutations: {

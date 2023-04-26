@@ -4,6 +4,7 @@ import ChatMsgListBlock from "./ChatMsgListBlock.vue";
 import {useStore} from "vuex";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
 import {Modal} from "ant-design-vue";
+import {onKeyStroke} from '@vueuse/core';
 
 const props = defineProps({
   robotIndex: {
@@ -11,7 +12,21 @@ const props = defineProps({
     default: 0
   },
 });
+
+const store = useStore();
+
+const shortcut = computed(() => store.state.config.shortcut);
+
 onMounted(() => {
+  // 注册操作tab的快捷键
+  onKeyStroke(shortcut.value.addTab, () => {
+    console.log(shortcut.value.addTab);
+    addTabDialogRefs.value.show();
+  });
+  onKeyStroke(shortcut.value.removeTab, () => {
+    console.log(shortcut.value.removeTab);
+    confirmRemoveTab(activeTabIndex.value);
+  });
 });
 onUnmounted(() => {
 });
@@ -23,24 +38,25 @@ watch(
     scrollToBottom();
   }
 );
-
-const store = useStore();
 const chatTabsSize = computed(() => store.state.chatHistory[props.robotIndex].length);
 const addTabDialogRefs = ref(null);
 const chatTabsEdit = (targetKey, action) => {
   if (action === "remove") {
-    Modal.confirm({
-      title: "Confirm",
-      content: "Are you sure to remove this tab?",
-      onOk: () => {
-        removeTab(targetKey);
-      },
-      onCancel: () => {
-      },
-    });
+    confirmRemoveTab(targetKey);
   } else if (action === "add") {
     addTabDialogRefs.value.show();
   }
+};
+const confirmRemoveTab = (targetKey) => {
+  Modal.confirm({
+    title: "Confirm",
+    content: "Are you sure to remove this tab?",
+    onOk: () => {
+      removeTab(targetKey);
+    },
+    onCancel: () => {
+    },
+  });
 };
 const removeTab = (targetKey) => {
   if (activeTabIndex.value == targetKey) {
