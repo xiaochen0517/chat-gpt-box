@@ -4,7 +4,7 @@ import ChatMsgListBlock from "./ChatMsgListBlock.vue";
 import {useStore} from "vuex";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
 import {Modal} from "ant-design-vue";
-import {onKeyStroke} from '@vueuse/core';
+import {useMagicKeys, whenever} from "@vueuse/core";
 
 const props = defineProps({
   robotIndex: {
@@ -13,23 +13,50 @@ const props = defineProps({
   },
 });
 
+/**
+ * 注册操作tab的快捷键
+ */
 const store = useStore();
-
 const shortcut = computed(() => store.state.config.shortcut);
-
-onMounted(() => {
-  // 注册操作tab的快捷键
-  onKeyStroke(shortcut.value.addTab, () => {
-    console.log(shortcut.value.addTab);
-    addTabDialogRefs.value.show();
-  });
-  onKeyStroke(shortcut.value.removeTab, () => {
-    console.log(shortcut.value.removeTab);
-    confirmRemoveTab(activeTabIndex.value);
-  });
+const keys = useMagicKeys();
+const addTabKey = keys[shortcut.value.addTab];
+whenever(addTabKey, () => {
+  addTabDialogRefs.value.show();
 });
-onUnmounted(() => {
+const removeTabKey = keys[shortcut.value.removeTab];
+whenever(removeTabKey, () => {
+  confirmRemoveTab(activeTabIndex.value);
 });
+const prevTabKey = keys[shortcut.value.prevTab];
+whenever(prevTabKey, () => {
+  const targetIndex = activeTabIndex.value - 1;
+  if (targetIndex >= 0) {
+    activeTabIndex.value = targetIndex;
+  }
+});
+const nextTabKey = keys[shortcut.value.nextTab];
+whenever(nextTabKey, () => {
+  const targetIndex = activeTabIndex.value + 1;
+  if (targetIndex < chatTabsSize.value) {
+    activeTabIndex.value = targetIndex;
+  }
+});
+const cleanTabChatKey = keys[shortcut.value.cleanTabChat];
+whenever(cleanTabChatKey, () => {
+  cleanTabChat();
+});
+const cleanTabChat = () => {
+  Modal.confirm({
+    title: "Clean chat history",
+    content: "Are you sure to clean chat history?",
+    onOk: () => {
+      store.commit("cleanTabChat", {
+        robotIndex: props.robotIndex,
+        tabIndex: activeTabIndex.value,
+      });
+    },
+  });
+};
 
 const activeTabIndex = ref(0);
 watch(
@@ -106,8 +133,9 @@ defineExpose({
 <template>
   <div class="chat-tabs-block">
     <a-tabs class="chat-scroll-content" type="editable-card" v-model:activeKey="activeTabIndex" @edit="chatTabsEdit"
-            size="small">
-      <a-tab-pane v-for="(item, index) in chatTabsSize" :key="index" :tab="chatTabNameList[index]" :forceRender="true">
+            size="small" tabPosition="top">
+      <a-tab-pane v-for="(item, index) in chatTabsSize" :key="index" :tab="chatTabNameList[index]"
+                  :forceRender="true">
         <ChatMsgListBlock ref="chatMsgListBlockRefs" :robotIndex="props.robotIndex" :tabIndex="index"/>
       </a-tab-pane>
     </a-tabs>

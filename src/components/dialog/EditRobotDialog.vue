@@ -1,5 +1,5 @@
 <script setup>
-import {getCurrentInstance, ref} from "vue";
+import {getCurrentInstance, nextTick, onMounted, ref} from "vue";
 import {useStore} from "vuex";
 import {Form} from 'ant-design-vue';
 import _ from "lodash";
@@ -100,6 +100,13 @@ const addRobot = () => {
   instance.emit("commit", formData.value);
 };
 
+const robotNameInputRefs = ref(null);
+const focusNameInput = () => {
+  nextTick(() => {
+    robotNameInputRefs.value.focus();
+  });
+};
+
 const show = (index) => {
   if (props.isEdit) {
     robotIndex.value = index;
@@ -110,6 +117,7 @@ const show = (index) => {
     formData.value.max_tokens = robotInfo.options.max_tokens;
   }
   dialogVisible.value = true;
+  focusNameInput();
 };
 
 defineExpose({
@@ -122,19 +130,19 @@ defineExpose({
     <a-modal v-model:visible="dialogVisible" title="Add robot" @ok="commit" @cancel="dialogVisible = false">
       <a-form :model="formData" :rules="formRules" :label-col="{span: 8}">
         <a-form-item label="Robot Name">
-          <a-input v-model:value="formData.name"/>
+          <a-input ref="robotNameInputRefs" v-model:value="formData.name" @pressEnter="commit"/>
         </a-form-item>
         <a-form-item label="Robot Prompt">
-          <a-input v-model:value="formData.prompt"/>
+          <a-input v-model:value="formData.prompt" @pressEnter="commit"/>
         </a-form-item>
         <a-form-item label="Robot Model">
-          <a-select v-model:value="formData.model">
+          <a-select v-model:value="formData.model" @keydown.enter="commit">
             <a-select-option value="gpt-3.5-turbo">gpt-3.5-turbo</a-select-option>
             <a-select-option value="gpt-3.5">gpt-3.5</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="Robot Max Tokens">
-          <a-input-number v-model:value="formData.max_tokens"/>
+          <a-input-number v-model:value="formData.max_tokens" @pressEnter="commit"/>
         </a-form-item>
       </a-form>
     </a-modal>

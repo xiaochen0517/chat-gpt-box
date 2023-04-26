@@ -1,14 +1,49 @@
 <script setup>
-import {computed, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
+import {computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
 import BScroll from "@better-scroll/core";
 import MouseWheel from "@better-scroll/mouse-wheel";
 import ScrollBar from "@better-scroll/scroll-bar";
 import {useStore} from "vuex";
 import {EllipsisOutlined} from "@ant-design/icons-vue";
 import EditRobotDialog from "../dialog/EditRobotDialog.vue";
+import {useMagicKeys, whenever} from "@vueuse/core";
 
 BScroll.use(MouseWheel);
 BScroll.use(ScrollBar);
+
+const instance = getCurrentInstance();
+const activeRobotIndex = ref(0);
+const changeActiveRobot = (index, item) => {
+  activeRobotIndex.value = index;
+  instance.emit('onClick', index, item);
+};
+
+const store = useStore();
+const shortcut = computed(() => store.state.config.shortcut);
+const keys = useMagicKeys();
+const prevRobotKey = keys[shortcut.value.prevRobot];
+whenever(prevRobotKey, () => {
+  const index = activeRobotIndex.value - 1;
+  if (index >= 0) {
+    changeActiveRobot(index, robotList.value[index]);
+  }
+});
+const nextRobotKey = keys[shortcut.value.nextRobot];
+whenever(nextRobotKey, () => {
+  const index = activeRobotIndex.value + 1;
+  if (index < robotList.value.length) {
+    changeActiveRobot(index, robotList.value[index]);
+  }
+});
+const switchRobotKey = keys[shortcut.value.switchRobot];
+whenever(switchRobotKey, () => {
+  const index = activeRobotIndex.value + 1;
+  if (index < robotList.value.length) {
+    changeActiveRobot(index, robotList.value[index]);
+  } else {
+    changeActiveRobot(0, robotList.value[0]);
+  }
+});
 
 let bScroll = null;
 onMounted(() => {
@@ -35,7 +70,6 @@ const createBScroll = () => {
   });
 };
 
-const store = useStore();
 const robotList = computed(() => {
   return store.state.robotList;
 });
@@ -65,7 +99,7 @@ defineExpose({
   <div ref="robotListRefs" class="robot-list-block scroll-wrapper">
     <div class="robot-content scroll-content">
       <div v-for="(item, index) in robotList" :key="index" class="robot-list-item scroll-item flex-row"
-           @click="$emit('onClick', index, item)">
+           @click="changeActiveRobot(index, item)">
         <div class="robot-item-label">
           {{ item.name }}
         </div>

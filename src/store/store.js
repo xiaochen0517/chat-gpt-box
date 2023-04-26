@@ -17,8 +17,26 @@ const store = createStore({
           // 当前是否处于生成中
           generating: false,
           // 指定index tab页的聊天记录
-          chat: [{role: "user", content: "你好"}, {role: "assistant", content: "你好"}],
-        }
+          chat: [{role: "user", content: "你好0"}, {role: "assistant", content: "你好0"}],
+        }, {
+        name: "TestRobot1",
+        // 当前是否处于生成中
+        generating: false,
+        // 指定index tab页的聊天记录
+        chat: [{role: "user", content: "你好1"}, {role: "assistant", content: "你好1"}],
+      }, {
+        name: "TestRobot2",
+        // 当前是否处于生成中
+        generating: false,
+        // 指定index tab页的聊天记录
+        chat: [{role: "user", content: "你好2"}, {role: "assistant", content: "你好2"}],
+      }, {
+        name: "TestRobot3",
+        // 当前是否处于生成中
+        generating: false,
+        // 指定index tab页的聊天记录
+        chat: [{role: "user", content: "你好3"}, {role: "assistant", content: "你好3"}],
+      },
       ],
     ],
     // 软件配置
@@ -27,16 +45,28 @@ const store = createStore({
       enterSend: true,
       // 快捷键配置
       shortcut: {
+        // 聚焦到输入框
+        focusInput: "ctrl+/",
+        // 打开设置窗口
+        openSetting: "ctrl+s",
         // 添加tab
-        addTab: ["ctrl", "t"],
+        addTab: "ctrl+t",
         // 删除tab
-        removeTab: ["ctrl", "w"],
+        removeTab: "ctrl+w",
         // 清空当前tab页聊天记录
-        cleanTab: ["ctrl", "e"],
+        cleanTabChat: "ctrl+e",
+        // 上一个tab页
+        prevTab: "ctrl+left",
+        // 下一个tab页
+        nextTab: "ctrl+right",
         // 新增机器人
-        addRobot: ["ctrl", "n"],
+        addRobot: "ctrl+n",
         // 切换机器人
-        switchRobot: ["ctrl", "tab"],
+        switchRobot: "ctrl+tab",
+        // 上一个机器人
+        prevRobot: "ctrl+up",
+        // 下一个机器人
+        nextRobot: "ctrl+down",
       }
     }
   },
@@ -72,6 +102,14 @@ const store = createStore({
         generating: false,
         chat: [{role: "system", content: robotInfo.prompt}]
       });
+    },
+    cleanTabChat(state, {robotIndex, tabIndex}) {
+      // 获取当前tab所属的机器人信息
+      const robotInfo = state.robotList[robotIndex];
+      // 删除当前tab的所有聊天记录
+      state.chatHistory[robotIndex][tabIndex].chat.splice(0);
+      // 添加一条机器人提示消息
+      state.chatHistory[robotIndex][tabIndex].chat.push({role: "system", content: robotInfo.prompt});
     },
     // 添加新消息
     addChatMsg(state, {chatIndex, tabIndex, message}) {
