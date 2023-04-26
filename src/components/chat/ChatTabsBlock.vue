@@ -3,6 +3,7 @@ import {nextTick, onMounted, onUnmounted, ref, computed, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
 import {useStore} from "vuex";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
+import {Modal} from "ant-design-vue";
 
 const props = defineProps({
   robotIndex: {
@@ -28,21 +29,32 @@ const chatTabsSize = computed(() => store.state.chatHistory[props.robotIndex].le
 const addTabDialogRefs = ref(null);
 const chatTabsEdit = (targetKey, action) => {
   if (action === "remove") {
-    if (activeTabIndex.value == targetKey) {
-      // 切换tab
-      if (targetKey == chatTabsSize.value - 1) {
-        activeTabIndex.value = targetKey - 1;
-      } else {
-        activeTabIndex.value = targetKey;
-      }
-    }
-    store.commit("removeChatTab", {
-      robotIndex: props.robotIndex,
-      tabIndex: targetKey
+    Modal.confirm({
+      title: "Confirm",
+      content: "Are you sure to remove this tab?",
+      onOk: () => {
+        removeTab(targetKey);
+      },
+      onCancel: () => {
+      },
     });
   } else if (action === "add") {
     addTabDialogRefs.value.show();
   }
+};
+const removeTab = (targetKey) => {
+  if (activeTabIndex.value == targetKey) {
+    // 切换tab
+    if (targetKey == chatTabsSize.value - 1) {
+      activeTabIndex.value = targetKey - 1;
+    } else {
+      activeTabIndex.value = targetKey;
+    }
+  }
+  store.commit("removeChatTab", {
+    robotIndex: props.robotIndex,
+    tabIndex: targetKey
+  });
 };
 
 const chatTabNameList = computed(() => {
