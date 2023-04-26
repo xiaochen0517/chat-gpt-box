@@ -99,7 +99,7 @@ defineExpose({
   <div ref="robotListRefs" class="robot-list-block scroll-wrapper">
     <div class="robot-content scroll-content">
       <div v-for="(item, index) in robotList" :key="index" class="robot-list-item scroll-item flex-row"
-           @click="changeActiveRobot(index, item)">
+           :class="index == activeRobotIndex?'robot-item-selected':''" @click="changeActiveRobot(index, item)">
         <div class="robot-item-label">
           {{ item.name }}
         </div>
@@ -110,7 +110,7 @@ defineExpose({
               <div class="popover-button delete-robot-button">删除机器人</div>
             </div>
           </template>
-          <div class="robot-control-button" @click.stop="">
+          <div class="robot-control-button flex-row" @click.stop="">
             <ellipsis-outlined/>
           </div>
         </a-popover>
@@ -129,22 +129,35 @@ defineExpose({
 
     .robot-list-item {
       padding: 10px;
-      border-bottom: 1px solid #e8e8e8;
+      border-bottom: 1px solid #cecece;
       cursor: pointer;
+      background-color: white;
+
+      &:hover {
+        background-color: #e8e8e8;
+      }
 
       .robot-item-label {
         flex: 1;
+        line-height: 24px;
       }
 
       .robot-control-button {
-        border: 1px solid #e8e8e8;
+        border: 1px solid #cecece;
         border-radius: 5px;
-        padding: 5px 10px;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
 
         &:hover {
-          background-color: #e8e8e8;
+          background-color: #cecece;
         }
       }
+    }
+
+    .robot-item-selected {
+      background-color: #e8e8e8;
     }
   }
 
