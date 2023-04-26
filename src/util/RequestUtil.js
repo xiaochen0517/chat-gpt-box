@@ -107,12 +107,12 @@ export class RequestUtil {
   };
 
   buildHeaders = () => {
-    const apiKey = store.state.apiKey;
+    const apiKey = store.state.config.base.apiKey;
     if (apiKey == "" || apiKey.length < 3) {
       throw Error("请输入正确的ApiKey");
     }
     return {
-      'Authorization': `Bearer ${store.state.apiKey}`,
+      'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
     };
   };

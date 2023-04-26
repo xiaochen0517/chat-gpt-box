@@ -3,7 +3,6 @@ import {createStore} from "vuex";
 const store = createStore({
   state: {
     // 状态
-    apiKey: "",
     // 机器人列表
     robotList: [
       {prompt: "You are a helpful assistant.", name: "TestRobot", options: {model: "gpt-3.5-turbo", max_tokens: 2048}},
@@ -41,8 +40,12 @@ const store = createStore({
     ],
     // 软件配置
     config: {
-      // 聊天输入框enter键发送消息
-      enterSend: true,
+      base: {
+        // openai api key
+        apiKey: "",
+        // 聊天输入框enter键发送消息
+        enterSend: true,
+      },
       // 快捷键配置
       shortcut: {
         // 聚焦到输入框
@@ -71,6 +74,13 @@ const store = createStore({
     }
   },
   mutations: {
+    // 从本地存储中加载状态
+    initState(state) {
+      const savedState = localStorage.getItem("vuex");
+      if (savedState) {
+        this.replaceState(Object.assign(state, JSON.parse(savedState)));
+      }
+    },
     // 同步修改状态
     setApiKey(state, payload) {
       state.apiKey = payload;
@@ -151,17 +161,18 @@ const store = createStore({
     setGenerating(state, {robotIndex, tabIndex, generating}) {
       state.chatHistory[robotIndex][tabIndex].generating = generating;
     },
-    // 从本地存储中加载状态
-    initState(state) {
-      const savedState = localStorage.getItem("vuex");
-      if (savedState) {
-        this.replaceState(Object.assign(state, JSON.parse(savedState)));
-      }
-    },
     // 设置消息发送方式
     setEnterSend(state, enterSend) {
       state.config.enterSend = enterSend;
-    }
+    },
+    // 保存基础设置
+    saveBaseConfig(state, base) {
+      state.config.base = base;
+    },
+    // 保存快捷键设置
+    saveShortcutConfig(state, shortcut) {
+      state.config.shortcut = shortcut;
+    },
   },
   actions: {
     // 保存状态到本地存储

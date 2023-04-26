@@ -1,17 +1,21 @@
 <script setup>
-import {ref, onMounted, computed} from "vue";
+import {ref, onMounted, nextTick} from "vue";
 import BScroll from "@better-scroll/core";
+import MouseWheel from "@better-scroll/mouse-wheel";
+import ScrollBar from "@better-scroll/scroll-bar";
 import {emit} from "@tauri-apps/api/event";
 import {appWindow} from "@tauri-apps/api/window";
-import {useStore} from "vuex";
+import BaseSettingsBlock from "../components/setting/BaseSettingsBlock.vue";
+import ShortcutSettingsBlock from "../components/setting/ShortcutSettingsBlock.vue";
 import {notification} from 'ant-design-vue';
 
-const store = useStore();
+BScroll.use(MouseWheel);
+BScroll.use(ScrollBar);
+
 let bScroll = null;
 onMounted(() => {
-  bScroll = createBScroll();
   createAppCloseListener();
-  initSettingsData();
+  bScroll = createBScroll();
 });
 
 const scrollWrapperRefs = ref(null);
@@ -35,35 +39,29 @@ const createAppCloseListener = () => {
   });
 };
 
-// 请求openai的apiKey
-const storeApiKey = computed(() => store.state.apiKey);
-let apiKey = ref("");
-// 是否按下enter键发送消息
-const storeEnterSend = computed(() => store.state.config.enterSend);
-let enterSend = ref(true);
-const initSettingsData = () => {
-  apiKey.value = storeApiKey.value;
-  enterSend.value = storeEnterSend.value;
+const activeCollIndex = ref(["0"]);
+const collapseChange = () => {
+  setTimeout(() => {
+    nextTick(() => {
+      bScroll.refresh();
+    });
+  }, 300);
 };
 
 const openNotification = (type, message) => {
   notification[type]({
     message: message,
     description: "",
+    duration: 1
   });
 };
 
+const baseSettingsBlockRefs = ref(null);
+const shortcutSettingsBlockRefs = ref(null);
 const submit = () => {
-  if (apiKey.value == "") {
-    openNotification("error", "ApiKey不能为空");
-    return;
-  }
-  if (enterSend.value == undefined) {
-    openNotification("error", "消息发送方式不能为空");
-    return;
-  }
-  store.commit("setApiKey", apiKey.value);
-  store.commit("setEnterSend", enterSend.value);
+  baseSettingsBlockRefs.value.saveData();
+  shortcutSettingsBlockRefs.value.saveData();
+  openNotification("success", "重启后生效");
 };
 
 const cancel = () => {
@@ -74,23 +72,21 @@ const cancel = () => {
 
 <template>
   <div class="settings-page">
-    <h1>Settings Page</h1>
     <div ref="scrollWrapperRefs" class="scroll-wrapper">
       <div class="settings-form-box wrapper-content">
-        <a-form label-align="left">
-          <a-form-item label="ApiKey">
-            <a-input v-model:value="apiKey" placeholder="请输入ApiKey"/>
-          </a-form-item>
-          <a-form-item label="回车键发送消息：">
-            <a-switch v-model:checked="enterSend"/>
-          </a-form-item>
-          <a-form-item>
-            <div class="commit-button-box flex-row">
-              <a-button @click="cancel">取消</a-button>
-              <a-button type="primary" @click="submit" style="margin-left: 50px">提交</a-button>
-            </div>
-          </a-form-item>
-        </a-form>
+        <h1 style="font-weight: bold;">Settings</h1>
+        <a-collapse v-model:activeKey="activeCollIndex" @change="collapseChange">
+          <a-collapse-panel header="Base Settings" key="0" :forceRender="true">
+            <BaseSettingsBlock ref="baseSettingsBlockRefs"/>
+          </a-collapse-panel>
+          <a-collapse-panel header="Shortcut Settings" key="1" :forceRender="true">
+            <ShortcutSettingsBlock ref="shortcutSettingsBlockRefs"/>
+          </a-collapse-panel>
+        </a-collapse>
+        <div class="commit-button-box flex-row">
+          <a-button @click="cancel">取消</a-button>
+          <a-button type="primary" @click="submit" style="margin-left: 50px">提交</a-button>
+        </div>
       </div>
     </div>
   </div>
@@ -99,14 +95,19 @@ const cancel = () => {
 <style lang="less" scoped>
 .settings-page {
   width: 100%;
-  max-height: 100%;
-  min-height: 100%;
+  height: 100vh;
+
+  .scroll-wrapper {
+    height: 100vh;
+    overflow: hidden;
+  }
 
   .settings-form-box {
     padding: 20px 60px;
 
     .commit-button-box {
       justify-content: center;
+      margin: 20px 0;
     }
   }
 }
