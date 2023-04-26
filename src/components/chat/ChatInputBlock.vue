@@ -28,7 +28,7 @@ const breakLine = () => {
   chatInputContent.value += "\n";
 };
 
-const enterSend = computed(() => store.state.config.enterSend);
+const enterSend = computed(() => store.state.config.base.enterSend);
 const enterKeyDown = () => {
   if (enterSend.value) {
     commitContent();
