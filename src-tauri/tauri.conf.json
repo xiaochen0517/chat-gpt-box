@@ -21,7 +21,8 @@
     "bundle": {
       "active": true,
       "icon": [
-        "icons/icon.png"
+        "icons/icon.png",
+        "icons/icon.ico"
       ],
       "identifier": "fun.mochen.chat-gpt-box",
       "targets": "all"
@@ -38,8 +39,8 @@
         "fullscreen": false,
         "resizable": true,
         "title": "chat-gpt-box",
-        "width": 1920,
-        "height": 1080
+        "width": 1000,
+        "height": 700
       }
     ]
   }
