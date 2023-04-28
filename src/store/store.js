@@ -17,25 +17,28 @@ const store = createStore({
           generating: false,
           // 指定index tab页的聊天记录
           chat: [{role: "user", content: "你好0"}, {role: "assistant", content: "你好0"}],
-        }, {
-        name: "TestRobot1",
-        // 当前是否处于生成中
-        generating: false,
-        // 指定index tab页的聊天记录
-        chat: [{role: "user", content: "你好1"}, {role: "assistant", content: "你好1"}],
-      }, {
-        name: "TestRobot2",
-        // 当前是否处于生成中
-        generating: false,
-        // 指定index tab页的聊天记录
-        chat: [{role: "user", content: "你好2"}, {role: "assistant", content: "你好2"}],
-      }, {
-        name: "TestRobot3",
-        // 当前是否处于生成中
-        generating: false,
-        // 指定index tab页的聊天记录
-        chat: [{role: "user", content: "你好3"}, {role: "assistant", content: "你好3"}],
-      },
+        },
+        {
+          name: "TestRobot1",
+          // 当前是否处于生成中
+          generating: false,
+          // 指定index tab页的聊天记录
+          chat: [{role: "user", content: "你好1"}, {role: "assistant", content: "你好1"}],
+        },
+        {
+          name: "TestRobot2",
+          // 当前是否处于生成中
+          generating: false,
+          // 指定index tab页的聊天记录
+          chat: [{role: "user", content: "你好2"}, {role: "assistant", content: "你好2"}],
+        },
+        {
+          name: "TestRobot3",
+          // 当前是否处于生成中
+          generating: false,
+          // 指定index tab页的聊天记录
+          chat: [{role: "user", content: "你好3"}, {role: "assistant", content: "你好3"}],
+        },
       ],
     ],
     // 软件配置
@@ -156,6 +159,10 @@ const store = createStore({
     setAssistantMsgContent(state, {robotIndex, tabIndex, content}) {
       const msgIndex = state.chatHistory[robotIndex][tabIndex].chat.length - 1;
       state.chatHistory[robotIndex][tabIndex].chat[msgIndex].content = content;
+    },
+    // 更新消息
+    updateMessage(state, {robotIndex, tabIndex, messageIndex, message}) {
+      state.chatHistory[robotIndex][tabIndex].chat.splice(messageIndex, 1, message);
     },
     // 设置是否正在生成中
     setGenerating(state, {robotIndex, tabIndex, generating}) {

@@ -8,6 +8,7 @@ import {appWindow} from "@tauri-apps/api/window";
 import BaseSettingsBlock from "../components/setting/BaseSettingsBlock.vue";
 import ShortcutSettingsBlock from "../components/setting/ShortcutSettingsBlock.vue";
 import {notification} from 'ant-design-vue';
+import {relaunch} from "@tauri-apps/api/process";
 
 BScroll.use(MouseWheel);
 BScroll.use(ScrollBar);
@@ -61,7 +62,8 @@ const shortcutSettingsBlockRefs = ref(null);
 const submit = () => {
   baseSettingsBlockRefs.value.saveData();
   shortcutSettingsBlockRefs.value.saveData();
-  openNotification("success", "重启后生效");
+  // 保存后重启应用
+  relaunch();
 };
 
 const cancel = () => {

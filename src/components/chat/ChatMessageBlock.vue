@@ -111,3 +111,9 @@ defineProps({
   }
 }
 </style>
+
+<style>
+.github-markdown-body{
+    padding: 10px;
+}
+</style>
