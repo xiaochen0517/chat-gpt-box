@@ -5,6 +5,7 @@ import BScroll from "@better-scroll/core";
 import MouseWheel from "@better-scroll/mouse-wheel";
 import ScrollBar from "@better-scroll/scroll-bar";
 import {useStore} from "vuex";
+import EditMessageDialog from "../dialog/EditMessageDialog.vue";
 
 const store = useStore();
 
@@ -51,12 +52,20 @@ onUnmounted(() => {
   }
 });
 
-const deleteMsg = (message, index) => {
+const deleteMessage = (message, index) => {
   store.commit("removeChatMessage", {
     robotIndex: props.robotIndex,
     tabIndex: props.tabIndex,
     msgIndex: index
   });
+};
+
+const editMessageDialogRefs = ref(null);
+const editMessage = (message, index) => {
+  console.log("editMessage", message, index);
+  if (editMessageDialogRefs.value) {
+    editMessageDialogRefs.value.show(props.robotIndex, props.tabIndex, index);
+  }
 };
 
 const scrollToBottom = () => {
@@ -77,8 +86,9 @@ defineExpose({
   <div ref="BScrollWrapperRefs" class="chat-msg-list-block">
     <div class="scroll-content">
       <ChatMessageBlock v-for="(item, index) in msgList" :key="index" :index="index" :message="item"
-                        @delete="deleteMsg"/>
+                        @delete="deleteMessage" @edit="editMessage"/>
     </div>
+    <EditMessageDialog ref="editMessageDialogRefs"/>
   </div>
 </template>
 
