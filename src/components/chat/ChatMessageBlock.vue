@@ -1,5 +1,6 @@
 <script setup>
 import {SettingOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons-vue";
+import MarkdownBlock from "@/components/chat/MarkdownBlock.vue";
 
 defineProps({
   message: {
@@ -18,6 +19,7 @@ defineProps({
     default: null
   }
 });
+
 </script>
 
 <template>
@@ -38,7 +40,7 @@ defineProps({
         </div>
       </div>
       <div class="message-content">
-        <v-md-preview :text="message.content"/>
+        <MarkdownBlock :content="message.content"/>
       </div>
     </div>
     <div class="message-control-box flex-row">
@@ -88,7 +90,7 @@ defineProps({
       flex: 1;
       font-size: 14px;
       padding-right: 40px;
-      color: @primary-text-color;
+      //color: @primary-text-color;
     }
   }
 
@@ -114,11 +116,7 @@ defineProps({
 </style>
 
 <style>
-.github-markdown-body{
+.github-markdown-body {
     padding: 10px;
 }
-
-/*.v-md-pre-wrapper{*/
-/*    background-color: transparent !important;*/
-/*}*/
 </style>
