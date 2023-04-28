@@ -16,17 +16,21 @@
 
 ## Features
 
-- xxx
+- Multi-model usage
+- Configuration of multiple chatbots
+- Single chat configuration with multiple tabs
+- Keyboard shortcuts for mouse-free operation
 
 ## Roadmap
 
-- [x] xxx
+- [x] Multiple tabs
+- [x] Shortcut settings
+- [ ] Switch to Dark Mode
 
 ## Contact
 
-- [Twitter]()
 - [Email](mailto:xiaochen0517@qq.com)
-- [Blog]()
+- [Blog](https://blog.mochen.fun)
 
 ## License
 
