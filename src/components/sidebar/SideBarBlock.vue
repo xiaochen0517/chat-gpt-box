@@ -34,6 +34,6 @@ const robotListScrollToBottom = () => {
   width: 20%;
   min-height: 100vh;
   max-height: 100vh;
-  border-right: 1px solid #e8e8e8;
+  border-right: 1px solid @border-color;
 }
 </style>

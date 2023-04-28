@@ -5,6 +5,7 @@ import {listen} from '@tauri-apps/api/event';
 import {WebviewWindow} from '@tauri-apps/api/window';
 import AddRobotDialog from "../dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
+import SwitchDarkMode from "@/components/sidebar/SwitchDarkMode.vue";
 
 const store = useStore();
 const shortcut = computed(() => store.state.config.shortcut);
@@ -80,6 +81,7 @@ const createSettingsWindow = () => {
         Add Robot
       </a-button>
       <a-button class="add-robot-button" type="primary" @click="openSettingsWindow">Open Settings</a-button>
+      <SwitchDarkMode/>
     </div>
     <AddRobotDialog ref="addRobotDialogRefs" @commit="$emit('addedRobot')"/>
   </div>
@@ -87,10 +89,10 @@ const createSettingsWindow = () => {
 
 <style lang="less" scoped>
 .menu-list-block {
-  border-top: 1px solid #e8e8e8;
+  border-top: 1px solid @border-color;
 
   .control-box {
-    background-color: white;
+    background-color: @primary-bg-color;
     padding: 10px;
 
     > button {

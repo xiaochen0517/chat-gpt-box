@@ -114,3 +114,9 @@ const cancel = () => {
   }
 }
 </style>
+
+<style lang="less">
+.ant-collapse-content {
+  background-color: @primary-bg-color;
+}
+</style>

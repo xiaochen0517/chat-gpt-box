@@ -151,3 +151,19 @@ defineExpose({
 
 }
 </style>
+
+<style lang="less">
+.ant-tabs-nav-wrap{
+  background-color: @primary-bg-color !important;
+}
+
+.ant-tabs-tab {
+  border: 1px solid @border-color !important;
+  background-color: @primary-bg-color !important;
+}
+
+.ant-tabs-nav-add{
+  border: 1px solid @border-color !important;
+  background-color: @primary-bg-color !important;
+}
+</style>
