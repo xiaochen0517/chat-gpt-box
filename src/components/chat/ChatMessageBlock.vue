@@ -59,7 +59,7 @@ defineProps({
 <style lang="less" scoped>
 .chat-message-block {
   padding: 5px 0;
-  border-bottom: 1px solid #e8e8e8;
+  border-bottom: 1px solid @border-color;
 
   .chat-message-main {
     .avatar-img {
@@ -78,7 +78,7 @@ defineProps({
           height: 100%;
 
           svg {
-            color: white;
+            color: @primary-text-color;
           }
         }
       }
@@ -88,6 +88,7 @@ defineProps({
       flex: 1;
       font-size: 14px;
       padding-right: 40px;
+      color: @primary-text-color;
     }
   }
 
@@ -116,4 +117,8 @@ defineProps({
 .github-markdown-body{
     padding: 10px;
 }
+
+/*.v-md-pre-wrapper{*/
+/*    background-color: transparent !important;*/
+/*}*/
 </style>

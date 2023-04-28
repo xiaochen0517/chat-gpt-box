@@ -1,16 +1,9 @@
 <script setup>
 import {nextTick, onMounted, ref} from "vue";
-import {ConfigProvider} from 'ant-design-vue';
 import SideBarBlock from "../components/sidebar/SideBarBlock.vue";
 import {appWindow} from "@tauri-apps/api/window";
 import {exit} from '@tauri-apps/api/process';
 import ChatContentBlock from "../components/chat/ChatContentBlock.vue";
-
-// ConfigProvider.config({
-//   theme: {
-//     primaryColor: '#25b864',
-//   },
-// });
 
 /**
  * 监听窗口关闭事件，直接退出程序
@@ -43,5 +36,6 @@ const changeRobotClick = (index, item) => {
   min-height: 100%;
   max-height: 100%;
   width: 100%;
+  background-color: @primary-bg-color;
 }
 </style>

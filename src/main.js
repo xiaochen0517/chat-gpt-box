@@ -3,7 +3,7 @@ import antDesignVue from 'ant-design-vue';
 import store from "./store/store.js";
 import router from "./router/router.js";
 
-import 'ant-design-vue/dist/antd.variable.min.css';
+import 'ant-design-vue/dist/antd.dark.less';
 import './assets/style/global.less';
 
 import VMdPreview from '@kangc/v-md-editor/lib/preview';
