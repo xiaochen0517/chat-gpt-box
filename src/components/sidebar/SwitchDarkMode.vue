@@ -1,37 +1,27 @@
 <script setup>
-import {ref} from "vue";
+import {computed, onMounted} from "vue";
+import {switchMode} from "@/util/ThemeMode.js";
+import {useStore} from "vuex";
 
-const setProperty = (name, value) => {
-  document.documentElement.style.setProperty(name, value);
-};
+const store = useStore();
+const isDarkMode = computed(() => store.state.config.isDarkMode);
+onMounted(() => {
+  // 获取当前主题模式
+  switchMode(isDarkMode.value);
+});
 
-const setColor = (mode) => {
-  if (mode) {
-    setProperty('--primary-bg-color', '#000000');
-    setProperty('--border-color', '#eaeaea');
-    setProperty('--primary-text-color', '#ffffff');
-  } else {
-    setProperty('--primary-bg-color', '#fff');
-    setProperty('--border-color', '#d9d9d9');
-    setProperty('--primary-text-color', '#333');
-  }
-};
-
-const isDarkMode = ref(true);
 const handleChange = () => {
   if (isDarkMode.value) {
-    setColor(false);
-    isDarkMode.value = false;
+    switchMode(false);
   } else {
-    setColor(true);
-    isDarkMode.value = true;
+    switchMode(true);
   }
 };
 </script>
 
 <template>
   <div class="switch-dark-mode">
-    <a-button type="primary" @click="handleChange">Red</a-button>
+    <a-button type="primary" @click="handleChange">{{ isDarkMode ? 'Dark' : 'Light' }}</a-button>
   </div>
 </template>
 

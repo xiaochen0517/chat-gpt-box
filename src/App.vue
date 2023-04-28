@@ -17,6 +17,7 @@ html {
   font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: @primary-bg-color;
   border-color: @primary-bg-color;
+  color: @primary-text-color;
 }
 
 #app {

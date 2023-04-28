@@ -115,8 +115,12 @@ defineProps({
 }
 </style>
 
-<style>
+<style lang="less">
 .github-markdown-body {
     padding: 10px;
+}
+
+.ant-btn-dashed{
+    color: @primary-text-color;
 }
 </style>
