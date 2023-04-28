@@ -2,7 +2,8 @@ import {createStore} from "vuex";
 
 const store = createStore({
   state: {
-    // 状态
+    // 版本号
+    version: "0.1.0",
     // 机器人列表
     robotList: [
       {prompt: "You are a helpful assistant.", name: "TestRobot", options: {model: "gpt-3.5-turbo", max_tokens: 2048}},
@@ -43,6 +44,9 @@ const store = createStore({
     ],
     // 软件配置
     config: {
+      // 是否为暗模式
+      isDarkMode: false,
+      // 基础配置
       base: {
         // openai api key
         apiKey: "",
@@ -171,6 +175,10 @@ const store = createStore({
     // 设置消息发送方式
     setEnterSend(state, enterSend) {
       state.config.enterSend = enterSend;
+    },
+    // 保存是否为暗模式
+    setDarkMode(state, darkMode) {
+      state.config.isDarkMode = darkMode;
     },
     // 保存基础设置
     saveBaseConfig(state, base) {

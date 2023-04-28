@@ -78,10 +78,12 @@ const createSettingsWindow = () => {
   <div class="menu-list-block">
     <div class="control-box flex-column">
       <a-button class="add-robot-button" type="primary" @click="addRobotClick">
-        Add Robot
+        Add Chat
       </a-button>
-      <a-button class="add-robot-button" type="primary" @click="openSettingsWindow">Open Settings</a-button>
-      <SwitchDarkMode/>
+      <div class="settings-line-box flex-row">
+        <a-button class="add-robot-button" type="primary" @click="openSettingsWindow">Open Settings</a-button>
+        <SwitchDarkMode/>
+      </div>
     </div>
     <AddRobotDialog ref="addRobotDialogRefs" @commit="$emit('addedRobot')"/>
   </div>
@@ -95,8 +97,17 @@ const createSettingsWindow = () => {
     background-color: @primary-bg-color;
     padding: 10px;
 
-    > button {
+    .settings-line-box {
       margin-top: 10px;
+
+      .add-robot-button{
+        flex: 8;
+        margin-right: 5px;
+      }
+
+      .switch-dark-mode{
+        flex: 2;
+      }
     }
   }
 }
