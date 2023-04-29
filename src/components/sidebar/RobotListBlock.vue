@@ -103,7 +103,7 @@ defineExpose({
         <div class="robot-item-label">
           {{ item.name }}
         </div>
-        <a-popover overlayClassName="robot-editor-popover" placement="bottomRight" trigger="hover">
+        <a-popover overlayClassName="robot-editor-popover" placement="bottomRight" trigger="click">
           <template #content>
             <div class="popover-box">
               <div class="popover-button edit-robot-button" @click.stop="editRobotClick(index)">编辑机器人</div>
@@ -175,7 +175,10 @@ defineExpose({
 
     .popover-box {
       border-radius: 5px;
+      overflow: hidden;
       border: 1px solid @border-color;
+      background-color: @primary-bg-color;
+      color: @primary-text-color;
 
       .popover-button {
         padding: 5px 20px;
@@ -184,10 +187,18 @@ defineExpose({
         line-height: 24px;
 
         &:hover {
-          background-color: #e8e8e8;
+          background-color: @primary-dark-bg-color;
         }
       }
     }
   }
+}
+
+.ant-popover-arrow-content{
+  background-color: @primary-bg-color;
+}
+
+.ant-popover-inner{
+  background-color: transparent;
 }
 </style>

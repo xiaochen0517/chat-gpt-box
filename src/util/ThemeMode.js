@@ -29,7 +29,7 @@ const ThemeInfo = {
     },
     {
       name: "--primary-dark-bg-color",
-      value: "#EEEEEE"
+      value: "#E8E8E8"
     },
     {
       name: "--border-color",
