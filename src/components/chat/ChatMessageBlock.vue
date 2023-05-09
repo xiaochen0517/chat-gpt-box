@@ -89,6 +89,7 @@ defineProps({
     .message-content {
       flex: 1;
       font-size: 14px;
+      padding-top: 8px;
       padding-right: 40px;
       //color: @primary-text-color;
     }
