@@ -1,5 +1,5 @@
 <script setup>
-import {ref, onMounted, nextTick} from "vue";
+import {ref, onMounted, nextTick, computed} from "vue";
 import BScroll from "@better-scroll/core";
 import MouseWheel from "@better-scroll/mouse-wheel";
 import ScrollBar from "@better-scroll/scroll-bar";
@@ -9,14 +9,20 @@ import BaseSettingsBlock from "../components/setting/BaseSettingsBlock.vue";
 import ShortcutSettingsBlock from "../components/setting/ShortcutSettingsBlock.vue";
 import {notification} from 'ant-design-vue';
 import {relaunch} from "@tauri-apps/api/process";
+import {useStore} from "vuex";
+import {switchMode} from "@/util/ThemeMode.js";
 
 BScroll.use(MouseWheel);
 BScroll.use(ScrollBar);
+
+const store = useStore();
+const isDarkMode = computed(() => store.state.config.isDarkMode);
 
 let bScroll = null;
 onMounted(() => {
   createAppCloseListener();
   bScroll = createBScroll();
+  switchMode(isDarkMode.value);
 });
 
 const scrollWrapperRefs = ref(null);
@@ -95,6 +101,10 @@ const cancel = () => {
 </template>
 
 <style lang="less" scoped>
+* {
+  color: @primary-text-color !important;
+}
+
 .settings-page {
   width: 100%;
   height: 100vh;
@@ -112,5 +122,23 @@ const cancel = () => {
       margin: 20px 0;
     }
   }
+}
+</style>
+
+<style lang="less">
+.ant-collapse-content {
+  background-color: @primary-bg-color;
+}
+
+.ant-form-item-label > label {
+  color: @primary-text-color !important;
+}
+
+.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+  color: @primary-text-color !important;
+}
+
+.ant-input {
+  color: @primary-text-color !important;
 }
 </style>

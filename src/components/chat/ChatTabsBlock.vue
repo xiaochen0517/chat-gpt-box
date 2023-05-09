@@ -1,5 +1,5 @@
 <script setup>
-import {nextTick, onMounted, onUnmounted, ref, computed, watch} from "vue";
+import {nextTick, ref, computed, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
 import {useStore} from "vuex";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
@@ -148,6 +148,25 @@ defineExpose({
   height: 100%;
   padding-bottom: 100px;
   position: relative;
+}
+</style>
 
+<style lang="less">
+.ant-tabs-nav-wrap{
+  background-color: @primary-bg-color !important;
+}
+
+.ant-tabs-tab {
+  border: 1px solid @border-color !important;
+  background-color: @primary-bg-color !important;
+}
+
+.ant-tabs-nav-add{
+  border: 1px solid @border-color !important;
+  background-color: @primary-bg-color !important;
+}
+
+.ant-tabs{
+  color: @primary-text-color;
 }
 </style>

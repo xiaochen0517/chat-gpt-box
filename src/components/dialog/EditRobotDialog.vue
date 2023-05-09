@@ -138,7 +138,7 @@ defineExpose({
         <a-form-item label="Robot Model">
           <a-select v-model:value="formData.model" @keydown.enter="commit">
             <a-select-option value="gpt-3.5-turbo">gpt-3.5-turbo</a-select-option>
-            <a-select-option value="gpt-3.5">gpt-3.5</a-select-option>
+            <a-select-option value="gpt-3.5-turbo-0301">gpt-3.5-turbo-0301</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="Robot Max Tokens">

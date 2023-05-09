@@ -25,7 +25,7 @@
 
 - [x] Multiple tabs
 - [x] Shortcut settings
-- [ ] Switch to Dark Mode
+- [x] Switch to Dark Mode
 
 ## Contact
 

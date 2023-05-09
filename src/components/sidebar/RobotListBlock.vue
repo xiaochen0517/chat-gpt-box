@@ -103,7 +103,7 @@ defineExpose({
         <div class="robot-item-label">
           {{ item.name }}
         </div>
-        <a-popover overlayClassName="robot-editor-popover" placement="bottomRight" trigger="hover">
+        <a-popover overlayClassName="robot-editor-popover" placement="bottomRight" trigger="click">
           <template #content>
             <div class="popover-box">
               <div class="popover-button edit-robot-button" @click.stop="editRobotClick(index)">编辑机器人</div>
@@ -129,21 +129,22 @@ defineExpose({
 
     .robot-list-item {
       padding: 10px;
-      border-bottom: 1px solid #cecece;
+      border-bottom: 1px solid @border-color;
       cursor: pointer;
-      background-color: white;
+      background-color: @primary-bg-color;
 
       &:hover {
-        background-color: #e8e8e8;
+        background-color: @primary-bg-color;
       }
 
       .robot-item-label {
         flex: 1;
         line-height: 24px;
+        color: @primary-text-color;
       }
 
       .robot-control-button {
-        border: 1px solid #cecece;
+        border: 1px solid @border-color;
         border-radius: 5px;
         align-items: center;
         justify-content: center;
@@ -151,13 +152,13 @@ defineExpose({
         height: 24px;
 
         &:hover {
-          background-color: #cecece;
+          background-color: @primary-bg-color;
         }
       }
     }
 
     .robot-item-selected {
-      background-color: #e8e8e8;
+      background-color: @primary-bg-color;
     }
   }
 
@@ -174,7 +175,10 @@ defineExpose({
 
     .popover-box {
       border-radius: 5px;
-      border: 1px solid #e8e8e8;
+      overflow: hidden;
+      border: 1px solid @border-color;
+      background-color: @primary-bg-color;
+      color: @primary-text-color;
 
       .popover-button {
         padding: 5px 20px;
@@ -183,10 +187,18 @@ defineExpose({
         line-height: 24px;
 
         &:hover {
-          background-color: #e8e8e8;
+          background-color: @primary-dark-bg-color;
         }
       }
     }
   }
+}
+
+.ant-popover-arrow-content{
+  background-color: @primary-bg-color;
+}
+
+.ant-popover-inner{
+  background-color: transparent;
 }
 </style>

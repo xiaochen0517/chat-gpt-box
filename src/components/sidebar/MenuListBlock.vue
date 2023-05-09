@@ -5,6 +5,7 @@ import {listen} from '@tauri-apps/api/event';
 import {WebviewWindow} from '@tauri-apps/api/window';
 import AddRobotDialog from "../dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
+import SwitchDarkMode from "@/components/sidebar/SwitchDarkMode.vue";
 
 const store = useStore();
 const shortcut = computed(() => store.state.config.shortcut);
@@ -64,7 +65,7 @@ const openSettingsWindow = () => {
 const createSettingsWindow = () => {
   return new WebviewWindow("settings", {
     url: "/settings",
-    title: 'test',
+    title: 'Settings',
     width: 800,
     height: 600,
     resizable: false,
@@ -77,9 +78,12 @@ const createSettingsWindow = () => {
   <div class="menu-list-block">
     <div class="control-box flex-column">
       <a-button class="add-robot-button" type="primary" @click="addRobotClick">
-        Add Robot
+        Add Chat
       </a-button>
-      <a-button class="add-robot-button" type="primary" @click="openSettingsWindow">Open Settings</a-button>
+      <div class="settings-line-box flex-row">
+        <a-button class="add-robot-button" type="primary" @click="openSettingsWindow">Open Settings</a-button>
+        <SwitchDarkMode/>
+      </div>
     </div>
     <AddRobotDialog ref="addRobotDialogRefs" @commit="$emit('addedRobot')"/>
   </div>
@@ -87,14 +91,23 @@ const createSettingsWindow = () => {
 
 <style lang="less" scoped>
 .menu-list-block {
-  border-top: 1px solid #e8e8e8;
+  border-top: 1px solid @border-color;
 
   .control-box {
-    background-color: white;
+    background-color: @primary-bg-color;
     padding: 10px;
 
-    > button {
+    .settings-line-box {
       margin-top: 10px;
+
+      .add-robot-button{
+        flex: 8;
+        margin-right: 5px;
+      }
+
+      .switch-dark-mode{
+        flex: 2;
+      }
     }
   }
 }
