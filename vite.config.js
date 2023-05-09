@@ -1,6 +1,7 @@
 import {defineConfig} from "vite";
 import vue from "@vitejs/plugin-vue";
 import path from 'path';
+import packageJson from './package.json'
 
 function resolve(url) {
   return path.resolve(__dirname, url);
@@ -34,4 +35,8 @@ export default defineConfig(async () => ({
       },
     },
   },
+  define: {
+    'process.env': {},
+    'import.meta.env.VITE_APP_VERSION': JSON.stringify(packageJson.version)
+  }
 }));
