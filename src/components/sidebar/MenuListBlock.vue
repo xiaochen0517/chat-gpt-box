@@ -65,7 +65,7 @@ const openSettingsWindow = () => {
 const createSettingsWindow = () => {
   return new WebviewWindow("settings", {
     url: "/settings",
-    title: 'test',
+    title: 'Settings',
     width: 800,
     height: 600,
     resizable: false,
