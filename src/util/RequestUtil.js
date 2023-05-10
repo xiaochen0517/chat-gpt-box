@@ -81,7 +81,11 @@ export class RequestUtil {
       this.setGenerating(true);
       // 添加用户信息
       this.addUserMessage();
-      const messages = _.cloneDeep(store.state.chatHistory[robotIndex][tabIndex].chat);
+      // 拷贝聊天记录，用于发送请求
+      let messages = _.cloneDeep(store.state.chatHistory[robotIndex][tabIndex].chat);
+      // 将消息的第一条之后和倒数第三条之前的消息删除
+      messages.splice(1, messages.length - 4);
+      // 添加助手信息
       this.addAssistantMessage();
       // 发送请求
       this.sendFetch(messages);
