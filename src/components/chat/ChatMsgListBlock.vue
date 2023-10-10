@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onMounted, onUnmounted, ref} from "vue";
+import {computed, nextTick, onMounted, onUnmounted, ref} from "vue";
 import ChatMessageBlock from "./ChatMessageBlock.vue";
 import BScroll from "@better-scroll/core";
 import MouseWheel from "@better-scroll/mouse-wheel";
@@ -26,8 +26,10 @@ const props = defineProps({
 const msgList = computed(() => store.state.chatHistory[props.robotIndex][props.tabIndex].chat);
 let bScroll = null;
 onMounted(() => {
-  bScroll = createBScroll();
-  scrollToBottom();
+  nextTick(() => {
+    bScroll = createBScroll();
+    scrollToBottom();
+  });
 });
 const BScrollWrapperRefs = ref(null);
 const createBScroll = () => {
