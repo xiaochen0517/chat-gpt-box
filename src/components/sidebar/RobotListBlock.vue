@@ -99,7 +99,7 @@ defineExpose({
   <div ref="robotListRefs" class="robot-list-block scroll-wrapper">
     <div class="robot-content scroll-content">
       <div v-for="(item, index) in robotList" :key="index" class="robot-list-item scroll-item flex-row"
-           :class="index == activeRobotIndex?'robot-item-selected':''" @click="changeActiveRobot(index, item)">
+           :class="index === activeRobotIndex?'robot-item-selected':''" @click="changeActiveRobot(index, item)">
         <div class="robot-item-label">
           {{ item.name }}
         </div>
