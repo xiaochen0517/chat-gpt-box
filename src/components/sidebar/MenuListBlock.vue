@@ -75,7 +75,8 @@ const createSettingsWindow = () => {
 </script>
 
 <template>
-  <div class="menu-list-block">
+  <div class="menu-list-block p-2">
+    <button class="border-solid border-2 border-sky-500 rounded-md box-border p-1 w-full bg-sky-400 hover:bg-sky-500 hover:border-sky-600 active:bg-sky-700 active:border-sky-800">按钮</button>
     <div class="control-box flex-column">
       <a-button class="add-robot-button" type="primary" @click="addRobotClick">
         Add Chat
@@ -100,12 +101,12 @@ const createSettingsWindow = () => {
     .settings-line-box {
       margin-top: 10px;
 
-      .add-robot-button{
+      .add-robot-button {
         flex: 8;
         margin-right: 5px;
       }
 
-      .switch-dark-mode{
+      .switch-dark-mode {
         flex: 2;
       }
     }

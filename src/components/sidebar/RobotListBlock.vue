@@ -96,7 +96,7 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="robotListRefs" class="robot-list-block scroll-wrapper">
+  <div ref="robotListRefs" class="flex-1 overflow-hidden robot-list-block">
     <div class="robot-content scroll-content">
       <div v-for="(item, index) in robotList" :key="index" class="robot-list-item scroll-item flex-row"
            :class="index === activeRobotIndex?'robot-item-selected':''" @click="changeActiveRobot(index, item)">
@@ -122,8 +122,6 @@ defineExpose({
 
 <style lang="less" scoped>
 .robot-list-block {
-  flex: 1;
-  overflow: hidden;
 
   .robot-content {
 
