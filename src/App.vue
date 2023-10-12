@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <div class="app-container flex-row">
+  <div class="bg-white dark:bg-gray-900 flex-row w-full h-full">
     <router-view/>
   </div>
 </template>
@@ -15,9 +15,6 @@ html {
   height: 100vh;
   width: 100%;
   font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background-color: @primary-bg-color;
-  border-color: @primary-bg-color;
-  color: @primary-text-color;
 }
 
 #app {
@@ -25,9 +22,20 @@ html {
   width: 100%;
 }
 
-.app-container {
-  min-height: 100%;
-  max-height: 100%;
-  width: 100%;
+
+div::-webkit-scrollbar {
+@apply w-2 rounded-full;
+}
+
+div::-webkit-scrollbar-track {
+@apply bg-gray-800;
+}
+
+div::-webkit-scrollbar-thumb {
+@apply bg-gray-600 rounded-full;
+}
+
+div::-webkit-scrollbar-thumb:hover {
+@apply bg-gray-700;
 }
 </style>

@@ -21,7 +21,10 @@ const handleChange = () => {
 
 <template>
   <div class="switch-dark-mode">
-    <a-button type="primary" @click="handleChange">{{ isDarkMode ? 'Dark' : 'Light' }}</a-button>
+    <button
+      class="border-solid border-2 border-sky-500 rounded-md box-border p-1 w-full bg-sky-400 hover:bg-sky-500 hover:border-sky-600 active:bg-sky-700 active:border-sky-800"
+      @click="handleChange">{{ isDarkMode ? 'Dark' : 'Light' }}
+    </button>
   </div>
 </template>
 

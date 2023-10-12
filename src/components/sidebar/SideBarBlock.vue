@@ -23,17 +23,8 @@ const robotListScrollToBottom = () => {
 </script>
 
 <template>
-  <div class="side-bar-block position-relative flex-column">
-    <RobotListBlock ref="robotListBlockRefs" @on-click="onRobotClick"/>
+  <div class="side-bar-block h-full flex flex-col">
+    <RobotListBlock class="flex-1" ref="robotListBlockRefs" @on-click="onRobotClick"/>
     <MenuListBlock @added-robot="robotListScrollToBottom"/>
   </div>
 </template>
-
-<style lang="less" scoped>
-.side-bar-block {
-  width: 20%;
-  min-height: 100vh;
-  max-height: 100vh;
-  border-right: 1px solid @border-color;
-}
-</style>
