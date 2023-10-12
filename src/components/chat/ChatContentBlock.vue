@@ -3,7 +3,7 @@ import {nextTick, ref} from "vue";
 import ChatTabsBlock from "./ChatTabsBlock.vue";
 import ChatInputBlock from "./ChatInputBlock.vue";
 import {useStore} from "vuex";
-import {RequestUtil} from "../../util/RequestUtil.js";
+import {RequestUtil} from "@/util/RequestUtil.js";
 
 const store = useStore();
 
@@ -34,21 +34,8 @@ defineExpose({
 </script>
 
 <template>
-  <div class="chat-content-block">
-    <ChatTabsBlock ref="chatTabsBlockRefs" :robot-index="robotIndex"/>
-    <ChatInputBlock class="chat-input-block" @commit="commitMsgContent"/>
+  <div class="flex flex-col">
+    <ChatTabsBlock class="flex-1" ref="chatTabsBlockRefs" :robot-index="robotIndex"/>
+    <ChatInputBlock class="" @commit="commitMsgContent"/>
   </div>
 </template>
-
-<style lang="less" scoped>
-.chat-content-block {
-  position: relative;
-
-  .chat-input-block {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-  }
-}
-</style>

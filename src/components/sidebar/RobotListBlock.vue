@@ -1,15 +1,9 @@
 <script setup>
-import {computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
-import BScroll from "@better-scroll/core";
-import MouseWheel from "@better-scroll/mouse-wheel";
-import ScrollBar from "@better-scroll/scroll-bar";
+import {computed, getCurrentInstance, onBeforeUnmount, ref} from "vue";
 import {useStore} from "vuex";
 import {EllipsisOutlined} from "@ant-design/icons-vue";
 import EditRobotDialog from "../dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
-
-BScroll.use(MouseWheel);
-BScroll.use(ScrollBar);
 
 const instance = getCurrentInstance();
 const activeRobotIndex = ref(0);
@@ -45,30 +39,12 @@ whenever(switchRobotKey, () => {
   }
 });
 
-let bScroll = null;
-onMounted(() => {
-  bScroll = createBScroll();
-});
 onBeforeUnmount(() => {
-  if (bScroll) {
-    bScroll.destroy();
-  }
+  // if (bScroll) {
+  //   bScroll.destroy();
+  // }
 });
 const robotListRefs = ref(null);
-const createBScroll = () => {
-  return new BScroll(robotListRefs.value, {
-    disableMouse: true,
-    disableTouch: false,
-    bounce: false,
-    scrollY: true,
-    scrollbar: true,
-    mouseWheel: {
-      speed: 20,
-      invert: false,
-      easeTime: 300
-    }
-  });
-};
 
 const robotList = computed(() => {
   return store.state.robotList;
@@ -81,26 +57,15 @@ const editRobotClick = (index) => {
   robotListPopoverVisible.value = false;
 };
 
-const scrollToBottom = () => {
-  nextTick(() => {
-    if (bScroll) {
-      bScroll.refresh();
-      bScroll.scrollTo(0, bScroll.maxScrollY, 300);
-    }
-  });
-};
-defineExpose({
-  scrollToBottom
-});
-
 </script>
 
 <template>
-  <div ref="robotListRefs" class="flex-1 overflow-hidden robot-list-block">
-    <div class="robot-content scroll-content">
-      <div v-for="(item, index) in robotList" :key="index" class="robot-list-item scroll-item flex-row"
+  <div ref="robotListRefs" class="overflow-hidden overflow-y-auto">
+    <div class="min-h-full p-2">
+      <div v-for="(item, index) in robotList" :key="index"
+           class="flex flex-row w-full cursor-pointer box-border p-2 mb-2 border border-red-50 dark:border-slate-600 rounded-md shadow-md dark:bg-gray-800 hover:bg-gray-700 hover:border-gray-700 active:bg-gray-900 active:border-gray-900"
            :class="index === activeRobotIndex?'robot-item-selected':''" @click="changeActiveRobot(index, item)">
-        <div class="robot-item-label">
+        <div class="text-md flex-1">
           {{ item.name }}
         </div>
         <a-popover overlayClassName="robot-editor-popover" placement="bottomRight" trigger="click">
@@ -119,84 +84,3 @@ defineExpose({
     <EditRobotDialog ref="editRobotDialogRefs" :is-edit="true"/>
   </div>
 </template>
-
-<style lang="less" scoped>
-.robot-list-block {
-
-  .robot-content {
-
-    .robot-list-item {
-      padding: 10px;
-      border-bottom: 1px solid @border-color;
-      cursor: pointer;
-      background-color: @primary-bg-color;
-
-      &:hover {
-        background-color: @primary-bg-color;
-      }
-
-      .robot-item-label {
-        flex: 1;
-        line-height: 24px;
-        color: @primary-text-color;
-      }
-
-      .robot-control-button {
-        border: 1px solid @border-color;
-        border-radius: 5px;
-        align-items: center;
-        justify-content: center;
-        width: 24px;
-        height: 24px;
-
-        &:hover {
-          background-color: @primary-bg-color;
-        }
-      }
-    }
-
-    .robot-item-selected {
-      background-color: @primary-bg-color;
-    }
-  }
-
-}
-</style>
-
-<style lang="less">
-
-.robot-editor-popover {
-  overflow: hidden;
-
-  .ant-popover-inner-content {
-    padding: 0;
-
-    .popover-box {
-      border-radius: 5px;
-      overflow: hidden;
-      border: 1px solid @border-color;
-      background-color: @primary-bg-color;
-      color: @primary-text-color;
-
-      .popover-button {
-        padding: 5px 20px;
-        cursor: pointer;
-        font-size: 14px;
-        line-height: 24px;
-
-        &:hover {
-          background-color: @primary-dark-bg-color;
-        }
-      }
-    }
-  }
-}
-
-.ant-popover-arrow-content{
-  background-color: @primary-bg-color;
-}
-
-.ant-popover-inner{
-  background-color: transparent;
-}
-</style>

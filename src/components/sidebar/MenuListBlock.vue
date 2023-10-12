@@ -76,40 +76,20 @@ const createSettingsWindow = () => {
 
 <template>
   <div class="menu-list-block p-2">
-    <button class="border-solid border-2 border-sky-500 rounded-md box-border p-1 w-full bg-sky-400 hover:bg-sky-500 hover:border-sky-600 active:bg-sky-700 active:border-sky-800">按钮</button>
-    <div class="control-box flex-column">
-      <a-button class="add-robot-button" type="primary" @click="addRobotClick">
+    <div class="flex flex-col gap-2">
+      <button
+        class="border-solid border-2 border-sky-500 rounded-md box-border p-1 w-full bg-sky-400 hover:bg-sky-500 hover:border-sky-600 active:bg-sky-700 active:border-sky-800"
+        @click="addRobotClick">
         Add Chat
-      </a-button>
-      <div class="settings-line-box flex-row">
-        <a-button class="add-robot-button" type="primary" @click="openSettingsWindow">Open Settings</a-button>
+      </button>
+      <div class="flex flex-row gap-2">
+        <button
+          class="border-solid border-2 border-sky-400 rounded-md box-border p-1 w-full bg-sky-400 hover:bg-sky-500 hover:border-sky-600 active:bg-sky-700 active:border-sky-800"
+          @click="openSettingsWindow">Open Settings
+        </button>
         <SwitchDarkMode/>
       </div>
     </div>
     <AddRobotDialog ref="addRobotDialogRefs" @commit="$emit('addedRobot')"/>
   </div>
 </template>
-
-<style lang="less" scoped>
-.menu-list-block {
-  border-top: 1px solid @border-color;
-
-  .control-box {
-    background-color: @primary-bg-color;
-    padding: 10px;
-
-    .settings-line-box {
-      margin-top: 10px;
-
-      .add-robot-button {
-        flex: 8;
-        margin-right: 5px;
-      }
-
-      .switch-dark-mode {
-        flex: 2;
-      }
-    }
-  }
-}
-</style>
