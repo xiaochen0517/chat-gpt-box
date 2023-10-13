@@ -5,7 +5,8 @@ import {listen} from '@tauri-apps/api/event';
 import {WebviewWindow} from '@tauri-apps/api/window';
 import AddRobotDialog from "../dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
-import SwitchDarkMode from "@/components/sidebar/SwitchDarkMode.vue";
+import SwitchThemeButton from "@/components/sidebar/SwitchThemeButton.vue";
+import CButton from "@/components/base/CButton.vue";
 
 const store = useStore();
 const shortcut = computed(() => store.state.config.shortcut);
@@ -77,17 +78,10 @@ const createSettingsWindow = () => {
 <template>
   <div class="menu-list-block p-2">
     <div class="flex flex-col gap-2">
-      <button
-        class="border-solid border-2 border-sky-500 rounded-md box-border p-1 w-full bg-sky-400 hover:bg-sky-500 hover:border-sky-600 active:bg-sky-700 active:border-sky-800"
-        @click="addRobotClick">
-        Add Chat
-      </button>
+      <c-button type="primary" @click="addRobotClick">Add Chat</c-button>
       <div class="flex flex-row gap-2">
-        <button
-          class="border-solid border-2 border-sky-400 rounded-md box-border p-1 w-full bg-sky-400 hover:bg-sky-500 hover:border-sky-600 active:bg-sky-700 active:border-sky-800"
-          @click="openSettingsWindow">Open Settings
-        </button>
-        <SwitchDarkMode/>
+        <c-button type="primary" @click="openSettingsWindow">Open Settings</c-button>
+        <switch-theme-button/>
       </div>
     </div>
     <AddRobotDialog ref="addRobotDialogRefs" @commit="$emit('addedRobot')"/>

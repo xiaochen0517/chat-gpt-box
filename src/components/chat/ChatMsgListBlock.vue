@@ -26,6 +26,7 @@ const props = defineProps({
 const msgList = computed(() => store.state.chatHistory[props.robotIndex][props.tabIndex].chat);
 let bScroll = null;
 onMounted(() => {
+  console.log(`robot index: ${props.robotIndex}, tab index: ${props.tabIndex}`);
   nextTick(() => {
     bScroll = createBScroll();
     scrollToBottom();
@@ -85,23 +86,9 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="BScrollWrapperRefs" class="chat-msg-list-block">
-    <div class="scroll-content">
-      <ChatMessageBlock v-for="(item, index) in msgList" :key="index" :index="index" :message="item"
-                        @delete="deleteMessage" @edit="editMessage"/>
-    </div>
+  <div>
+    <ChatMessageBlock v-for="(item, index) in msgList" :key="index" :index="index" :message="item"
+                      @delete="deleteMessage" @edit="editMessage"/>
     <EditMessageDialog ref="editMessageDialogRefs"/>
   </div>
 </template>
-
-<style lang="less" scoped>
-.chat-msg-list-block {
-  width: 100%;
-  overflow: hidden;
-  position: absolute;
-  top: 40px;
-  left: 0;
-  right: 0;
-  bottom: 130px;
-}
-</style>
