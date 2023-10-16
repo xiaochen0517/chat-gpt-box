@@ -1,27 +1,26 @@
 <script setup>
 
-import {computed, inject, onMounted} from "vue";
+import {computed, getCurrentInstance, inject, onMounted} from "vue";
 
-let props = defineProps({
+defineProps({
   tabName: {
     type: String,
     default: ""
   },
-  key: {
-    type: String,
-    default: ""
-  }
 });
 
+const instance = getCurrentInstance();
+
 const parentActiveKey = inject("activeKey");
+const currentKey = computed(() => {
+  return instance.vnode.key;
+});
 
 const isActive = computed(() => {
-  return props.key === parentActiveKey.value;
+  return currentKey.value === parentActiveKey.value;
 });
 
 onMounted(() => {
-  console.log("props tabName:", props.tabName);
-  console.log("parentActiveKey:", parentActiveKey);
 });
 </script>
 

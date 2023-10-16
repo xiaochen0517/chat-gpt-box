@@ -12,34 +12,14 @@ import {relaunch} from "@tauri-apps/api/process";
 import {useStore} from "vuex";
 import {switchMode} from "@/util/ThemeMode.js";
 
-BScroll.use(MouseWheel);
-BScroll.use(ScrollBar);
-
 const store = useStore();
 const isDarkMode = computed(() => store.state.config.isDarkMode);
 
-let bScroll = null;
 onMounted(() => {
   createAppCloseListener();
-  bScroll = createBScroll();
   switchMode(isDarkMode.value);
 });
 
-const scrollWrapperRefs = ref(null);
-const createBScroll = () => {
-  return new BScroll(scrollWrapperRefs.value, {
-    disableMouse: true,
-    disableTouch: false,
-    bounce: false,
-    scrollY: true,
-    scrollbar: true,
-    mouseWheel: {
-      speed: 20,
-      invert: false,
-      easeTime: 300
-    }
-  });
-};
 const createAppCloseListener = () => {
   appWindow.onCloseRequested(() => {
     emit("resetSettingsWindow");
@@ -48,11 +28,6 @@ const createAppCloseListener = () => {
 
 const activeCollIndex = ref(["0"]);
 const collapseChange = () => {
-  setTimeout(() => {
-    nextTick(() => {
-      bScroll.refresh();
-    });
-  }, 300);
 };
 
 const openNotification = (type, message) => {

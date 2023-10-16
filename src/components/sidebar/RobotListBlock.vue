@@ -40,9 +40,6 @@ whenever(switchRobotKey, () => {
 });
 
 onBeforeUnmount(() => {
-  // if (bScroll) {
-  //   bScroll.destroy();
-  // }
 });
 const robotListRefs = ref(null);
 

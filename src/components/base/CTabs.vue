@@ -1,15 +1,19 @@
 <script setup>
 
-import {getCurrentInstance, onMounted, ref, provide} from "vue";
+import {getCurrentInstance, onMounted, ref, provide, watch} from "vue";
 
-let props = defineProps({
+const props = defineProps({
   activeKey: {
-    type: String,
-    default: ""
+    type: Number,
+    default: 0
   }
 });
 
-provide("activeKey", props.activeKey);
+const propsActiveKey = ref(props.activeKey);
+provide("activeKey", propsActiveKey);
+watch(() => props.activeKey, (newVal) => {
+  propsActiveKey.value = newVal;
+});
 
 let context = getCurrentInstance();
 
@@ -28,15 +32,17 @@ onMounted(() => {
 });
 
 const activateTab = (key) => {
+  console.log("activateTab", key);
   context.emit("update:activeKey", key);
 };
 </script>
 
 <template>
   <div class="flex flex-col">
-    <div class="flex flex-row w-full">
-      <div>
-        <div v-for="(item, index) in tabNames" :key="index" class="flex-1" @click="activateTab(index)">
+    <div class="overflow-hidden overflow-y-auto w-full">
+      <div class="flex flex-row min-w-full py-1">
+        <div v-for="(item, index) in tabNames" :key="index"
+             class="p-1 mr-1 box-border border border-slate-500 rounded-md cursor-pointer" @click="activateTab(index)">
           {{ item }}
         </div>
       </div>

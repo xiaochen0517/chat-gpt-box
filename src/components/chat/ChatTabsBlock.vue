@@ -116,14 +116,9 @@ const chatTabNameList = computed(() => {
 const getTabIndex = () => {
   return activeTabIndex.value;
 };
+
 const chatMsgListBlockRefs = ref([]);
 const scrollToBottom = () => {
-  nextTick(() => {
-    let refs = chatMsgListBlockRefs.value[activeTabIndex.value];
-    if (refs != undefined) {
-      refs.scrollToBottom();
-    }
-  });
 };
 
 defineExpose({
@@ -134,7 +129,7 @@ defineExpose({
 
 <template>
   <div class="overflow-hidden overflow-y-auto">
-    <c-tabs>
+    <c-tabs v-model:activeKey="activeTabIndex">
       <c-tab-pane v-for="(number, index) in chatTabsSize" :key="index" :tabName="chatTabNameList[index]">
         <chat-msg-list-block ref="chatMsgListBlockRefs" :robotIndex="props.robotIndex" :tabIndex="index"/>
       </c-tab-pane>
