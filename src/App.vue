@@ -24,7 +24,7 @@ html {
 
 
 div::-webkit-scrollbar {
-@apply w-2 rounded-full;
+@apply w-2 h-2 rounded-full;
 }
 
 div::-webkit-scrollbar-track {

@@ -43,7 +43,7 @@ const editMessage = (message, index) => {
 </script>
 
 <template>
-  <div>
+  <div class="max-w-5xl mx-auto">
     <ChatMessageBlock v-for="(item, index) in msgList" :key="index" :index="index" :message="item"
                       @delete="deleteMessage" @edit="editMessage"/>
     <EditMessageDialog ref="editMessageDialogRefs"/>

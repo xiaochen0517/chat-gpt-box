@@ -47,9 +47,9 @@ const shiftEnterKeyDown = () => {
 </script>
 
 <template>
-  <div>
-    <textarea ref="chatInputTextAreaRefs" class="chat-input" v-model="chatInputContent"
+  <div class="max-w-5xl mx-auto relative">
+    <textarea ref="chatInputTextAreaRefs" class="w-96 h-full rounded-md dark:bg-slate-800" v-model="chatInputContent"
               @keydown.enter.prevent.exact="enterKeyDown" @keydown.shift.enter.prevent.exact="shiftEnterKeyDown"/>
-    <send-outlined class="send-icon" @click.stop="commitContent"/>
+    <send-outlined class="absolute right-0 top-0" @click.stop="commitContent"/>
   </div>
 </template>

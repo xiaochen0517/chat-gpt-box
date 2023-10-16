@@ -34,7 +34,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="h-full flex flex-col">
+  <div class="h-full flex flex-col px-1">
     <ChatTabsBlock class="flex-1" ref="chatTabsBlockRefs" :robot-index="robotIndex"/>
     <ChatInputBlock @commit="commitMsgContent"/>
   </div>

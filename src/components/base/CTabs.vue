@@ -39,7 +39,7 @@ const activateTab = (key) => {
 
 <template>
   <div class="flex flex-col">
-    <div class="overflow-hidden overflow-y-auto w-full">
+    <div class="overflow-hidden overflow-x-auto w-full">
       <div class="flex flex-row min-w-full py-1">
         <div v-for="(item, index) in tabNames" :key="index"
              class="p-1 mr-1 box-border border border-slate-500 rounded-md cursor-pointer" @click="activateTab(index)">
