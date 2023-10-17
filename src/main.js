@@ -7,6 +7,7 @@ import 'element-plus/dist/index.css'
 import './assets/style/global.less';
 import 'markdown-it-latex/dist/index.css'
 import 'highlight.js/styles/monokai.css';
+import 'element-plus/theme-chalk/dark/css-vars.css'
 
 import App from "./App.vue";
 
