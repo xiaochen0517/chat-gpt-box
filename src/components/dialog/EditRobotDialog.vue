@@ -1,11 +1,9 @@
 <script setup>
 import {getCurrentInstance, nextTick, onMounted, ref} from "vue";
 import {useStore} from "vuex";
-import {Form} from 'ant-design-vue';
 import _ from "lodash";
 
 const store = useStore();
-const useForm = Form.useForm;
 
 const props = defineProps({
   isEdit: {
@@ -53,21 +51,23 @@ const formRules = ref({
   ]
 });
 
-const {resetFields, validate} = useForm(formData, formRules);
-
 const robotIndex = ref(null);
 const instance = getCurrentInstance();
-const commit = () => {
-  validate().then(() => {
-    if (props.isEdit) {
-      updateRobot();
+
+const commit = async (formEl) => {
+  if (!formEl) return;
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      if (props.isEdit) {
+        updateRobot();
+      } else {
+        addRobot();
+      }
+      formEl.resetFields();
+      dialogVisible.value = false;
     } else {
-      addRobot();
+      console.log('error', fields);
     }
-    resetFields();
-    dialogVisible.value = false;
-  }).catch(err => {
-    console.log('error', err);
   });
 };
 
@@ -127,30 +127,32 @@ defineExpose({
 
 <template>
   <div class="add-robot-dialog">
-    <a-modal v-model:visible="dialogVisible" title="Add robot" @ok="commit" @cancel="dialogVisible = false">
-      <a-form :model="formData" :rules="formRules" :label-col="{span: 8}">
-        <a-form-item label="Robot Name">
-          <a-input ref="robotNameInputRefs" v-model:value="formData.name" @pressEnter="commit"/>
-        </a-form-item>
-        <a-form-item label="Robot Prompt">
-          <a-input v-model:value="formData.prompt" @pressEnter="commit"/>
-        </a-form-item>
-        <a-form-item label="Robot Model">
-          <a-select v-model:value="formData.model" @keydown.enter="commit">
-            <a-select-option value="gpt-3.5-turbo">gpt-3.5-turbo</a-select-option>
-            <a-select-option value="gpt-3.5-turbo-0301">gpt-3.5-turbo-0301</a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item label="Robot Max Tokens">
-          <a-input-number v-model:value="formData.max_tokens" @pressEnter="commit"/>
-        </a-form-item>
-      </a-form>
-    </a-modal>
+    <el-dialog v-model="dialogVisible" title="Add robot">
+      <el-form ref="rulesFormRef" :model="formData" :rules="formRules" :label-col="{span: 8}">
+        <el-form-item label="Robot Name">
+          <el-input ref="robotNameInputRefs" v-model:value="formData.name" @pressEnter="commit"/>
+        </el-form-item>
+        <el-form-item label="Robot Prompt">
+          <el-input v-model:value="formData.prompt" @pressEnter="commit"/>
+        </el-form-item>
+        <el-form-item label="Robot Model">
+          <el-select v-model:value="formData.model" @keydown.enter="commit">
+            <el-option label="gpt-3.5-turbo" value="gpt-3.5-turbo"/>
+            <el-option label="gpt-3.5-turbo-0301" value="gpt-3.5-turbo-0301"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="Robot Max Tokens">
+          <el-input type="number" v-model:value="formData.max_tokens" @pressEnter="commit"/>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="commit(rulesFormRef)">
+          Confirm
+        </el-button>
+      </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
-
-<style lang="less" scoped>
-.add-robot-dialog {
-
-}
-</style>

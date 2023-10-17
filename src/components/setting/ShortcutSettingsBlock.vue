@@ -28,41 +28,41 @@ defineExpose({
 
 <template>
   <div class="shortcut-settings-block">
-    <a-form :model="shortcut" :rules="formRules" label-align="left" :label-col="{span: 4}">
-      <a-form-item label="Focus Input" name="focusInput" v-bind="validateInfos.focusInput">
-        <a-input v-model:value="shortcut.focusInput" placeholder="Focus Input"/>
-      </a-form-item>
-      <a-form-item label="Setting Page" name="openSetting" v-bind="validateInfos.openSetting">
-        <a-input v-model:value="shortcut.openSetting" placeholder="Open Setting Page"/>
-      </a-form-item>
-      <a-form-item label="Add Tab" name="addTab" v-bind="validateInfos.addTab">
-        <a-input v-model:value="shortcut.addTab" placeholder="Add Tab"/>
-      </a-form-item>
-      <a-form-item label="Remove Tab" name="removeTab" v-bind="validateInfos.removeTab">
-        <a-input v-model:value="shortcut.removeTab" placeholder="Remove Tab"/>
-      </a-form-item>
-      <a-form-item label="Clean Tab Chat" name="cleanTabChat" v-bind="validateInfos.cleanTabChat">
-        <a-input v-model:value="shortcut.cleanTabChat" placeholder="Clean Tab Chat"/>
-      </a-form-item>
-      <a-form-item label="Prev Tab" name="prevTab" v-bind="validateInfos.prevTab">
-        <a-input v-model:value="shortcut.prevTab" placeholder="Prev Tab"/>
-      </a-form-item>
-      <a-form-item label="Next Tab" name="nextTab" v-bind="validateInfos.nextTab">
-        <a-input v-model:value="shortcut.nextTab" placeholder="Next Tab"/>
-      </a-form-item>
-      <a-form-item label="Add Robot" name="addRobot" v-bind="validateInfos.addRobot">
-        <a-input v-model:value="shortcut.addRobot" placeholder="Add Robot"/>
-      </a-form-item>
-      <a-form-item label="Switch Robot" name="switchRobot" v-bind="validateInfos.switchRobot">
-        <a-input v-model:value="shortcut.switchRobot" placeholder="Switch Robot"/>
-      </a-form-item>
-      <a-form-item label="Prev Robot" name="prevRobot" v-bind="validateInfos.prevRobot">
-        <a-input v-model:value="shortcut.prevRobot" placeholder="Prev Robot"/>
-      </a-form-item>
-      <a-form-item label="Next Robot" name="nextRobot" v-bind="validateInfos.nextRobot">
-        <a-input v-model:value="shortcut.nextRobot" placeholder="Next Robot"/>
-      </a-form-item>
-    </a-form>
+    <el-dialog :model="shortcut" :rules="formRules" label-align="left" :label-col="{span: 4}">
+      <el-form-item label="Focus Input" name="focusInput" v-bind="validateInfos.focusInput">
+        <el-input v-model:value="shortcut.focusInput" placeholder="Focus Input"/>
+      </el-form-item>
+      <el-form-item label="Setting Page" name="openSetting" v-bind="validateInfos.openSetting">
+        <el-input v-model:value="shortcut.openSetting" placeholder="Open Setting Page"/>
+      </el-form-item>
+      <el-form-item label="Add Tab" name="addTab" v-bind="validateInfos.addTab">
+        <el-input v-model:value="shortcut.addTab" placeholder="Add Tab"/>
+      </el-form-item>
+      <el-form-item label="Remove Tab" name="removeTab" v-bind="validateInfos.removeTab">
+        <el-input v-model:value="shortcut.removeTab" placeholder="Remove Tab"/>
+      </el-form-item>
+      <el-form-item label="Clean Tab Chat" name="cleanTabChat" v-bind="validateInfos.cleanTabChat">
+        <el-input v-model:value="shortcut.cleanTabChat" placeholder="Clean Tab Chat"/>
+      </el-form-item>
+      <el-form-item label="Prev Tab" name="prevTab" v-bind="validateInfos.prevTab">
+        <el-input v-model:value="shortcut.prevTab" placeholder="Prev Tab"/>
+      </el-form-item>
+      <el-form-item label="Next Tab" name="nextTab" v-bind="validateInfos.nextTab">
+        <el-input v-model:value="shortcut.nextTab" placeholder="Next Tab"/>
+      </el-form-item>
+      <el-form-item label="Add Robot" name="addRobot" v-bind="validateInfos.addRobot">
+        <el-input v-model:value="shortcut.addRobot" placeholder="Add Robot"/>
+      </el-form-item>
+      <el-form-item label="Switch Robot" name="switchRobot" v-bind="validateInfos.switchRobot">
+        <el-input v-model:value="shortcut.switchRobot" placeholder="Switch Robot"/>
+      </el-form-item>
+      <el-form-item label="Prev Robot" name="prevRobot" v-bind="validateInfos.prevRobot">
+        <el-input v-model:value="shortcut.prevRobot" placeholder="Prev Robot"/>
+      </el-form-item>
+      <el-form-item label="Next Robot" name="nextRobot" v-bind="validateInfos.nextRobot">
+        <el-input v-model:value="shortcut.nextRobot" placeholder="Next Robot"/>
+      </el-form-item>
+    </el-dialog>
   </div>
 </template>
 

@@ -1,9 +1,22 @@
 <script setup>
-import {computed, getCurrentInstance, onBeforeUnmount, ref} from "vue";
+import {computed, getCurrentInstance, onBeforeUnmount, onMounted, ref} from "vue";
 import {useStore} from "vuex";
 import {EllipsisOutlined} from "@ant-design/icons-vue";
 import EditRobotDialog from "../dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
+
+onMounted(() => {
+// 监听点击事件
+  addEventListener("click", (e) => {
+    if (robotListRefs.value && !robotListRefs.value.contains(e.target)) {
+      robotList.value.forEach((item) => {
+        if (item.showPopover) {
+          item.showPopover = false;
+        }
+      });
+    }
+  });
+});
 
 const instance = getCurrentInstance();
 const activeRobotIndex = ref(0);
@@ -53,23 +66,30 @@ const editRobotClick = (index) => {
   editRobotDialogRefs.value.show(index);
   robotListPopoverVisible.value = false;
 };
-
 </script>
 
 <template>
   <div ref="robotListRefs" class="overflow-hidden overflow-y-auto">
-    <div class="min-h-full p-2">
+    <div class="min-h-full">
       <div v-for="(item, index) in robotList" :key="index"
-           class="flex flex-row w-full cursor-pointer box-border p-2 mb-2 border border-red-50 dark:border-slate-600 rounded-md shadow-md dark:bg-gray-800 hover:bg-gray-700 hover:border-gray-700 active:bg-gray-900 active:border-gray-900"
+           class="flex flex-row relative w-full cursor-pointer box-border px-2 mb-2 rounded-sm hover:bg-slate-800 active:bg-gray-900"
            :class="index === activeRobotIndex?'robot-item-selected':''" @click="changeActiveRobot(index, item)">
-        <div class="text-md flex-1">
+        <div class="text-md flex-1 leading-10">
           {{ item.name }}
+        </div>
+        <div class="flex justify-center items-center" @click="item.showPopover = true">
+          <ellipsis-outlined/>
+        </div>
+        <div v-if="item.showPopover" class="absolute top-10 right-0">
+          123
         </div>
         <a-popover overlayClassName="robot-editor-popover" placement="bottomRight" trigger="click">
           <template #content>
-            <div class="popover-box">
-              <div class="popover-button edit-robot-button" @click.stop="editRobotClick(index)">编辑机器人</div>
-              <div class="popover-button delete-robot-button">删除机器人</div>
+            <div class="p-0 m-0">
+              <div @click.stop="editRobotClick(index)" class="cursor-pointer rounded-md hover:bg-slate-800">
+                编辑机器人
+              </div>
+              <div class="">删除机器人</div>
             </div>
           </template>
           <div class="robot-control-button flex-row" @click.stop="">

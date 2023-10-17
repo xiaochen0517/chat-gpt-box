@@ -3,7 +3,6 @@ import {nextTick, ref, computed, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
 import {useStore} from "vuex";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
-import {Modal} from "ant-design-vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/CTabs.vue";
 import CTabPane from "@/components/base/CTabPane.vue";
@@ -48,15 +47,10 @@ whenever(cleanTabChatKey, () => {
   cleanTabChat();
 });
 const cleanTabChat = () => {
-  Modal.confirm({
-    title: "Clean chat history",
-    content: "Are you sure to clean chat history?",
-    onOk: () => {
-      store.commit("cleanTabChat", {
-        robotIndex: props.robotIndex,
-        tabIndex: activeTabIndex.value,
-      });
-    },
+  // TODO 二次确认
+  store.commit("cleanTabChat", {
+    robotIndex: props.robotIndex,
+    tabIndex: activeTabIndex.value,
   });
 };
 
@@ -77,15 +71,8 @@ const chatTabsEdit = (targetKey, action) => {
   }
 };
 const confirmRemoveTab = (targetKey) => {
-  Modal.confirm({
-    title: "Confirm",
-    content: "Are you sure to remove this tab?",
-    onOk: () => {
-      removeTab(targetKey);
-    },
-    onCancel: () => {
-    },
-  });
+  // TODO 二次确认
+  removeTab(targetKey);
 };
 const removeTab = (targetKey) => {
   if (activeTabIndex.value == targetKey) {
