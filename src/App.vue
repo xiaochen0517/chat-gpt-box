@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <div class="bg-white dark:bg-gray-900 flex-row w-full h-full">
+  <div class="bg-white dark:bg-gray-900 dark:text-white flex-row w-full h-full">
     <router-view/>
   </div>
 </template>
@@ -10,21 +10,17 @@
 <style lang="less">
 body,
 html {
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  width: 100%;
+@apply p-0 m-0 h-screen w-full;
   font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #app {
-  height: 100%;
-  width: 100%;
+@apply h-full w-full text-sm;
 }
 
 
 div::-webkit-scrollbar {
-@apply w-2 rounded-full;
+@apply w-2 h-2 rounded-full;
 }
 
 div::-webkit-scrollbar-track {

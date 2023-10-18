@@ -1,9 +1,6 @@
 <script setup>
 import {nextTick, onMounted, ref} from "vue";
 import {useStore} from "vuex";
-import {Form} from 'ant-design-vue';
-
-const useForm = Form.useForm;
 
 const store = useStore();
 
@@ -30,13 +27,15 @@ const formRules = ref({
     }
   ]
 });
-const {resetFields, validate} = useForm(formData, formRules);
-const commit = () => {
-  validate().then(() => {
-    console.log("validate success");
-    addTab();
-  }).catch(() => {
-    console.log("validate fail");
+
+const commit = async (formEl) => {
+  if (!formEl) return;
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      addTab();
+    } else {
+      console.log('error', fields);
+    }
   });
 };
 const addTab = () => {
@@ -66,16 +65,20 @@ defineExpose({
 
 <template>
   <div class="add-tab-dialog">
-    <a-modal v-model:visible="dialogVisible" title="Add Tab" @ok="commit" @cancel="dialogVisible = false">
-      <a-form :model="formData" :rules="formRules">
-        <a-form-item label="Tab Name" name="name">
-          <a-input ref="addTabInputRefs" v-model:value="formData.name" @pressEnter="commit"/>
-        </a-form-item>
-      </a-form>
-    </a-modal>
+    <el-dialog v-model="dialogVisible" title="Add Tab">
+      <el-form ref="rulesFormRef" :model="formData" :rules="formRules">
+        <el-form-item label="Tab Name" name="name">
+          <el-input ref="addTabInputRefs" v-model:value="formData.name" @pressEnter="commit"/>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="commit(rulesFormRef)">
+          Confirm
+        </el-button>
+      </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
-
-<style lang="less" scoped>
-
-</style>

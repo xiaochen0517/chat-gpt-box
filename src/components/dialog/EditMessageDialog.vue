@@ -1,11 +1,9 @@
 <script setup>
 import {ref} from "vue";
 import {useStore} from "vuex";
-import {Form} from 'ant-design-vue';
 import _ from "lodash";
 
 const store = useStore();
-const useForm = Form.useForm;
 
 const robotIndex = ref(null);
 const tabIndex = ref(null);
@@ -33,16 +31,20 @@ const formRules = ref({
   ]
 });
 
-const {validate, validateInfos} = useForm(formData, formRules);
-const commit = () => {
-  validate().then(() => {
-    store.commit("updateMessage", {
-      robotIndex: robotIndex.value,
-      tabIndex: tabIndex.value,
-      messageIndex: messageIndex.value,
-      message: formData.value
-    });
-    dialogVisible.value = false;
+const commit = async (formEl) => {
+  if (!formEl) return;
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      store.commit("updateMessage", {
+        robotIndex: robotIndex.value,
+        tabIndex: tabIndex.value,
+        messageIndex: messageIndex.value,
+        message: formData.value
+      });
+      dialogVisible.value = false;
+    } else {
+      console.log('error', fields);
+    }
   });
 };
 
@@ -62,26 +64,28 @@ defineExpose({
 
 <template>
   <div class="edit-message-dialog">
-    <a-modal v-model:visible="dialogVisible" title="Edit message" @ok="commit" @cancel="dialogVisible = false"
-             width="50%">
-      <a-form :model="formData" :rules="formRules" :label-col="{ span: 4 }">
-        <a-form-item label="Role" name="role" v-bind="validateInfos.role">
-          <a-select v-model:value="formData.role" placeholder="Please select role">
-            <a-select-option value="system">system</a-select-option>
-            <a-select-option value="user">user</a-select-option>
-            <a-select-option value="assistant">assistant</a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item label="Message" name="content" v-bind="validateInfos.content">
-          <a-textarea v-model:value="formData.content" :auto-size="{ minRows: 3, maxRows: 6 }"/>
-        </a-form-item>
-      </a-form>
-    </a-modal>
+    <el-dialog v-model="dialogVisible" title="Edit message" @ok="commit" @cancel="dialogVisible = false"
+               width="50%">
+      <el-form ref="rulesFormRef" :model="formData" :rules="formRules" :label-col="{ span: 4 }">
+        <el-form-item label="Role" name="role">
+          <el-select v-model:value="formData.role" placeholder="Please select role">
+            <el-option value="system">system</el-option>
+            <el-option value="user">user</el-option>
+            <el-option value="assistant">assistant</el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="Message" name="content">
+          <el-input type="textarea" v-model:value="formData.content" :auto-size="{ minRows: 3, maxRows: 6 }"/>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="commit(rulesFormRef)">
+          Confirm
+        </el-button>
+      </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
-
-<style lang="less" scoped>
-.edit-message-dialog {
-
-}
-</style>

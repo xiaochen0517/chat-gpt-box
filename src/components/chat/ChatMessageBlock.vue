@@ -23,105 +23,41 @@ defineProps({
 </script>
 
 <template>
-  <div class="chat-message-block">
-    <div class="chat-message-main flex-row">
+  <div class="group py-1">
+    <div class="flex flex-row gap-2">
       <div class="avatar-img">
-        <div class="system-avatar" v-if="message.role === 'system'">
-          <a-avatar shape="square" size="large" :style="{borderRadius: '5px', fontSize: '28px', background: '#0062BE'}">
-            <setting-outlined/>
-          </a-avatar>
+        <div v-if="message.role === 'system'" class="w-10 h-10 dark:bg-indigo-600 rounded-md leading-10 text-center">
+          <setting-outlined class="text-2xl"/>
         </div>
-        <div class="chat-gpt-avatar" v-if="message.role === 'assistant'">
-          <img src="../../assets/images/chat_gpt.svg" alt="avatar"/>
+        <div v-if="message.role === 'assistant'"
+             class="w-10 h-10 dark:bg-sky-600 rounded-md leading-10 text-center flex justify-center items-center">
+          <img src="../../assets/images/chat_gpt.svg" alt="avatar" class="w-6 h-6"/>
         </div>
-        <div class="user-avatar" v-if="message.role === 'user'">
-          <a-avatar shape="square" size="large" :style="{borderRadius: '5px', background: '#C45500'}">User
-          </a-avatar>
+        <div v-if="message.role === 'user'"
+             class="w-10 h-10 dark:bg-green-600 rounded-md leading-10 text-center flex justify-center items-center">
+          User
         </div>
       </div>
-      <div class="message-content">
+      <div class="flex-1 dark:bg-slate-800 rounded-md p-2">
         <MarkdownBlock :content="message.content"/>
       </div>
     </div>
-    <div class="message-control-box flex-row">
-      <a-button class="control-button" type="dashed" size="small" @click="$emit('delete', message, index)">
-        <template #icon>
-          <delete-outlined/>
-        </template>
-      </a-button>
-      <a-button class="control-button" type="dashed" size="small" @click="$emit('edit', message, index)">
-        <template #icon>
-          <edit-outlined/>
-        </template>
-      </a-button>
+    <div
+      class="flex flex-row mt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto">
+      <button class="w-10 h-6 mr-1 border border-slate-500 rounded-md flex justify-center items-center"
+              @click="$emit('delete', message, index)">
+        <delete-outlined/>
+      </button>
+      <button class="w-10 h-6 border border-slate-500 rounded-md flex justify-center items-center"
+              @click="$emit('edit', message, index)">
+        <edit-outlined/>
+      </button>
     </div>
   </div>
 </template>
 
-<style lang="less" scoped>
-.chat-message-block {
-  padding: 5px 0;
-  border-bottom: 1px solid @border-color;
-
-  .chat-message-main {
-    .avatar-img {
-      width: 40px;
-      height: 40px;
-      overflow: hidden;
-      margin: 10px 20px;
-
-      .chat-gpt-avatar {
-        padding: 5px;
-        background-color: rgb(16, 163, 127);
-        border-radius: 5px;
-
-        img {
-          width: 100%;
-          height: 100%;
-
-          svg {
-            color: @primary-text-color;
-          }
-        }
-      }
-    }
-
-    .message-content {
-      flex: 1;
-      font-size: 14px;
-      padding-top: 8px;
-      padding-right: 40px;
-      //color: @primary-text-color;
-    }
-  }
-
-  .message-control-box {
-    visibility: hidden;
-    opacity: 0;
-    justify-content: center;
-    align-items: center;
-
-    .control-button {
-      margin: 5px 10px;
-    }
-  }
-
-  &:hover {
-    .message-control-box {
-      visibility: visible;
-      opacity: 1;
-      transition: all 0.4s ease-in-out;
-    }
-  }
-}
-</style>
-
 <style lang="less">
 .github-markdown-body {
-    padding: 10px;
-}
-
-.ant-btn-dashed{
-    color: @primary-text-color;
+  padding: 10px;
 }
 </style>

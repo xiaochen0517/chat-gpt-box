@@ -3,7 +3,7 @@
 <span>ChatGPTBox</span>
 </h2>
 <p align="center">
-    English | <a href="./README-CN.md">简体中文</a>
+    <a href="./README.md">English</a> | 简体中文
 </p>
 <p align="center">
     <em>PC ChatGPT 聊天工具.</em>

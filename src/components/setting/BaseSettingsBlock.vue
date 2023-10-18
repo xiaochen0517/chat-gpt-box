@@ -2,11 +2,9 @@
 import {onMounted, ref} from "vue";
 import {useStore} from "vuex";
 import _ from "lodash";
-import {Form} from 'ant-design-vue';
 
 const store = useStore();
 
-const useForm = Form.useForm;
 const baseConfig = ref({});
 const formRules = ref({
   apiKey: [
@@ -24,12 +22,16 @@ const initSettingsData = () => {
   baseConfig.value = _.cloneDeep(store.state.config.base);
 };
 
-const {validate, validateInfos} = useForm(baseConfig, formRules);
-const saveData = () => {
-  validate().then(() => {
-    store.commit("saveBaseConfig", baseConfig.value);
-  }).catch((err) => {
-    console.log('error', err);
+const rulesFormRef = ref(null);
+
+const saveData = async (rulesFormRef) => {
+  if (!rulesFormRef) return;
+  await rulesFormRef.validate((valid, fields) => {
+    if (valid) {
+      store.commit("saveBaseConfig", baseConfig.value);
+    } else {
+      console.log('error', fields);
+    }
   });
 };
 defineExpose({
@@ -39,17 +41,13 @@ defineExpose({
 
 <template>
   <div class="base-setting-block">
-    <a-form :model="baseConfig" :rules="formRules">
-      <a-form-item label="ApiKey" name="apiKey" v-bind="validateInfos.apiKey">
-        <a-input v-model:value="baseConfig.apiKey" type="password" placeholder="Please input ApiKey"/>
-      </a-form-item>
-      <a-form-item label="Enter Key Send" name="enterSend" v-bind="validateInfos.enterSend">
-        <a-switch v-model:checked="baseConfig.enterSend"/>
-      </a-form-item>
-    </a-form>
+    <el-form ref="rulesFormRef" :model="baseConfig" :rules="formRules">
+      <el-form-item label="ApiKey" name="apiKey">
+        <el-input v-model:value="baseConfig.apiKey" type="password" placeholder="Please input ApiKey"/>
+      </el-form-item>
+      <el-form-item label="Enter Key Send" name="enterSend">
+        <el-switch v-model:checked="baseConfig.enterSend"/>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
-
-<style lang="less" scoped>
-
-</style>

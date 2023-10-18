@@ -3,8 +3,9 @@ import {nextTick, ref, computed, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
 import {useStore} from "vuex";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
-import {Modal} from "ant-design-vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
+import CTabs from "@/components/base/CTabs.vue";
+import CTabPane from "@/components/base/CTabPane.vue";
 
 const props = defineProps({
   robotIndex: {
@@ -46,15 +47,10 @@ whenever(cleanTabChatKey, () => {
   cleanTabChat();
 });
 const cleanTabChat = () => {
-  Modal.confirm({
-    title: "Clean chat history",
-    content: "Are you sure to clean chat history?",
-    onOk: () => {
-      store.commit("cleanTabChat", {
-        robotIndex: props.robotIndex,
-        tabIndex: activeTabIndex.value,
-      });
-    },
+  // TODO 二次确认
+  store.commit("cleanTabChat", {
+    robotIndex: props.robotIndex,
+    tabIndex: activeTabIndex.value,
   });
 };
 
@@ -75,15 +71,8 @@ const chatTabsEdit = (targetKey, action) => {
   }
 };
 const confirmRemoveTab = (targetKey) => {
-  Modal.confirm({
-    title: "Confirm",
-    content: "Are you sure to remove this tab?",
-    onOk: () => {
-      removeTab(targetKey);
-    },
-    onCancel: () => {
-    },
-  });
+  // TODO 二次确认
+  removeTab(targetKey);
 };
 const removeTab = (targetKey) => {
   if (activeTabIndex.value == targetKey) {
@@ -114,14 +103,9 @@ const chatTabNameList = computed(() => {
 const getTabIndex = () => {
   return activeTabIndex.value;
 };
+
 const chatMsgListBlockRefs = ref([]);
 const scrollToBottom = () => {
-  nextTick(() => {
-    let refs = chatMsgListBlockRefs.value[activeTabIndex.value];
-    if (refs != undefined) {
-      refs.scrollToBottom();
-    }
-  });
 };
 
 defineExpose({
@@ -131,42 +115,12 @@ defineExpose({
 </script>
 
 <template>
-  <div class="chat-tabs-block">
-    <a-tabs class="chat-scroll-content" type="editable-card" v-model:activeKey="activeTabIndex" @edit="chatTabsEdit"
-            size="small" tabPosition="top">
-      <a-tab-pane v-for="(item, index) in chatTabsSize" :key="index" :tab="chatTabNameList[index]"
-                  :forceRender="true">
-        <ChatMsgListBlock ref="chatMsgListBlockRefs" :robotIndex="props.robotIndex" :tabIndex="index"/>
-      </a-tab-pane>
-    </a-tabs>
+  <div class="overflow-hidden overflow-y-auto">
+    <c-tabs v-model:activeKey="activeTabIndex">
+      <c-tab-pane v-for="(number, index) in chatTabsSize" :key="index" :tabName="chatTabNameList[index]">
+        <chat-msg-list-block ref="chatMsgListBlockRefs" :robotIndex="props.robotIndex" :tabIndex="index"/>
+      </c-tab-pane>
+    </c-tabs>
     <AddTabDialog ref="addTabDialogRefs" :robot-index="props.robotIndex"/>
   </div>
 </template>
-
-<style lang="less" scoped>
-.chat-tabs-block {
-  height: 100%;
-  padding-bottom: 100px;
-  position: relative;
-}
-</style>
-
-<style lang="less">
-.ant-tabs-nav-wrap{
-  background-color: @primary-bg-color !important;
-}
-
-.ant-tabs-tab {
-  border: 1px solid @border-color !important;
-  background-color: @primary-bg-color !important;
-}
-
-.ant-tabs-nav-add{
-  border: 1px solid @border-color !important;
-  background-color: @primary-bg-color !important;
-}
-
-.ant-tabs{
-  color: @primary-text-color;
-}
-</style>

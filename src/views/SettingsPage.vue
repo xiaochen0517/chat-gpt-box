@@ -12,34 +12,14 @@ import {relaunch} from "@tauri-apps/api/process";
 import {useStore} from "vuex";
 import {switchMode} from "@/util/ThemeMode.js";
 
-BScroll.use(MouseWheel);
-BScroll.use(ScrollBar);
-
 const store = useStore();
 const isDarkMode = computed(() => store.state.config.isDarkMode);
 
-let bScroll = null;
 onMounted(() => {
   createAppCloseListener();
-  bScroll = createBScroll();
   switchMode(isDarkMode.value);
 });
 
-const scrollWrapperRefs = ref(null);
-const createBScroll = () => {
-  return new BScroll(scrollWrapperRefs.value, {
-    disableMouse: true,
-    disableTouch: false,
-    bounce: false,
-    scrollY: true,
-    scrollbar: true,
-    mouseWheel: {
-      speed: 20,
-      invert: false,
-      easeTime: 300
-    }
-  });
-};
 const createAppCloseListener = () => {
   appWindow.onCloseRequested(() => {
     emit("resetSettingsWindow");
@@ -48,11 +28,6 @@ const createAppCloseListener = () => {
 
 const activeCollIndex = ref(["0"]);
 const collapseChange = () => {
-  setTimeout(() => {
-    nextTick(() => {
-      bScroll.refresh();
-    });
-  }, 300);
 };
 
 const openNotification = (type, message) => {
@@ -83,17 +58,17 @@ const cancel = () => {
     <div ref="scrollWrapperRefs" class="scroll-wrapper">
       <div class="settings-form-box wrapper-content">
         <h1 style="font-weight: bold;">Settings</h1>
-        <a-collapse v-model:activeKey="activeCollIndex" @change="collapseChange">
-          <a-collapse-panel header="Base Settings" key="0" :forceRender="true">
+        <el-collapse v-model:activeKey="activeCollIndex" @change="collapseChange">
+          <el-collapse-item header="Base Settings" key="0" :forceRender="true">
             <BaseSettingsBlock ref="baseSettingsBlockRefs"/>
-          </a-collapse-panel>
-          <a-collapse-panel header="Shortcut Settings" key="1" :forceRender="true">
+          </el-collapse-item>
+          <el-collapse-item header="Shortcut Settings" key="1" :forceRender="true">
             <ShortcutSettingsBlock ref="shortcutSettingsBlockRefs"/>
-          </a-collapse-panel>
-        </a-collapse>
+          </el-collapse-item>
+        </el-collapse>
         <div class="commit-button-box flex-row">
-          <a-button @click="cancel">取消</a-button>
-          <a-button type="primary" @click="submit" style="margin-left: 50px">提交</a-button>
+          <el-button @click="cancel">取消</el-button>
+          <el-button type="primary" @click="submit" style="margin-left: 50px">提交</el-button>
         </div>
       </div>
     </div>
