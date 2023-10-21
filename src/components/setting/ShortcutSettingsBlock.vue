@@ -2,7 +2,6 @@
 import {onMounted, ref} from "vue";
 import {useStore} from "vuex";
 import _ from "lodash";
-import {Form} from 'ant-design-vue';
 
 const store = useStore();
 const shortcut = ref({});
@@ -14,11 +13,15 @@ const initSettingsData = () => {
   shortcut.value = _.cloneDeep(store.state.config.shortcut);
 };
 
-const {validate, validateInfos} = Form.useForm(shortcut, formRules);
-const saveData = () => {
-  validate().then(() => {
-    store.commit("saveShortcutConfig", shortcut.value);
-  }).catch(() => {
+const rulesFormRef = ref(null);
+const saveData = async () => {
+  if (!rulesFormRef) return;
+  await rulesFormRef.validate((valid, fields) => {
+    if (valid) {
+      store.commit("saveShortcutConfig", shortcut.value);
+    } else {
+      console.log('error', fields);
+    }
   });
 };
 defineExpose({
@@ -28,7 +31,7 @@ defineExpose({
 
 <template>
   <div class="shortcut-settings-block">
-    <el-dialog :model="shortcut" :rules="formRules" label-align="left" :label-col="{span: 4}">
+    <el-form ref="rulesFormRef" :model="shortcut" :rules="formRules" label-align="left" :label-col="{span: 4}">
       <el-form-item label="Focus Input" name="focusInput" v-bind="validateInfos.focusInput">
         <el-input v-model:value="shortcut.focusInput" placeholder="Focus Input"/>
       </el-form-item>
@@ -62,10 +65,6 @@ defineExpose({
       <el-form-item label="Next Robot" name="nextRobot" v-bind="validateInfos.nextRobot">
         <el-input v-model:value="shortcut.nextRobot" placeholder="Next Robot"/>
       </el-form-item>
-    </el-dialog>
+    </el-form>
   </div>
 </template>
-
-<style lang="less" scoped>
-
-</style>
