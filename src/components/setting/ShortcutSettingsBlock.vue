@@ -5,7 +5,6 @@ import _ from "lodash";
 
 const store = useStore();
 const shortcut = ref({});
-const formRules = ref({});
 onMounted(() => {
   initSettingsData();
 });
@@ -31,8 +30,8 @@ defineExpose({
 
 <template>
   <div class="shortcut-settings-block">
-    <el-dialog :model="shortcut" :rules="formRules" label-align="left" :label-col="{span: 4}">
-      <el-form-item ref="formRulesRef" label="Focus Input" name="focusInput" v-bind="validateInfos.focusInput">
+    <el-form ref="formRulesRef" :model="shortcut">
+      <el-form-item label="Focus Input" name="focusInput">
         <el-input v-model:value="shortcut.focusInput" placeholder="Focus Input"/>
       </el-form-item>
       <el-form-item label="Setting Page" name="openSetting">
@@ -65,7 +64,7 @@ defineExpose({
       <el-form-item label="Next Robot" name="nextRobot">
         <el-input v-model:value="shortcut.nextRobot" placeholder="Next Robot"/>
       </el-form-item>
-    </el-dialog>
+    </el-form>
   </div>
 </template>
 
