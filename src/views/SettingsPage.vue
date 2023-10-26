@@ -1,13 +1,9 @@
 <script setup>
-import {ref, onMounted, nextTick, computed} from "vue";
-import BScroll from "@better-scroll/core";
-import MouseWheel from "@better-scroll/mouse-wheel";
-import ScrollBar from "@better-scroll/scroll-bar";
+import {computed, onMounted, ref} from "vue";
 import {emit} from "@tauri-apps/api/event";
 import {appWindow} from "@tauri-apps/api/window";
 import BaseSettingsBlock from "../components/setting/BaseSettingsBlock.vue";
 import ShortcutSettingsBlock from "../components/setting/ShortcutSettingsBlock.vue";
-import {notification} from 'ant-design-vue';
 import {relaunch} from "@tauri-apps/api/process";
 import {useStore} from "vuex";
 import {switchMode} from "@/util/ThemeMode.js";
@@ -28,14 +24,6 @@ const createAppCloseListener = () => {
 
 const activeCollIndex = ref(["0"]);
 const collapseChange = () => {
-};
-
-const openNotification = (type, message) => {
-  notification[type]({
-    message: message,
-    description: "",
-    duration: 1
-  });
 };
 
 const baseSettingsBlockRefs = ref(null);
