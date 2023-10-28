@@ -72,26 +72,27 @@ const editRobotClick = (index) => {
   <div ref="robotListRefs" class="overflow-hidden overflow-y-auto">
     <div class="min-h-full">
       <div v-for="(item, index) in robotList" :key="index"
-           class="flex flex-row items-center relative w-full cursor-pointer box-border px-2 mb-2 rounded-sm hover:bg-slate-800 active:bg-gray-900"
+           class="flex flex-row items-center relative w-full cursor-pointer box-border px-2 mb-2 rounded-sm hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-slate-800 dark:active:bg-gray-900"
            :class="index === activeRobotIndex?'robot-item-selected':''" @click="changeActiveRobot(index, item)">
         <div class="text-md flex-1 leading-10">
           {{ item.name }}
         </div>
-        <el-popover overlayClassName="robot-editor-popover" placement="bottom" trigger="click">
+        <el-popover overlayClassName="robot-editor-popover" placement="bottom" trigger="hover">
           <template #default>
             <div class="p-2 m-0">
               <div @click.stop="editRobotClick(index)"
-                   class="cursor-pointer rounded-md hover:bg-slate-700 leading-6 box-border py-1 px-2 mb-1">
-                编辑机器人
+                   class="cursor-pointer rounded-md hover:bg-gray-200 dark:hover:bg-slate-700 leading-6 box-border py-1 px-2 mb-1">
+                Edit Chat
               </div>
-              <div class="cursor-pointer rounded-md hover:bg-slate-700 leading-6 box-border py-1 px-2">
-                删除机器人
+              <div class="cursor-pointer rounded-md hover:bg-gray-200 dark:hover:bg-slate-700 leading-6 box-border py-1 px-2">
+                Delete Chat
               </div>
             </div>
           </template>
           <template #reference>
-            <div class="robot-control-button flex justify-center items-center hover:bg-slate-700 w-6 h-6 rounded-md"
-                 @click.stop="">
+            <div
+                class="robot-control-button flex justify-center items-center hover:bg-gray-400 dark:hover:bg-slate-700 w-6 h-6 rounded-md"
+                @click.stop="">
               <ellipsis-outlined/>
             </div>
           </template>
@@ -101,9 +102,3 @@ const editRobotClick = (index) => {
     <EditRobotDialog ref="editRobotDialogRefs" :is-edit="true"/>
   </div>
 </template>
-
-<style>
-.el-popover {
-  --el-popover-padding: 0;
-}
-</style>

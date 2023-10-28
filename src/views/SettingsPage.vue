@@ -1,23 +1,16 @@
 <script setup>
-import {ref, onMounted, nextTick, computed} from "vue";
-import BScroll from "@better-scroll/core";
-import MouseWheel from "@better-scroll/mouse-wheel";
-import ScrollBar from "@better-scroll/scroll-bar";
+import {onMounted, ref} from "vue";
 import {emit} from "@tauri-apps/api/event";
 import {appWindow} from "@tauri-apps/api/window";
 import BaseSettingsBlock from "../components/setting/BaseSettingsBlock.vue";
 import ShortcutSettingsBlock from "../components/setting/ShortcutSettingsBlock.vue";
-import {notification} from 'ant-design-vue';
 import {relaunch} from "@tauri-apps/api/process";
 import {useStore} from "vuex";
-import {switchMode} from "@/util/ThemeMode.js";
 
 const store = useStore();
-const isDarkMode = computed(() => store.state.config.isDarkMode);
 
 onMounted(() => {
   createAppCloseListener();
-  switchMode(isDarkMode.value);
 });
 
 const createAppCloseListener = () => {
@@ -28,14 +21,6 @@ const createAppCloseListener = () => {
 
 const activeCollIndex = ref(["0"]);
 const collapseChange = () => {
-};
-
-const openNotification = (type, message) => {
-  notification[type]({
-    message: message,
-    description: "",
-    duration: 1
-  });
 };
 
 const baseSettingsBlockRefs = ref(null);
@@ -74,46 +59,3 @@ const cancel = () => {
     </div>
   </div>
 </template>
-
-<style lang="less" scoped>
-* {
-  color: @primary-text-color !important;
-}
-
-.settings-page {
-  width: 100%;
-  height: 100vh;
-
-  .scroll-wrapper {
-    height: 100vh;
-    overflow: hidden;
-  }
-
-  .settings-form-box {
-    padding: 20px 60px;
-
-    .commit-button-box {
-      justify-content: center;
-      margin: 20px 0;
-    }
-  }
-}
-</style>
-
-<style lang="less">
-.ant-collapse-content {
-  background-color: @primary-bg-color;
-}
-
-.ant-form-item-label > label {
-  color: @primary-text-color !important;
-}
-
-.ant-collapse > .ant-collapse-item > .ant-collapse-header {
-  color: @primary-text-color !important;
-}
-
-.ant-input {
-  color: @primary-text-color !important;
-}
-</style>

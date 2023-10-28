@@ -178,6 +178,7 @@ const store = createStore({
     },
     // 保存是否为暗模式
     setDarkMode(state, darkMode) {
+      console.log("set dark mode = ", darkMode)
       state.config.isDarkMode = darkMode;
     },
     // 保存基础设置

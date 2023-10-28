@@ -47,13 +47,14 @@ const shiftEnterKeyDown = () => {
 </script>
 
 <template>
-  <div class="w-full max-w-5xl mx-auto p-2 flex flex-row">
-    <textarea ref="chatInputTextAreaRefs" class="flex-1 h-full m-0 p-0 inline-block rounded-md dark:bg-slate-900"
+  <div class="w-full max-w-5xl mx-auto px-2 py-4 flex flex-row">
+    <textarea ref="chatInputTextAreaRefs"
+              class="flex-1 h-full m-0 p-2 inline-block bg-gray-100 dark:bg-slate-900 rounded-md box-border border-2 border-gray-300 focus:border-slate-400 dark:border-slate-600 dark:focus:border-slate-400"
               v-model="chatInputContent"
               @keydown.enter.prevent.exact="enterKeyDown" @keydown.shift.enter.prevent.exact="shiftEnterKeyDown"
               rows="2"></textarea>
     <div @click.stop="commitContent"
-         class="w-16 h-full border-2 border-slate-600 rounded-md flex justify-center items-center ml-2 hover:bg-slate-700 cursor-pointer">
+         class="w-16 h-full rounded-md flex justify-center items-center ml-2 cursor-pointer hover:bg-slate-200 active:bg-slate-300 dark:hover:bg-slate-700 dark:active:bg-slate-800 border-2 border-slate-200 hover:border-slate-300 active:border-slate-400 dark:border-slate-600">
       <send-outlined/>
     </div>
   </div>

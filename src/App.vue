@@ -1,17 +1,47 @@
 <script setup>
+
+import {useStore} from "vuex";
+import {computed, onMounted, watch} from "vue";
+
+const store = useStore();
+
+// 暗模式配置
+const isDarkMode = computed(() => store.state.config.isDarkMode);
+
+onMounted(() => {
+  // 初始化暗模式
+  switchDarkMode(isDarkMode.value);
+});
+
+// 监听 isDarkMode
+watch(isDarkMode, (newVal) => {
+  // 给html标签添加dark类
+  switchDarkMode(newVal);
+});
+
+const switchDarkMode = (isDark) => {
+  if (isDark) {
+    document.querySelector("html").classList.add("dark");
+  } else {
+    document.querySelector("html").classList.remove("dark");
+  }
+}
+
 </script>
 
 <template>
-  <div class="bg-white dark:bg-gray-900 dark:text-white flex-row w-full h-full">
+  <div class="bg-gray-50 text-black dark:bg-gray-900 dark:text-white flex-row w-full h-full">
     <router-view/>
   </div>
 </template>
 
 <style lang="less">
+@import "assets/fonts/harmonyos_fonts.css";
+
 body,
 html {
 @apply p-0 m-0 h-screen w-full;
-  font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "HarmonyOS Sans", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #app {
