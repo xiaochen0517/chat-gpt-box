@@ -35,18 +35,22 @@ const activateTab = (key) => {
   console.log("activateTab", key);
   context.emit("update:activeKey", key);
 };
+
+const activeClass = ref("border-gray-400 bg-gray-200 hover:bg-gray-300 active:bg-gray-400 dark:border-slate-600 dark:bg-gray-800 dark:hover:bg-gray-700 dark:active:bg-gray-600 text-gray-500 dark:text-gray-500");
+const inactiveClass = ref("border-gray-300 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:border-slate-700 dark:bg-gray-900 dark:hover:bg-gray-800 dark:active:bg-gray-700 text-gray-900 dark:text-gray-100");
 </script>
 
 <template>
   <div class="flex flex-col">
-    <div class="overflow-hidden overflow-x-auto w-full p-2 box-border">
-      <div class="flex flex-row min-w-full p-1.5 dark:bg-gray-950 rounded-md">
+    <div class="max-w-5xl m-auto overflow-hidden overflow-x-auto w-full p-2 box-border">
+      <div class="flex flex-row min-w-full p-1.5 bg-gray-100 dark:bg-gray-950 rounded-md">
         <div v-for="(item, index) in tabNames" :key="index" @click="activateTab(index)"
-             class="px-2 py-1.5 mr-1 box-border rounded-md cursor-pointer border border-slate-700 bg-gray-900 hover:bg-gray-800 active:bg-gray-700 select-none">
+             class="px-2 py-1.5 mr-1 box-border rounded-md cursor-pointer border select-none"
+             :class="propsActiveKey === index ? activeClass: inactiveClass">
           {{ item }}
         </div>
         <div
-          class="px-2 py-1.5 mr-1 box-border rounded-md cursor-pointer border border-slate-700 bg-gray-900 hover:bg-gray-800 active:bg-gray-700 select-none">
+            class="px-2 py-1.5 mr-1 box-border rounded-md cursor-pointer border border-slate-300 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:border-slate-700  dark:bg-gray-900  dark:hover:bg-gray-800  dark:active:bg-gray-700 select-none">
           ADD
         </div>
       </div>

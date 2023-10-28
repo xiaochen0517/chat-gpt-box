@@ -52,9 +52,8 @@ onMounted(() => {
 
 <template>
   <button
-    class="rounded-md box-border p-1 w-full shadow-md"
-    :class="buttonStyleClass"
-    @click="$emit('click')">
+      class="rounded-md box-border p-1 w-full shadow-md"
+      :class="buttonStyleClass">
     <slot></slot>
   </button>
 </template>
