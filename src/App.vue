@@ -8,10 +8,12 @@
 </template>
 
 <style lang="less">
+@import "assets/fonts/harmonyos_fonts.css";
+
 body,
 html {
 @apply p-0 m-0 h-screen w-full;
-  font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "HarmonyOS Sans", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #app {
