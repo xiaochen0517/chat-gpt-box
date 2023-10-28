@@ -102,3 +102,10 @@ const editRobotClick = (index) => {
     <EditRobotDialog ref="editRobotDialogRefs" :is-edit="true"/>
   </div>
 </template>
+
+<style>
+// element-ui popover 内边距重置
+.el-popover {
+  --el-popover-padding: 0;
+}
+</style>
