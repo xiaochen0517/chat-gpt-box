@@ -65,7 +65,7 @@ export class RequestUtil {
   };
 
   sendRequest = ({robotIndex, tabIndex, content}, change) => {
-    if (change != undefined) {
+    if (change) {
       this.changeFunc = change;
     }
     // 检查并初始化数据
@@ -104,7 +104,7 @@ export class RequestUtil {
       console.error("无信息可发送");
       throw Error("无信息可发送");
     }
-    if (robotIndex == undefined || tabIndex == undefined) {
+    if (!robotIndex || !tabIndex) {
       console.error("无效的索引");
       throw Error("无效的索引");
     }

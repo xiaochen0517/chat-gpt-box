@@ -26,7 +26,8 @@ defineProps({
   <div class="group py-1">
     <div class="flex flex-row gap-2">
       <div class="avatar-img">
-        <div v-if="message.role === 'system'" class="w-10 h-10 bg-indigo-500 dark:bg-indigo-600 rounded-md leading-10 text-center">
+        <div v-if="message.role === 'system'"
+             class="w-10 h-10 bg-indigo-500 dark:bg-indigo-600 rounded-md leading-10 text-center">
           <setting-outlined class="text-2xl"/>
         </div>
         <div v-if="message.role === 'assistant'"
@@ -44,10 +45,14 @@ defineProps({
     </div>
     <div
       class="flex flex-row mt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto">
-      <button class="w-10 h-6 mr-1 border border-slate-500 rounded-md flex justify-center items-center"
-              @click="$emit('delete', message, index)">
-        <delete-outlined/>
-      </button>
+      <el-popconfirm title="delete message" @confirm="$emit('delete', message, index)"
+                     confirm-button-type="danger" confirm-button-text="Delete">
+        <template #reference>
+          <button class="w-10 h-6 mr-1 border border-slate-500 rounded-md flex justify-center items-center">
+            <delete-outlined/>
+          </button>
+        </template>
+      </el-popconfirm>
       <button class="w-10 h-6 border border-slate-500 rounded-md flex justify-center items-center"
               @click="$emit('edit', message, index)">
         <edit-outlined/>
