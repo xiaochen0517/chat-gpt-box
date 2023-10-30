@@ -2,7 +2,7 @@
 import {computed, getCurrentInstance, onBeforeUnmount, onMounted, ref} from "vue";
 import {useStore} from "vuex";
 import {EllipsisOutlined} from "@ant-design/icons-vue";
-import EditRobotDialog from "../dialog/EditRobotDialog.vue";
+import EditRobotDialog from "../chat/dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 
 onMounted(() => {

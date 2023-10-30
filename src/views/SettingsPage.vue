@@ -39,8 +39,7 @@ const cancel = () => {
 </script>
 
 <template>
-  <div class="settings-page">
-    <div ref="scrollWrapperRefs" class="scroll-wrapper">
+  <div>
       <div class="settings-form-box wrapper-content">
         <h1 style="font-weight: bold;">Settings</h1>
         <el-collapse v-model:activeKey="activeCollIndex" @change="collapseChange">
@@ -56,6 +55,5 @@ const cancel = () => {
           <el-button type="primary" @click="submit" style="margin-left: 50px">提交</el-button>
         </div>
       </div>
-    </div>
   </div>
 </template>

@@ -3,7 +3,7 @@ import {nextTick, onMounted, ref} from "vue";
 import SideBarBlock from "../components/sidebar/SideBarBlock.vue";
 import {appWindow} from "@tauri-apps/api/window";
 import {exit} from '@tauri-apps/api/process';
-import ChatContentBlock from "../components/chat/ChatContentBlock.vue";
+import ChatContentBlock from "../components/chat/block/ChatContentBlock.vue";
 import {useStore} from "vuex";
 
 const store = useStore();

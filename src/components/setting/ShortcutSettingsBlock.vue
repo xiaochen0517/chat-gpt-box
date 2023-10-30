@@ -30,7 +30,7 @@ defineExpose({
 
 <template>
   <div class="shortcut-settings-block">
-    <el-form ref="formRulesRef" :model="shortcut">
+    <el-form ref="formRulesRef" :model="shortcut" label-width="120px">
       <el-form-item label="Focus Input" name="focusInput">
         <el-input v-model:value="shortcut.focusInput" placeholder="Focus Input"/>
       </el-form-item>
@@ -67,7 +67,3 @@ defineExpose({
     </el-form>
   </div>
 </template>
-
-<style lang="less" scoped>
-
-</style>

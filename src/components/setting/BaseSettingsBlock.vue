@@ -41,7 +41,7 @@ defineExpose({
 
 <template>
   <div class="base-setting-block">
-    <el-form ref="rulesFormRef" :model="baseConfig" :rules="formRules">
+    <el-form ref="rulesFormRef" :model="baseConfig" :rules="formRules" label-width="120px">
       <el-form-item label="ApiKey" name="apiKey">
         <el-input v-model:value="baseConfig.apiKey" type="password" placeholder="Please input ApiKey"/>
       </el-form-item>
