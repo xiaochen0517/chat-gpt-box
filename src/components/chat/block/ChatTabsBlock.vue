@@ -1,5 +1,5 @@
 <script setup>
-import {nextTick, ref, computed, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
 import {useStore} from "vuex";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
@@ -57,7 +57,7 @@ const cleanTabChat = () => {
 const activeTabIndex = ref(0);
 watch(
   () => activeTabIndex.value,
-  (newVal, oldVal) => {
+  () => {
     scrollToBottom();
   }
 );
@@ -75,9 +75,9 @@ const confirmRemoveTab = (targetKey) => {
   removeTab(targetKey);
 };
 const removeTab = (targetKey) => {
-  if (activeTabIndex.value == targetKey) {
+  if (activeTabIndex.value === targetKey) {
     // 切换tab
-    if (targetKey == chatTabsSize.value - 1) {
+    if (targetKey === chatTabsSize.value - 1) {
       activeTabIndex.value = targetKey - 1;
     } else {
       activeTabIndex.value = targetKey;
