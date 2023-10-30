@@ -23,10 +23,9 @@ const initSettingsData = () => {
 };
 
 const rulesFormRef = ref(null);
-
-const saveData = async (rulesFormRef) => {
+const saveData = async () => {
   if (!rulesFormRef) return;
-  await rulesFormRef.validate((valid, fields) => {
+  await rulesFormRef.value.validate((valid, fields) => {
     if (valid) {
       store.commit("saveBaseConfig", baseConfig.value);
     } else {
@@ -43,10 +42,10 @@ defineExpose({
   <div class="base-setting-block">
     <el-form ref="rulesFormRef" :model="baseConfig" :rules="formRules" label-width="120px">
       <el-form-item label="ApiKey" name="apiKey">
-        <el-input v-model:value="baseConfig.apiKey" type="password" placeholder="Please input ApiKey"/>
+        <el-input v-model="baseConfig.apiKey" type="password" placeholder="Please input ApiKey"/>
       </el-form-item>
       <el-form-item label="Enter Key Send" name="enterSend">
-        <el-switch v-model:checked="baseConfig.enterSend"/>
+        <el-switch v-model="baseConfig.enterSend"/>
       </el-form-item>
     </el-form>
   </div>

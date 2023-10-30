@@ -20,7 +20,7 @@ export class RequestUtil {
     content: "",
   };
 
-  addUserMessage() {
+  addUserMessage () {
     store.commit("addUserMessage", {
       robotIndex: this.data.robotIndex,
       tabIndex: this.data.tabIndex,
@@ -112,7 +112,7 @@ export class RequestUtil {
 
   buildHeaders = () => {
     const apiKey = store.state.config.base.apiKey;
-    if (apiKey == "" || apiKey.length < 3) {
+    if (!apiKey || apiKey === "" || apiKey.length < 3) {
       throw Error("请输入正确的ApiKey");
     }
     return {

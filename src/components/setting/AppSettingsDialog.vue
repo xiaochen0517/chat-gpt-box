@@ -10,9 +10,11 @@ const activeCollNames = ref(["0"]);
 
 const baseSettingsBlockRefs = ref(null);
 const shortcutSettingsBlockRefs = ref(null);
-const saveSettings = () => {
-  baseSettingsBlockRefs.value.saveData();
-  shortcutSettingsBlockRefs.value.saveData();
+const saveSettings = async () => {
+  await baseSettingsBlockRefs.value.saveData();
+  await shortcutSettingsBlockRefs.value.saveData();
+  // 刷新页面
+  // location.reload();
 };
 
 const show = () => {
