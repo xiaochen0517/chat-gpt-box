@@ -2,6 +2,7 @@
 import {getCurrentInstance, nextTick, ref} from "vue";
 import {useStore} from "vuex";
 import _ from "lodash";
+import modelList from "@/util/ModelList.js";
 
 const store = useStore();
 
@@ -14,33 +15,17 @@ const props = defineProps({
 
 const dialogVisible = ref(false);
 const formData = ref({
-  name: "",
-  prompt: "",
-  model: "gpt-3.5-turbo",
-  temperature: 0.7,
-  context_message_count: 1,
-  context_max_tokens: 2048,
-  response_max_token: 0
-});
-
-const modelList = ref([
-  {
-    label: "gpt-3.5-turbo",
-    value: "gpt-3.5-turbo"
-  },
-  {
-    label: "gpt-3.5-turbo-0301",
-    value: "gpt-3.5-turbo-0301"
-  },
-  {
-    label: "gpt-3.5-turbo-0613",
-    value: "gpt-3.5-turbo-0613"
-  },
-  {
-    label: "gpt-3.5-turbo-16k",
-    value: "gpt-3.5-turbo-16k"
+  name: "TestRobot",
+  prompt: "You are a helpful assistant.",
+  options: {
+    enabled: false,
+    model: "gpt-3.5-turbo",
+    temperature: 0.7,
+    context_max_message: 1,
+    context_max_tokens: 2048,
+    response_max_tokens: 0
   }
-]);
+});
 
 const formRules = ref({
   name: [
@@ -100,26 +85,12 @@ const updateRobot = () => {
   }
   store.commit("updateRobot", {
     robotIndex: robotIndex,
-    robot: {
-      prompt: formData.value.prompt,
-      name: formData.value.name,
-      options: {
-        model: formData.value.model,
-        content_max_tokens: formData.value.content_max_tokens
-      }
-    }
+    robot: _.cloneDeep(formData.value)
   });
 };
 
 const addRobot = () => {
-  store.commit("addRobot", {
-    prompt: formData.value.prompt,
-    name: formData.value.name,
-    options: {
-      model: formData.value.model,
-      content_max_tokens: formData.value.content_max_tokens
-    }
-  });
+  store.commit("addRobot", _.cloneDeep(formData.value));
   instance.emit("commit", formData.value);
 };
 
@@ -158,13 +129,28 @@ defineExpose({
         <el-form-item label="Robot Prompt">
           <el-input v-model:value="formData.prompt" @pressEnter="commit"/>
         </el-form-item>
-        <el-form-item label="Robot Model">
-          <el-select v-model:value="formData.model" @keydown.enter="commit">
+        <el-form-item label="Enable Option">
+          <el-switch v-model="formData.options.enabled"/>
+        </el-form-item>
+        <el-form-item v-if="formData.options.enabled" label="Model" prop="model">
+          <el-select v-model="formData.options.model">
             <el-option v-for="(item, index) in modelList" :key="index" :label="item.label" :value="item.value"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="Context Max Tokens">
-          <el-input type="number" v-model:value="formData.content_max_tokens" @pressEnter="commit"/>
+        <el-form-item v-if="formData.options.enabled" label="temperature" prop="temperature">
+          <el-slider class="ml-2" v-model="formData.options.temperature" :min="0" :max="1" :step="0.1" show-input/>
+        </el-form-item>
+        <el-form-item v-if="formData.options.enabled" label="Context Msg" prop="context_max_message">
+          <el-slider class="ml-2" v-model="formData.options.context_max_message" :min="0" :max="20" :step="2"
+                     show-input/>
+        </el-form-item>
+        <el-form-item v-if="formData.options.enabled" label="Context Token" prop="context_max_tokens">
+          <el-slider class="ml-2" v-model="formData.options.context_max_tokens" :min="0" :max="4000" :step="1"
+                     show-input/>
+        </el-form-item>
+        <el-form-item v-if="formData.options.enabled" label="Res Token" prop="response_max_tokens">
+          <el-slider class="ml-2" v-model="formData.options.response_max_tokens" :min="0" :max="4000" :step="1"
+                     show-input/>
         </el-form-item>
       </el-form>
       <template #footer>

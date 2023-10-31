@@ -7,14 +7,15 @@ const store = createStore({
     // 机器人列表
     robotList: [
       {
-        prompt: "You are a helpful assistant.",
         name: "TestRobot",
+        prompt: "You are a helpful assistant.",
         options: {
+          enabled: false,
           model: "gpt-3.5-turbo",
           temperature: 0.7,
-          context_message_count: 1,
+          context_max_message: 1,
           context_max_tokens: 2048,
-          response_max_token: 0
+          response_max_tokens: 0
         }
       },
     ],
@@ -62,6 +63,18 @@ const store = createStore({
         apiKey: "",
         // 聊天输入框enter键发送消息
         enterSend: true,
+        // api请求地址
+        apiUrl: "https://api.openai.com/",
+        // 模型名称
+        model: "gpt-3.5-turbo",
+        // 温度
+        temperature: 0.7,
+        // 上下文消息数量
+        context_max_message: 1,
+        // 上下文最大token数量
+        context_max_tokens: 2048,
+        // 响应最大token数量
+        response_max_tokens: 0
       },
       // 快捷键配置
       shortcut: {
