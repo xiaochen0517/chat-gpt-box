@@ -42,20 +42,6 @@ const formRules = ref({
       trigger: "blur"
     }
   ],
-  model: [
-    {
-      required: true,
-      message: "Please input robot model",
-      trigger: "blur"
-    }
-  ],
-  content_max_tokens: [
-    {
-      required: true,
-      message: "Please input robot content_max_tokens",
-      trigger: "blur"
-    }
-  ]
 });
 
 const robotIndex = ref(null);
@@ -63,15 +49,15 @@ const instance = getCurrentInstance();
 
 const rulesFormRef = ref(null);
 const commit = async () => {
-  if (!rulesFormRef) return;
-  await rulesFormRef.validate((valid, fields) => {
+  if (!rulesFormRef.value) return;
+  await rulesFormRef.value.validate((valid, fields) => {
     if (valid) {
       if (props.isEdit) {
         updateRobot();
       } else {
         addRobot();
       }
-      rulesFormRef.resetFields();
+      rulesFormRef.value.resetFields();
       dialogVisible.value = false;
     } else {
       console.log('error', fields);
@@ -123,11 +109,11 @@ defineExpose({
   <div class="add-robot-dialog">
     <el-dialog v-model="dialogVisible" title="Add robot">
       <el-form ref="rulesFormRef" :model="formData" :rules="formRules" label-width="200px">
-        <el-form-item label="Robot Name">
-          <el-input ref="robotNameInputRefs" v-model:value="formData.name" @pressEnter="commit"/>
+        <el-form-item label="Robot Name" prop="name">
+          <el-input ref="robotNameInputRefs" v-model="formData.name" @pressEnter="commit"/>
         </el-form-item>
-        <el-form-item label="Robot Prompt">
-          <el-input v-model:value="formData.prompt" @pressEnter="commit"/>
+        <el-form-item label="Robot Prompt" prop="prompt">
+          <el-input v-model="formData.prompt" @pressEnter="commit"/>
         </el-form-item>
         <el-form-item label="Enable Option">
           <el-switch v-model="formData.options.enabled"/>
