@@ -27,8 +27,8 @@ defineProps({
     <div class="flex flex-row gap-2">
       <div class="avatar-img">
         <div v-if="message.role === 'system'"
-             class="w-10 h-10 bg-indigo-500 dark:bg-indigo-600 rounded-md leading-10 text-center">
-          <setting-outlined class="text-2xl"/>
+             class="w-10 h-10 bg-indigo-500 dark:bg-indigo-600 rounded-md leading-10 text-center flex justify-center items-center">
+          <i class="iconfont icon-settings text-2xl leading-10"/>
         </div>
         <div v-if="message.role === 'assistant'"
              class="w-10 h-10 bg-sky-500 dark:bg-sky-600 rounded-md leading-10 text-center flex justify-center items-center">
@@ -44,7 +44,7 @@ defineProps({
       </div>
     </div>
     <div
-      class="flex flex-row mt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto">
+        class="flex flex-row mt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto">
       <el-popconfirm title="delete message" @confirm="$emit('delete', message, index)"
                      confirm-button-type="danger" confirm-button-text="Delete">
         <template #reference>
