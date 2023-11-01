@@ -40,7 +40,7 @@ onMounted(() => {
   mdHtml.value = markdown.render(props.content);
 });
 
-watch(() => props.content, (newVal, oldVal) => {
+watch(() => props.content, (newVal) => {
   mdHtml.value = markdown.render(newVal);
 });
 

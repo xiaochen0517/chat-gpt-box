@@ -43,7 +43,6 @@ const addTab = () => {
     robotIndex: props.robotIndex,
     tabName: formData.value.name,
   });
-  resetFields();
   dialogVisible.value = false;
 };
 
@@ -54,7 +53,6 @@ const focusNameInput = () => {
   });
 };
 const show = () => {
-  console.log("show");
   dialogVisible.value = true;
   focusNameInput();
 };
@@ -68,7 +66,7 @@ defineExpose({
     <el-dialog v-model="dialogVisible" title="Add Tab">
       <el-form ref="rulesFormRef" :model="formData" :rules="formRules">
         <el-form-item label="Tab Name" name="name">
-          <el-input ref="addTabInputRefs" v-model:value="formData.name" @pressEnter="commit"/>
+          <el-input ref="addTabInputRefs" v-model="formData.name" @pressEnter="commit"/>
         </el-form-item>
       </el-form>
       <template #footer>

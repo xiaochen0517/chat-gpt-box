@@ -1,14 +1,17 @@
 <script setup>
-import {ref, onMounted, onBeforeUnmount, nextTick, computed} from "vue";
+import {ref, nextTick, computed} from "vue";
 import {useStore} from "vuex";
-import {listen} from '@tauri-apps/api/event';
-import {WebviewWindow} from '@tauri-apps/api/window';
-import AddRobotDialog from "../dialog/EditRobotDialog.vue";
+import AddRobotDialog from "../chat/dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
-import SwitchThemeButton from "@/components/sidebar/SwitchThemeButton.vue";
-import CButton from "@/components/base/CButton.vue";
+import AppSettingsDialog from "@/components/setting/AppSettingsDialog.vue";
 
 const store = useStore();
+
+const isDarkMode = computed(() => store.state.config.isDarkMode);
+const handleChange = () => {
+  store.commit("setDarkMode", !isDarkMode.value);
+};
+
 const shortcut = computed(() => store.state.config.shortcut);
 const keys = useMagicKeys();
 const addRobotKey = keys[shortcut.value.addRobot];
@@ -18,26 +21,6 @@ whenever(addRobotKey, () => {
 const openSettingKey = keys[shortcut.value.openSetting];
 whenever(openSettingKey, () => {
   openSettingsWindow();
-});
-
-/**
- * 初始化BScroll和监听窗口关闭事件
- */
-let settingsWindowCloseUnListenFunc = null;
-onMounted(async () => {
-  // 不知道为什么在子窗口中调用close方法onCloseRequested回调不执行，只有在点击右上角关闭按钮时才会执行
-  settingsWindowCloseUnListenFunc = await createSettingsWindowCloseListener();
-});
-
-const createSettingsWindowCloseListener = async () => {
-  return await listen('resetSettingsWindow', () => {
-    settingsWindow = null;
-  });
-};
-onBeforeUnmount(() => {
-  if (settingsWindowCloseUnListenFunc) {
-    settingsWindowCloseUnListenFunc();
-  }
 });
 
 /**
@@ -52,38 +35,22 @@ const addRobotClick = () => {
   });
 };
 
-/**
- * 打开设置窗口
- */
-let settingsWindow = null;
+const appSettingsDialogRefs = ref(null);
 const openSettingsWindow = () => {
-  if (settingsWindow != null) {
-    settingsWindow.setFocus();
-  } else {
-    settingsWindow = createSettingsWindow();
-  }
-};
-const createSettingsWindow = () => {
-  return new WebviewWindow("settings", {
-    url: "/settings",
-    title: 'Settings',
-    width: 800,
-    height: 600,
-    resizable: false,
-    center: true,
-  });
+  appSettingsDialogRefs.value.show();
 };
 </script>
 
 <template>
   <div class="menu-list-block p-2">
     <div class="flex flex-col gap-2">
-      <c-button type="primary" @click="addRobotClick">Add Chat</c-button>
-      <div class="flex flex-row gap-2">
-        <c-button type="primary" @click="openSettingsWindow">Open Settings</c-button>
-        <switch-theme-button/>
+      <el-button type="primary" @click="addRobotClick">Add Chat</el-button>
+      <div class="flex flex-row">
+        <el-button class="flex-grow" type="primary" @click="openSettingsWindow">Open Settings</el-button>
+        <el-button type="primary" @click="handleChange">{{ isDarkMode ? 'Dark' : 'Light' }}</el-button>
       </div>
     </div>
     <AddRobotDialog ref="addRobotDialogRefs" @commit="$emit('addedRobot')"/>
+    <AppSettingsDialog ref="appSettingsDialogRefs"/>
   </div>
 </template>

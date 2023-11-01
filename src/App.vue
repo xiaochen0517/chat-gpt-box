@@ -37,6 +37,7 @@ const switchDarkMode = (isDark) => {
 
 <style lang="less">
 @import "assets/fonts/harmonyos_fonts.css";
+@import "assets/icons/iconfont.css";
 
 body,
 html {

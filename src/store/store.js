@@ -6,40 +6,38 @@ const store = createStore({
     version: "0.1.0",
     // 机器人列表
     robotList: [
-      {prompt: "You are a helpful assistant.", name: "TestRobot", options: {model: "gpt-3.5-turbo", max_tokens: 2048}},
+      {
+        name: "TestRobot",
+        prompt: "You are a helpful assistant.",
+        options: {
+          enabled: false,
+          apiUrl: "https://api.openai.com/",
+          model: "gpt-3.5-turbo",
+          temperature: 0.7,
+          context_max_message: 1,
+          context_max_tokens: 2048,
+          response_max_tokens: 0
+        }
+      },
     ],
     // 聊天记录
     chatHistory: [
       // 指定index机器人的聊天记录，拥有多个tab页
       [
         {
-          name: "TestRobot",
+          name: "test-1",
           // 当前是否处于生成中
           generating: false,
           // 指定index tab页的聊天记录
-          chat: [{role: "user", content: "你好0"}, {role: "assistant", content: "你好0"}],
+          chat: [{role: "system", content: "You are a helpful assistant."}],
         },
         {
-          name: "TestRobot1",
+          name: "test-2",
           // 当前是否处于生成中
           generating: false,
           // 指定index tab页的聊天记录
-          chat: [{role: "user", content: "你好1"}, {role: "assistant", content: "你好1"}],
-        },
-        {
-          name: "TestRobot2",
-          // 当前是否处于生成中
-          generating: false,
-          // 指定index tab页的聊天记录
-          chat: [{role: "user", content: "你好2"}, {role: "assistant", content: "你好2"}],
-        },
-        {
-          name: "TestRobot3",
-          // 当前是否处于生成中
-          generating: false,
-          // 指定index tab页的聊天记录
-          chat: [{role: "user", content: "你好3"}, {role: "assistant", content: "你好3"}],
-        },
+          chat: [{role: "system", content: "You are a helpful assistant."}],
+        }
       ],
     ],
     // 软件配置
@@ -52,6 +50,18 @@ const store = createStore({
         apiKey: "",
         // 聊天输入框enter键发送消息
         enterSend: true,
+        // api请求地址
+        apiUrl: "https://api.openai.com/",
+        // 模型名称
+        model: "gpt-3.5-turbo",
+        // 温度
+        temperature: 0.7,
+        // 上下文消息数量
+        context_max_message: 1,
+        // 上下文最大token数量
+        context_max_tokens: 2048,
+        // 响应最大token数量
+        response_max_tokens: 0
       },
       // 快捷键配置
       shortcut: {
@@ -178,7 +188,7 @@ const store = createStore({
     },
     // 保存是否为暗模式
     setDarkMode(state, darkMode) {
-      console.log("set dark mode = ", darkMode)
+      console.log("set dark mode = ", darkMode);
       state.config.isDarkMode = darkMode;
     },
     // 保存基础设置

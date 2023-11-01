@@ -1,8 +1,9 @@
 import store from "../store/store.js";
 import _ from "lodash";
+import {isWithinTokenLimit} from "gpt-tokenizer";
 
 // 请求地址
-const API_URL = "https://api.openai.com/v1/chat/completions";
+const API_URL = "v1/chat/completions";
 // 请求方式
 const REQ_TYPE = "POST";
 // 字符解码器
@@ -65,7 +66,7 @@ export class RequestUtil {
   };
 
   sendRequest = ({robotIndex, tabIndex, content}, change) => {
-    if (change != undefined) {
+    if (change) {
       this.changeFunc = change;
     }
     // 检查并初始化数据
@@ -81,22 +82,58 @@ export class RequestUtil {
       this.setGenerating(true);
       // 添加用户信息
       this.addUserMessage();
-      // 拷贝聊天记录，用于发送请求
-      let messages = _.cloneDeep(store.state.chatHistory[robotIndex][tabIndex].chat);
-      // 将消息的第一条之后和倒数第三条之前的消息删除
-      messages.splice(1, messages.length - 4);
+      // 获取配置信息
+      const robotOptions = this.getRobotOptions(robotIndex);
+      const messages = this.getContextMessages(robotIndex, tabIndex, robotOptions);
       // 添加助手信息
       this.addAssistantMessage();
       // 发送请求
-      this.sendFetch(messages);
-    } catch (exception) {
+      this.sendFetch(messages, robotOptions);
+    } catch
+      (exception) {
       console.error(exception);
       // 写入错误信息
       this.setAssistantMsgContent(exception.message);
       // 当前状态为生成完成
       this.setGenerating(false);
     }
-  };
+  }
+
+  getContextMessages = (robotIndex, tabIndex, options) => {
+    // 拷贝聊天记录，用于发送请求
+    let messages = _.cloneDeep(store.state.chatHistory[robotIndex][tabIndex].chat);
+    if (options.context_max_message <= 0 || options.context_max_tokens <= 0) {
+      return messages[0];
+    }
+    // 获取指定数量的上下文消息
+    let contextMessages;
+    if (options.context_max_message >= messages.length - 1) {
+      contextMessages = messages;
+    } else {
+      contextMessages = messages.splice(1, messages.length - (options.context_max_message + 1));
+    }
+    // 检查上下文中的消息是否已经超过最大token数量
+    while (!isWithinTokenLimit(contextMessages, options.context_max_tokens)) {
+      // 消息的token数量超过了最大token数量，需要删除消息
+      if (contextMessages.length === 1) {
+        // 只有一条消息，为prompt，无法删除
+        break;
+      }
+      // 有多条消息，删除除了prompt之外的第一条消息
+      contextMessages.splice(1, 1);
+    }
+    return contextMessages;
+  }
+
+  getRobotOptions = (robotIndex) => {
+    let robotOptions = store.state.robotList[robotIndex].options;
+    // 获取配置信息
+    if (!robotOptions.enabled) {
+      // 获取全局配置
+      return store.state.config.base;
+    }
+    return robotOptions;
+  }
 
   checkRequestData = (robotIndex, tabIndex, content) => {
     // 检查并初始化数据
@@ -104,7 +141,7 @@ export class RequestUtil {
       console.error("无信息可发送");
       throw Error("无信息可发送");
     }
-    if (robotIndex == undefined || tabIndex == undefined) {
+    if (!(robotIndex >= 0 && tabIndex >= 0)) {
       console.error("无效的索引");
       throw Error("无效的索引");
     }
@@ -112,7 +149,7 @@ export class RequestUtil {
 
   buildHeaders = () => {
     const apiKey = store.state.config.base.apiKey;
-    if (apiKey == "" || apiKey.length < 3) {
+    if (!apiKey || apiKey === "" || apiKey.length < 3) {
       throw Error("请输入正确的ApiKey");
     }
     return {
@@ -121,22 +158,24 @@ export class RequestUtil {
     };
   };
 
-  buildBodyJson = (messages) => {
-    const robotOptions = store.state.robotList[this.data.robotIndex].options;
-    return JSON.stringify({
+  buildBodyJson = (messages, options) => {
+    let requestObject = {
       messages,
-      model: robotOptions.model,
-      max_tokens: robotOptions.max_tokens,
+      model: options.model,
       stream: true,
-    });
+    };
+    if (options.response_max_tokens > 0) {
+      requestObject["max_tokens"] = options.response_max_tokens;
+    }
+    return JSON.stringify(requestObject);
   };
 
-  sendFetch = (messages) => {
+  sendFetch = (messages, options) => {
     const controller = new AbortController();
-    fetch(API_URL, {
+    fetch(options.apiUrl + API_URL, {
       method: REQ_TYPE,
       headers: this.buildHeaders(),
-      body: this.buildBodyJson(messages),
+      body: this.buildBodyJson(messages, options),
       signal: controller.signal,
     }).then((data) => {
       this.reader = data.body.getReader();
@@ -162,7 +201,7 @@ export class RequestUtil {
         continue;
       }
       // 判断是否读取完成
-      if (string.trim() == "[DONE]") {
+      if (string.trim() === "[DONE]") {
         console.log("读取完成");
         return;
       }

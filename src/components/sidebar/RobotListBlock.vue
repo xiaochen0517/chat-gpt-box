@@ -2,21 +2,8 @@
 import {computed, getCurrentInstance, onBeforeUnmount, onMounted, ref} from "vue";
 import {useStore} from "vuex";
 import {EllipsisOutlined} from "@ant-design/icons-vue";
-import EditRobotDialog from "../dialog/EditRobotDialog.vue";
+import EditRobotDialog from "../chat/dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
-
-onMounted(() => {
-// 监听点击事件
-  addEventListener("click", (e) => {
-    if (robotListRefs.value && !robotListRefs.value.contains(e.target)) {
-      robotList.value.forEach((item) => {
-        if (item.showPopover) {
-          item.showPopover = false;
-        }
-      });
-    }
-  });
-});
 
 const instance = getCurrentInstance();
 const activeRobotIndex = ref(0);
@@ -25,6 +12,9 @@ const changeActiveRobot = (index, item) => {
   instance.emit('onClick', index, item);
 };
 
+/**
+ * 快捷键操作
+ */
 const store = useStore();
 const shortcut = computed(() => store.state.config.shortcut);
 const keys = useMagicKeys();
@@ -66,6 +56,14 @@ const editRobotClick = (index) => {
   editRobotDialogRefs.value.show(index);
   robotListPopoverVisible.value = false;
 };
+
+const scrollToBottom = () => {
+  robotListRefs.value.scrollTop = robotListRefs.value.scrollHeight;
+};
+
+defineExpose({
+  scrollToBottom
+});
 </script>
 
 <template>
@@ -84,7 +82,8 @@ const editRobotClick = (index) => {
                    class="cursor-pointer rounded-md hover:bg-gray-200 dark:hover:bg-slate-700 leading-6 box-border py-1 px-2 mb-1">
                 Edit Chat
               </div>
-              <div class="cursor-pointer rounded-md hover:bg-gray-200 dark:hover:bg-slate-700 leading-6 box-border py-1 px-2">
+              <div
+                  class="cursor-pointer rounded-md hover:bg-gray-200 dark:hover:bg-slate-700 leading-6 box-border py-1 px-2">
                 Delete Chat
               </div>
             </div>
@@ -102,3 +101,10 @@ const editRobotClick = (index) => {
     <EditRobotDialog ref="editRobotDialogRefs" :is-edit="true"/>
   </div>
 </template>
+
+<style>
+// element-ui popover 内边距重置
+.el-popover {
+  --el-popover-padding: 0;
+}
+</style>
