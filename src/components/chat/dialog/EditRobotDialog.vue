@@ -19,6 +19,7 @@ const formData = ref({
   prompt: "You are a helpful assistant.",
   options: {
     enabled: false,
+    apiUrl: "https://api.openai.com/",
     model: "gpt-3.5-turbo",
     temperature: 0.7,
     context_max_message: 1,
@@ -108,7 +109,7 @@ defineExpose({
 <template>
   <div class="add-robot-dialog">
     <el-dialog v-model="dialogVisible" title="Add robot">
-      <el-form ref="rulesFormRef" :model="formData" :rules="formRules" label-width="200px">
+      <el-form ref="rulesFormRef" :model="formData" :rules="formRules" label-width="150px">
         <el-form-item label="Robot Name" prop="name">
           <el-input ref="robotNameInputRefs" v-model="formData.name" @pressEnter="commit"/>
         </el-form-item>
@@ -118,12 +119,15 @@ defineExpose({
         <el-form-item label="Enable Option">
           <el-switch v-model="formData.options.enabled"/>
         </el-form-item>
+        <el-form-item v-if="formData.options.enabled" label="Api Url" prop="apiUrl">
+          <el-input v-model="formData.options.apiUrl"/>
+        </el-form-item>
         <el-form-item v-if="formData.options.enabled" label="Model" prop="model">
           <el-select v-model="formData.options.model">
             <el-option v-for="(item, index) in modelList" :key="index" :label="item.label" :value="item.value"/>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="formData.options.enabled" label="temperature" prop="temperature">
+        <el-form-item v-if="formData.options.enabled" label="Temperature" prop="temperature">
           <el-slider class="ml-2" v-model="formData.options.temperature" :min="0" :max="1" :step="0.1" show-input/>
         </el-form-item>
         <el-form-item v-if="formData.options.enabled" label="Context Msg" prop="context_max_message">

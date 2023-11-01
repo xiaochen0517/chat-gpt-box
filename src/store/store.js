@@ -11,6 +11,7 @@ const store = createStore({
         prompt: "You are a helpful assistant.",
         options: {
           enabled: false,
+          apiUrl: "https://api.openai.com/",
           model: "gpt-3.5-turbo",
           temperature: 0.7,
           context_max_message: 1,
@@ -24,33 +25,19 @@ const store = createStore({
       // 指定index机器人的聊天记录，拥有多个tab页
       [
         {
-          name: "TestRobot",
+          name: "test-1",
           // 当前是否处于生成中
           generating: false,
           // 指定index tab页的聊天记录
-          chat: [{role: "user", content: "你好0"}, {role: "assistant", content: "你好0"}],
+          chat: [{role: "system", content: "You are a helpful assistant."}],
         },
         {
-          name: "TestRobot1",
+          name: "test-2",
           // 当前是否处于生成中
           generating: false,
           // 指定index tab页的聊天记录
-          chat: [{role: "user", content: "你好1"}, {role: "assistant", content: "你好1"}],
-        },
-        {
-          name: "TestRobot2",
-          // 当前是否处于生成中
-          generating: false,
-          // 指定index tab页的聊天记录
-          chat: [{role: "user", content: "你好2"}, {role: "assistant", content: "你好2"}],
-        },
-        {
-          name: "TestRobot3",
-          // 当前是否处于生成中
-          generating: false,
-          // 指定index tab页的聊天记录
-          chat: [{role: "user", content: "你好3"}, {role: "assistant", content: "你好3"}],
-        },
+          chat: [{role: "system", content: "You are a helpful assistant."}],
+        }
       ],
     ],
     // 软件配置
@@ -105,37 +92,37 @@ const store = createStore({
   },
   mutations: {
     // 从本地存储中加载状态
-    initState (state) {
+    initState(state) {
       const savedState = localStorage.getItem("vuex");
       if (savedState) {
         this.replaceState(Object.assign(state, JSON.parse(savedState)));
       }
     },
     // 同步修改状态
-    setApiKey (state, payload) {
+    setApiKey(state, payload) {
       state.apiKey = payload;
     },
     // 删除机器人
-    removeRobot (state, index) {
+    removeRobot(state, index) {
       state.robotList.splice(index, 1);
       state.chatHistory.splice(index, 1);
     },
     // 添加机器人
-    addRobot (state, robot) {
+    addRobot(state, robot) {
       state.robotList.push(robot);
       state.chatHistory.push([{name: "default", chat: [{role: "system", content: robot.prompt}]}]);
     },
     // 更新机器人
-    updateRobot (state, {robotIndex, robot}) {
+    updateRobot(state, {robotIndex, robot}) {
       // 先删除再添加
       state.robotList.splice(robotIndex, 1, robot);
     },
     // 删除聊天tab页
-    removeChatTab (state, {robotIndex, tabIndex}) {
+    removeChatTab(state, {robotIndex, tabIndex}) {
       state.chatHistory[robotIndex].splice(tabIndex, 1);
     },
     // 添加聊天tab页
-    addChatTab (state, {robotIndex, tabName}) {
+    addChatTab(state, {robotIndex, tabName}) {
       const robotInfo = state.robotList[robotIndex];
       state.chatHistory[robotIndex].push({
         name: tabName,
@@ -143,7 +130,7 @@ const store = createStore({
         chat: [{role: "system", content: robotInfo.prompt}]
       });
     },
-    cleanTabChat (state, {robotIndex, tabIndex}) {
+    cleanTabChat(state, {robotIndex, tabIndex}) {
       // 获取当前tab所属的机器人信息
       const robotInfo = state.robotList[robotIndex];
       // 删除当前tab的所有聊天记录
@@ -152,76 +139,76 @@ const store = createStore({
       state.chatHistory[robotIndex][tabIndex].chat.push({role: "system", content: robotInfo.prompt});
     },
     // 添加新消息
-    addChatMsg (state, {chatIndex, tabIndex, message}) {
+    addChatMsg(state, {chatIndex, tabIndex, message}) {
       state.chatHistory[chatIndex][tabIndex].chat.push(message);
     },
     // 设置指定的content内容
-    setChatContent (state, {chatIndex, tabIndex, content}) {
+    setChatContent(state, {chatIndex, tabIndex, content}) {
       const msgIndex = state.chatHistory[chatIndex][tabIndex].chat.length - 1;
       state.chatHistory[chatIndex][tabIndex].chat[msgIndex].content += content;
     },
     // 移除指定聊天记录
-    removeChatMessage (state, {robotIndex, tabIndex, msgIndex}) {
+    removeChatMessage(state, {robotIndex, tabIndex, msgIndex}) {
       state.chatHistory[robotIndex][tabIndex].chat.splice(msgIndex, 1);
     },
     // 清除指定聊天记录
-    cleanAllMessage (state, {chatIndex, tabIndex}) {
+    cleanAllMessage(state, {chatIndex, tabIndex}) {
       const msgCount = state.chatHistory[chatIndex][tabIndex].chat.length;
       state.chatHistory[chatIndex][tabIndex].chat.splice(1, msgCount - 1);
     },
     // 添加一个用户消息
-    addUserMessage (state, {robotIndex, tabIndex, content}) {
+    addUserMessage(state, {robotIndex, tabIndex, content}) {
       state.chatHistory[robotIndex][tabIndex].chat.push({role: "user", content});
     },
     // 添加一个空白的机器人消息
-    addAssistantMessage (state, {robotIndex, tabIndex}) {
+    addAssistantMessage(state, {robotIndex, tabIndex}) {
       state.chatHistory[robotIndex][tabIndex].chat.push({role: "assistant", content: ""});
     },
     // 机器人消息新增
-    addAssistantMsgContent (state, {robotIndex, tabIndex, content}) {
+    addAssistantMsgContent(state, {robotIndex, tabIndex, content}) {
       const msgIndex = state.chatHistory[robotIndex][tabIndex].chat.length - 1;
       state.chatHistory[robotIndex][tabIndex].chat[msgIndex].content += content;
     },
     // 设置机器人消息
-    setAssistantMsgContent (state, {robotIndex, tabIndex, content}) {
+    setAssistantMsgContent(state, {robotIndex, tabIndex, content}) {
       const msgIndex = state.chatHistory[robotIndex][tabIndex].chat.length - 1;
       state.chatHistory[robotIndex][tabIndex].chat[msgIndex].content = content;
     },
     // 更新消息
-    updateMessage (state, {robotIndex, tabIndex, messageIndex, message}) {
+    updateMessage(state, {robotIndex, tabIndex, messageIndex, message}) {
       state.chatHistory[robotIndex][tabIndex].chat.splice(messageIndex, 1, message);
     },
     // 设置是否正在生成中
-    setGenerating (state, {robotIndex, tabIndex, generating}) {
+    setGenerating(state, {robotIndex, tabIndex, generating}) {
       state.chatHistory[robotIndex][tabIndex].generating = generating;
     },
     // 设置消息发送方式
-    setEnterSend (state, enterSend) {
+    setEnterSend(state, enterSend) {
       state.config.enterSend = enterSend;
     },
     // 保存是否为暗模式
-    setDarkMode (state, darkMode) {
+    setDarkMode(state, darkMode) {
       console.log("set dark mode = ", darkMode);
       state.config.isDarkMode = darkMode;
     },
     // 保存基础设置
-    saveBaseConfig (state, base) {
+    saveBaseConfig(state, base) {
       state.config.base = base;
     },
     // 保存快捷键设置
-    saveShortcutConfig (state, shortcut) {
+    saveShortcutConfig(state, shortcut) {
       state.config.shortcut = shortcut;
     },
   },
   actions: {
     // 保存状态到本地存储
-    saveState ({state}) {
+    saveState({state}) {
       localStorage.setItem("vuex", JSON.stringify(state));
     }
   },
   getters: {
     // 获取状态
-    getApiKey (state) {
+    getApiKey(state) {
       return state.apiKey;
     }
   }
