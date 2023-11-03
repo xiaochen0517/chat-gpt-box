@@ -14,7 +14,7 @@ const saveSettings = async () => {
   await baseSettingsBlockRefs.value.saveData();
   await shortcutSettingsBlockRefs.value.saveData();
   // 刷新页面
-  // location.reload();
+  dialogVisible.value = false;
 };
 
 const show = () => {
