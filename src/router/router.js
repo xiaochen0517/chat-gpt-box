@@ -5,11 +5,6 @@ const routes = [
     path: '/',
     name: 'Home',
     component: () => import('../views/HomePage.vue')
-  },
-  {
-    path: '/settings',
-    name: 'Settings',
-    component: () => import('../views/SettingsPage.vue')
   }
 ];
 
