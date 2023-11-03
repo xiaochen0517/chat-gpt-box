@@ -176,7 +176,8 @@ const store = createStore({
     },
     // 更新消息
     updateMessage(state, {robotIndex, tabIndex, messageIndex, message}) {
-      state.chatHistory[robotIndex][tabIndex].chat.splice(messageIndex, 1, message);
+      state.chatHistory[robotIndex][tabIndex].chat[messageIndex].role = message.role;
+      state.chatHistory[robotIndex][tabIndex].chat[messageIndex].content = message.content;
     },
     // 设置是否正在生成中
     setGenerating(state, {robotIndex, tabIndex, generating}) {
