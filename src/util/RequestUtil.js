@@ -1,6 +1,6 @@
 import store from "../store/store.js";
 import _ from "lodash";
-import {isWithinTokenLimit} from "gpt-tokenizer";
+import {encodeChat} from "gpt-tokenizer";
 
 // 请求地址
 const API_URL = "v1/chat/completions";
@@ -110,10 +110,11 @@ export class RequestUtil {
     if (options.context_max_message >= messages.length - 1) {
       contextMessages = messages;
     } else {
-      contextMessages = messages.splice(1, messages.length - (options.context_max_message + 1));
+      const systemMessage = messages[0];
+      contextMessages = [systemMessage, ...messages.slice(-(options.context_max_message + 1))];
     }
     // 检查上下文中的消息是否已经超过最大token数量
-    while (!isWithinTokenLimit(contextMessages, options.context_max_tokens)) {
+    while (encodeChat(contextMessages, options.model).length > options.context_max_tokens) {
       // 消息的token数量超过了最大token数量，需要删除消息
       if (contextMessages.length === 1) {
         // 只有一条消息，为prompt，无法删除
