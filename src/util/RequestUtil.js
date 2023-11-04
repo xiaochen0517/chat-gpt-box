@@ -164,6 +164,7 @@ export class RequestUtil {
       messages,
       model: options.model,
       stream: true,
+      temperature: options.temperature,
     };
     if (options.response_max_tokens > 0) {
       requestObject["max_tokens"] = options.response_max_tokens;
