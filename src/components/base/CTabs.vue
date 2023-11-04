@@ -1,6 +1,6 @@
 <script setup>
 
-import {getCurrentInstance, onMounted, ref, provide, watch} from "vue";
+import {getCurrentInstance, onMounted, ref, provide, watch, computed} from "vue";
 
 const props = defineProps({
   activeKey: {
@@ -25,6 +25,7 @@ onMounted(() => {
     return;
   }
   let tabPanes = defaultSlotElements[0].children;
+  console.log("tabPanes:", tabPanes)
   for (let tabPane of tabPanes) {
     tabNames.value.push(tabPane.props.tabName);
   }
@@ -36,6 +37,23 @@ const activateTab = (key) => {
   context.emit("update:activeKey", key);
 };
 
+const refreshTabNames = () => {
+  if (defaultSlotElements.length <= 0) {
+    return;
+  }
+  console.log("refreshTabInfo");
+  tabNames.value = [];
+  let tabPanes = defaultSlotElements[0].children;
+  console.log("tabPanes:", tabPanes)
+  for (let tabPane of tabPanes) {
+    tabNames.value.push(tabPane.props.tabName);
+  }
+};
+
+defineExpose({
+  refreshTabNames
+})
+
 const activeClass = ref("border-gray-300 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:border-slate-700 dark:bg-gray-900 dark:hover:bg-gray-800 dark:active:bg-gray-700 text-green-500 dark:text-green-400 font-bold");
 const inactiveClass = ref("border-gray-400 bg-gray-200 hover:bg-gray-300 hover:text-gray-900 active:bg-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:active:bg-gray-600 text-gray-500 dark:text-gray-500 font-bold");
 
@@ -45,8 +63,8 @@ const closeInactiveClass = ref("hover:bg-gray-400 dark:hover:bg-gray-600");
 
 <template>
   <div class="flex flex-col">
-    <div class="max-w-5xl m-auto overflow-hidden overflow-x-auto w-full p-2 box-border">
-      <div class="flex flex-row min-w-full p-1.5 bg-gray-100 dark:bg-gray-950 rounded-md">
+    <div class="max-w-5xl m-auto my-2 overflow-hidden overflow-x-auto w-full p-2 box-border bg-gray-100 dark:bg-gray-950 rounded-md">
+      <div class="flex flex-row min-w-full">
         <div v-for="(item, index) in tabNames" :key="index" @click="activateTab(index)"
              class="px-2 py-1.5 mr-1 box-border rounded-md cursor-pointer border select-none flex flex-row items-center"
              :class="propsActiveKey === index ? activeClass: inactiveClass">
@@ -58,7 +76,8 @@ const closeInactiveClass = ref("hover:bg-gray-400 dark:hover:bg-gray-600");
           </div>
         </div>
         <div
-            class="px-2 py-1.5 mr-1 box-border rounded-md cursor-pointer border border-slate-300 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:border-slate-700  dark:bg-gray-900  dark:hover:bg-gray-800  dark:active:bg-gray-700 select-none">
+            class="px-2 py-1.5 mr-1 box-border rounded-md cursor-pointer border border-slate-300 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:border-slate-700  dark:bg-gray-900  dark:hover:bg-gray-800  dark:active:bg-gray-700 select-none"
+            @click="$emit('addTabClick')">
           <i class="iconfont icon-add text-xs leading-3 font-bold mx-1"/>
         </div>
       </div>

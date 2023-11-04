@@ -1,5 +1,5 @@
 <script setup>
-import {computed, ref, watch} from "vue";
+import {computed, nextTick, onMounted, ref, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
 import {useStore} from "vuex";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
@@ -56,12 +56,29 @@ const cleanTabChat = () => {
 
 const activeTabIndex = ref(0);
 watch(
-  () => activeTabIndex.value,
-  () => {
-    scrollToBottom();
-  }
+    () => activeTabIndex.value,
+    () => {
+      scrollToBottom();
+    }
 );
+
 const chatTabsSize = computed(() => store.state.chatHistory[props.robotIndex].length);
+onMounted(() => {
+  // refreshCurrentChatTabsSize();
+  // cTabsRef.value.refreshTabNames();
+});
+
+const cTabsRef = ref(null);
+const refreshCurrentChatTabsSize = () => {
+  chatTabsSize.value = store.state.chatHistory[props.robotIndex].length;
+  setTimeout(() => {
+    nextTick(() => {
+      cTabsRef.value.refreshTabNames();
+    });
+  }, 0);
+  console.log("refreshCurrentChatTabsSize", chatTabsSize.value);
+};
+
 const addTabDialogRefs = ref(null);
 const chatTabsEdit = (targetKey, action) => {
   if (action === "remove") {
@@ -74,6 +91,11 @@ const confirmRemoveTab = (targetKey) => {
   // TODO 二次确认
   removeTab(targetKey);
 };
+
+const addTab = () => {
+  addTabDialogRefs.value.show();
+}
+
 const removeTab = (targetKey) => {
   if (activeTabIndex.value === targetKey) {
     // 切换tab
@@ -116,11 +138,11 @@ defineExpose({
 
 <template>
   <div class="overflow-hidden overflow-y-auto">
-    <c-tabs v-model:activeKey="activeTabIndex">
+    <c-tabs ref="cTabsRef" v-model:activeKey="activeTabIndex" @addTabClick="addTab">
       <c-tab-pane v-for="(number, index) in chatTabsSize" :key="index" :tabName="chatTabNameList[index]">
         <chat-msg-list-block ref="chatMsgListBlockRefs" :robotIndex="props.robotIndex" :tabIndex="index"/>
       </c-tab-pane>
     </c-tabs>
-    <AddTabDialog ref="addTabDialogRefs" :robot-index="props.robotIndex"/>
+    <AddTabDialog ref="addTabDialogRefs" :robotIndex="props.robotIndex" @addTabSuccess="refreshCurrentChatTabsSize"/>
   </div>
 </template>
