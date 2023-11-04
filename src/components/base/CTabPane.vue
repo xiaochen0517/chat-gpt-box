@@ -2,13 +2,6 @@
 
 import {computed, getCurrentInstance, inject, onMounted} from "vue";
 
-defineProps({
-  tabName: {
-    type: String,
-    default: ""
-  },
-});
-
 const instance = getCurrentInstance();
 
 const parentActiveKey = inject("activeKey");
