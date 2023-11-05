@@ -38,13 +38,13 @@ const closeInactiveClass = ref("hover:bg-gray-400 dark:hover:bg-gray-600");
     <div
         class="max-w-5xl m-auto my-2 overflow-hidden overflow-x-auto w-full p-2 box-border bg-gray-100 dark:bg-gray-950 rounded-md">
       <div class="flex flex-row min-w-full">
-        <div v-for="(item, index) in propsTabNames" :key="index" @click="activateTab(index)"
+        <div v-for="(item, index) in propsTabNames" :key="index" @click="$emit('update:activeKey', index)"
              class="px-2 py-1.5 mr-1 box-border rounded-md cursor-pointer border select-none flex flex-row items-center"
              :class="propsActiveKey === index ? activeClass: inactiveClass">
           {{ item }}
           <div class="ml-1 w-5 h-5 flex justify-center items-center rounded hover:bg-gray-400"
                :class="propsActiveKey === index ? closeActiveClass: closeInactiveClass"
-               @click.stop="">
+               @click.stop="$emit('removeTabClick', index)">
             <i class="iconfont icon-close text-xs leading-3 font-bold"/>
           </div>
         </div>

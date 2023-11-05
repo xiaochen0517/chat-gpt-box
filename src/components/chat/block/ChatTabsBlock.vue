@@ -1,11 +1,12 @@
 <script setup>
-import {computed, nextTick, onMounted, ref, toRef, watch} from "vue";
+import {computed, getCurrentInstance, ref, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
 import {useStore} from "vuex";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/CTabs.vue";
 import CTabPane from "@/components/base/CTabPane.vue";
+import {ElMessageBox} from "element-plus";
 
 const props = defineProps({
   robotIndex: {
@@ -46,6 +47,7 @@ const cleanTabChatKey = keys[shortcut.value.cleanTabChat];
 whenever(cleanTabChatKey, () => {
   cleanTabChat();
 });
+
 const cleanTabChat = () => {
   // TODO 二次确认
   store.commit("cleanTabChat", {
@@ -105,6 +107,17 @@ const chatMsgListBlockRefs = ref([]);
 const scrollToBottom = () => {
 };
 
+const removeTabClick = (index) => {
+  ElMessageBox.confirm("Are you sure to remove this tab?", "Warning", {
+    confirmButtonText: "OK",
+    cancelButtonText: "Cancel",
+    type: "warning"
+  }).then(() => {
+    removeTab(index);
+  }).catch(() => {
+  });
+};
+
 defineExpose({
   getTabIndex,
   scrollToBottom,
@@ -113,7 +126,8 @@ defineExpose({
 
 <template>
   <div class="overflow-hidden overflow-y-auto">
-    <c-tabs v-model:activeKey="activeTabIndex" :tabNames="chatTabNameList" @addTabClick="addTab">
+    <c-tabs v-model:activeKey="activeTabIndex" :tabNames="chatTabNameList" @addTabClick="addTab"
+            @removeTabClick="removeTabClick">
       <c-tab-pane v-for="(number, index) in chatTabNameList.length" :key="index">
         <chat-msg-list-block ref="chatMsgListBlockRefs" :robotIndex="props.robotIndex" :tabIndex="index"/>
       </c-tab-pane>
