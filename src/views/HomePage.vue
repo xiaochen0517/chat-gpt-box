@@ -13,10 +13,15 @@ const store = useStore();
  */
 onMounted(() => {
   checkConfig();
+  addWindowsCloseListener();
+});
+
+const addWindowsCloseListener = () => {
+  if (!appWindow || !window.__TAURI_IPC__) return;
   appWindow.onCloseRequested(async () => {
     await exit(0);
   });
-});
+};
 
 /**
  * 检查配置项内容
