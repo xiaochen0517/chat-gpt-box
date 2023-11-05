@@ -50,6 +50,7 @@ const saveData = async () => {
       store.commit("saveBaseConfig", baseConfig.value);
     } else {
       console.log('error', fields);
+      throw new Error("表单验证失败");
     }
   });
 };
@@ -62,7 +63,7 @@ defineExpose({
   <div class="base-setting-block">
     <el-form ref="rulesFormRef" :model="baseConfig" :rules="formRules" label-width="130px">
       <el-form-item label="ApiKey" prop="apiKey">
-        <el-input v-model="baseConfig.apiKey" type="password" placeholder="Please input ApiKey"/>
+        <el-input v-model="baseConfig.apiKey" placeholder="Please input ApiKey"/>
       </el-form-item>
       <el-form-item label="Enter Key Send" prop="enterSend">
         <el-switch v-model="baseConfig.enterSend"/>

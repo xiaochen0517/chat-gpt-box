@@ -20,6 +20,7 @@ const saveData = async () => {
       store.commit("saveShortcutConfig", shortcut.value);
     } else {
       console.log('error', fields);
+      throw new Error("表单验证失败");
     }
   });
 };
