@@ -51,6 +51,7 @@ const shiftEnterKeyDown = () => {
     <textarea ref="chatInputTextAreaRefs"
               class="flex-1 h-full m-0 p-2 inline-block bg-gray-100 dark:bg-slate-900 rounded-md box-border border-2 border-gray-300 focus:border-slate-400 dark:border-slate-600 dark:focus:border-slate-400"
               v-model="chatInputContent"
+              placeholder="Please input message"
               @keydown.enter.prevent.exact="enterKeyDown" @keydown.shift.enter.prevent.exact="shiftEnterKeyDown"
               rows="2"></textarea>
     <div @click.stop="commitContent"
