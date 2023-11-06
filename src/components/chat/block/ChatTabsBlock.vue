@@ -1,11 +1,12 @@
 <script setup>
-import {computed, ref, watch} from "vue";
+import {computed, getCurrentInstance, ref, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
 import {useStore} from "vuex";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/CTabs.vue";
 import CTabPane from "@/components/base/CTabPane.vue";
+import {ElMessageBox} from "element-plus";
 
 const props = defineProps({
   robotIndex: {
@@ -38,7 +39,7 @@ whenever(prevTabKey, () => {
 const nextTabKey = keys[shortcut.value.nextTab];
 whenever(nextTabKey, () => {
   const targetIndex = activeTabIndex.value + 1;
-  if (targetIndex < chatTabsSize.value) {
+  if (targetIndex < chatTabNameList.value.length) {
     activeTabIndex.value = targetIndex;
   }
 });
@@ -46,6 +47,7 @@ const cleanTabChatKey = keys[shortcut.value.cleanTabChat];
 whenever(cleanTabChatKey, () => {
   cleanTabChat();
 });
+
 const cleanTabChat = () => {
   // TODO 二次确认
   store.commit("cleanTabChat", {
@@ -56,28 +58,25 @@ const cleanTabChat = () => {
 
 const activeTabIndex = ref(0);
 watch(
-  () => activeTabIndex.value,
-  () => {
-    scrollToBottom();
-  }
+    () => activeTabIndex.value,
+    () => {
+      scrollToBottom();
+    }
 );
-const chatTabsSize = computed(() => store.state.chatHistory[props.robotIndex].length);
+
 const addTabDialogRefs = ref(null);
-const chatTabsEdit = (targetKey, action) => {
-  if (action === "remove") {
-    confirmRemoveTab(targetKey);
-  } else if (action === "add") {
-    addTabDialogRefs.value.show();
-  }
-};
 const confirmRemoveTab = (targetKey) => {
-  // TODO 二次确认
   removeTab(targetKey);
 };
+
+const addTab = () => {
+  addTabDialogRefs.value.show();
+}
+
 const removeTab = (targetKey) => {
   if (activeTabIndex.value === targetKey) {
     // 切换tab
-    if (targetKey === chatTabsSize.value - 1) {
+    if (targetKey === chatTabNameList.value.length - 1) {
       activeTabIndex.value = targetKey - 1;
     } else {
       activeTabIndex.value = targetKey;
@@ -108,6 +107,17 @@ const chatMsgListBlockRefs = ref([]);
 const scrollToBottom = () => {
 };
 
+const removeTabClick = (index) => {
+  ElMessageBox.confirm("Are you sure to remove this tab?", "Warning", {
+    confirmButtonText: "OK",
+    cancelButtonText: "Cancel",
+    type: "warning"
+  }).then(() => {
+    removeTab(index);
+  }).catch(() => {
+  });
+};
+
 defineExpose({
   getTabIndex,
   scrollToBottom,
@@ -116,11 +126,12 @@ defineExpose({
 
 <template>
   <div class="overflow-hidden overflow-y-auto">
-    <c-tabs v-model:activeKey="activeTabIndex">
-      <c-tab-pane v-for="(number, index) in chatTabsSize" :key="index" :tabName="chatTabNameList[index]">
+    <c-tabs v-model:activeKey="activeTabIndex" :tabNames="chatTabNameList" @addTabClick="addTab"
+            @removeTabClick="removeTabClick">
+      <c-tab-pane v-for="(number, index) in chatTabNameList.length" :key="index">
         <chat-msg-list-block ref="chatMsgListBlockRefs" :robotIndex="props.robotIndex" :tabIndex="index"/>
       </c-tab-pane>
     </c-tabs>
-    <AddTabDialog ref="addTabDialogRefs" :robot-index="props.robotIndex"/>
+    <AddTabDialog ref="addTabDialogRefs" :robotIndex="props.robotIndex"/>
   </div>
 </template>
