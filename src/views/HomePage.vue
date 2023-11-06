@@ -17,7 +17,7 @@ onMounted(() => {
 });
 
 const addWindowsCloseListener = () => {
-  if (!appWindow || !window.__TAURI_IPC__) return;
+  if (!window.__TAURI__ || !window.__TAURI__.isRunningInTauri) return;
   appWindow.onCloseRequested(async () => {
     await exit(0);
   });
