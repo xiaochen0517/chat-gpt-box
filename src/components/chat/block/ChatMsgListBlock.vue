@@ -18,6 +18,7 @@ const props = defineProps({
 });
 
 const msgList = computed(() => store.state.chatHistory[props.robotIndex][props.tabIndex].chat);
+const robotOptions = computed(() => store.state.robotList[props.robotIndex].options);
 onMounted(() => {
 });
 
@@ -43,8 +44,14 @@ const editMessage = (message, index) => {
 
 <template>
   <div class="max-w-5xl mx-auto p-2">
+    <div v-if="robotOptions?.enabled" class="flex flex-row">
+      <div class="border border-gray-700 rounded px-2 py-1 dark:bg-amber-600 text-sm font-bold select-none">
+        <i class="iconfont icon-settings font-normal"/>
+        {{ robotOptions.model?.toUpperCase() }}
+      </div>
+    </div>
     <ChatMessageBlock v-for="(item, index) in msgList" :key="index" :index="index" :message="item"
-                      @delete="deleteMessage" @edit="editMessage"/>
+                      @delete="deleteMessage" @edit="editMessage" :options="store.state.robotList[robotIndex].options"/>
     <EditMessageDialog ref="editMessageDialogRefs"/>
   </div>
 </template>
