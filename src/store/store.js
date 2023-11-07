@@ -3,7 +3,7 @@ import {createStore} from "vuex";
 const store = createStore({
   state: {
     // 版本号
-    version: "0.1.0",
+    version: "0.1.1",
     // 机器人列表
     robotList: [
       {
