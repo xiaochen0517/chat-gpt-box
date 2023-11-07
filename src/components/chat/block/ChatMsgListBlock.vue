@@ -34,7 +34,6 @@ const deleteMessage = (message, index) => {
 
 const editMessageDialogRefs = ref(null);
 const editMessage = (message, index) => {
-  console.log("editMessage", message, index);
   if (editMessageDialogRefs.value) {
     editMessageDialogRefs.value.show(props.robotIndex, props.tabIndex, index);
   }

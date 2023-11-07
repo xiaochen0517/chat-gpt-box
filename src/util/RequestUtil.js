@@ -57,7 +57,6 @@ export class RequestUtil {
   };
 
   setGenerating = (generating) => {
-    console.log("data", this.data);
     store.commit("setGenerating", {
       robotIndex: this.data.robotIndex,
       tabIndex: this.data.tabIndex,

@@ -11,7 +11,6 @@ const store = useStore();
 
 const {emit} = getCurrentInstance();
 const onRobotClick = (index, item) => {
-  console.log("onRobotClick", index, item);
   emit('onClick', index, item);
 };
 
