@@ -86,6 +86,14 @@ const removeTab = (targetKey) => {
     robotIndex: props.robotIndex,
     tabIndex: targetKey
   });
+  // 检查当前tab是否是最后一个tab
+  if (chatTabNameList.value.length === 0) {
+    store.commit("addChatTab", {
+      robotIndex: props.robotIndex,
+      tabName: "default",
+    });
+    activeTabIndex.value = 0;
+  }
 };
 
 const chatTabNameList = computed(() => {
