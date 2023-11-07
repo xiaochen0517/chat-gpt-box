@@ -1,5 +1,5 @@
 <script setup>
-import {computed, getCurrentInstance, ref, watch} from "vue";
+import {computed, nextTick, ref, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
 import {useStore} from "vuex";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
@@ -86,6 +86,14 @@ const removeTab = (targetKey) => {
     robotIndex: props.robotIndex,
     tabIndex: targetKey
   });
+  // 检查当前tab是否是最后一个tab
+  if (chatTabNameList.value.length === 0) {
+    store.commit("addChatTab", {
+      robotIndex: props.robotIndex,
+      tabName: "default",
+    });
+    activeTabIndex.value = 0;
+  }
 };
 
 const chatTabNameList = computed(() => {
@@ -103,8 +111,13 @@ const getTabIndex = () => {
   return activeTabIndex.value;
 };
 
-const chatMsgListBlockRefs = ref([]);
+const scrollContainerRefs = ref();
 const scrollToBottom = () => {
+  // 滚动到底部
+  nextTick(() => {
+    scrollContainerRefs.value.scrollTop = scrollContainerRefs.value.scrollHeight;
+    console.log("scrollToBottom", scrollContainerRefs.value.scrollTop, scrollContainerRefs.value.scrollHeight);
+  });
 };
 
 const removeTabClick = (index) => {
@@ -125,11 +138,11 @@ defineExpose({
 </script>
 
 <template>
-  <div class="overflow-hidden overflow-y-auto">
+  <div ref="scrollContainerRefs" class="overflow-hidden overflow-y-auto box-border ">
     <c-tabs v-model:activeKey="activeTabIndex" :tabNames="chatTabNameList" @addTabClick="addTab"
             @removeTabClick="removeTabClick">
       <c-tab-pane v-for="(number, index) in chatTabNameList.length" :key="index">
-        <chat-msg-list-block ref="chatMsgListBlockRefs" :robotIndex="props.robotIndex" :tabIndex="index"/>
+        <chat-msg-list-block :robotIndex="props.robotIndex" :tabIndex="index"/>
       </c-tab-pane>
     </c-tabs>
     <AddTabDialog ref="addTabDialogRefs" :robotIndex="props.robotIndex"/>

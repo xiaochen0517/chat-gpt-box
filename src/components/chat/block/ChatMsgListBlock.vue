@@ -43,7 +43,7 @@ const editMessage = (message, index) => {
 </script>
 
 <template>
-  <div class="max-w-5xl mx-auto p-2">
+  <div class="max-w-5xl mx-auto p-2 mt-14">
     <div v-if="robotOptions?.enabled" class="flex flex-row">
       <div class="border border-gray-700 rounded px-2 py-1 dark:bg-amber-600 text-sm font-bold select-none">
         <i class="iconfont icon-settings font-normal"/>
