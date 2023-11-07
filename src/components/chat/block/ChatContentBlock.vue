@@ -12,7 +12,6 @@ const chatTabsBlockRefs = ref(null);
 const commitMsgContent = (msgContent) => {
   const tabIndex = chatTabsBlockRefs.value.getTabIndex();
   let requestUtil = new RequestUtil();
-  console.log("commitMsgContent", robotIndex.value, tabIndex, msgContent);
   requestUtil.sendRequest({
     robotIndex: robotIndex.value,
     tabIndex: tabIndex,
@@ -23,7 +22,6 @@ const commitMsgContent = (msgContent) => {
 };
 
 const changeRobot = (index, item) => {
-  console.log("changeRobot", index, item);
   robotIndex.value = index;
   nextTick(() => {
     chatTabsBlockRefs.value.scrollToBottom();

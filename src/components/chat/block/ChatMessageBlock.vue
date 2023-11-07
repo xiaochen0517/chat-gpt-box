@@ -54,8 +54,9 @@ defineProps({
           </button>
         </template>
       </el-popconfirm>
-      <button class="w-10 h-6 rounded-md flex justify-center items-center bg-gray-50 hover:bg-gray-200 active:bg-gray-300 text-gray-600 hover:text-gray-700 border border-gray-500 hover:border-gray-600 dark:text-gray-100 dark:bg-transparent dark:border-gray-500 dark:hover:border-gray-600 dark:hover:bg-slate-700 dark:active:bg-slate-600"
-              @click="$emit('edit', message, index)">
+      <button
+          class="w-10 h-6 rounded-md flex justify-center items-center bg-gray-50 hover:bg-gray-200 active:bg-gray-300 text-gray-600 hover:text-gray-700 border border-gray-500 hover:border-gray-600 dark:text-gray-100 dark:bg-transparent dark:border-gray-500 dark:hover:border-gray-600 dark:hover:bg-slate-700 dark:active:bg-slate-600"
+          @click="$emit('edit', message, index)">
         <edit-outlined/>
       </button>
     </div>
