@@ -29,6 +29,7 @@ const breakLine = () => {
 };
 
 const enterSend = computed(() => store.state.config.base.enterSend);
+const ctrlEnterSend = computed(() => store.state.config.base.ctrlEnterSend);
 const enterKeyDown = () => {
   if (enterSend.value) {
     commitContent();
@@ -37,6 +38,9 @@ const enterKeyDown = () => {
   }
 };
 const shiftEnterKeyDown = () => {
+  if (ctrlEnterSend.value) {
+    return;
+  }
   if (enterSend.value) {
     breakLine();
   } else {
@@ -44,6 +48,9 @@ const shiftEnterKeyDown = () => {
   }
 };
 const ctrlEnterKeyDown = () => {
+  if (!ctrlEnterSend.value) {
+    return;
+  }
   if (enterSend.value) {
     breakLine();
   } else {

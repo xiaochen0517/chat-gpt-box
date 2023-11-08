@@ -12,6 +12,8 @@ const baseConfigDefault = {
   apiKey: "",
   // 聊天输入框enter键发送消息
   enterSend: true,
+  // ctrl+enter或者shift+enter发送消息/换行
+  ctrlEnterSend: false,
   // api请求地址
   apiUrl: "https://api.openai.com/",
   // 模型名称
@@ -67,6 +69,9 @@ defineExpose({
       </el-form-item>
       <el-form-item label="Enter Key Send" prop="enterSend">
         <el-switch v-model="baseConfig.enterSend"/>
+      </el-form-item>
+      <el-form-item label="Ctrl+Enter Break" prop="ctrlEnterSend">
+        <el-switch v-model="baseConfig.ctrlEnterSend"/>
       </el-form-item>
       <el-form-item label="Api Url" prop="apiUrl">
         <el-input v-model="baseConfig.apiUrl"/>
