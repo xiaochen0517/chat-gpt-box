@@ -183,6 +183,12 @@ export class RequestUtil {
       this.reader.read().then(this.readResponse);
       // 当前状态为生成完成
       this.setGenerating(false);
+    }).catch((error) => {
+      console.error(error);
+      // 显示错误信息
+      this.addAssistantMsgContent(error.message);
+      // 当前状态为生成完成
+      this.setGenerating(false);
     });
   };
 
