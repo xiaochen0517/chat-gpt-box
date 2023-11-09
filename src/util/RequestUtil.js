@@ -102,7 +102,7 @@ export class RequestUtil {
     // 拷贝聊天记录，用于发送请求
     let messages = _.cloneDeep(store.state.chatHistory[robotIndex][tabIndex].chat);
     if (options.context_max_message <= 0 || options.context_max_tokens <= 0) {
-      return messages[0];
+      return [messages[0], messages[messages.length - 1]];
     }
     // 获取指定数量的上下文消息
     let contextMessages;
