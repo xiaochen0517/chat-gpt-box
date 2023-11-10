@@ -3,7 +3,7 @@ import {createStore} from "vuex";
 const store = createStore({
   state: {
     // 版本号
-    version: "0.1.1",
+    version: "0.1.2",
     // 机器人列表
     robotList: [
       {
@@ -50,6 +50,8 @@ const store = createStore({
         apiKey: "",
         // 聊天输入框enter键发送消息
         enterSend: true,
+        // ctrl+enter或者shift+enter发送消息/换行
+        ctrlEnterSend: false,
         // api请求地址
         apiUrl: "https://api.openai.com/",
         // 模型名称

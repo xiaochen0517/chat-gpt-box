@@ -103,7 +103,7 @@ defineExpose({
 </template>
 
 <style>
-// element-ui popover 内边距重置
+/* element-ui popover 内边距重置 */
 .el-popover {
   --el-popover-padding: 0;
 }
