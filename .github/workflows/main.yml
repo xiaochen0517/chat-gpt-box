@@ -52,4 +52,4 @@ jobs:
         with:
           name: ${{ matrix.os }}
           path: |
-            src-tauri/target/release/*
+            src-tauri/target/release/bundle/*
