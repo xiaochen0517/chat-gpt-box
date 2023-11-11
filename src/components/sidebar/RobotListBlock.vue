@@ -1,5 +1,5 @@
 <script setup>
-import {computed, getCurrentInstance, onBeforeUnmount, onMounted, ref} from "vue";
+import {computed, getCurrentInstance, onBeforeUnmount, ref} from "vue";
 import {useStore} from "vuex";
 import {EllipsisOutlined} from "@ant-design/icons-vue";
 import EditRobotDialog from "../chat/dialog/EditRobotDialog.vue";
@@ -53,7 +53,7 @@ const robotList = computed(() => {
 const robotListPopoverVisible = ref(false);
 const editRobotDialogRefs = ref(null);
 const editRobotClick = (index) => {
-  editRobotDialogRefs.value.show(index);
+  editRobotDialogRefs.value.show(true, index);
   robotListPopoverVisible.value = false;
 };
 
@@ -98,7 +98,7 @@ defineExpose({
         </el-popover>
       </div>
     </div>
-    <EditRobotDialog ref="editRobotDialogRefs" :is-edit="true"/>
+    <EditRobotDialog ref="editRobotDialogRefs"/>
   </div>
 </template>
 

@@ -84,6 +84,7 @@ export class RequestUtil {
       // 获取配置信息
       const robotOptions = this.getRobotOptions(robotIndex);
       const messages = this.getContextMessages(robotIndex, tabIndex, robotOptions);
+      console.log("send messages = ", messages);
       // 添加助手信息
       this.addAssistantMessage();
       // 发送请求
@@ -113,7 +114,8 @@ export class RequestUtil {
       contextMessages = [systemMessage, ...messages.slice(-(options.context_max_message + 1))];
     }
     // 检查上下文中的消息是否已经超过最大token数量
-    while (encodeChat(contextMessages, options.model).length > options.context_max_tokens) {
+    const encodeModel = options.model.startsWith("gpt-4") ? 'gpt-4' : 'gpt-3.5-turbo';
+    while (encodeChat(contextMessages, encodeModel).length > options.context_max_tokens) {
       // 消息的token数量超过了最大token数量，需要删除消息
       if (contextMessages.length === 1) {
         // 只有一条消息，为prompt，无法删除
