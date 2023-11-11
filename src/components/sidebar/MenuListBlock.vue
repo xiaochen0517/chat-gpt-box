@@ -30,7 +30,7 @@ const addRobotDialogRefs = ref(null);
 const addRobotClick = () => {
   nextTick(() => {
     if (addRobotDialogRefs.value) {
-      addRobotDialogRefs.value.show();
+      addRobotDialogRefs.value.show(false);
     }
   });
 };

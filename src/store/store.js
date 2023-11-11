@@ -116,8 +116,8 @@ const store = createStore({
     },
     // 更新机器人
     updateRobot(state, {robotIndex, robot}) {
-      // 先删除再添加
-      state.robotList.splice(robotIndex, 1, robot);
+      console.log("update robot = ", robotIndex, robot);
+      state.robotList[robotIndex] = robot;
     },
     // 删除聊天tab页
     removeChatTab(state, {robotIndex, tabIndex}) {
@@ -174,7 +174,12 @@ const store = createStore({
     // 设置机器人消息
     setAssistantMsgContent(state, {robotIndex, tabIndex, content}) {
       const msgIndex = state.chatHistory[robotIndex][tabIndex].chat.length - 1;
-      state.chatHistory[robotIndex][tabIndex].chat[msgIndex].content = content;
+      let lastMsgInfo = state.chatHistory[robotIndex][tabIndex].chat[msgIndex];
+      if (lastMsgInfo.role !== "assistant") {
+        lastMsgInfo = {role: "assistant", content: ""};
+        state.chatHistory[robotIndex][tabIndex].chat.push(lastMsgInfo);
+      }
+      lastMsgInfo.content = content;
     },
     // 更新消息
     updateMessage(state, {robotIndex, tabIndex, messageIndex, message}) {

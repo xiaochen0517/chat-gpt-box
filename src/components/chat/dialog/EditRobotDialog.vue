@@ -6,12 +6,7 @@ import modelList from "@/util/ModelList.js";
 
 const store = useStore();
 
-const props = defineProps({
-  isEdit: {
-    type: Boolean,
-    default: false
-  }
-});
+const isEdit = ref(false);
 
 const dialogVisible = ref(false);
 const formData = ref({
@@ -53,7 +48,7 @@ const commit = async () => {
   if (!rulesFormRef.value) return;
   await rulesFormRef.value.validate((valid, fields) => {
     if (valid) {
-      if (props.isEdit) {
+      if (isEdit.value) {
         updateRobot();
       } else {
         addRobot();
@@ -71,7 +66,7 @@ const updateRobot = () => {
     return;
   }
   store.commit("updateRobot", {
-    robotIndex: robotIndex,
+    robotIndex: robotIndex.value,
     robot: _.cloneDeep(formData.value)
   });
 };
@@ -88,14 +83,11 @@ const focusNameInput = () => {
   });
 };
 
-const show = (index) => {
-  if (props.isEdit) {
+const show = (edit, index) => {
+  isEdit.value = edit;
+  if (isEdit.value) {
     robotIndex.value = index;
-    const robotInfo = _.cloneDeep(store.state.robotList[index]);
-    formData.value.name = robotInfo.name;
-    formData.value.prompt = robotInfo.prompt;
-    formData.value.model = robotInfo.options.model;
-    formData.value.content_max_tokens = robotInfo.options.content_max_tokens;
+    formData.value = _.cloneDeep(store.state.robotList[index]);
   }
   dialogVisible.value = true;
   focusNameInput();
@@ -108,7 +100,7 @@ defineExpose({
 
 <template>
   <div class="add-robot-dialog">
-    <el-dialog v-model="dialogVisible" title="Add robot">
+    <el-dialog v-model="dialogVisible" :title="isEdit?'Edit robot':'Add robot'">
       <el-form ref="rulesFormRef" :model="formData" :rules="formRules" label-width="150px">
         <el-form-item label="Robot Name" prop="name">
           <el-input ref="robotNameInputRefs" v-model="formData.name" @pressEnter="commit"/>

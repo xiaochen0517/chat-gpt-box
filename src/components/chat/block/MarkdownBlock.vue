@@ -49,7 +49,3 @@ watch(() => props.content, (newVal) => {
 <template>
   <div v-html="mdHtml"/>
 </template>
-
-<style lang="less" scoped>
-
-</style>
