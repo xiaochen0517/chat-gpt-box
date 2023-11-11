@@ -29,6 +29,7 @@ const addWindowsCloseListener = () => {
 const checkConfig = () => {
   const oldVersion = store.state.version;
   const newVersion = import.meta.env.VITE_APP_VERSION;
+  if (oldVersion !== newVersion) store.state.version = newVersion;
   console.log(`oldVersion: ${oldVersion}, newVersion: ${newVersion}`);
 };
 
