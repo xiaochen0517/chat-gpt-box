@@ -25,6 +25,11 @@
 - [x] Multiple tabs
 - [x] Shortcut settings
 - [x] Switch to Dark Mode
+- [x] Multi-model usage
+- [ ] Mobile support
+    - [x] Webapp
+    - [x] Android
+    - [ ] iOS
 
 ## Contact
 
