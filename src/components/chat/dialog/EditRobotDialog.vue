@@ -1,5 +1,5 @@
 <script setup>
-import {getCurrentInstance, nextTick, ref} from "vue";
+import {getCurrentInstance, inject, nextTick, ref} from "vue";
 import {useStore} from "vuex";
 import _ from "lodash";
 import modelList from "@/util/ModelList.js";
@@ -96,11 +96,14 @@ const show = (edit, index) => {
 defineExpose({
   show
 });
+
+// 通过判断窗口宽度来设置对话框宽度
+const dialogWidth = inject("dialogWidth");
 </script>
 
 <template>
   <div class="add-robot-dialog">
-    <el-dialog v-model="dialogVisible" :title="isEdit?'Edit robot':'Add robot'">
+    <el-dialog v-model="dialogVisible" :title="isEdit?'Edit robot':'Add robot'" :width="dialogWidth">
       <el-form ref="rulesFormRef" :model="formData" :rules="formRules" label-width="150px">
         <el-form-item label="Robot Name" prop="name">
           <el-input ref="robotNameInputRefs" v-model="formData.name" @pressEnter="commit"/>

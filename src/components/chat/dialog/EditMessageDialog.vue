@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from "vue";
+import {inject, ref} from "vue";
 import {useStore} from "vuex";
 import _ from "lodash";
 
@@ -62,12 +62,15 @@ const show = (rIndex, tIndex, mIndex) => {
 defineExpose({
   show
 });
+
+// 通过判断窗口宽度来设置对话框宽度
+const dialogWidth = inject("dialogWidth");
 </script>
 
 <template>
   <div class="edit-message-dialog">
     <el-dialog v-model="dialogVisible" title="Edit message" @ok="commit" @cancel="dialogVisible = false"
-               width="50%">
+               ：width="dialogWidth">
       <el-form ref="editMessageFormRef" :model="formData" :rules="formRules" label-width="120px">
         <el-form-item label="Role" prop="role">
           <el-select v-model="formData.role" placeholder="Please select role">
