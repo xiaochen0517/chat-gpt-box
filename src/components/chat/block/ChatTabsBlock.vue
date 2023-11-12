@@ -1,5 +1,5 @@
 <script setup>
-import {computed, nextTick, ref, watch} from "vue";
+import {computed, getCurrentInstance, nextTick, ref, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
 import {useStore} from "vuex";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
@@ -133,6 +133,11 @@ defineExpose({
   getTabIndex,
   scrollToBottom,
 });
+
+const instance = getCurrentInstance();
+const changeRobotClick = (index, item) => {
+  instance.emit('changeRobotClick', index, item);
+};
 </script>
 
 <template>
@@ -153,10 +158,7 @@ defineExpose({
             :tabIndex="index"/>
       </CTabPane>
     </CTabs>
-    <AddTabDialog
-        ref="addTabDialogRefs"
-        :robotIndex="props.robotIndex"/>
-    <SlideSideBarBlock
-        ref="slideSideBarBlockRefs"/>
+    <AddTabDialog ref="addTabDialogRefs" :robotIndex="props.robotIndex"/>
+    <SlideSideBarBlock ref="slideSideBarBlockRefs" @onClick="changeRobotClick"/>
   </div>
 </template>

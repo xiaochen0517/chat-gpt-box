@@ -41,7 +41,7 @@ defineExpose({
       <RobotListBlock
           class="flex-1"
           ref="robotListBlockRefs"
-          @on-click="onRobotClick"/>
+          @onClick="onRobotClick"/>
       <MenuListBlock @added-robot="robotListScrollToBottom"/>
     </div>
   </el-drawer>

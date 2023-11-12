@@ -22,6 +22,7 @@ const commitMsgContent = (msgContent) => {
 };
 
 const changeRobot = (index, item) => {
+  console.log(`changeRobot: ${index}, ${item}`)
   robotIndex.value = index;
   nextTick(() => {
     chatTabsBlockRefs.value.scrollToBottom();
@@ -39,7 +40,8 @@ defineExpose({
       <ChatTabsBlock
           class="flex-1"
           ref="chatTabsBlockRefs"
-          :robot-index="robotIndex"/>
+          :robot-index="robotIndex"
+          @changeRobotClick="changeRobot"/>
       <ChatInputBlock @commit="commitMsgContent"/>
     </div>
   </div>
