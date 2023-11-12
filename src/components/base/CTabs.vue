@@ -31,7 +31,7 @@ const closeInactiveClass = ref("hover:bg-gray-400 dark:hover:bg-gray-600");
 <template>
   <div class="flex flex-col w-full">
     <div
-        class="absolute z-10 top-0 left-0 px-1 lg:px-0 box-border opacity-80 backdrop-blur-md bg-gray-50 dark:bg-gray-800 tab-labels-box">
+        class="absolute z-10 top-0 left-0 w-full px-1 lg:px-0 box-border opacity-80 backdrop-blur-md bg-gray-50 dark:bg-gray-800">
       <div
           class="max-w-5xl m-auto my-2 overflow-hidden overflow-x-auto w-full p-2 box-border bg-gray-100 dark:bg-gray-950 rounded-md">
         <div class="flex flex-row min-w-full">
@@ -56,10 +56,3 @@ const closeInactiveClass = ref("hover:bg-gray-400 dark:hover:bg-gray-600");
     <slot></slot>
   </div>
 </template>
-
-<style scoped lang="less">
-.tab-labels-box {
-  //width: 99%;
-  width: 100%;
-}
-</style>
