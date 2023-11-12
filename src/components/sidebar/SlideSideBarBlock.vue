@@ -2,6 +2,13 @@
 import {ref} from "vue";
 
 const drawerVisible = ref(false);
+
+const show = () => {
+  drawerVisible.value = true;
+};
+defineExpose({
+  show
+});
 </script>
 
 <template>
@@ -9,7 +16,8 @@ const drawerVisible = ref(false);
   <el-drawer
       v-model="drawerVisible"
       title="I am the title"
-      direction="ltr">
+      direction="ltr"
+      size="70%">
     123
   </el-drawer>
 </template>

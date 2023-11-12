@@ -37,7 +37,7 @@ const closeInactiveClass = ref("hover:bg-gray-400 dark:hover:bg-gray-600");
         <div class="flex flex-row min-w-full">
           <div
               class="block lg:hidden px-2 py-1.5 mr-1 box-border rounded-md cursor-pointer border border-slate-300 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:border-slate-700  dark:bg-gray-900  dark:hover:bg-gray-800  dark:active:bg-gray-700 select-none"
-              @click="$emit('addTabClick')">
+              @click="$emit('showSlideSideBarClick')">
             <i class="iconfont icon-category text-xs leading-3 font-bold mx-1"/>
           </div>
           <div

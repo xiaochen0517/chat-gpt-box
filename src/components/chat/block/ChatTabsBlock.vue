@@ -7,6 +7,8 @@ import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/CTabs.vue";
 import CTabPane from "@/components/base/CTabPane.vue";
 import {ElMessageBox} from "element-plus";
+import ChatContentBlock from "@/components/chat/block/ChatContentBlock.vue";
+import SlideSideBarBlock from "@/components/sidebar/SlideSideBarBlock.vue";
 
 const props = defineProps({
   robotIndex: {
@@ -131,6 +133,11 @@ const removeTabClick = (index) => {
   });
 };
 
+const slideSideBarBlockRefs = ref(null);
+const showSlideSideBar = () => {
+  slideSideBarBlockRefs.value.show();
+};
+
 defineExpose({
   getTabIndex,
   scrollToBottom,
@@ -145,7 +152,8 @@ defineExpose({
         v-model:activeKey="activeTabIndex"
         :tabNames="chatTabNameList"
         @addTabClick="addTab"
-        @removeTabClick="removeTabClick">
+        @removeTabClick="removeTabClick"
+        @showSlideSideBarClick="showSlideSideBar">
       <c-tab-pane
           v-for="(number, index) in chatTabNameList.length"
           :key="index">
@@ -157,5 +165,7 @@ defineExpose({
     <AddTabDialog
         ref="addTabDialogRefs"
         :robotIndex="props.robotIndex"/>
+    <SlideSideBarBlock
+        ref="slideSideBarBlockRefs"/>
   </div>
 </template>
