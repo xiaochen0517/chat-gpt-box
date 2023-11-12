@@ -45,7 +45,7 @@ const changeRobotClick = (index, item) => {
 
 <template>
   <div class="w-full h-full flex flex-row box-border">
-    <SideBarBlock class="w-64" @onClick="changeRobotClick"/>
+    <SideBarBlock class="hidden lg:flex" @onClick="changeRobotClick"/>
     <ChatContentBlock class="flex-1" ref="chatContentBlockRefs"/>
   </div>
 </template>

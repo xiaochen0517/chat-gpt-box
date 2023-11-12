@@ -138,7 +138,7 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="scrollContainerRefs" class="overflow-hidden overflow-y-auto box-border ">
+  <div ref="scrollContainerRefs" class="overflow-hidden overflow-y-auto box-border">
     <c-tabs v-model:activeKey="activeTabIndex" :tabNames="chatTabNameList" @addTabClick="addTab"
             @removeTabClick="removeTabClick">
       <c-tab-pane v-for="(number, index) in chatTabNameList.length" :key="index">

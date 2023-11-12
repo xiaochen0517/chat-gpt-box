@@ -61,7 +61,7 @@ const ctrlEnterKeyDown = () => {
 </script>
 
 <template>
-  <div class="w-full max-w-5xl mx-auto px-2 py-4 flex flex-row">
+  <div class="px-2 py-4 flex flex-row">
     <textarea ref="chatInputTextAreaRefs"
               class="flex-1 h-full m-0 p-2 inline-block bg-gray-100 dark:bg-slate-900 rounded-md box-border border-2 border-gray-300 focus:border-slate-400 dark:border-slate-600 dark:focus:border-slate-400"
               v-model="chatInputContent"

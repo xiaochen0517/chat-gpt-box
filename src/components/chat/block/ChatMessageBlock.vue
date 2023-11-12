@@ -25,21 +25,19 @@ defineProps({
 <template>
   <div class="group py-1 pb-2 mt-3 border-b border-slate-500">
     <div class="flex flex-row gap-2">
-      <div class="avatar-img">
-        <div v-if="message.role === 'system'"
-             class="w-10 h-10 bg-indigo-500 dark:bg-indigo-600 rounded-md leading-10 text-center flex justify-center items-center">
-          <i class="iconfont icon-settings text-2xl leading-10"/>
-        </div>
-        <div v-if="message.role === 'assistant'"
-             class="w-10 h-10 bg-sky-500 dark:bg-sky-600 rounded-md leading-10 text-center flex justify-center items-center">
-          <img src="../../../assets/images/chat_gpt.svg" alt="avatar" class="w-6 h-6"/>
-        </div>
-        <div v-if="message.role === 'user'"
-             class="w-10 h-10 bg-green-500 dark:bg-green-600 rounded-md leading-10 text-center flex justify-center items-center select-none">
-          User
-        </div>
+      <div v-if="message.role === 'system'"
+           class="w-10 h-10 bg-indigo-500 dark:bg-indigo-600 rounded-md leading-10 text-center flex justify-center items-center">
+        <i class="iconfont icon-settings text-2xl leading-10"/>
       </div>
-      <div class="flex-1 rounded-md p-2">
+      <div v-if="message.role === 'assistant'"
+           class="w-10 h-10 bg-sky-500 dark:bg-sky-600 rounded-md leading-10 text-center flex justify-center items-center">
+        <img src="../../../assets/images/chat_gpt.svg" alt="avatar" class="w-6 h-6"/>
+      </div>
+      <div v-if="message.role === 'user'"
+           class="w-10 h-10 bg-green-500 dark:bg-green-600 rounded-md leading-10 text-center flex justify-center items-center select-none">
+        User
+      </div>
+      <div class="flex-1 min-w-0 whitespace-pre-wrap scroll-auto">
         <MarkdownBlock :content="message.content"/>
       </div>
     </div>
