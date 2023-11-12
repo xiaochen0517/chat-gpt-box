@@ -48,7 +48,7 @@ defineProps({
       </div>
     </div>
     <div
-        class="flex flex-row mt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto">
+        class="flex flex-row mt-2 pointer-events-none opacity-100 lg:opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto">
       <el-popconfirm
           title="delete message"
           @confirm="$emit('delete', message, index)"
