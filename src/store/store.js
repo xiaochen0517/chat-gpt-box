@@ -3,7 +3,7 @@ import {createStore} from "vuex";
 const store = createStore({
   state: {
     // 版本号
-    version: "0.1.3",
+    version: "0.2.0",
     // 机器人列表
     robotList: [
       {
@@ -116,7 +116,6 @@ const store = createStore({
     },
     // 更新机器人
     updateRobot(state, {robotIndex, robot}) {
-      console.log("update robot = ", robotIndex, robot);
       state.robotList[robotIndex] = robot;
     },
     // 删除聊天tab页
@@ -196,7 +195,6 @@ const store = createStore({
     },
     // 保存是否为暗模式
     setDarkMode(state, darkMode) {
-      console.log("set dark mode = ", darkMode);
       state.config.isDarkMode = darkMode;
     },
     // 保存基础设置

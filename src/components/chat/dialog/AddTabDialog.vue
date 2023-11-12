@@ -1,5 +1,5 @@
 <script setup>
-import {getCurrentInstance, nextTick, ref} from "vue";
+import {getCurrentInstance, inject, nextTick, ref} from "vue";
 import {useStore} from "vuex";
 import {ElMessage} from "element-plus";
 
@@ -64,20 +64,37 @@ const focusNameInput = () => {
 defineExpose({
   show
 });
+
+// 通过判断窗口宽度来设置对话框宽度
+const dialogWidth = inject("dialogWidth");
 </script>
 
 <template>
   <div class="add-tab-dialog">
-    <el-dialog v-model="dialogVisible" title="Add Tab">
-      <el-form ref="addTabFormRef" :model="formData" :rules="formRules" label-width="120px">
-        <el-form-item label="Tab Name" prop="name">
-          <el-input ref="addTabInputRefs" v-model="formData.name" @pressEnter="commit"/>
+    <el-dialog
+        v-model="dialogVisible"
+        title="Add Tab"
+        :width="dialogWidth">
+      <el-form
+          ref="addTabFormRef"
+          :model="formData"
+          :rules="formRules"
+          label-width="120px">
+        <el-form-item
+            label="Tab Name"
+            prop="name">
+          <el-input
+              ref="addTabInputRefs"
+              v-model="formData.name"
+              @pressEnter="commit"/>
         </el-form-item>
       </el-form>
       <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="commit">
+        <el-button
+            type="primary"
+            @click="commit">
           Confirm
         </el-button>
       </span>

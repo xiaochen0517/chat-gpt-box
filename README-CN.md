@@ -13,7 +13,6 @@
     <img alt="windows11" src="https://img.shields.io/badge/windows-11-brightgreen">
 </p>
 
-
 ## 特性
 
 - 多模型使用
@@ -26,6 +25,11 @@
 - [x] 多标签页
 - [x] 快捷键设置
 - [x] 深色模式切换
+- [x] 多模型支持
+- [ ] 移动端支持
+    - [x] 移动端网页
+    - [x] Android
+    - [ ] iOS
 
 ## 联系我
 

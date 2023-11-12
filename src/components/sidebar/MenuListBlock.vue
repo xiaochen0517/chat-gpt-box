@@ -1,5 +1,5 @@
 <script setup>
-import {ref, nextTick, computed} from "vue";
+import {computed, nextTick, ref} from "vue";
 import {useStore} from "vuex";
 import AddRobotDialog from "../chat/dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
@@ -44,13 +44,25 @@ const openSettingsWindow = () => {
 <template>
   <div class="menu-list-block p-2">
     <div class="flex flex-col gap-2">
-      <el-button type="primary" @click="addRobotClick">Add Chat</el-button>
+      <el-button
+          type="primary"
+          @click="addRobotClick">Add Chat
+      </el-button>
       <div class="flex flex-row">
-        <el-button class="flex-grow" type="primary" @click="openSettingsWindow">Open Settings</el-button>
-        <el-button type="primary" @click="handleChange">{{ isDarkMode ? 'Dark' : 'Light' }}</el-button>
+        <el-button
+            class="flex-grow"
+            type="primary"
+            @click="openSettingsWindow">Open Settings
+        </el-button>
+        <el-button
+            type="primary"
+            @click="handleChange">{{ isDarkMode ? 'Dark' : 'Light' }}
+        </el-button>
       </div>
     </div>
-    <AddRobotDialog ref="addRobotDialogRefs" @commit="$emit('addedRobot')"/>
+    <AddRobotDialog
+        ref="addRobotDialogRefs"
+        @commit="$emit('addedRobot')"/>
     <AppSettingsDialog ref="appSettingsDialogRefs"/>
   </div>
 </template>

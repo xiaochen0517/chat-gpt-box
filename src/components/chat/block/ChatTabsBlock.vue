@@ -1,5 +1,5 @@
 <script setup>
-import {computed, nextTick, ref, watch} from "vue";
+import {computed, getCurrentInstance, nextTick, ref, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
 import {useStore} from "vuex";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
@@ -7,13 +7,7 @@ import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/CTabs.vue";
 import CTabPane from "@/components/base/CTabPane.vue";
 import {ElMessageBox} from "element-plus";
-
-const props = defineProps({
-  robotIndex: {
-    type: Number,
-    default: 0
-  },
-});
+import SlideSideBarBlock from "@/components/sidebar/SlideSideBarBlock.vue";
 
 /**
  * 注册操作tab的快捷键
@@ -48,8 +42,14 @@ whenever(cleanTabChatKey, () => {
   cleanTabChat();
 });
 
+const props = defineProps({
+  robotIndex: {
+    type: Number,
+    default: 0
+  },
+});
+
 const cleanTabChat = () => {
-  // TODO 二次确认
   store.commit("cleanTabChat", {
     robotIndex: props.robotIndex,
     tabIndex: activeTabIndex.value,
@@ -58,10 +58,10 @@ const cleanTabChat = () => {
 
 const activeTabIndex = ref(0);
 watch(
-    () => activeTabIndex.value,
-    () => {
-      scrollToBottom();
-    }
+  () => activeTabIndex.value,
+  () => {
+    scrollToBottom();
+  }
 );
 
 const addTabDialogRefs = ref(null);
@@ -97,14 +97,8 @@ const removeTab = (targetKey) => {
 };
 
 const chatTabNameList = computed(() => {
-  const chatTabList = store.state.chatHistory[props.robotIndex];
-  let chatTabNameList = [];
-  for (let chatTab of chatTabList) {
-    const name = chatTab.name;
-    const generating = chatTab.generating;
-    chatTabNameList.push(name + (generating ? "..." : ""));
-  }
-  return chatTabNameList;
+  return store.state.chatHistory[props.robotIndex]
+    .map(item => item.name);
 });
 
 const getTabIndex = () => {
@@ -116,7 +110,6 @@ const scrollToBottom = () => {
   // 滚动到底部
   nextTick(() => {
     scrollContainerRefs.value.scrollTop = scrollContainerRefs.value.scrollHeight;
-    console.log("scrollToBottom", scrollContainerRefs.value.scrollTop, scrollContainerRefs.value.scrollHeight);
   });
 };
 
@@ -131,20 +124,41 @@ const removeTabClick = (index) => {
   });
 };
 
+const slideSideBarBlockRefs = ref(null);
+const showSlideSideBar = () => {
+  slideSideBarBlockRefs.value.show();
+};
+
 defineExpose({
   getTabIndex,
   scrollToBottom,
 });
+
+const instance = getCurrentInstance();
+const changeRobotClick = (index, item) => {
+  instance.emit('changeRobotClick', index, item);
+};
 </script>
 
 <template>
-  <div ref="scrollContainerRefs" class="overflow-hidden overflow-y-auto box-border ">
-    <c-tabs v-model:activeKey="activeTabIndex" :tabNames="chatTabNameList" @addTabClick="addTab"
-            @removeTabClick="removeTabClick">
-      <c-tab-pane v-for="(number, index) in chatTabNameList.length" :key="index">
-        <chat-msg-list-block :robotIndex="props.robotIndex" :tabIndex="index"/>
-      </c-tab-pane>
-    </c-tabs>
+  <div
+      ref="scrollContainerRefs"
+      class="overflow-hidden overflow-y-auto box-border">
+    <CTabs
+        v-model:activeKey="activeTabIndex"
+        :tabNames="chatTabNameList"
+        @addTabClick="addTab"
+        @removeTabClick="removeTabClick"
+        @showSlideSideBarClick="showSlideSideBar">
+      <CTabPane
+          v-for="(number, index) in chatTabNameList.length"
+          :key="index">
+        <ChatMsgListBlock
+            :robotIndex="props.robotIndex"
+            :tabIndex="index"/>
+      </CTabPane>
+    </CTabs>
     <AddTabDialog ref="addTabDialogRefs" :robotIndex="props.robotIndex"/>
+    <SlideSideBarBlock ref="slideSideBarBlockRefs" @onClick="changeRobotClick"/>
   </div>
 </template>

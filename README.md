@@ -13,7 +13,6 @@
     <img alt="windows11" src="https://img.shields.io/badge/windows-11-brightgreen">
 </p>
 
-
 ## Features
 
 - Multi-model usage
@@ -26,6 +25,11 @@
 - [x] Multiple tabs
 - [x] Shortcut settings
 - [x] Switch to Dark Mode
+- [x] Multi-model usage
+- [ ] Mobile support
+    - [x] Webapp
+    - [x] Android
+    - [ ] iOS
 
 ## Contact
 
