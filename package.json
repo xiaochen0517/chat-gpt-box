@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.2.0",
   "type": "module",
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
