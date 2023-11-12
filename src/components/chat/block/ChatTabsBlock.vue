@@ -58,10 +58,10 @@ const cleanTabChat = () => {
 
 const activeTabIndex = ref(0);
 watch(
-    () => activeTabIndex.value,
-    () => {
-      scrollToBottom();
-    }
+  () => activeTabIndex.value,
+  () => {
+    scrollToBottom();
+  }
 );
 
 const addTabDialogRefs = ref(null);
@@ -138,13 +138,24 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="scrollContainerRefs" class="overflow-hidden overflow-y-auto box-border">
-    <c-tabs v-model:activeKey="activeTabIndex" :tabNames="chatTabNameList" @addTabClick="addTab"
-            @removeTabClick="removeTabClick">
-      <c-tab-pane v-for="(number, index) in chatTabNameList.length" :key="index">
-        <chat-msg-list-block :robotIndex="props.robotIndex" :tabIndex="index"/>
+  <div
+      ref="scrollContainerRefs"
+      class="overflow-hidden overflow-y-auto box-border">
+    <c-tabs
+        v-model:activeKey="activeTabIndex"
+        :tabNames="chatTabNameList"
+        @addTabClick="addTab"
+        @removeTabClick="removeTabClick">
+      <c-tab-pane
+          v-for="(number, index) in chatTabNameList.length"
+          :key="index">
+        <chat-msg-list-block
+            :robotIndex="props.robotIndex"
+            :tabIndex="index"/>
       </c-tab-pane>
     </c-tabs>
-    <AddTabDialog ref="addTabDialogRefs" :robotIndex="props.robotIndex"/>
+    <AddTabDialog
+        ref="addTabDialogRefs"
+        :robotIndex="props.robotIndex"/>
   </div>
 </template>

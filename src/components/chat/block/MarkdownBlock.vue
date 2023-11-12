@@ -22,7 +22,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <MdPreview class="overflow-x-auto" :theme="theme" :editorId="id" :modelValue="props.content"/>
+  <MdPreview
+      class="overflow-x-auto"
+      :theme="theme"
+      :editorId="id"
+      :modelValue="props.content"/>
 </template>
 
 <style lang="less">

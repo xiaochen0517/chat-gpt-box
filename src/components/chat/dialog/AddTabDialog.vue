@@ -71,16 +71,30 @@ const dialogWidth = inject("dialogWidth");
 
 <template>
   <div class="add-tab-dialog">
-    <el-dialog v-model="dialogVisible" title="Add Tab" :width="dialogWidth">
-      <el-form ref="addTabFormRef" :model="formData" :rules="formRules" label-width="120px">
-        <el-form-item label="Tab Name" prop="name">
-          <el-input ref="addTabInputRefs" v-model="formData.name" @pressEnter="commit"/>
+    <el-dialog
+        v-model="dialogVisible"
+        title="Add Tab"
+        :width="dialogWidth">
+      <el-form
+          ref="addTabFormRef"
+          :model="formData"
+          :rules="formRules"
+          label-width="120px">
+        <el-form-item
+            label="Tab Name"
+            prop="name">
+          <el-input
+              ref="addTabInputRefs"
+              v-model="formData.name"
+              @pressEnter="commit"/>
         </el-form-item>
       </el-form>
       <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="commit">
+        <el-button
+            type="primary"
+            @click="commit">
           Confirm
         </el-button>
       </span>

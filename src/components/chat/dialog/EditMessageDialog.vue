@@ -69,24 +69,43 @@ const dialogWidth = inject("dialogWidth");
 
 <template>
   <div class="edit-message-dialog">
-    <el-dialog v-model="dialogVisible" title="Edit message" @ok="commit" @cancel="dialogVisible = false"
-               ：width="dialogWidth">
-      <el-form ref="editMessageFormRef" :model="formData" :rules="formRules" label-width="120px">
-        <el-form-item label="Role" prop="role">
-          <el-select v-model="formData.role" placeholder="Please select role">
+    <el-dialog
+        v-model="dialogVisible"
+        title="Edit message"
+        @ok="commit"
+        @cancel="dialogVisible = false"
+        ：width="dialogWidth">
+      <el-form
+          ref="editMessageFormRef"
+          :model="formData"
+          :rules="formRules"
+          label-width="120px">
+        <el-form-item
+            label="Role"
+            prop="role">
+          <el-select
+              v-model="formData.role"
+              placeholder="Please select role">
             <el-option value="system">system</el-option>
             <el-option value="user">user</el-option>
             <el-option value="assistant">assistant</el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="Message" prop="content">
-          <el-input type="textarea" v-model="formData.content" :auto-size="{ minRows: 3, maxRows: 6 }"/>
+        <el-form-item
+            label="Message"
+            prop="content">
+          <el-input
+              type="textarea"
+              v-model="formData.content"
+              :auto-size="{ minRows: 3, maxRows: 6 }"/>
         </el-form-item>
       </el-form>
       <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="commit">
+        <el-button
+            type="primary"
+            @click="commit">
           Confirm
         </el-button>
       </span>

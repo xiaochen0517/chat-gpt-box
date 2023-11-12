@@ -23,7 +23,10 @@ const robotListScrollToBottom = () => {
 
 <template>
   <div class="h-full flex flex-col box-border border-r-2 dark:border-0 bg-gray-100 dark:bg-gray-900">
-    <RobotListBlock class="flex-1" ref="robotListBlockRefs" @on-click="onRobotClick"/>
+    <RobotListBlock
+        class="flex-1"
+        ref="robotListBlockRefs"
+        @on-click="onRobotClick"/>
     <MenuListBlock @added-robot="robotListScrollToBottom"/>
   </div>
 </template>
