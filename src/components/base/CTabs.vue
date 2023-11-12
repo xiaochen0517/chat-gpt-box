@@ -36,15 +36,16 @@ const closeInactiveClass = ref("hover:bg-gray-400 dark:hover:bg-gray-600");
           class="max-w-5xl m-auto my-2 overflow-hidden overflow-x-auto w-full p-2 box-border bg-gray-100 dark:bg-gray-950 rounded-md">
         <div class="flex flex-row min-w-full">
           <div
-              class="block lg:hidden px-2 py-1.5 mr-1 box-border rounded-md cursor-pointer border border-slate-300 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:border-slate-700  dark:bg-gray-900  dark:hover:bg-gray-800  dark:active:bg-gray-700 select-none"
+              class="absolute left-3 top-4 block lg:hidden px-2 py-1.5 mr-1 box-border rounded-md cursor-pointer border border-slate-300 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:border-slate-700  dark:bg-gray-900  dark:hover:bg-gray-800  dark:active:bg-gray-700 select-none"
               @click="$emit('showSlideSideBarClick')">
             <i class="iconfont icon-category text-xs leading-3 font-bold mx-1"/>
           </div>
+          <div class="ml-11 lg:ml-0"></div>
           <div
               v-for="(item, index) in propsTabNames"
               :key="index"
               @click="$emit('update:activeKey', index)"
-              class="px-2 py-1.5 mr-1 box-border rounded-md cursor-pointer border select-none flex flex-row items-center"
+              class="px-2 py-1.5 mr-1 box-border rounded-md cursor-pointer border select-none flex flex-row items-center whitespace-nowrap"
               :class="propsActiveKey === index ? activeClass: inactiveClass">
             {{ item }}
             <div
