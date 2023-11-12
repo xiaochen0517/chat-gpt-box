@@ -1,5 +1,5 @@
 <script setup>
-import {ref, nextTick, computed} from "vue";
+import {computed, nextTick, ref} from "vue";
 import {useStore} from "vuex";
 import AddRobotDialog from "../chat/dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";

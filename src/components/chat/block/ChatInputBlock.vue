@@ -1,6 +1,6 @@
 <script setup>
 import {SendOutlined} from "@ant-design/icons-vue";
-import {ref, getCurrentInstance, computed} from "vue";
+import {computed, getCurrentInstance, ref} from "vue";
 import {useStore} from "vuex";
 import {useMagicKeys, whenever} from "@vueuse/core";
 

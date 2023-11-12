@@ -72,9 +72,9 @@ defineExpose({
       class="overflow-hidden overflow-y-auto">
     <div class="min-h-full">
       <div
+          class="flex flex-row items-center relative w-full cursor-pointer box-border px-2 py-1 rounded-sm hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-slate-800 dark:active:bg-gray-900"
           v-for="(item, index) in robotList"
           :key="index"
-          class="flex flex-row items-center relative w-full cursor-pointer box-border px-2 mb-2 rounded-sm hover:bg-gray-300 active:bg-gray-400 dark:hover:bg-slate-800 dark:active:bg-gray-900"
           :class="index === activeRobotIndex?'robot-item-selected':''"
           @click="changeActiveRobot(index, item)">
         <div class="text-md flex-1 leading-10">
@@ -83,7 +83,7 @@ defineExpose({
         <el-popover
             overlayClassName="robot-editor-popover"
             placement="bottom"
-            trigger="hover">
+            trigger="click">
           <template #default>
             <div class="p-2 m-0">
               <div
@@ -110,10 +110,3 @@ defineExpose({
     <EditRobotDialog ref="editRobotDialogRefs"/>
   </div>
 </template>
-
-<style lang="less">
-/* element-ui popover 内边距重置 */
-.el-popover {
-  --el-popover-padding: 0;
-}
-</style>

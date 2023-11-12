@@ -1,6 +1,6 @@
 <script setup>
 
-import {ref} from "vue";
+import {inject, ref} from "vue";
 import ShortcutSettingsBlock from "@/components/setting/ShortcutSettingsBlock.vue";
 import BaseSettingsBlock from "@/components/setting/BaseSettingsBlock.vue";
 
@@ -27,12 +27,12 @@ const show = () => {
 defineExpose({
   show
 });
+
+const dialogWidth = inject("dialogWidth");
 </script>
 
 <template>
-  <el-dialog
-      v-model="dialogVisible"
-      title="Settings">
+  <el-dialog v-model="dialogVisible" title="Settings" :width="dialogWidth">
     <el-collapse v-model="activeCollNames">
       <el-collapse-item
           title="Base Settings"

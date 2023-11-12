@@ -7,15 +7,7 @@ import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/CTabs.vue";
 import CTabPane from "@/components/base/CTabPane.vue";
 import {ElMessageBox} from "element-plus";
-import ChatContentBlock from "@/components/chat/block/ChatContentBlock.vue";
 import SlideSideBarBlock from "@/components/sidebar/SlideSideBarBlock.vue";
-
-const props = defineProps({
-  robotIndex: {
-    type: Number,
-    default: 0
-  },
-});
 
 /**
  * 注册操作tab的快捷键
@@ -50,8 +42,14 @@ whenever(cleanTabChatKey, () => {
   cleanTabChat();
 });
 
+const props = defineProps({
+  robotIndex: {
+    type: Number,
+    default: 0
+  },
+});
+
 const cleanTabChat = () => {
-  // TODO 二次确认
   store.commit("cleanTabChat", {
     robotIndex: props.robotIndex,
     tabIndex: activeTabIndex.value,
@@ -99,14 +97,8 @@ const removeTab = (targetKey) => {
 };
 
 const chatTabNameList = computed(() => {
-  const chatTabList = store.state.chatHistory[props.robotIndex];
-  let chatTabNameList = [];
-  for (let chatTab of chatTabList) {
-    const name = chatTab.name;
-    const generating = chatTab.generating;
-    chatTabNameList.push(name + (generating ? "..." : ""));
-  }
-  return chatTabNameList;
+  return store.state.chatHistory[props.robotIndex]
+    .map(item => item.name);
 });
 
 const getTabIndex = () => {
@@ -118,7 +110,6 @@ const scrollToBottom = () => {
   // 滚动到底部
   nextTick(() => {
     scrollContainerRefs.value.scrollTop = scrollContainerRefs.value.scrollHeight;
-    console.log("scrollToBottom", scrollContainerRefs.value.scrollTop, scrollContainerRefs.value.scrollHeight);
   });
 };
 

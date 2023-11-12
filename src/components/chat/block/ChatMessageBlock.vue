@@ -43,7 +43,7 @@ defineProps({
           class="w-10 h-10 bg-green-500 dark:bg-green-600 rounded-md leading-10 text-center flex justify-center items-center select-none">
         User
       </div>
-      <div class="flex-1 min-w-0 whitespace-pre-wrap scroll-auto">
+      <div class="flex-1 min-w-0 scroll-auto">
         <MarkdownBlock :content="message.content"/>
       </div>
     </div>
