@@ -148,20 +148,20 @@ defineExpose({
   <div
       ref="scrollContainerRefs"
       class="overflow-hidden overflow-y-auto box-border">
-    <c-tabs
+    <CTabs
         v-model:activeKey="activeTabIndex"
         :tabNames="chatTabNameList"
         @addTabClick="addTab"
         @removeTabClick="removeTabClick"
         @showSlideSideBarClick="showSlideSideBar">
-      <c-tab-pane
+      <CTabPane
           v-for="(number, index) in chatTabNameList.length"
           :key="index">
-        <chat-msg-list-block
+        <ChatMsgListBlock
             :robotIndex="props.robotIndex"
             :tabIndex="index"/>
-      </c-tab-pane>
-    </c-tabs>
+      </CTabPane>
+    </CTabs>
     <AddTabDialog
         ref="addTabDialogRefs"
         :robotIndex="props.robotIndex"/>
