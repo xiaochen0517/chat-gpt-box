@@ -164,9 +164,3 @@ const changeRobotClick = (index, item) => {
     <SlideSideBarBlock ref="slideSideBarBlockRefs" @onClick="changeRobotClick"/>
   </div>
 </template>
-
-<style scoped lang="less">
-//.scroll-container::-webkit-scrollbar {
-//@apply w-2 h-2 mt-16 rounded-full;
-//}
-</style>
