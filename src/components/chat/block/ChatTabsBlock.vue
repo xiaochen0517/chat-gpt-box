@@ -100,6 +100,7 @@ const chatTabNameList = computed(() => {
   return store.state.chatHistory[props.robotIndex]
     .map(item => item.name);
 });
+const robotOptions = computed(() => store.state.robotList[props.robotIndex].options);
 
 const getTabIndex = () => {
   return activeTabIndex.value;
@@ -143,10 +144,11 @@ const changeRobotClick = (index, item) => {
 <template>
   <div
       ref="scrollContainerRefs"
-      class="overflow-hidden overflow-y-auto box-border">
+      class="overflow-hidden overflow-y-auto box-border scroll-container mt-28">
     <CTabs
         v-model:activeKey="activeTabIndex"
         :tabNames="chatTabNameList"
+        :robotOptions="robotOptions"
         @addTabClick="addTab"
         @removeTabClick="removeTabClick"
         @showSlideSideBarClick="showSlideSideBar">
@@ -162,3 +164,9 @@ const changeRobotClick = (index, item) => {
     <SlideSideBarBlock ref="slideSideBarBlockRefs" @onClick="changeRobotClick"/>
   </div>
 </template>
+
+<style scoped lang="less">
+//.scroll-container::-webkit-scrollbar {
+//@apply w-2 h-2 mt-16 rounded-full;
+//}
+</style>
