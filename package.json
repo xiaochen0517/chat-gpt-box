@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "vite --host",
-    "build": "vite build",
+    "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "tauri": "tauri dev",
     "build-tauri": "tauri build"
@@ -22,8 +22,6 @@
     "@capacitor/core": "^5.5.1",
     "@capacitor/ios": "^5.5.1",
     "@tauri-apps/api": "^1.2.0",
-    "@tauri-apps/cli": "^1.5.6",
-    "@vitejs/plugin-vue": "^4.0.0",
     "@vueuse/core": "^10.1.0",
     "autoprefixer": "^10.4.16",
     "element-plus": "^2.4.0",
@@ -35,14 +33,18 @@
     "md-editor-v3": "^4.8.2",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.3",
-    "vite": "^4.2.1",
-    "vue": "^3.2.45",
+    "vue": "^3.3.4",
     "vue-cli-plugin-tauri": "^1.0.0",
     "vue-router": "4",
-    "vuex": "^4.0.2"
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.1",
-    "@capacitor/cli": "^5.5.1"
+    "@capacitor/cli": "^5.5.1",
+    "@tauri-apps/cli": "^1.5.6",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.4",
+    "vue-tsc": "^1.8.5"
   }
 }

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {DeleteOutlined, EditOutlined} from "@ant-design/icons-vue";
 import MarkdownBlock from "@/components/chat/block/MarkdownBlock.vue";
 

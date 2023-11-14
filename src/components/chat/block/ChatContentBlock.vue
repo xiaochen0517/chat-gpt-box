@@ -1,15 +1,14 @@
-<script setup>
+<script setup lang="ts">
 import {nextTick, ref} from "vue";
 import ChatTabsBlock from "./ChatTabsBlock.vue";
 import ChatInputBlock from "./ChatInputBlock.vue";
-import {useStore} from "vuex";
-import {RequestUtil} from "@/util/RequestUtil.js";
+import {RequestUtil} from "@/util/RequestUtil.ts";
+import {Robot} from "@/types/State.ts";
 
-const store = useStore();
-
-const robotIndex = ref(0);
-const chatTabsBlockRefs = ref(null);
-const commitMsgContent = (msgContent) => {
+const robotIndex = ref<number>(0);
+const chatTabsBlockRefs = ref<InstanceType<typeof ChatTabsBlock> | null>(null);
+const commitMsgContent = (msgContent: string) => {
+  if (!chatTabsBlockRefs.value) return;
   const tabIndex = chatTabsBlockRefs.value.getTabIndex();
   let requestUtil = new RequestUtil();
   requestUtil.sendRequest({
@@ -17,14 +16,16 @@ const commitMsgContent = (msgContent) => {
     tabIndex: tabIndex,
     content: msgContent,
   }, () => {
+    if (!chatTabsBlockRefs.value) return;
     chatTabsBlockRefs.value.scrollToBottom();
   });
 };
 
-const changeRobot = (index, item) => {
+const changeRobot = (index: number, item: Robot) => {
   console.log(`changeRobot: ${index}, ${item}`)
   robotIndex.value = index;
   nextTick(() => {
+    if (!chatTabsBlockRefs.value) return;
     chatTabsBlockRefs.value.scrollToBottom();
   });
 };

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 
 import {inject, ref} from "vue";
 import ShortcutSettingsBlock from "@/components/setting/ShortcutSettingsBlock.vue";
@@ -8,10 +8,11 @@ const dialogVisible = ref(false);
 
 const activeCollNames = ref(["0"]);
 
-const baseSettingsBlockRefs = ref(null);
-const shortcutSettingsBlockRefs = ref(null);
+const baseSettingsBlockRefs = ref<InstanceType<typeof BaseSettingsBlock> | null>(null);
+const shortcutSettingsBlockRefs = ref<InstanceType<typeof ShortcutSettingsBlock> | null>(null);
 const saveSettings = async () => {
   try {
+    if (!baseSettingsBlockRefs.value || !shortcutSettingsBlockRefs.value) return;
     await baseSettingsBlockRefs.value.saveData();
     await shortcutSettingsBlockRefs.value.saveData();
     // 刷新页面

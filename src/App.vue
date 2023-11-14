@@ -1,12 +1,12 @@
-<script setup>
+<script setup lang="ts">
 
 import {useStore} from "vuex";
-import {computed, onMounted, watch} from "vue";
+import {computed, onMounted, Ref, watch} from "vue";
 
 const store = useStore();
 
 // 暗模式配置
-const isDarkMode = computed(() => store.state.config.isDarkMode);
+const isDarkMode: Ref<boolean> = computed(() => store.state.config.isDarkMode);
 
 onMounted(() => {
   // 初始化暗模式
@@ -19,11 +19,15 @@ watch(isDarkMode, (newVal) => {
   switchDarkMode(newVal);
 });
 
-const switchDarkMode = (isDark) => {
+const switchDarkMode = (isDark: boolean) => {
+  let querySelector = document.querySelector("html");
+  if (!querySelector) {
+    return;
+  }
   if (isDark) {
-    document.querySelector("html").classList.add("dark");
+    querySelector.classList.add("dark");
   } else {
-    document.querySelector("html").classList.remove("dark");
+    querySelector.classList.remove("dark");
   }
 }
 

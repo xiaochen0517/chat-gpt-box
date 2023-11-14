@@ -1,8 +1,9 @@
-<script setup>
+<script setup lang="ts">
 import {computed, onMounted, onUnmounted, ref} from "vue";
 import ChatMessageBlock from "./ChatMessageBlock.vue";
 import {useStore} from "vuex";
 import EditMessageDialog from "../dialog/EditMessageDialog.vue";
+import {ChatMessage} from "gpt-tokenizer/esm/GptEncoding";
 
 const store = useStore();
 
@@ -24,7 +25,7 @@ onMounted(() => {
 onUnmounted(() => {
 });
 
-const deleteMessage = (message, index) => {
+const deleteMessage = (_message: ChatMessage, index: number) => {
   store.commit("removeChatMessage", {
     robotIndex: props.robotIndex,
     tabIndex: props.tabIndex,
@@ -32,11 +33,12 @@ const deleteMessage = (message, index) => {
   });
 };
 
-const editMessageDialogRefs = ref(null);
-const editMessage = (message, index) => {
-  if (editMessageDialogRefs.value) {
-    editMessageDialogRefs.value.show(props.robotIndex, props.tabIndex, index);
+const editMessageDialogRefs = ref<InstanceType<typeof EditMessageDialog> | null>(null);
+const editMessage = (_message: ChatMessage, index: number) => {
+  if (!editMessageDialogRefs.value) {
+    return;
   }
+  editMessageDialogRefs.value.show(props.robotIndex, props.tabIndex, index);
 };
 
 </script>

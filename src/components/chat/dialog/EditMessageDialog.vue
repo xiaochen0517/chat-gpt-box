@@ -1,13 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import {inject, ref} from "vue";
 import {useStore} from "vuex";
 import _ from "lodash";
+import {ElForm, ElMessage} from "element-plus";
 
 const store = useStore();
-
-const robotIndex = ref(null);
-const tabIndex = ref(null);
-const messageIndex = ref(null);
 const dialogVisible = ref(false);
 
 const formData = ref({
@@ -31,9 +28,17 @@ const formRules = ref({
   ]
 });
 
-const editMessageFormRef = ref(null);
+const robotIndex = ref<number | null>(null);
+const tabIndex = ref<number | null>(null);
+const messageIndex = ref<number | null>(null);
+
+const editMessageFormRef = ref<InstanceType<typeof ElForm> | null>(null);
 const commit = async () => {
-  if (!editMessageFormRef) return;
+  if (!editMessageFormRef.value) return;
+  if (!robotIndex.value || !tabIndex.value || !messageIndex.value) {
+    ElMessage.warning("Please select a message first")
+    return;
+  }
   await editMessageFormRef.value.validate((valid, fields) => {
     if (valid) {
       store.commit("updateMessage", {
@@ -42,7 +47,6 @@ const commit = async () => {
         messageIndex: messageIndex.value,
         message: formData.value
       });
-      editMessageFormRef.value.resetFields();
       dialogVisible.value = false;
     } else {
       console.log('error', fields);
@@ -50,7 +54,7 @@ const commit = async () => {
   });
 };
 
-const show = (rIndex, tIndex, mIndex) => {
+const show = (rIndex: number, tIndex: number, mIndex: number) => {
   robotIndex.value = rIndex;
   tabIndex.value = tIndex;
   messageIndex.value = mIndex;
@@ -69,43 +73,23 @@ const dialogWidth = inject("dialogWidth");
 
 <template>
   <div class="edit-message-dialog">
-    <el-dialog
-        v-model="dialogVisible"
-        title="Edit message"
-        @ok="commit"
-        @cancel="dialogVisible = false"
-        ：width="dialogWidth">
-      <el-form
-          ref="editMessageFormRef"
-          :model="formData"
-          :rules="formRules"
-          label-width="120px">
-        <el-form-item
-            label="Role"
-            prop="role">
-          <el-select
-              v-model="formData.role"
-              placeholder="Please select role">
+    <el-dialog v-model="dialogVisible" title="Edit message" @ok="commit" @cancel="dialogVisible = false" :width="dialogWidth">
+      <el-form ref="editMessageFormRef" :model="formData" :rules="formRules" label-width="120px">
+        <el-form-item label="Role" prop="role">
+          <el-select v-model="formData.role" placeholder="Please select role">
             <el-option value="system">system</el-option>
             <el-option value="user">user</el-option>
             <el-option value="assistant">assistant</el-option>
           </el-select>
         </el-form-item>
-        <el-form-item
-            label="Message"
-            prop="content">
-          <el-input
-              type="textarea"
-              v-model="formData.content"
-              :auto-size="{ minRows: 3, maxRows: 6 }"/>
+        <el-form-item label="Message" prop="content">
+          <el-input type="textarea" v-model="formData.content" :auto-size="{ minRows: 3, maxRows: 6 }"/>
         </el-form-item>
       </el-form>
       <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button
-            type="primary"
-            @click="commit">
+        <el-button type="primary" @click="commit">
           Confirm
         </el-button>
       </span>

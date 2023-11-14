@@ -1,7 +1,8 @@
 import {computed, ref} from 'vue';
+import {App} from "@vue/runtime-core";
 
 export default {
-  install(app) {
+  install(app: App) {
     const windowWidth = ref(window.innerWidth);
     const updateWidth = () => {
       if ((windowWidth.value < 1024 && window.innerWidth >= 1024) || (windowWidth.value >= 1024 && window.innerWidth < 1024)) {

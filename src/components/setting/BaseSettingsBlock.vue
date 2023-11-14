@@ -1,13 +1,14 @@
-<script setup>
+<script setup lang="ts">
 import {onMounted, ref} from "vue";
 import {useStore} from "vuex";
 import _ from "lodash";
-import modelList from "@/util/ModelList.js";
+import modelList from "@/util/ModelList";
+import {BaseConfig} from "@/types/State.ts";
+import {ElForm} from "element-plus";
 
 const store = useStore();
 
-const baseConfig = ref({});
-const baseConfigDefault = {
+const baseConfig = ref<BaseConfig>({
   // openai api key
   apiKey: "",
   // 聊天输入框enter键发送消息
@@ -26,7 +27,7 @@ const baseConfigDefault = {
   context_max_tokens: 2048,
   // 响应最大token数量
   response_max_tokens: 0
-};
+});
 const formRules = ref({
   apiKey: [
     {required: true, message: "Please input ApiKey", trigger: "blur"}
@@ -41,12 +42,12 @@ onMounted(() => {
 });
 const initSettingsData = () => {
   const config = _.cloneDeep(store.state.config.base);
-  baseConfig.value = {...baseConfigDefault, ...config};
+  baseConfig.value = {...baseConfig.value, ...config};
 };
 
-const rulesFormRef = ref(null);
+const rulesFormRef = ref<InstanceType<typeof ElForm> | null>(null);
 const saveData = async () => {
-  if (!rulesFormRef) return;
+  if (!rulesFormRef.value) return;
   await rulesFormRef.value.validate((valid, fields) => {
     if (valid) {
       store.commit("saveBaseConfig", baseConfig.value);
