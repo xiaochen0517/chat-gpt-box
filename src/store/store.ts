@@ -1,6 +1,8 @@
 import {createStore} from "vuex";
+import {RobotTabChatInfo, State} from "@/types/State.ts";
+import {ChatMessage} from "gpt-tokenizer/esm/GptEncoding";
 
-const store = createStore({
+const store = createStore<State>({
   state: {
     // 版本号
     version: "0.2.0",
@@ -94,15 +96,11 @@ const store = createStore({
   },
   mutations: {
     // 从本地存储中加载状态
-    initState(state) {
+    initState(state: State) {
       const savedState = localStorage.getItem("vuex");
       if (savedState) {
         this.replaceState(Object.assign(state, JSON.parse(savedState)));
       }
-    },
-    // 同步修改状态
-    setApiKey(state, payload) {
-      state.apiKey = payload;
     },
     // 删除机器人
     removeRobot(state, index) {
@@ -112,7 +110,9 @@ const store = createStore({
     // 添加机器人
     addRobot(state, robot) {
       state.robotList.push(robot);
-      state.chatHistory.push([{name: "default", chat: [{role: "system", content: robot.prompt}]}]);
+      const defaultChatMessage: ChatMessage = {role: "system", content: robot.prompt};
+      const defaultTabChatInfo: RobotTabChatInfo = {name: "default", generating: false, chat: [defaultChatMessage]};
+      state.chatHistory.push([defaultTabChatInfo]);
     },
     // 更新机器人
     updateRobot(state, {robotIndex, robot}) {
@@ -189,10 +189,6 @@ const store = createStore({
     setGenerating(state, {robotIndex, tabIndex, generating}) {
       state.chatHistory[robotIndex][tabIndex].generating = generating;
     },
-    // 设置消息发送方式
-    setEnterSend(state, enterSend) {
-      state.config.enterSend = enterSend;
-    },
     // 保存是否为暗模式
     setDarkMode(state, darkMode) {
       state.config.isDarkMode = darkMode;
@@ -212,17 +208,17 @@ const store = createStore({
       localStorage.setItem("vuex", JSON.stringify(state));
     }
   },
-  getters: {
-    // 获取状态
-    getApiKey(state) {
-      return state.apiKey;
-    }
-  }
+  getters: {}
 });
 
 // 每次状态变化时都保存到本地存储
 store.subscribe(() => {
-  store.dispatch("saveState");
+  store.dispatch("saveState")
+      .then(() => {
+      })
+      .catch(error => {
+        console.error("state保存到本地错误", error);
+      });
 });
 
 // 初始化状态

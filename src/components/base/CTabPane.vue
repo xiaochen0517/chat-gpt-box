@@ -1,16 +1,17 @@
-<script setup>
+<script setup lang="ts">
 
-import {computed, getCurrentInstance, inject, onMounted} from "vue";
+import {computed, getCurrentInstance, inject, onMounted, Ref} from "vue";
+import {ComponentInternalInstance} from "@vue/runtime-core";
 
-const instance = getCurrentInstance();
+const instance: ComponentInternalInstance | null = getCurrentInstance();
 
-const parentActiveKey = inject("activeKey");
+const parentActiveKey = inject<Ref<number> | null>("activeKey");
 const currentKey = computed(() => {
-  return instance.vnode.key;
+  return instance?.vnode.key;
 });
 
 const isActive = computed(() => {
-  return currentKey.value === parentActiveKey.value;
+  return currentKey?.value === parentActiveKey?.value;
 });
 
 onMounted(() => {

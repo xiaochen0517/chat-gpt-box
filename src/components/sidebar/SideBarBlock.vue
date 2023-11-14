@@ -1,21 +1,21 @@
-<script setup>
+<script setup lang="ts">
 import {getCurrentInstance, ref} from "vue";
-import {useStore} from "vuex";
 import RobotListBlock from "./RobotListBlock.vue";
 import MenuListBlock from "./MenuListBlock.vue";
+import {Robot} from "@/types/State.ts";
 
 /**
  * 初始化机器人列表
  */
-const store = useStore();
-
-const {emit} = getCurrentInstance();
-const onRobotClick = (index, item) => {
-  emit('onClick', index, item);
+const instance = getCurrentInstance();
+const onRobotClick = (index: number, item: Robot) => {
+  if (!instance) return;
+  instance.emit('onClick', index, item);
 };
 
-const robotListBlockRefs = ref(null);
+const robotListBlockRefs = ref<InstanceType<typeof RobotListBlock> | null>(null);
 const robotListScrollToBottom = () => {
+  if (!robotListBlockRefs.value) return;
   robotListBlockRefs.value.scrollToBottom();
 };
 

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 
 import {computed, provide, ref, watch} from "vue";
 
