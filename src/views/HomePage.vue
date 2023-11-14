@@ -1,10 +1,11 @@
-<script setup>
+<script setup lang="ts">
 import {nextTick, onMounted, ref} from "vue";
-import SideBarBlock from "../components/sidebar/SideBarBlock.vue";
+import SideBarBlock from "@/components/sidebar/SideBarBlock.vue";
 import {appWindow} from "@tauri-apps/api/window";
 import {exit} from '@tauri-apps/api/process';
-import ChatContentBlock from "../components/chat/block/ChatContentBlock.vue";
+import ChatContentBlock from "@/components/chat/block/ChatContentBlock.vue";
 import {useStore} from "vuex";
+import {Robot} from "@/types/State.ts";
 
 const store = useStore();
 
@@ -17,7 +18,7 @@ onMounted(() => {
 });
 
 const addWindowsCloseListener = () => {
-  if (!window.__TAURI__ || !window.__TAURI__.isRunningInTauri) return;
+  if (!(window as any).__TAURI__ || !(window as any).__TAURI__.isRunningInTauri) return;
   appWindow.onCloseRequested(async () => {
     await exit(0);
   });
@@ -33,23 +34,18 @@ const checkConfig = () => {
   console.log(`oldVersion: ${oldVersion}, newVersion: ${newVersion}`);
 };
 
-const chatContentBlockRefs = ref(null);
-const changeRobotClick = (index, item) => {
+const chatContentBlockRefs = ref<InstanceType<typeof ChatContentBlock> | null>(null);
+const changeRobotClick = (index: number, item: Robot) => {
   nextTick(() => {
-    if (chatContentBlockRefs.value) {
-      chatContentBlockRefs.value.changeRobot(index, item);
-    }
+    if (!chatContentBlockRefs.value) return;
+    chatContentBlockRefs.value.changeRobot(index, item);
   });
 };
 </script>
 
 <template>
   <div class="w-full h-full flex flex-row box-border">
-    <SideBarBlock
-        class="hidden lg:flex"
-        @onClick="changeRobotClick"/>
-    <ChatContentBlock
-        class="flex-1"
-        ref="chatContentBlockRefs"/>
+    <SideBarBlock class="hidden lg:flex" @onClick="changeRobotClick"/>
+    <ChatContentBlock class="flex-1" ref="chatContentBlockRefs"/>
   </div>
 </template>

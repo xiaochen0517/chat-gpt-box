@@ -1,13 +1,15 @@
-<script setup>
+<script setup lang="ts">
 import {computed, getCurrentInstance, onBeforeUnmount, ref} from "vue";
 import {useStore} from "vuex";
 import {EllipsisOutlined} from "@ant-design/icons-vue";
 import EditRobotDialog from "../chat/dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
+import {Robot} from "@/types/State.ts";
 
 const instance = getCurrentInstance();
 const activeRobotIndex = ref(0);
-const changeActiveRobot = (index, item) => {
+const changeActiveRobot = (index: number, item: Robot) => {
+  if (!instance) return;
   activeRobotIndex.value = index;
   instance.emit('onClick', index, item);
 };
@@ -44,20 +46,22 @@ whenever(switchRobotKey, () => {
 
 onBeforeUnmount(() => {
 });
-const robotListRefs = ref(null);
 
 const robotList = computed(() => {
   return store.state.robotList;
 });
 
 const robotListPopoverVisible = ref(false);
-const editRobotDialogRefs = ref(null);
-const editRobotClick = (index) => {
+const editRobotDialogRefs = ref<InstanceType<typeof EditRobotDialog> | null>(null);
+const editRobotClick = (index: number) => {
+  if (!editRobotDialogRefs.value) return;
   editRobotDialogRefs.value.show(true, index);
   robotListPopoverVisible.value = false;
 };
 
+const robotListRefs = ref<InstanceType<typeof HTMLDivElement> | null>(null);
 const scrollToBottom = () => {
+  if (!robotListRefs.value) return;
   robotListRefs.value.scrollTop = robotListRefs.value.scrollHeight;
 };
 
@@ -80,10 +84,7 @@ defineExpose({
         <div class="text-md flex-1 leading-10">
           {{ item.name }}
         </div>
-        <el-popover
-            overlayClassName="robot-editor-popover"
-            placement="bottom"
-            trigger="click">
+        <el-popover overlayClassName="robot-editor-popover" placement="bottom" trigger="click">
           <template #default>
             <div class="p-2 m-0">
               <div

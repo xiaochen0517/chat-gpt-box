@@ -1,8 +1,9 @@
-<script setup>
+<script setup lang="ts">
 import {computed, onMounted, onUnmounted, ref} from "vue";
 import ChatMessageBlock from "./ChatMessageBlock.vue";
 import {useStore} from "vuex";
 import EditMessageDialog from "../dialog/EditMessageDialog.vue";
+import {ChatMessage} from "gpt-tokenizer/esm/GptEncoding";
 
 const store = useStore();
 
@@ -18,14 +19,13 @@ const props = defineProps({
 });
 
 const msgList = computed(() => store.state.chatHistory[props.robotIndex][props.tabIndex].chat);
-const robotOptions = computed(() => store.state.robotList[props.robotIndex].options);
 onMounted(() => {
 });
 
 onUnmounted(() => {
 });
 
-const deleteMessage = (message, index) => {
+const deleteMessage = (_message: ChatMessage, index: number) => {
   store.commit("removeChatMessage", {
     robotIndex: props.robotIndex,
     tabIndex: props.tabIndex,
@@ -33,25 +33,18 @@ const deleteMessage = (message, index) => {
   });
 };
 
-const editMessageDialogRefs = ref(null);
-const editMessage = (message, index) => {
-  if (editMessageDialogRefs.value) {
-    editMessageDialogRefs.value.show(props.robotIndex, props.tabIndex, index);
+const editMessageDialogRefs = ref<InstanceType<typeof EditMessageDialog> | null>(null);
+const editMessage = (_message: ChatMessage, index: number) => {
+  if (!editMessageDialogRefs.value) {
+    return;
   }
+  editMessageDialogRefs.value.show(props.robotIndex, props.tabIndex, index);
 };
 
 </script>
 
 <template>
-  <div class="mt-16">
-    <div
-        v-if="robotOptions?.enabled"
-        class="flex flex-row">
-      <div class="border border-gray-700 rounded px-2 py-1 dark:bg-amber-600 text-sm font-bold select-none">
-        <i class="iconfont icon-settings font-normal"/>
-        {{ robotOptions.model?.toUpperCase() }}
-      </div>
-    </div>
+  <div>
     <ChatMessageBlock
         v-for="(item, index) in msgList"
         :key="index"

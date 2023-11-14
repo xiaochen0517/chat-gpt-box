@@ -1,4 +1,9 @@
-const ModelList = [
+export interface Model {
+  label: string;
+  value: string;
+}
+
+const ModelList: Model[] = [
   {
     label: "gpt-3.5-turbo",
     value: "gpt-3.5-turbo"

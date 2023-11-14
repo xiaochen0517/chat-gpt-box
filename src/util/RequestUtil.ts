@@ -1,6 +1,8 @@
-import store from "../store/store.js";
+import store from "../store/store.ts";
 import _ from "lodash";
 import {encodeChat} from "gpt-tokenizer";
+import {RequestBody, RobotOptions, SendRequest} from "@/types/SendRequest.ts";
+import {ChatMessage} from "gpt-tokenizer/esm/GptEncoding";
 
 // 请求地址
 const API_URL = "v1/chat/completions";
@@ -11,8 +13,8 @@ const decoder = new TextDecoder('utf-8');
 
 export class RequestUtil {
   // stream读取器
-  reader = null;
-  changeFunc = () => {
+  reader: ReadableStreamDefaultReader | null = null;
+  changeFunc: () => void = () => {
   };
 
   data = {
@@ -38,7 +40,7 @@ export class RequestUtil {
     this.changeFunc();
   };
 
-  setAssistantMsgContent = (content) => {
+  setAssistantMsgContent = (content: string) => {
     store.commit("setAssistantMsgContent", {
       robotIndex: this.data.robotIndex,
       tabIndex: this.data.tabIndex,
@@ -47,7 +49,7 @@ export class RequestUtil {
     this.changeFunc();
   };
 
-  addAssistantMsgContent = (content) => {
+  addAssistantMsgContent = (content: string) => {
     store.commit("addAssistantMsgContent", {
       robotIndex: this.data.robotIndex,
       tabIndex: this.data.tabIndex,
@@ -56,7 +58,7 @@ export class RequestUtil {
     this.changeFunc();
   };
 
-  setGenerating = (generating) => {
+  setGenerating = (generating: boolean) => {
     store.commit("setGenerating", {
       robotIndex: this.data.robotIndex,
       tabIndex: this.data.tabIndex,
@@ -64,7 +66,7 @@ export class RequestUtil {
     });
   };
 
-  sendRequest = ({robotIndex, tabIndex, content}, change) => {
+  sendRequest = ({robotIndex, tabIndex, content}: SendRequest, change: () => void) => {
     if (change) {
       this.changeFunc = change;
     }
@@ -89,24 +91,27 @@ export class RequestUtil {
       this.addAssistantMessage();
       // 发送请求
       this.sendFetch(messages, robotOptions);
-    } catch
-      (exception) {
-      console.error(exception);
-      // 写入错误信息
-      this.setAssistantMsgContent(exception.message);
+    } catch (exception: unknown) {
+      if (exception instanceof Error) {
+        // 写入错误信息
+        this.setAssistantMsgContent(exception.message);
+      } else {
+        console.error(exception);
+        this.setAssistantMsgContent(String(exception));
+      }
       // 当前状态为生成完成
       this.setGenerating(false);
     }
   }
 
-  getContextMessages = (robotIndex, tabIndex, options) => {
+  getContextMessages = (robotIndex: number, tabIndex: number, options: RobotOptions) => {
     // 拷贝聊天记录，用于发送请求
     let messages = _.cloneDeep(store.state.chatHistory[robotIndex][tabIndex].chat);
     if (options.context_max_message <= 0 || options.context_max_tokens <= 0) {
       return [messages[0], messages[messages.length - 1]];
     }
     // 获取指定数量的上下文消息
-    let contextMessages;
+    let contextMessages: ChatMessage[];
     if (options.context_max_message >= messages.length - 1) {
       contextMessages = messages;
     } else {
@@ -127,7 +132,7 @@ export class RequestUtil {
     return contextMessages;
   }
 
-  getRobotOptions = (robotIndex) => {
+  getRobotOptions = (robotIndex: number): RobotOptions => {
     let robotOptions = store.state.robotList[robotIndex].options;
     // 获取配置信息
     if (!robotOptions.enabled) {
@@ -137,7 +142,7 @@ export class RequestUtil {
     return robotOptions;
   }
 
-  checkRequestData = (robotIndex, tabIndex, content) => {
+  checkRequestData = (robotIndex: number, tabIndex: number, content: string) => {
     // 检查并初始化数据
     if (content.length <= 0) {
       console.error("无信息可发送");
@@ -160,27 +165,30 @@ export class RequestUtil {
     };
   };
 
-  buildBodyJson = (messages, options) => {
-    let requestObject = {
+  buildBodyJson = (messages: ChatMessage[], options: RobotOptions) => {
+    let requestObject: RequestBody = {
       messages,
       model: options.model,
       stream: true,
       temperature: options.temperature,
     };
     if (options.response_max_tokens > 0) {
-      requestObject["max_tokens"] = options.response_max_tokens;
+      requestObject.max_tokens = options.response_max_tokens;
     }
     return JSON.stringify(requestObject);
   };
 
-  sendFetch = (messages, options) => {
+  sendFetch = (messages: ChatMessage[], options: RobotOptions) => {
     const controller = new AbortController();
     fetch(options.apiUrl + API_URL, {
       method: REQ_TYPE,
       headers: this.buildHeaders(),
       body: this.buildBodyJson(messages, options),
       signal: controller.signal,
-    }).then((data) => {
+    }).then((data: Response) => {
+      if (data.status !== 200 || !data.body) {
+        throw Error(`请求失败，状态码：${data.status}，状态信息：${data.statusText}`);
+      }
       this.reader = data.body.getReader();
       this.reader.read().then(this.readResponse);
       // 当前状态为生成完成
@@ -194,7 +202,7 @@ export class RequestUtil {
     });
   };
 
-  readResponse = (result) => {
+  readResponse = (result: ReadableStreamReadResult<AllowSharedBufferSource>) => {
     if (result.done) {
       console.log("读取完成");
       return;
@@ -233,6 +241,7 @@ export class RequestUtil {
       }
     }
     // 继续读取剩余的数据
+    if (!this.reader) return;
     this.reader.read().then(this.readResponse);
   };
 

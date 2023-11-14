@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {computed, onMounted} from "vue";
 import {useStore} from "vuex";
 import {MdPreview} from 'md-editor-v3';

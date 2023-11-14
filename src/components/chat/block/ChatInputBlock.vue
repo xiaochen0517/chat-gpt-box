@@ -1,8 +1,9 @@
-<script setup>
+<script setup lang="ts">
 import {SendOutlined} from "@ant-design/icons-vue";
 import {computed, getCurrentInstance, ref} from "vue";
 import {useStore} from "vuex";
 import {useMagicKeys, whenever} from "@vueuse/core";
+import {ComponentInternalInstance} from "@vue/runtime-core";
 
 const store = useStore();
 const keys = useMagicKeys();
@@ -11,14 +12,16 @@ const focusInputKey = keys[shortcut.value.focusInput];
 whenever(focusInputKey, () => {
   focusInput();
 });
-const chatInputTextAreaRefs = ref(null);
+const chatInputTextAreaRefs = ref<InstanceType<typeof HTMLTextAreaElement> | null>(null);
 const focusInput = () => {
+  if (!chatInputTextAreaRefs.value) return;
   chatInputTextAreaRefs.value.focus();
 };
 
-const instance = getCurrentInstance();
+const instance: ComponentInternalInstance | null = getCurrentInstance();
 const chatInputContent = ref("");
 const commitContent = () => {
+  if (!instance) return;
   if (chatInputContent.value.length <= 0 || /^\s*$/.test(chatInputContent.value)) return;
   instance.emit("commit", chatInputContent.value);
   chatInputContent.value = "";
