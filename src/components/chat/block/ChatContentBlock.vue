@@ -15,10 +15,12 @@ const messageRefresh = () => {
 const changeRobot = (index: number, item: Robot) => {
   console.log(`changeRobot: ${index}, ${item}`)
   robotIndex.value = index;
-  nextTick(() => {
-    if (!chatTabsBlockRefs.value) return;
-    chatTabsBlockRefs.value.scrollToBottom();
-  });
+  setTimeout(() => {
+    nextTick(() => {
+      if (!chatTabsBlockRefs.value) return;
+      chatTabsBlockRefs.value.scrollToBottom();
+    });
+  }, 100);
 };
 
 defineExpose({
