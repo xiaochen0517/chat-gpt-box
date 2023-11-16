@@ -5,7 +5,7 @@ import {ChatMessage} from "gpt-tokenizer/esm/GptEncoding";
 const store = createStore<State>({
   state: {
     // 版本号
-    version: "0.2.0",
+    version: "0.2.1",
     // 机器人列表
     robotList: [
       {
