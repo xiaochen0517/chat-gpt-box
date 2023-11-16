@@ -29,15 +29,17 @@ export interface ShortcutState {
 export interface Robot {
   name: string;
   prompt: string;
-  options: {
-    enabled: boolean;
-    apiUrl: string;
-    model: string;
-    temperature: number;
-    context_max_message: number;
-    context_max_tokens: number;
-    response_max_tokens: number;
-  };
+  options: StoreRobotOptions;
+}
+
+export interface StoreRobotOptions {
+  enabled: boolean;
+  apiUrl: string;
+  model: string;
+  temperature: number;
+  context_max_message: number;
+  context_max_tokens: number;
+  response_max_tokens: number;
 }
 
 export interface RobotTabChatInfo {
