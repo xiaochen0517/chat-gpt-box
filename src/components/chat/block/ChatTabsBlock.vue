@@ -152,7 +152,8 @@ defineExpose({
 <template>
   <div
       ref="scrollContainerRefs"
-      class="overflow-hidden overflow-y-auto box-border scroll-container mt-28">
+      class="overflow-hidden overflow-y-auto box-border scroll-container"
+      :class="robotOptions.enabled?'mt-28':'mt-16'">
     <CTabs
         v-model:activeKey="activeTabIndex"
         :tabNames="chatTabNameList"
