@@ -1,6 +1,7 @@
 {
   "appId": "com.mochen.chatgptbox",
   "appName": "chat-gpt-box",
+  "version": "0.2.1",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"
