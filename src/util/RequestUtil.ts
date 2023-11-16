@@ -5,11 +5,11 @@ import {RequestBody, RobotOptions, SendRequest} from "@/types/SendRequest.ts";
 import {ChatMessage} from "gpt-tokenizer/esm/GptEncoding";
 
 // 请求地址
-const API_URL = "v1/chat/completions";
+const API_URL: string = "v1/chat/completions";
 // 请求方式
-const REQ_TYPE = "POST";
+const REQ_TYPE: string = "POST";
 // 字符解码器
-const decoder = new TextDecoder('utf-8');
+const decoder: TextDecoder = new TextDecoder('utf-8');
 
 export class RequestUtil {
   // stream读取器
@@ -22,6 +22,20 @@ export class RequestUtil {
     tabIndex: 0,
     content: "",
   };
+
+  stopFlag: boolean = false;
+
+  cancel() {
+    this.stopFlag = true;
+    if (!this.reader) return;
+    this.reader.cancel().then(() => {
+      console.log("取消读取");
+      this.reader = null;
+    }).catch((error) => {
+      console.error(error);
+      this.reader = null;
+    });
+  }
 
   addUserMessage() {
     store.commit("addUserMessage", {
@@ -185,14 +199,29 @@ export class RequestUtil {
       headers: this.buildHeaders(),
       body: this.buildBodyJson(messages, options),
       signal: controller.signal,
-    }).then((data: Response) => {
+    }).then(async (data: Response) => {
       if (data.status !== 200 || !data.body) {
-        throw Error(`请求失败，状态码：${data.status}，状态信息：${data.statusText}`);
+        this.addAssistantMsgContent(`请求失败，状态码：${data.status}，状态信息：${data.statusText}`);
+        // 当前状态为生成完成
+        this.setGenerating(false);
+        return;
       }
-      this.reader = data.body.getReader();
-      this.reader.read().then(this.readResponse);
-      // 当前状态为生成完成
-      this.setGenerating(false);
+      try {
+        this.reader = data.body.getReader();
+        const result = await this.reader.read()
+        await this.readResponse(result);
+      } catch (error) {
+        console.error(error);
+        if (error instanceof Error) {
+          // 显示错误信息
+          this.addAssistantMsgContent(error.message);
+        } else {
+          // 显示错误信息
+          this.addAssistantMsgContent(String(error));
+        }
+        // 当前状态为生成完成
+        this.setGenerating(false);
+      }
     }).catch((error) => {
       console.error(error);
       // 显示错误信息
@@ -202,28 +231,29 @@ export class RequestUtil {
     });
   };
 
-  readResponse = (result: ReadableStreamReadResult<AllowSharedBufferSource>) => {
-    if (result.done) {
+  readResponse = async (result: ReadableStreamReadResult<AllowSharedBufferSource>) => {
+    if (result.done || this.stopFlag) {
       console.log("读取完成");
+      this.setGenerating(false);
       return;
     }
     // 这是一个 Uint8Array 类型的字节数组，需要进行解码
-    let str = decoder.decode(result.value);
     // 有可能获取的一个数据包中有多个独立的块，使用data:进行分割
-    let strArr = str.split("data:");
+    let dataList = decoder.decode(result.value).split("data:");
     // 循环解析
-    for (let string of strArr) {
+    for (let data of dataList) {
       // 跳过空字符串
-      if (string.length === 0) {
+      if (data.length === 0) {
         continue;
       }
       // 判断是否读取完成
-      if (string.trim() === "[DONE]") {
+      if (data.trim() === "[DONE]") {
         console.log("读取完成");
+        this.setGenerating(false);
         return;
       }
       // 解析返回的json格式数据
-      let resultData = JSON.parse(string);
+      let resultData = JSON.parse(data);
       // 判断是否存在错误信息，若存在错误信息则表示请求失败
       if (resultData.error) {
         // 返回错误信息
@@ -231,18 +261,27 @@ export class RequestUtil {
         return;
       }
       // 解析获取到的数据
-      let choices = resultData.choices;
-      for (let choice of choices) {
-        let delta = choice.delta;
+      for (let choice of resultData.choices) {
+        let content = choice.delta.content;
         // 检查content，没有直接跳过
-        if (delta.content) {
-          this.addAssistantMsgContent(delta.content);
+        if (content) {
+          this.addAssistantMsgContent(content);
         }
       }
     }
-    // 继续读取剩余的数据
-    if (!this.reader) return;
-    this.reader.read().then(this.readResponse);
+
+    if (!this.reader) {
+      this.setGenerating(false);
+      return;
+    }
+    try {
+      await this.readResponse(await this.reader.read());
+    } catch (error) {
+      console.error(error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.addAssistantMsgContent(errorMessage);
+      this.setGenerating(false);
+    }
   };
 
 }

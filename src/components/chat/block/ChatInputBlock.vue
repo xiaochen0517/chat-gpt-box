@@ -1,9 +1,23 @@
 <script setup lang="ts">
 import {SendOutlined} from "@ant-design/icons-vue";
-import {computed, getCurrentInstance, ref} from "vue";
+import {computed, getCurrentInstance, ref, Ref} from "vue";
 import {useStore} from "vuex";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import {ComponentInternalInstance} from "@vue/runtime-core";
+import {ElMessage} from "element-plus";
+import {RequestUtil} from "@/util/RequestUtil.ts";
+import {RobotTabChatInfo} from "@/types/State.ts";
+
+const props = defineProps({
+  robotIndex: {
+    type: Number,
+    default: 0
+  },
+  tabIndex: {
+    type: Number,
+    default: 0
+  }
+});
 
 const store = useStore();
 const keys = useMagicKeys();
@@ -20,10 +34,24 @@ const focusInput = () => {
 
 const instance: ComponentInternalInstance | null = getCurrentInstance();
 const chatInputContent = ref("");
-const commitContent = () => {
+
+const isGenerating: Ref<boolean> = computed(() => store.state.chatHistory[props.robotIndex][props.tabIndex].generating);
+const tabChatsInfo: Ref<RobotTabChatInfo> = computed(() => store.state.chatHistory[props.robotIndex][props.tabIndex]);
+const submitContent = () => {
   if (!instance) return;
+  if (isGenerating.value) {
+    tabChatsInfo.value.request?.cancel();
+    return;
+  }
   if (chatInputContent.value.length <= 0 || /^\s*$/.test(chatInputContent.value)) return;
-  instance.emit("commit", chatInputContent.value);
+  tabChatsInfo.value.request = new RequestUtil();
+  tabChatsInfo.value.request.sendRequest({
+    robotIndex: props.robotIndex,
+    tabIndex: props.tabIndex,
+    content: chatInputContent.value.trim(),
+  }, () => {
+    instance.emit("refresh", chatInputContent.value);
+  });
   chatInputContent.value = "";
 };
 
@@ -35,7 +63,11 @@ const enterSend = computed(() => store.state.config.base.enterSend);
 const ctrlEnterSend = computed(() => store.state.config.base.ctrlEnterSend);
 const enterKeyDown = () => {
   if (enterSend.value) {
-    commitContent();
+    if (isGenerating.value) {
+      ElMessage.warning("对话正在生成中，请稍后再试");
+      return;
+    }
+    submitContent();
   } else {
     breakLine();
   }
@@ -47,7 +79,11 @@ const shiftEnterKeyDown = () => {
   if (enterSend.value) {
     breakLine();
   } else {
-    commitContent();
+    if (isGenerating.value) {
+      ElMessage.warning("对话正在生成中，请稍后再试");
+      return;
+    }
+    submitContent();
   }
 };
 const ctrlEnterKeyDown = () => {
@@ -57,7 +93,11 @@ const ctrlEnterKeyDown = () => {
   if (enterSend.value) {
     breakLine();
   } else {
-    commitContent();
+    if (isGenerating.value) {
+      ElMessage.warning("对话正在生成中，请稍后再试");
+      return;
+    }
+    submitContent();
   }
 };
 
@@ -75,9 +115,10 @@ const ctrlEnterKeyDown = () => {
         @keydown.ctrl.enter.prevent.exact="ctrlEnterKeyDown"
         rows="3"/>
     <div
-        @click.stop="commitContent"
-        class="w-16 h-full rounded-md flex justify-center items-center ml-2 cursor-pointer hover:bg-slate-200 active:bg-slate-300 dark:hover:bg-slate-700 dark:active:bg-slate-800 border-2 border-slate-200 hover:border-slate-300 active:border-slate-400 dark:border-slate-600">
-      <send-outlined/>
+        @click.stop="submitContent"
+        class="w-16 h-full rounded-md flex justify-center items-center ml-2 text-sm cursor-pointer hover:bg-slate-200 active:bg-slate-300 dark:hover:bg-slate-700 dark:active:bg-slate-800 border-2 border-slate-200 hover:border-slate-300 active:border-slate-400 dark:border-slate-600">
+      <i class="iconfont icon-stop-fill text-xl" v-if="isGenerating"/>
+      <send-outlined v-else/>
     </div>
   </div>
 </template>

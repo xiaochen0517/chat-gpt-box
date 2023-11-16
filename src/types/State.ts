@@ -1,4 +1,5 @@
 import {ChatMessage} from "gpt-tokenizer/esm/GptEncoding";
+import {RequestUtil} from "@/util/RequestUtil.ts";
 
 export interface ShortcutState {
   // 聚焦到输入框
@@ -42,6 +43,7 @@ export interface Robot {
 export interface RobotTabChatInfo {
   name: string;
   generating: boolean;
+  request: RequestUtil | null;
   chat: ChatMessage[];
 }
 

@@ -30,6 +30,8 @@ const store = createStore<State>({
           name: "test-1",
           // 当前是否处于生成中
           generating: false,
+          // 生成请求的对象
+          request: null,
           // 指定index tab页的聊天记录
           chat: [{role: "system", content: "You are a helpful assistant."}],
         },
@@ -37,6 +39,8 @@ const store = createStore<State>({
           name: "test-2",
           // 当前是否处于生成中
           generating: false,
+          // 生成请求的对象
+          request: null,
           // 指定index tab页的聊天记录
           chat: [{role: "system", content: "You are a helpful assistant."}],
         }
@@ -111,7 +115,12 @@ const store = createStore<State>({
     addRobot(state, robot) {
       state.robotList.push(robot);
       const defaultChatMessage: ChatMessage = {role: "system", content: robot.prompt};
-      const defaultTabChatInfo: RobotTabChatInfo = {name: "default", generating: false, chat: [defaultChatMessage]};
+      const defaultTabChatInfo: RobotTabChatInfo = {
+        name: "default",
+        generating: false,
+        request: null,
+        chat: [defaultChatMessage]
+      };
       state.chatHistory.push([defaultTabChatInfo]);
     },
     // 更新机器人
@@ -128,6 +137,7 @@ const store = createStore<State>({
       state.chatHistory[robotIndex].push({
         name: tabName,
         generating: false,
+        request: null,
         chat: [{role: "system", content: robotInfo.prompt}]
       });
     },
@@ -187,7 +197,9 @@ const store = createStore<State>({
     },
     // 设置是否正在生成中
     setGenerating(state, {robotIndex, tabIndex, generating}) {
+      console.log("setGenerating", robotIndex, tabIndex, generating)
       state.chatHistory[robotIndex][tabIndex].generating = generating;
+      if (!generating) state.chatHistory[robotIndex][tabIndex].request = null;
     },
     // 保存是否为暗模式
     setDarkMode(state, darkMode) {
