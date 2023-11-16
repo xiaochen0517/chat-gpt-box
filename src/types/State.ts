@@ -1,4 +1,5 @@
 import {ChatMessage} from "gpt-tokenizer/esm/GptEncoding";
+import {RequestUtil} from "@/util/RequestUtil.ts";
 
 export interface ShortcutState {
   // 聚焦到输入框
@@ -28,20 +29,23 @@ export interface ShortcutState {
 export interface Robot {
   name: string;
   prompt: string;
-  options: {
-    enabled: boolean;
-    apiUrl: string;
-    model: string;
-    temperature: number;
-    context_max_message: number;
-    context_max_tokens: number;
-    response_max_tokens: number;
-  };
+  options: StoreRobotOptions;
+}
+
+export interface StoreRobotOptions {
+  enabled: boolean;
+  apiUrl: string;
+  model: string;
+  temperature: number;
+  context_max_message: number;
+  context_max_tokens: number;
+  response_max_tokens: number;
 }
 
 export interface RobotTabChatInfo {
   name: string;
   generating: boolean;
+  request: RequestUtil | null;
   chat: ChatMessage[];
 }
 

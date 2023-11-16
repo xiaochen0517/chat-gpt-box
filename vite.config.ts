@@ -3,11 +3,11 @@ import vue from "@vitejs/plugin-vue";
 import path from 'path';
 import packageJson from './package.json'
 
-function resolve(url) {
+function resolve(url: string) {
   return path.resolve(__dirname, url);
 }
 
-export default defineConfig(async () => ({
+export default defineConfig({
   plugins: [vue()],
   clearScreen: false,
   server: {
@@ -39,4 +39,4 @@ export default defineConfig(async () => ({
     'process.env': {},
     'import.meta.env.VITE_APP_VERSION': JSON.stringify(packageJson.version)
   }
-}));
+});

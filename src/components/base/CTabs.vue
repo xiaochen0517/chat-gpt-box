@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import {computed, provide, ref, watch} from "vue";
+import {StoreRobotOptions} from "@/types/State.ts";
 
 const props = defineProps({
   activeKey: {
@@ -12,11 +13,16 @@ const props = defineProps({
     default: () => []
   },
   robotOptions: {
-    type: Object,
+    type: Object as () => StoreRobotOptions,
     default: () => {
       return {
         enabled: false,
-        model: "gpt-3.5-turbo"
+        apiUrl: "",
+        model: "gpt-3.5-turbo",
+        temperature: 0.7,
+        context_max_message: 0,
+        context_max_tokens: 0,
+        response_max_tokens: 0,
       };
     }
   }
@@ -45,7 +51,7 @@ const closeInactiveClass = ref("hover:bg-gray-400 dark:hover:bg-gray-600");
           class="max-w-5xl m-auto my-2 overflow-hidden overflow-x-auto w-full shadow-xl opacity-80 backdrop-blur-md bg-gray-50 dark:bg-gray-800">
         <div class="flex flex-row min-w-full p-2 box-border bg-gray-100 dark:bg-gray-950 rounded-md">
           <div
-              class="absolute left-3 top-4 block lg:hidden px-2 py-1.5 mr-1 box-border rounded-md cursor-pointer border border-slate-300 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:border-slate-700  dark:bg-gray-900  dark:hover:bg-gray-800  dark:active:bg-gray-700 select-none"
+              class="absolute left-2 top-2 block lg:hidden px-2 py-1.5 mr-1 box-border rounded-md cursor-pointer border border-slate-300 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 dark:border-slate-700  dark:bg-gray-900  dark:hover:bg-gray-800  dark:active:bg-gray-700 select-none"
               @click="$emit('showSlideSideBarClick')">
             <i class="iconfont icon-category text-xs leading-3 font-bold mx-1"/>
           </div>
@@ -71,7 +77,7 @@ const closeInactiveClass = ref("hover:bg-gray-400 dark:hover:bg-gray-600");
           </div>
         </div>
         <div
-            v-if="robotOptions?.enabled"
+            v-if="robotOptions && robotOptions.enabled"
             class="flex flex-row w-full py-2">
           <div class="border border-gray-700 rounded px-2 py-1 dark:bg-amber-600 text-sm font-bold select-none">
             <i class="iconfont icon-settings font-normal"/>

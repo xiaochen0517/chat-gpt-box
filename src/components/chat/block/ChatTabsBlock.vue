@@ -50,6 +50,10 @@ const props = defineProps({
     type: Number,
     default: 0
   },
+  tabIndex: {
+    type: Number,
+    default: 0
+  }
 });
 
 const cleanTabChat = () => {
@@ -64,6 +68,9 @@ watch(
     () => activeTabIndex.value,
     () => {
       scrollToBottom();
+      // 更新props.tabIndex
+      if (!instance) return;
+      instance.emit('update:tabIndex', activeTabIndex.value)
     }
 );
 const confirmRemoveTab = (targetKey: number) => {
@@ -103,19 +110,6 @@ const chatTabNameList = computed(() => {
       .map((item: RobotTabChatInfo) => item.name);
 });
 const robotOptions = computed(() => store.state.robotList[props.robotIndex].options);
-
-const getTabIndex = () => {
-  return activeTabIndex.value;
-};
-
-const scrollContainerRefs = ref();
-const scrollToBottom = () => {
-  // 滚动到底部
-  nextTick(() => {
-    scrollContainerRefs.value.scrollTop = scrollContainerRefs.value.scrollHeight;
-  });
-};
-
 const removeTabClick = (index: number) => {
   ElMessageBox.confirm("Are you sure to remove this tab?", "Warning", {
     confirmButtonText: "OK",
@@ -133,22 +127,33 @@ const showSlideSideBar = () => {
   slideSideBarBlockRefs.value.show();
 };
 
-defineExpose({
-  getTabIndex,
-  scrollToBottom,
-});
-
 const instance = getCurrentInstance();
 const changeRobotClick = (index: number, item: Robot) => {
   if (!instance) return;
   instance.emit('changeRobotClick', index, item);
 };
+
+const getTabIndex = () => {
+  return activeTabIndex.value;
+};
+const scrollContainerRefs = ref();
+const scrollToBottom = () => {
+  // 滚动到底部
+  nextTick(() => {
+    scrollContainerRefs.value.scrollTop = scrollContainerRefs.value.scrollHeight;
+  });
+};
+defineExpose({
+  getTabIndex,
+  scrollToBottom,
+});
 </script>
 
 <template>
   <div
       ref="scrollContainerRefs"
-      class="overflow-hidden overflow-y-auto box-border scroll-container mt-28">
+      class="overflow-hidden overflow-y-auto box-border scroll-container"
+      :class="robotOptions.enabled?'mt-28':'mt-16'">
     <CTabs
         v-model:activeKey="activeTabIndex"
         :tabNames="chatTabNameList"
