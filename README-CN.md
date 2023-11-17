@@ -6,7 +6,7 @@
     <a href="./README.md">English</a> | 简体中文
 </p>
 <p align="center">
-    <em>跨平台 ChatGPT 聊天工具</em>
+    <em>跨平台ChatGPT工具箱，支持 GPT-3.5 / GPT-4 API。</em>
 </p>
 
 <p align="center">
