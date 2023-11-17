@@ -3,7 +3,7 @@ import {inject, ref} from "vue";
 import {useStore} from "@/store/store.ts";
 import _ from "lodash";
 import {ElForm, ElMessage} from "element-plus";
-import {ChatMessage} from "gpt-tokenizer/esm/GptEncoding";
+import {ChatMessage} from "@/types/State.ts";
 
 const store = useStore();
 const dialogVisible = ref(false);

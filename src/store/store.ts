@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {BaseConfig, Robot, RobotTabChatInfo, ShortcutState, StoreRobotOptions} from "@/types/State.ts";
-import {ChatMessage} from "gpt-tokenizer/esm/GptEncoding";
+import {ChatMessage} from "@/types/State.ts";
 
 export const useStore = defineStore("store", {
   state: () => {

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {SendOutlined} from "@ant-design/icons-vue";
-import {computed, getCurrentInstance, ref, Ref} from "vue";
+import {computed, defineAsyncComponent, getCurrentInstance, ref, Ref} from "vue";
 import {useStore} from "@/store/store.ts";
 import {useMagicKeys, whenever} from "@vueuse/core";
-import {ComponentInternalInstance} from "@vue/runtime-core";
 import {ElMessage} from "element-plus";
 import {RequestUtil} from "@/util/RequestUtil.ts";
 import {RobotTabChatInfo} from "@/types/State.ts";
+
+const SendOutlined = defineAsyncComponent(() => import("@ant-design/icons-vue/SendOutlined"));
 
 const props = defineProps({
   robotIndex: {
@@ -32,7 +32,7 @@ const focusInput = () => {
   chatInputTextAreaRefs.value.focus();
 };
 
-const instance: ComponentInternalInstance | null = getCurrentInstance();
+const instance = getCurrentInstance();
 const chatInputContent = ref("");
 
 const isGenerating: Ref<boolean> = computed(() => store.chatHistory[props.robotIndex][props.tabIndex].generating);

@@ -4,10 +4,8 @@ import SideBarBlock from "@/components/sidebar/SideBarBlock.vue";
 import {appWindow} from "@tauri-apps/api/window";
 import {exit} from '@tauri-apps/api/process';
 import ChatContentBlock from "@/components/chat/block/ChatContentBlock.vue";
-import {useStore} from "@/store/store.ts"
+import {useStore} from "@/store/store.ts";
 import {Robot} from "@/types/State.ts";
-
-const store = useStore();
 
 /**
  * 监听窗口关闭事件，直接退出程序
@@ -27,6 +25,7 @@ const addWindowsCloseListener = () => {
 /**
  * 检查配置项内容
  */
+const store = useStore();
 const checkConfig = () => {
   const oldVersion = store.version;
   const newVersion = import.meta.env.VITE_APP_VERSION;

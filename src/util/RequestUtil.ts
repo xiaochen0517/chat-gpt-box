@@ -1,8 +1,8 @@
 import {useStore} from "@/store/store.ts";
 import _ from "lodash";
-import {encodeChat} from "gpt-tokenizer";
 import {RequestBody, RobotOptions, SendRequest} from "@/types/SendRequest.ts";
-import {ChatMessage} from "gpt-tokenizer/esm/GptEncoding";
+import {ChatMessage} from "@/types/State.ts";
+import {encoding_for_model, Tiktoken} from "tiktoken";
 
 // 请求地址
 const API_URL: string = "v1/chat/completions";
@@ -26,6 +26,81 @@ export class RequestUtil {
   };
 
   stopFlag: boolean = false;
+
+  sendRequest = async ({robotIndex, tabIndex, content}: SendRequest, change: () => void) => {
+    if (change) {
+      this.changeFunc = change;
+    }
+    // 检查并初始化数据
+    this.checkRequestData(robotIndex, tabIndex, content);
+    // 设置内容
+    this.data = {
+      robotIndex: robotIndex,
+      tabIndex: tabIndex,
+      content: content,
+    };
+    try {
+      // encodeChat = await loadGptTokenizer();
+      // 设置当前状态为生成中
+      this.setGenerating(true);
+      // 添加用户信息
+      this.addUserMessage();
+      // 获取配置信息
+      const robotOptions = this.getRobotOptions(robotIndex);
+      const messages = await this.getContextMessages(robotIndex, tabIndex, robotOptions);
+      console.log("send messages = ", messages);
+      // 添加助手信息
+      this.addAssistantMessage();
+      // 发送请求
+      this.sendFetch(messages, robotOptions);
+    } catch (exception: unknown) {
+      if (exception instanceof Error) {
+        // 写入错误信息
+        this.setAssistantMsgContent(exception.message);
+      } else {
+        console.error(exception);
+        this.setAssistantMsgContent(String(exception));
+      }
+      // 当前状态为生成完成
+      this.setGenerating(false);
+    }
+  }
+
+  getContextMessages = async (robotIndex: number, tabIndex: number, options: RobotOptions) => {
+    // 拷贝聊天记录，用于发送请求
+    let messages = _.cloneDeep(store.chatHistory[robotIndex][tabIndex].chat);
+    if (options.context_max_message <= 0 || options.context_max_tokens <= 0) {
+      return [messages[0], messages[messages.length - 1]];
+    }
+    // 获取指定数量的上下文消息
+    let contextMessages: ChatMessage[];
+    if (options.context_max_message >= messages.length - 1) {
+      contextMessages = messages;
+    } else {
+      const systemMessage = messages[0];
+      contextMessages = [systemMessage, ...messages.slice(-(options.context_max_message + 1))];
+    }
+    // 初始化token编码器
+    const tokenEncoder = encoding_for_model(options.model);
+    while (this.getMessagesTokenSize(contextMessages, tokenEncoder) > options.context_max_tokens) {
+      // 消息的token数量超过了最大token数量，需要删除消息
+      if (contextMessages.length === 1) {
+        // 只有一条消息，为prompt，无法删除
+        break;
+      }
+      // 有多条消息，删除除了prompt之外的第一条消息
+      contextMessages.splice(1, 1);
+    }
+    // 释放资源
+    tokenEncoder.free();
+    return contextMessages;
+  }
+
+  getMessagesTokenSize = (messages: ChatMessage[], tokenEncoder: Tiktoken) => {
+    let messagesTokenSize = 0;
+    messages.forEach((message) => messagesTokenSize += tokenEncoder.encode(message.content).length);
+    return messagesTokenSize;
+  }
 
   cancel() {
     this.stopFlag = true;
@@ -62,72 +137,6 @@ export class RequestUtil {
   setGenerating = (generating: boolean) => {
     store.setGenerating(this.data.robotIndex, this.data.tabIndex, generating);
   };
-
-  sendRequest = ({robotIndex, tabIndex, content}: SendRequest, change: () => void) => {
-    if (change) {
-      this.changeFunc = change;
-    }
-    // 检查并初始化数据
-    this.checkRequestData(robotIndex, tabIndex, content);
-    // 设置内容
-    this.data = {
-      robotIndex: robotIndex,
-      tabIndex: tabIndex,
-      content: content,
-    };
-    try {
-      // 设置当前状态为生成中
-      this.setGenerating(true);
-      // 添加用户信息
-      this.addUserMessage();
-      // 获取配置信息
-      const robotOptions = this.getRobotOptions(robotIndex);
-      const messages = this.getContextMessages(robotIndex, tabIndex, robotOptions);
-      console.log("send messages = ", messages);
-      // 添加助手信息
-      this.addAssistantMessage();
-      // 发送请求
-      this.sendFetch(messages, robotOptions);
-    } catch (exception: unknown) {
-      if (exception instanceof Error) {
-        // 写入错误信息
-        this.setAssistantMsgContent(exception.message);
-      } else {
-        console.error(exception);
-        this.setAssistantMsgContent(String(exception));
-      }
-      // 当前状态为生成完成
-      this.setGenerating(false);
-    }
-  }
-
-  getContextMessages = (robotIndex: number, tabIndex: number, options: RobotOptions) => {
-    // 拷贝聊天记录，用于发送请求
-    let messages = _.cloneDeep(store.chatHistory[robotIndex][tabIndex].chat);
-    if (options.context_max_message <= 0 || options.context_max_tokens <= 0) {
-      return [messages[0], messages[messages.length - 1]];
-    }
-    // 获取指定数量的上下文消息
-    let contextMessages: ChatMessage[];
-    if (options.context_max_message >= messages.length - 1) {
-      contextMessages = messages;
-    } else {
-      const systemMessage = messages[0];
-      contextMessages = [systemMessage, ...messages.slice(-(options.context_max_message + 1))];
-    }
-    // 检查上下文中的消息是否已经超过最大token数量
-    const encodeModel = options.model.startsWith("gpt-4") ? 'gpt-4' : 'gpt-3.5-turbo';
-    while (encodeChat(contextMessages, encodeModel).length > options.context_max_tokens) {
-      // 消息的token数量超过了最大token数量，需要删除消息
-      if (contextMessages.length === 1) {
-        // 只有一条消息，为prompt，无法删除
-        break;
-      }
-      // 有多条消息，删除除了prompt之外的第一条消息
-      contextMessages.splice(1, 1);
-    }
-    return contextMessages;
-  }
 
   getRobotOptions = (robotIndex: number): RobotOptions => {
     let robotOptions = store.robotList[robotIndex].options;

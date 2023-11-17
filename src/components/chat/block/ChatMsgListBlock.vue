@@ -3,7 +3,7 @@ import {computed, onMounted, onUnmounted, ref} from "vue";
 import ChatMessageBlock from "./ChatMessageBlock.vue";
 import {useStore} from "@/store/store.ts";
 import EditMessageDialog from "../dialog/EditMessageDialog.vue";
-import {ChatMessage} from "gpt-tokenizer/esm/GptEncoding";
+import {ChatMessage} from "@/types/State.ts";
 
 const store = useStore();
 
