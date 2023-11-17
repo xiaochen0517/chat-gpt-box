@@ -79,7 +79,8 @@ const confirmRemoveTab = (targetKey: number) => {
 
 const addTab = () => {
   if (!addTabDialogRefs.value) return;
-  addTabDialogRefs.value.show();
+  let tabsSize = chatTabNameList.value.length;
+  addTabDialogRefs.value.show(tabsSize + 1);
 }
 
 const removeTab = (targetKey: number) => {
