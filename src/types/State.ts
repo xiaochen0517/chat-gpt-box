@@ -1,4 +1,3 @@
-import {ChatMessage} from "gpt-tokenizer/esm/GptEncoding";
 import {RequestUtil} from "@/util/RequestUtil.ts";
 
 export interface ShortcutState {
@@ -72,4 +71,9 @@ export interface State {
   robotList: Robot[];
   chatHistory: RobotTabChatInfo[][];
   config: Config;
+}
+
+export interface ChatMessage {
+  role: "system" | "user" | "assistant" | null;
+  content: string;
 }

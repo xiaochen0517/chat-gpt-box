@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {getCurrentInstance, inject, nextTick, ref} from "vue";
-import {useStore} from "vuex";
+import {useStore} from "@/store/store.ts";
 import {ElForm, ElInput, ElMessage} from "element-plus";
 
 const store = useStore();
@@ -16,12 +16,13 @@ const dialogVisible = ref(false);
 const formData = ref({
   name: ""
 });
+const namePlaceholder = ref("");
 const formRules = ref({
   name: [
     {
       required: true,
       message: "Please input tab name",
-      trigger: "blur"
+      trigger: "change"
     }
   ]
 });
@@ -34,12 +35,12 @@ const commit = async () => {
     ElMessage.warning("Please select a robot first");
     return;
   }
+  if (!formData.value.name || formData.value.name.trim() === "") {
+    formData.value.name = namePlaceholder.value;
+  }
   await addTabFormRef.value.validate((valid, fields) => {
     if (valid) {
-      store.commit("addChatTab", {
-        robotIndex: props.robotIndex,
-        tabName: formData.value.name,
-      });
+      store.addChatTab(props.robotIndex, formData.value.name);
       dialogVisible.value = false;
       if (!instance) return;
       instance.emit("addTabSuccess");
@@ -49,15 +50,18 @@ const commit = async () => {
   });
 };
 
-const show = () => {
+const show = (newTabIndex: number) => {
   dialogVisible.value = true;
+  namePlaceholder.value = `new tab ${newTabIndex}`;
   focusNameInput();
 };
 const addTabInputRefs = ref<InstanceType<typeof ElInput> | null>(null);
 const focusNameInput = () => {
-  nextTick(() => {
-    if (!addTabInputRefs.value) return;
-    addTabInputRefs.value.focus();
+  setTimeout(() => {
+    nextTick(() => {
+      if (!addTabInputRefs.value) return;
+      addTabInputRefs.value.focus();
+    });
   });
 };
 
@@ -71,10 +75,14 @@ const dialogWidth = inject("dialogWidth");
 
 <template>
   <div class="add-tab-dialog">
-    <el-dialog v-model="dialogVisible" title="Add Tab" :width="dialogWidth">
+    <el-dialog v-model="dialogVisible" title="Add Tab" :width="dialogWidth" @submit.native.prevent="commit">
       <el-form ref="addTabFormRef" :model="formData" :rules="formRules" label-width="120px">
         <el-form-item label="Tab Name" prop="name">
-          <el-input ref="addTabInputRefs" v-model="formData.name" @pressEnter="commit"/>
+          <el-input
+              ref="addTabInputRefs"
+              v-model="formData.name"
+              @pressEnter.stop="commit"
+              :placeholder="namePlaceholder"/>
         </el-form-item>
       </el-form>
       <template #footer>

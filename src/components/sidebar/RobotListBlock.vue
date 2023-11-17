@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {computed, getCurrentInstance, onBeforeUnmount, ref} from "vue";
-import {useStore} from "vuex";
+import {useStore} from "@/store/store.ts";
 import {EllipsisOutlined} from "@ant-design/icons-vue";
 import EditRobotDialog from "../chat/dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
@@ -18,7 +18,7 @@ const changeActiveRobot = (index: number, item: Robot) => {
  * 快捷键操作
  */
 const store = useStore();
-const shortcut = computed(() => store.state.config.shortcut);
+const shortcut = computed(() => store.config.shortcut);
 const keys = useMagicKeys();
 const prevRobotKey = keys[shortcut.value.prevRobot];
 whenever(prevRobotKey, () => {
@@ -48,7 +48,7 @@ onBeforeUnmount(() => {
 });
 
 const robotList = computed(() => {
-  return store.state.robotList;
+  return store.robotList;
 });
 
 const robotListPopoverVisible = ref(false);

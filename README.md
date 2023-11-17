@@ -15,28 +15,79 @@
 
 ## Features
 
-- Multi-model usage
-- Configuration of multiple chatbots
-- Single chat configuration with multiple tabs
-- Keyboard shortcuts for mouse-free operation
+- Supports multiple platforms, including Windows, Linux, macOS
+- Allows for individual customization of chat settings, with multiple chat configurations that do not interfere with
+  each other
+- Single chat configurations support multiple tabs, enabling multiple chat windows to be opened at the same time
+- Global shortcut key support, with customizable shortcuts
 
 ## Roadmap
 
-- [x] Multiple tabs
-- [x] Shortcut settings
-- [x] Switch to Dark Mode
-- [x] Multi-model usage
+- [x] Multi-tab
+- [x] Shortcut key configuration
+- [x] Dark mode toggle
+- [x] Multi-model support
 - [ ] Mobile support
-    - [x] Webapp
-    - [x] Android
-    - [ ] iOS
+    - [x] Mobile web
+        - [x] Android
+        - [ ] iOS
+- [ ] DALL·E image generation
+- [ ] TTS (Text-to-Speech) synthesis
+- [ ] Whisper speech recognition
 
-## Contact
+## Tutorial
+
+### Download/Build
+
+Download Release: [GitHub Release](https://github.com/xiaochen0517/chat-gpt-box/releases)
+
+You can download the pre-packaged executable file, or package it yourself.
+
+```shell
+# Install dependencies
+yarn install
+
+# Build Web version
+yarn build
+
+# Build Tauri desktop version
+yarn build-tauri
+```
+
+> To work on the Android version, you need to download and install
+> [Android Studio](https://developer.android.com/studio).
+> Once installed, run `yarn install && yarn build` to package the web version.
+> After that, use `npx cap sync` to synchronize it to the android directory.
+> You can then directly open the android folder in the project directory as an Android project
+> and proceed to package it.
+
+### Install
+
+#### Windows
+
+Install by running the `msi` or `exe` file.
+
+#### Linux
+
+Since `tauri` requires `webkit2gtk` support, it is necessary to install `webkit2gtk`.
+
+```shell
+# Install webkit2gtk
+sudo apt install libwebkit2gtk-4.1-0
+
+# Install deb package
+sudo dpkg -i chat-gpt-box_*.*.*_amd64.deb
+```
+
+#### macOS
+
+Directly run the `dmg` file, drag `ChatGPTBox.app` into the `Applications` folder,
+then open Finder, right-click on `ChatGPTBox.app`, select `open`, and the application will launch.
+
+## Contact Me
 
 - [Email](mailto:xiaochen0517@qq.com)
-- [Blog](https://blog.mochen.fun)
 
 ## License
 
 [Apache License v2.0](./LICENSE)
-

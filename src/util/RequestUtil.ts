@@ -1,8 +1,8 @@
-import store from "../store/store.ts";
+import {useStore} from "@/store/store.ts";
 import _ from "lodash";
-import {encodeChat} from "gpt-tokenizer";
 import {RequestBody, RobotOptions, SendRequest} from "@/types/SendRequest.ts";
-import {ChatMessage} from "gpt-tokenizer/esm/GptEncoding";
+import {ChatMessage} from "@/types/State.ts";
+import {encoding_for_model, Tiktoken} from "tiktoken";
 
 // 请求地址
 const API_URL: string = "v1/chat/completions";
@@ -10,6 +10,8 @@ const API_URL: string = "v1/chat/completions";
 const REQ_TYPE: string = "POST";
 // 字符解码器
 const decoder: TextDecoder = new TextDecoder('utf-8');
+// 全局store
+const store = useStore();
 
 export class RequestUtil {
   // stream读取器
@@ -25,62 +27,7 @@ export class RequestUtil {
 
   stopFlag: boolean = false;
 
-  cancel() {
-    this.stopFlag = true;
-    if (!this.reader) return;
-    this.reader.cancel().then(() => {
-      console.log("取消读取");
-      this.reader = null;
-    }).catch((error) => {
-      console.error(error);
-      this.reader = null;
-    });
-  }
-
-  addUserMessage() {
-    store.commit("addUserMessage", {
-      robotIndex: this.data.robotIndex,
-      tabIndex: this.data.tabIndex,
-      content: this.data.content,
-    });
-    this.changeFunc();
-  }
-
-  addAssistantMessage = () => {
-    store.commit("addAssistantMessage", {
-      robotIndex: this.data.robotIndex,
-      tabIndex: this.data.tabIndex,
-    });
-    this.changeFunc();
-  };
-
-  setAssistantMsgContent = (content: string) => {
-    store.commit("setAssistantMsgContent", {
-      robotIndex: this.data.robotIndex,
-      tabIndex: this.data.tabIndex,
-      content: content,
-    });
-    this.changeFunc();
-  };
-
-  addAssistantMsgContent = (content: string) => {
-    store.commit("addAssistantMsgContent", {
-      robotIndex: this.data.robotIndex,
-      tabIndex: this.data.tabIndex,
-      content: content,
-    });
-    this.changeFunc();
-  };
-
-  setGenerating = (generating: boolean) => {
-    store.commit("setGenerating", {
-      robotIndex: this.data.robotIndex,
-      tabIndex: this.data.tabIndex,
-      generating: generating,
-    });
-  };
-
-  sendRequest = ({robotIndex, tabIndex, content}: SendRequest, change: () => void) => {
+  sendRequest = async ({robotIndex, tabIndex, content}: SendRequest, change: () => void) => {
     if (change) {
       this.changeFunc = change;
     }
@@ -93,13 +40,14 @@ export class RequestUtil {
       content: content,
     };
     try {
+      // encodeChat = await loadGptTokenizer();
       // 设置当前状态为生成中
       this.setGenerating(true);
       // 添加用户信息
       this.addUserMessage();
       // 获取配置信息
       const robotOptions = this.getRobotOptions(robotIndex);
-      const messages = this.getContextMessages(robotIndex, tabIndex, robotOptions);
+      const messages = await this.getContextMessages(robotIndex, tabIndex, robotOptions);
       console.log("send messages = ", messages);
       // 添加助手信息
       this.addAssistantMessage();
@@ -118,9 +66,9 @@ export class RequestUtil {
     }
   }
 
-  getContextMessages = (robotIndex: number, tabIndex: number, options: RobotOptions) => {
+  getContextMessages = async (robotIndex: number, tabIndex: number, options: RobotOptions) => {
     // 拷贝聊天记录，用于发送请求
-    let messages = _.cloneDeep(store.state.chatHistory[robotIndex][tabIndex].chat);
+    let messages = _.cloneDeep(store.chatHistory[robotIndex][tabIndex].chat);
     if (options.context_max_message <= 0 || options.context_max_tokens <= 0) {
       return [messages[0], messages[messages.length - 1]];
     }
@@ -132,9 +80,9 @@ export class RequestUtil {
       const systemMessage = messages[0];
       contextMessages = [systemMessage, ...messages.slice(-(options.context_max_message + 1))];
     }
-    // 检查上下文中的消息是否已经超过最大token数量
-    const encodeModel = options.model.startsWith("gpt-4") ? 'gpt-4' : 'gpt-3.5-turbo';
-    while (encodeChat(contextMessages, encodeModel).length > options.context_max_tokens) {
+    // 初始化token编码器
+    const tokenEncoder = encoding_for_model(options.model);
+    while (this.getMessagesTokenSize(contextMessages, tokenEncoder) > options.context_max_tokens) {
       // 消息的token数量超过了最大token数量，需要删除消息
       if (contextMessages.length === 1) {
         // 只有一条消息，为prompt，无法删除
@@ -143,15 +91,59 @@ export class RequestUtil {
       // 有多条消息，删除除了prompt之外的第一条消息
       contextMessages.splice(1, 1);
     }
+    // 释放资源
+    tokenEncoder.free();
     return contextMessages;
   }
 
+  getMessagesTokenSize = (messages: ChatMessage[], tokenEncoder: Tiktoken) => {
+    let messagesTokenSize = 0;
+    messages.forEach((message) => messagesTokenSize += tokenEncoder.encode(message.content).length);
+    return messagesTokenSize;
+  }
+
+  cancel() {
+    this.stopFlag = true;
+    if (!this.reader) return;
+    this.reader.cancel().then(() => {
+      console.log("取消读取");
+      this.reader = null;
+    }).catch((error) => {
+      console.error(error);
+      this.reader = null;
+    });
+  }
+
+  addUserMessage() {
+    store.addUserMessage(this.data.robotIndex, this.data.tabIndex, this.data.content);
+    this.changeFunc();
+  }
+
+  addAssistantMessage = () => {
+    store.addAssistantMessage(this.data.robotIndex, this.data.tabIndex);
+    this.changeFunc();
+  };
+
+  setAssistantMsgContent = (content: string) => {
+    store.setAssistantMsgContent(this.data.robotIndex, this.data.tabIndex, content);
+    this.changeFunc();
+  };
+
+  addAssistantMsgContent = (content: string) => {
+    store.addAssistantMsgContent(this.data.robotIndex, this.data.tabIndex, content);
+    this.changeFunc();
+  };
+
+  setGenerating = (generating: boolean) => {
+    store.setGenerating(this.data.robotIndex, this.data.tabIndex, generating);
+  };
+
   getRobotOptions = (robotIndex: number): RobotOptions => {
-    let robotOptions = store.state.robotList[robotIndex].options;
+    let robotOptions = store.robotList[robotIndex].options;
     // 获取配置信息
     if (!robotOptions.enabled) {
       // 获取全局配置
-      return store.state.config.base;
+      return store.config.base;
     }
     return robotOptions;
   }
@@ -169,7 +161,7 @@ export class RequestUtil {
   };
 
   buildHeaders = () => {
-    const apiKey = store.state.config.base.apiKey;
+    const apiKey = store.config.base.apiKey;
     if (!apiKey || apiKey === "" || apiKey.length < 3) {
       throw Error("请输入正确的ApiKey");
     }

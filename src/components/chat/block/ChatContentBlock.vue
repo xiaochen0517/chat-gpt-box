@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import {nextTick, ref} from "vue";
-import ChatTabsBlock from "./ChatTabsBlock.vue";
-import ChatInputBlock from "./ChatInputBlock.vue";
+import {defineAsyncComponent, nextTick, ref} from "vue";
 import {Robot} from "@/types/State.ts";
+import ChatInputBlock from "@/components/chat/block/ChatInputBlock.vue";
+
+const ChatTabsBlock = defineAsyncComponent(() => import("@/components/chat/block/ChatTabsBlock.vue"));
 
 const robotIndex = ref<number>(0);
 const tabIndex = ref<number>(0);

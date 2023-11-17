@@ -1,4 +1,4 @@
-import {ChatMessage} from "gpt-tokenizer/esm/GptEncoding";
+import {ChatMessage} from "@/types/State.ts";
 
 export interface SendRequest {
   robotIndex: number;

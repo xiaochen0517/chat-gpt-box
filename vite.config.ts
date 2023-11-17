@@ -1,14 +1,20 @@
 import {defineConfig} from "vite";
 import vue from "@vitejs/plugin-vue";
 import path from 'path';
-import packageJson from './package.json'
+import packageJson from './package.json';
+import wasm from "vite-plugin-wasm";
+import topLevelAwait from "vite-plugin-top-level-await";
 
 function resolve(url: string) {
   return path.resolve(__dirname, url);
 }
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    wasm(),
+    topLevelAwait(),
+  ],
   clearScreen: false,
   server: {
     port: 8080,

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 
-import {useStore} from "vuex";
+import {useStore} from "@/store/store.ts";
 import {computed, onMounted, Ref, watch} from "vue";
 
 const store = useStore();
 
 // 暗模式配置
-const isDarkMode: Ref<boolean> = computed(() => store.state.config.isDarkMode);
+const isDarkMode: Ref<boolean> = computed(() => store.config.isDarkMode);
 
 onMounted(() => {
   // 初始化暗模式

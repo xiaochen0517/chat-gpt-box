@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, getCurrentInstance, nextTick, ref, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
-import {useStore} from "vuex";
+import {useStore} from "@/store/store.ts";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/CTabs.vue";
@@ -14,7 +14,7 @@ import {Robot, RobotTabChatInfo} from "@/types/State.ts";
  * 注册操作tab的快捷键
  */
 const store = useStore();
-const shortcut = computed(() => store.state.config.shortcut);
+const shortcut = computed(() => store.config.shortcut);
 const keys = useMagicKeys();
 const addTabKey = keys[shortcut.value.addTab];
 const addTabDialogRefs = ref<InstanceType<typeof AddTabDialog> | null>(null);
@@ -57,10 +57,7 @@ const props = defineProps({
 });
 
 const cleanTabChat = () => {
-  store.commit("cleanTabChat", {
-    robotIndex: props.robotIndex,
-    tabIndex: activeTabIndex.value,
-  });
+  store.cleanTabChat(props.robotIndex, activeTabIndex.value);
 };
 
 const activeTabIndex = ref<number>(0);
@@ -79,7 +76,8 @@ const confirmRemoveTab = (targetKey: number) => {
 
 const addTab = () => {
   if (!addTabDialogRefs.value) return;
-  addTabDialogRefs.value.show();
+  let tabsSize = chatTabNameList.value.length;
+  addTabDialogRefs.value.show(tabsSize + 1);
 }
 
 const removeTab = (targetKey: number) => {
@@ -91,25 +89,19 @@ const removeTab = (targetKey: number) => {
       activeTabIndex.value = targetKey;
     }
   }
-  store.commit("removeChatTab", {
-    robotIndex: props.robotIndex,
-    tabIndex: targetKey
-  });
+  store.removeChatTab(props.robotIndex, targetKey);
   // 检查当前tab是否是最后一个tab
   if (chatTabNameList.value.length === 0) {
-    store.commit("addChatTab", {
-      robotIndex: props.robotIndex,
-      tabName: "default",
-    });
+    store.addChatTab(props.robotIndex, "default");
     activeTabIndex.value = 0;
   }
 };
 
 const chatTabNameList = computed(() => {
-  return store.state.chatHistory[props.robotIndex]
+  return store.chatHistory[props.robotIndex]
       .map((item: RobotTabChatInfo) => item.name);
 });
-const robotOptions = computed(() => store.state.robotList[props.robotIndex].options);
+const robotOptions = computed(() => store.robotList[props.robotIndex].options);
 const removeTabClick = (index: number) => {
   ElMessageBox.confirm("Are you sure to remove this tab?", "Warning", {
     confirmButtonText: "OK",
@@ -161,12 +153,8 @@ defineExpose({
         @addTabClick="addTab"
         @removeTabClick="removeTabClick"
         @showSlideSideBarClick="showSlideSideBar">
-      <CTabPane
-          v-for="(_number, index) in chatTabNameList.length"
-          :key="index">
-        <ChatMsgListBlock
-            :robotIndex="props.robotIndex"
-            :tabIndex="index"/>
+      <CTabPane v-for="(_number, index) in chatTabNameList.length" :key="index">
+        <ChatMsgListBlock :robotIndex="props.robotIndex" :tabIndex="index"/>
       </CTabPane>
     </CTabs>
     <AddTabDialog ref="addTabDialogRefs" :robotIndex="props.robotIndex"/>
