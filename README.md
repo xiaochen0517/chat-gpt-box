@@ -5,12 +5,19 @@
 <p align="center">
     English | <a href="./README-CN.md">简体中文</a>
 </p>
+
 <p align="center">
-    <em>Your Ultimate Copilot on the Desktop. ChatGPTBox is a desktop app for GPT-3.5 (OpenAI API).</em>
+    <em>Cross-platform ChatGPTBox, supporting GPT-3.5 / GPT-4 API.</em>
 </p>
 
 <p align="center">
-    <img alt="windows11" src="https://img.shields.io/badge/windows-11-brightgreen">
+    <img alt="windows" src="https://img.shields.io/badge/windows->=7-brightgreen?logo=windows">
+    <img alt="ubuntu" src="https://img.shields.io/badge/ubuntu->=20-orange?logo=ubuntu">
+    <img alt="macOS" src="https://img.shields.io/badge/macOS->=10-blue?logo=apple">
+</p>
+
+<p align="center">
+    <img alt="windows" width="80%" src="./doc/use_example.png">
 </p>
 
 ## Features
