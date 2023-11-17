@@ -23,7 +23,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="group py-1 pb-2 mt-3 border-b border-slate-500">
+  <div class="group py-1 pb-2 mt-3 border-b border-neutral-500">
     <div class="flex flex-row gap-2">
       <div
           v-if="message.role === 'system'"
@@ -56,13 +56,13 @@ defineProps({
           confirm-button-text="Delete">
         <template #reference>
           <button
-              class="w-10 h-6 mr-1 rounded-md flex justify-center items-center bg-gray-50 hover:bg-gray-200 active:bg-gray-300 text-gray-600 hover:text-gray-700 border border-gray-500 hover:border-gray-600 dark:text-gray-100 dark:bg-transparent dark:border-gray-500 dark:hover:border-gray-600 dark:hover:bg-slate-700 dark:active:bg-slate-600">
+              class="w-10 h-6 mr-1 rounded-md flex justify-center items-center bg-neutral-50 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-600 hover:text-neutral-700 border border-neutral-500 hover:border-neutral-600 dark:text-neutral-100 dark:bg-transparent dark:border-neutral-500 dark:hover:border-neutral-600 dark:hover:bg-neutral-700 dark:active:bg-neutral-600">
             <delete-outlined/>
           </button>
         </template>
       </el-popconfirm>
       <button
-          class="w-10 h-6 rounded-md flex justify-center items-center bg-gray-50 hover:bg-gray-200 active:bg-gray-300 text-gray-600 hover:text-gray-700 border border-gray-500 hover:border-gray-600 dark:text-gray-100 dark:bg-transparent dark:border-gray-500 dark:hover:border-gray-600 dark:hover:bg-slate-700 dark:active:bg-slate-600"
+          class="w-10 h-6 rounded-md flex justify-center items-center bg-neutral-50 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-600 hover:text-neutral-700 border border-neutral-500 hover:border-neutral-600 dark:text-neutral-100 dark:bg-transparent dark:border-neutral-500 dark:hover:border-neutral-600 dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
           @click="$emit('edit', message, index)">
         <edit-outlined/>
       </button>
