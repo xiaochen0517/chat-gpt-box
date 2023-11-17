@@ -48,7 +48,7 @@ const closeInactiveClass = ref("hover:bg-neutral-400 dark:hover:bg-neutral-600")
     <div
         class="absolute z-10 top-0 left-0 w-full px-1 lg:px-0 flex flex-col">
       <div
-          class="max-w-5xl m-auto my-2 overflow-hidden overflow-x-auto w-full shadow-xl opacity-80 backdrop-blur-md bg-neutral-50 dark:bg-neutral-800">
+          class="max-w-5xl m-auto my-2 overflow-hidden overflow-x-auto w-full shadow-md shadow-neutral-200 dark:shadow-neutral-800 opacity-80 backdrop-blur-md bg-neutral-50 dark:bg-neutral-800">
         <div class="flex flex-row min-w-full p-2 box-border bg-neutral-100 dark:bg-neutral-950 rounded-md">
           <div
               class="absolute left-2 top-2 block lg:hidden px-2 py-1.5 mr-1 box-border rounded-md cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 dark:border-neutral-700  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"

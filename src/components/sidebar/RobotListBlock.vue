@@ -76,7 +76,7 @@ defineExpose({
       class="overflow-hidden overflow-y-auto">
     <div class="min-h-full max-h-0 p-1">
       <div
-          class="flex flex-row items-center relative w-full cursor-pointer box-border px-2 py-1 mb-1 rounded-xl hover:bg-neutral-300 active:bg-neutral-400 dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
+          class="flex flex-row items-center relative w-full cursor-pointer box-border px-2 py-1 mb-1 rounded-xl hover:bg-neutral-200 active:bg-neutral-300 dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
           v-for="(item, index) in robotList"
           :key="index"
           :class="index === activeRobotIndex?'robot-item-selected':''"
@@ -100,7 +100,7 @@ defineExpose({
           </template>
           <template #reference>
             <div
-                class="robot-control-button flex justify-center items-center hover:bg-neutral-400 dark:hover:bg-neutral-700 w-6 h-6 rounded-md"
+                class="robot-control-button flex justify-center items-center hover:bg-neutral-300 dark:hover:bg-neutral-700 w-6 h-6 rounded-md"
                 @click.stop="">
               <ellipsis-outlined/>
             </div>

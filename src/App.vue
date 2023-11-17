@@ -34,7 +34,7 @@ const switchDarkMode = (isDark: boolean) => {
 </script>
 
 <template>
-  <div class="bg-neutral-50 text-black dark:bg-neutral-900 dark:text-white flex-row w-full h-full">
+  <div class="bg-neutral-100 text-black dark:bg-neutral-900 dark:text-white flex-row w-full h-full">
     <router-view/>
   </div>
 </template>
