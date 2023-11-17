@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import {DeleteOutlined, EditOutlined} from "@ant-design/icons-vue";
+import {CheckOutlined, CopyOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons-vue";
 import MarkdownBlock from "@/components/chat/block/MarkdownBlock.vue";
+import {ref} from "vue";
 
-defineProps({
+const props = defineProps({
   message: {
     type: Object,
     required: true,
@@ -20,10 +21,19 @@ defineProps({
   }
 });
 
+const copySuccess = ref(false);
+const copyMessageContent = () => {
+  navigator.clipboard.writeText(props.message.content);
+  copySuccess.value = true;
+  setTimeout(() => {
+    copySuccess.value = false;
+  }, 1000);
+};
+
 </script>
 
 <template>
-  <div class="group py-1 pb-2 mt-3 border-b border-neutral-500">
+  <div class="group py-1 pb-2 mt-3">
     <div class="flex flex-row gap-2">
       <div
           v-if="message.role === 'system'"
@@ -48,7 +58,18 @@ defineProps({
       </div>
     </div>
     <div
-        class="flex flex-row mt-2 pointer-events-none opacity-100 lg:opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto">
+        class="flex flex-row gap-1 mt-2 pointer-events-none opacity-100 lg:opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto">
+      <button
+          class="p-2 rounded-md flex justify-center items-center bg-neutral-50 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
+          @click="copyMessageContent">
+        <CheckOutlined v-if="copySuccess"/>
+        <CopyOutlined v-else/>
+      </button>
+      <button
+          class="p-2 rounded-md flex justify-center items-center bg-neutral-50 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
+          @click="$emit('edit', message, index)">
+        <EditOutlined/>
+      </button>
       <el-popconfirm
           title="delete message"
           @confirm="$emit('delete', message, index)"
@@ -56,16 +77,11 @@ defineProps({
           confirm-button-text="Delete">
         <template #reference>
           <button
-              class="w-10 h-6 mr-1 rounded-md flex justify-center items-center bg-neutral-50 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-600 hover:text-neutral-700 border border-neutral-500 hover:border-neutral-600 dark:text-neutral-100 dark:bg-transparent dark:border-neutral-500 dark:hover:border-neutral-600 dark:hover:bg-neutral-700 dark:active:bg-neutral-600">
-            <delete-outlined/>
+              class="p-2 rounded-md flex justify-center items-center bg-neutral-50 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600">
+            <DeleteOutlined/>
           </button>
         </template>
       </el-popconfirm>
-      <button
-          class="w-10 h-6 rounded-md flex justify-center items-center bg-neutral-50 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-600 hover:text-neutral-700 border border-neutral-500 hover:border-neutral-600 dark:text-neutral-100 dark:bg-transparent dark:border-neutral-500 dark:hover:border-neutral-600 dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
-          @click="$emit('edit', message, index)">
-        <edit-outlined/>
-      </button>
     </div>
   </div>
 </template>
