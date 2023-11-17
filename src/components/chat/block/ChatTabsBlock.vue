@@ -162,12 +162,8 @@ defineExpose({
         @addTabClick="addTab"
         @removeTabClick="removeTabClick"
         @showSlideSideBarClick="showSlideSideBar">
-      <CTabPane
-          v-for="(_number, index) in chatTabNameList.length"
-          :key="index">
-        <ChatMsgListBlock
-            :robotIndex="props.robotIndex"
-            :tabIndex="index"/>
+      <CTabPane v-for="(_number, index) in chatTabNameList.length" :key="index">
+        <ChatMsgListBlock :robotIndex="props.robotIndex" :tabIndex="index"/>
       </CTabPane>
     </CTabs>
     <AddTabDialog ref="addTabDialogRefs" :robotIndex="props.robotIndex"/>
