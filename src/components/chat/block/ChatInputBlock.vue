@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {SendOutlined} from "@ant-design/icons-vue";
 import {computed, getCurrentInstance, ref, Ref} from "vue";
-import {useStore} from "vuex";
+import {useStore} from "@/store/store.ts";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import {ComponentInternalInstance} from "@vue/runtime-core";
 import {ElMessage} from "element-plus";
@@ -21,7 +21,7 @@ const props = defineProps({
 
 const store = useStore();
 const keys = useMagicKeys();
-const shortcut = computed(() => store.state.config.shortcut);
+const shortcut = computed(() => store.config.shortcut);
 const focusInputKey = keys[shortcut.value.focusInput];
 whenever(focusInputKey, () => {
   focusInput();
@@ -35,8 +35,8 @@ const focusInput = () => {
 const instance: ComponentInternalInstance | null = getCurrentInstance();
 const chatInputContent = ref("");
 
-const isGenerating: Ref<boolean> = computed(() => store.state.chatHistory[props.robotIndex][props.tabIndex].generating);
-const tabChatsInfo: Ref<RobotTabChatInfo> = computed(() => store.state.chatHistory[props.robotIndex][props.tabIndex]);
+const isGenerating: Ref<boolean> = computed(() => store.chatHistory[props.robotIndex][props.tabIndex].generating);
+const tabChatsInfo: Ref<RobotTabChatInfo> = computed(() => store.chatHistory[props.robotIndex][props.tabIndex]);
 const submitContent = () => {
   if (!instance) return;
   if (isGenerating.value) {
@@ -59,8 +59,8 @@ const breakLine = () => {
   chatInputContent.value += "\n";
 };
 
-const enterSend = computed(() => store.state.config.base.enterSend);
-const ctrlEnterSend = computed(() => store.state.config.base.ctrlEnterSend);
+const enterSend = computed(() => store.config.base.enterSend);
+const ctrlEnterSend = computed(() => store.config.base.ctrlEnterSend);
 const enterKeyDown = () => {
   if (enterSend.value) {
     if (isGenerating.value) {

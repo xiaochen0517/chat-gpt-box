@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import {computed, nextTick, ref} from "vue";
-import {useStore} from "vuex";
+import {useStore} from "@/store/store.ts";
 import AddRobotDialog from "../chat/dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import AppSettingsDialog from "@/components/setting/AppSettingsDialog.vue";
 
 const store = useStore();
 
-const isDarkMode = computed(() => store.state.config.isDarkMode);
+const isDarkMode = computed(() => store.config.isDarkMode);
 const handleChange = () => {
-  store.commit("setDarkMode", !isDarkMode.value);
+  store.setDarkMode(!isDarkMode.value);
 };
 
-const shortcut = computed(() => store.state.config.shortcut);
+const shortcut = computed(() => store.config.shortcut);
 const keys = useMagicKeys();
 const addRobotKey = keys[shortcut.value.addRobot];
 whenever(addRobotKey, () => {

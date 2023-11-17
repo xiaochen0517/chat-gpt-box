@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {useStore} from "vuex";
+import {useStore} from "@/store/store.ts";
 import _ from "lodash";
 import {ElForm} from "element-plus";
 
@@ -13,7 +13,7 @@ onMounted(() => {
   initSettingsData();
 });
 const initSettingsData = () => {
-  shortcut.value = {...shortcutState, ..._.cloneDeep(store.state.config.shortcut)};
+  shortcut.value = {...shortcutState, ..._.cloneDeep(store.config.shortcut)};
 };
 
 const formRulesRef = ref<InstanceType<typeof ElForm> | null>(null);
@@ -21,7 +21,7 @@ const saveData = async () => {
   if (!formRulesRef.value) return;
   await formRulesRef.value.validate((valid, fields) => {
     if (valid) {
-      store.commit("saveShortcutConfig", shortcut.value);
+      store.saveShortcutConfig(shortcut.value);
     } else {
       console.log('error', fields);
       throw new Error("表单验证失败");

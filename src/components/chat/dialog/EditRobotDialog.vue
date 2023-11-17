@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {getCurrentInstance, inject, nextTick, ref} from "vue";
-import {useStore} from "vuex";
+import {useStore} from "@/store/store.ts";
 import _ from "lodash";
 import modelList from "@/util/ModelList.ts";
 import {ElForm, ElInput} from "element-plus";
@@ -64,15 +64,12 @@ const updateRobot = () => {
   if (robotIndex.value == null) {
     return;
   }
-  store.commit("updateRobot", {
-    robotIndex: robotIndex.value,
-    robot: _.cloneDeep(formData.value)
-  });
+  store.updateRobot(robotIndex.value, _.cloneDeep(formData.value));
 };
 
 const instance = getCurrentInstance();
 const addRobot = () => {
-  store.commit("addRobot", _.cloneDeep(formData.value));
+  store.addRobot(_.cloneDeep(formData.value));
   if (!instance) return;
   instance.emit("commit", formData.value);
 };
@@ -89,7 +86,7 @@ const show = (edit: boolean, index: number) => {
   isEdit.value = edit;
   if (isEdit.value) {
     robotIndex.value = index;
-    formData.value = _.cloneDeep(store.state.robotList[index]);
+    formData.value = _.cloneDeep(store.robotList[index]);
   }
   dialogVisible.value = true;
   focusNameInput();

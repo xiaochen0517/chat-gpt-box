@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {useStore} from "vuex";
+import {useStore} from "@/store/store.ts";
 import _ from "lodash";
 import modelList from "@/util/ModelList";
 import {BaseConfig} from "@/types/State.ts";
@@ -41,7 +41,7 @@ onMounted(() => {
   initSettingsData();
 });
 const initSettingsData = () => {
-  const config = _.cloneDeep(store.state.config.base);
+  const config = _.cloneDeep(store.config.base);
   baseConfig.value = {...baseConfig.value, ...config};
 };
 
@@ -50,7 +50,7 @@ const saveData = async () => {
   if (!rulesFormRef.value) return;
   await rulesFormRef.value.validate((valid, fields) => {
     if (valid) {
-      store.commit("saveBaseConfig", baseConfig.value);
+      store.saveBaseConfig(baseConfig.value);
     } else {
       console.log('error', fields);
       throw new Error("表单验证失败");

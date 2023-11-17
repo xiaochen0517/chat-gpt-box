@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import {inject, ref} from "vue";
-import {useStore} from "vuex";
+import {useStore} from "@/store/store.ts";
 import _ from "lodash";
 import {ElForm, ElMessage} from "element-plus";
+import {ChatMessage} from "gpt-tokenizer/esm/GptEncoding";
 
 const store = useStore();
 const dialogVisible = ref(false);
 
-const formData = ref({
-  role: "",
+const formData = ref<ChatMessage>({
+  role: "system",
   content: ""
 });
 const formRules = ref({
@@ -28,9 +29,9 @@ const formRules = ref({
   ]
 });
 
-const robotIndex = ref<number | null>(null);
-const tabIndex = ref<number | null>(null);
-const messageIndex = ref<number | null>(null);
+const robotIndex = ref<number>(0);
+const tabIndex = ref<number>(0);
+const messageIndex = ref<number>(0);
 
 const editMessageFormRef = ref<InstanceType<typeof ElForm> | null>(null);
 const commit = async () => {
@@ -41,12 +42,7 @@ const commit = async () => {
   }
   await editMessageFormRef.value.validate((valid, fields) => {
     if (valid) {
-      store.commit("updateMessage", {
-        robotIndex: robotIndex.value,
-        tabIndex: tabIndex.value,
-        messageIndex: messageIndex.value,
-        message: formData.value
-      });
+      store.updateMessage(robotIndex.value, tabIndex.value, messageIndex.value, formData.value);
       dialogVisible.value = false;
     } else {
       console.log('error', fields);
@@ -58,7 +54,7 @@ const show = (rIndex: number, tIndex: number, mIndex: number) => {
   robotIndex.value = rIndex;
   tabIndex.value = tIndex;
   messageIndex.value = mIndex;
-  const message = store.state.chatHistory[rIndex][tIndex].chat[mIndex];
+  const message = store.chatHistory[rIndex][tIndex].chat[mIndex];
   formData.value = _.cloneDeep(message);
   dialogVisible.value = true;
 };

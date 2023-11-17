@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {getCurrentInstance, inject, nextTick, ref} from "vue";
-import {useStore} from "vuex";
+import {useStore} from "@/store/store.ts";
 import {ElForm, ElInput, ElMessage} from "element-plus";
 
 const store = useStore();
@@ -40,10 +40,7 @@ const commit = async () => {
   }
   await addTabFormRef.value.validate((valid, fields) => {
     if (valid) {
-      store.commit("addChatTab", {
-        robotIndex: props.robotIndex,
-        tabName: formData.value.name,
-      });
+      store.addChatTab(props.robotIndex, formData.value.name);
       dialogVisible.value = false;
       if (!instance) return;
       instance.emit("addTabSuccess");

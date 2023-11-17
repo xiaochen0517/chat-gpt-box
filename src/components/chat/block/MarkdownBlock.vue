@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {computed, onMounted} from "vue";
-import {useStore} from "vuex";
+import {useStore} from "@/store/store.ts";
 import {MdPreview} from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
 
@@ -13,7 +13,7 @@ const props = defineProps({
 });
 
 const store = useStore();
-const theme = computed(() => store.state.config.isDarkMode ? 'dark' : 'light');
+const theme = computed(() => store.config.isDarkMode ? 'dark' : 'light');
 
 const id = 'preview-only';
 onMounted(() => {

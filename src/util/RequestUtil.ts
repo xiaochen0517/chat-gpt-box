@@ -1,4 +1,4 @@
-import store from "../store/store.ts";
+import {useStore} from "@/store/store.ts";
 import _ from "lodash";
 import {encodeChat} from "gpt-tokenizer";
 import {RequestBody, RobotOptions, SendRequest} from "@/types/SendRequest.ts";
@@ -10,6 +10,8 @@ const API_URL: string = "v1/chat/completions";
 const REQ_TYPE: string = "POST";
 // 字符解码器
 const decoder: TextDecoder = new TextDecoder('utf-8');
+// 全局store
+const store = useStore();
 
 export class RequestUtil {
   // stream读取器
@@ -38,46 +40,27 @@ export class RequestUtil {
   }
 
   addUserMessage() {
-    store.commit("addUserMessage", {
-      robotIndex: this.data.robotIndex,
-      tabIndex: this.data.tabIndex,
-      content: this.data.content,
-    });
+    store.addUserMessage(this.data.robotIndex, this.data.tabIndex, this.data.content);
     this.changeFunc();
   }
 
   addAssistantMessage = () => {
-    store.commit("addAssistantMessage", {
-      robotIndex: this.data.robotIndex,
-      tabIndex: this.data.tabIndex,
-    });
+    store.addAssistantMessage(this.data.robotIndex, this.data.tabIndex);
     this.changeFunc();
   };
 
   setAssistantMsgContent = (content: string) => {
-    store.commit("setAssistantMsgContent", {
-      robotIndex: this.data.robotIndex,
-      tabIndex: this.data.tabIndex,
-      content: content,
-    });
+    store.setAssistantMsgContent(this.data.robotIndex, this.data.tabIndex, content);
     this.changeFunc();
   };
 
   addAssistantMsgContent = (content: string) => {
-    store.commit("addAssistantMsgContent", {
-      robotIndex: this.data.robotIndex,
-      tabIndex: this.data.tabIndex,
-      content: content,
-    });
+    store.addAssistantMsgContent(this.data.robotIndex, this.data.tabIndex, content);
     this.changeFunc();
   };
 
   setGenerating = (generating: boolean) => {
-    store.commit("setGenerating", {
-      robotIndex: this.data.robotIndex,
-      tabIndex: this.data.tabIndex,
-      generating: generating,
-    });
+    store.setGenerating(this.data.robotIndex, this.data.tabIndex, generating);
   };
 
   sendRequest = ({robotIndex, tabIndex, content}: SendRequest, change: () => void) => {
@@ -120,7 +103,7 @@ export class RequestUtil {
 
   getContextMessages = (robotIndex: number, tabIndex: number, options: RobotOptions) => {
     // 拷贝聊天记录，用于发送请求
-    let messages = _.cloneDeep(store.state.chatHistory[robotIndex][tabIndex].chat);
+    let messages = _.cloneDeep(store.chatHistory[robotIndex][tabIndex].chat);
     if (options.context_max_message <= 0 || options.context_max_tokens <= 0) {
       return [messages[0], messages[messages.length - 1]];
     }
@@ -147,11 +130,11 @@ export class RequestUtil {
   }
 
   getRobotOptions = (robotIndex: number): RobotOptions => {
-    let robotOptions = store.state.robotList[robotIndex].options;
+    let robotOptions = store.robotList[robotIndex].options;
     // 获取配置信息
     if (!robotOptions.enabled) {
       // 获取全局配置
-      return store.state.config.base;
+      return store.config.base;
     }
     return robotOptions;
   }
@@ -169,7 +152,7 @@ export class RequestUtil {
   };
 
   buildHeaders = () => {
-    const apiKey = store.state.config.base.apiKey;
+    const apiKey = store.config.base.apiKey;
     if (!apiKey || apiKey === "" || apiKey.length < 3) {
       throw Error("请输入正确的ApiKey");
     }
