@@ -32,6 +32,8 @@ onMounted(() => {
 <style lang="less">
 .md-editor-dark {
   --md-color: #fff;
+}
+.md-editor {
   --md-bk-color: transparent;
 }
 
