@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "tauri": "tauri dev",
     "build-tauri": "tauri build",
-    "cap-sync": "cap sync"
+    "cap-sync": "vite build && cap sync"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",
