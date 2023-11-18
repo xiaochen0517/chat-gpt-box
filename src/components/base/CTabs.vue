@@ -78,7 +78,7 @@ const closeInactiveClass = ref("hover:bg-neutral-400 dark:hover:bg-neutral-600")
         </div>
         <div
             v-if="robotOptions && robotOptions.enabled"
-            class="flex flex-row w-full py-2">
+            class="flex flex-row w-full p-2">
           <div class="border border-neutral-700 rounded px-2 py-1 dark:bg-amber-600 text-sm font-bold select-none">
             <i class="iconfont icon-settings font-normal"/>
             {{ robotOptions.model?.toUpperCase() }}
