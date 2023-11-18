@@ -30,7 +30,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="w-full box-border dark:bg-gray-800 relative">
+  <div class="w-full box-border relative">
     <div class="h-full w-full px-2 lg:px-0 lg:max-w-5xl mx-auto flex flex-col">
       <ChatTabsBlock
           class="flex-1"

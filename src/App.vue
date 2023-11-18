@@ -34,7 +34,7 @@ const switchDarkMode = (isDark: boolean) => {
 </script>
 
 <template>
-  <div class="bg-gray-50 text-black dark:bg-gray-900 dark:text-white flex-row w-full h-full">
+  <div class="bg-neutral-100 text-black dark:bg-neutral-900 dark:text-white flex-row w-full h-full">
     <router-view/>
   </div>
 </template>
@@ -53,20 +53,19 @@ html {
 @apply h-full w-full text-sm;
 }
 
-
 div::-webkit-scrollbar {
 @apply w-2 h-2 rounded-full;
 }
 
 div::-webkit-scrollbar-track {
-@apply bg-gray-800;
+@apply bg-neutral-300 dark:bg-neutral-800 rounded-full;
 }
 
 div::-webkit-scrollbar-thumb {
-@apply bg-gray-600 rounded-full;
+@apply bg-neutral-400 dark:bg-neutral-600 rounded-full;
 }
 
 div::-webkit-scrollbar-thumb:hover {
-@apply bg-gray-700;
+@apply bg-neutral-500 dark:bg-neutral-700;
 }
 </style>

@@ -22,11 +22,8 @@ const robotListScrollToBottom = () => {
 </script>
 
 <template>
-  <div class="h-full flex flex-col box-border border-r-2 dark:border-0 bg-gray-100 dark:bg-gray-900">
-    <RobotListBlock
-        class="flex-1"
-        ref="robotListBlockRefs"
-        @onClick="onRobotClick"/>
+  <div class="h-full w-72 flex flex-col box-border border-r-2 dark:border-0 bg-neutral-50 dark:bg-neutral-800">
+    <RobotListBlock class="flex-1" ref="robotListBlockRefs" @onClick="onRobotClick"/>
     <MenuListBlock @added-robot="robotListScrollToBottom"/>
   </div>
 </template>
