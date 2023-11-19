@@ -107,35 +107,43 @@ const divHeight = ref(200); // 初始高度
 let defaultCursorY: number;
 let maxDivHeight: number;
 let minDivHeight = 100;
-const initResize = (event: MouseEvent) => {
+const initResize = (event: MouseEvent | TouchEvent) => {
   // 当鼠标按下时，开始监听鼠标移动和鼠标松开事件
   event.preventDefault();
-  defaultCursorY = event.clientY;
+  defaultCursorY = ('touches' in event) ? event.touches[0].clientY : event.clientY;
   maxDivHeight = Math.floor(window.innerHeight * 0.7);
   window.addEventListener('mousemove', startResizing);
   window.addEventListener('mouseup', stopResizing);
+  window.addEventListener('touchmove', startResizing);
+  window.addEventListener('touchend', stopResizing);
 };
 
-const startResizing = (event: MouseEvent) => {
+const startResizing = (event: MouseEvent | TouchEvent) => {
   // 获取光标在y轴移动的距离，以及方向
-  const distance = event.clientY - defaultCursorY;
+  const clientY = ('touches' in event) ? event.touches[0].clientY : event.clientY;
+  const distance = clientY - defaultCursorY;
   // 更新 div 的高度
   if (divHeight.value <= minDivHeight && distance > 0) return;
   if (divHeight.value >= maxDivHeight && distance < 0) return;
   divHeight.value = divHeight.value - distance;
-  defaultCursorY = event.clientY;
+  defaultCursorY = clientY;
 };
 
 const stopResizing = () => {
   // 移除事件监听
   window.removeEventListener('mousemove', startResizing);
   window.removeEventListener('mouseup', stopResizing);
+  window.removeEventListener('touchmove', startResizing);
+  window.removeEventListener('touchend', stopResizing);
 };
 </script>
 
 <template>
   <div ref="resizeableDivRefs" class="px-2 pb-4" :style="{ height: divHeight + 'px' }">
-    <div class="w-full h-3 text-[1rem] leading-[0.8rem] text-center cursor-ns-resize" @mousedown="initResize">
+    <div
+        class="w-full h-3 text-[1rem] leading-[0.8rem] text-center cursor-ns-resize"
+        @mousedown="initResize"
+        @touchstart="initResize">
       <i class="iconfont icon-more"/>
     </div>
     <div class="w-full h-full flex flex-row relative">
