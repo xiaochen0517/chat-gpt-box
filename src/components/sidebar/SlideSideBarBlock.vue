@@ -35,8 +35,8 @@ defineExpose({
       :show-close="false"
       :with-header="false"
       direction="ltr"
-      size="70%">
-    <div class="h-full w-full flex flex-col">
+      size="20rem">
+    <div class="h-full w-80 flex flex-col">
       <RobotListBlock
           class="flex-1"
           ref="robotListBlockRefs"

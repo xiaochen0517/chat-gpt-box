@@ -51,7 +51,7 @@ const closeInactiveClass = ref("hover:bg-neutral-400 dark:hover:bg-neutral-600")
           class="xl:max-w-screen-2xl m-auto p-2 overflow-hidden overflow-x-auto w-full opacity-80 backdrop-blur-md">
         <div class="flex flex-row min-w-full p-2 box-border bg-neutral-200 dark:bg-neutral-950 rounded-md">
           <div
-              class="absolute left-2 top-2 block lg:hidden px-2 py-1.5 mr-1 box-border rounded-md cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-700  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
+              class="absolute left-4 top-4 block lg:hidden px-2 py-1.5 mr-1 box-border rounded-md cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-700  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
               @click="$emit('showSlideSideBarClick')">
             <i class="iconfont icon-category text-xs leading-3 font-bold mx-1"/>
           </div>

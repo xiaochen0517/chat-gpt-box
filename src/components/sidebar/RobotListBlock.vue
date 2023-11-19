@@ -95,7 +95,7 @@ defineExpose({
             <div
                 v-if="item.options.enabled"
                 class="w-24 overflow-hidden overflow-ellipsis whitespace-nowrap border border-neutral-300 dark:border-neutral-700 rounded px-1 bg-yellow-400 dark:bg-amber-600 text-xs leading-5 select-none"
-                @click="editRobotClick(index)">
+                @click.stop="editRobotClick(index)">
               <i class="iconfont icon-settings font-normal"/>
               {{ item.options.model?.toUpperCase() }}
             </div>
