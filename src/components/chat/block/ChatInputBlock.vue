@@ -139,7 +139,7 @@ const stopResizing = () => {
 </script>
 
 <template>
-  <div ref="resizeableDivRefs" class="px-2 pb-4" :style="{ height: divHeight + 'px' }">
+  <div ref="resizeableDivRefs" class="pb-4" :style="{ height: divHeight + 'px' }">
     <div
         class="w-full h-3 text-[1rem] leading-[0.8rem] text-center cursor-ns-resize"
         @mousedown="initResize"
