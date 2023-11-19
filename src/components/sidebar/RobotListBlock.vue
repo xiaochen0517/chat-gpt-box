@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, getCurrentInstance, onBeforeUnmount, ref} from "vue";
+import {computed, getCurrentInstance, ref} from "vue";
 import {useStore} from "@/store/store.ts";
 import {EllipsisOutlined} from "@ant-design/icons-vue";
 import EditRobotDialog from "../chat/dialog/EditRobotDialog.vue";
@@ -44,8 +44,7 @@ whenever(switchRobotKey, () => {
   }
 });
 
-onBeforeUnmount(() => {
-});
+const tooltipEffect = computed(() => store.config.isDarkMode ? 'dark' : 'light');
 
 const robotList = computed(() => {
   return store.robotList;
@@ -81,8 +80,26 @@ defineExpose({
           :key="index"
           :class="index === activeRobotIndex?'robot-item-selected':''"
           @click="changeActiveRobot(index, item)">
-        <div class="text-md flex-1 leading-8 select-none">
-          {{ item.name }}
+        <div class="pr-1 flex-1 flex flex-row gap-1 items-center">
+          <div
+              class="flex-1 text-md leading-8 select-none overflow-hidden overflow-ellipsis whitespace-nowrap"
+              :class="item.options.enabled?'max-w-[10rem]':'max-w-[16rem]'">
+            {{ item.name }}
+          </div>
+          <el-tooltip
+              :effect="tooltipEffect"
+              :content="item.options.model?.toUpperCase()"
+              placement="right"
+              :hide-after="0"
+              :enterable="false">
+            <div
+                v-if="item.options.enabled"
+                class="w-24 overflow-hidden overflow-ellipsis whitespace-nowrap border border-neutral-300 dark:border-neutral-700 rounded px-1 bg-yellow-400 dark:bg-amber-600 text-xs leading-5 select-none"
+                @click.stop="editRobotClick(index)">
+              <i class="iconfont icon-settings font-normal"/>
+              {{ item.options.model?.toUpperCase() }}
+            </div>
+          </el-tooltip>
         </div>
         <el-popover overlayClassName="robot-editor-popover" placement="bottom" trigger="click">
           <template #default>

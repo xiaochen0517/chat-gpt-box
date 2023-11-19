@@ -55,10 +55,6 @@ const submitContent = () => {
   chatInputContent.value = "";
 };
 
-const breakLine = () => {
-  chatInputContent.value += "\n";
-};
-
 const enterSend = computed(() => store.config.base.enterSend);
 const ctrlEnterSend = computed(() => store.config.base.ctrlEnterSend);
 const enterKeyDown = () => {
@@ -100,25 +96,71 @@ const ctrlEnterKeyDown = () => {
     submitContent();
   }
 };
+const breakLine = () => {
+  chatInputContent.value += "\n";
+};
 
+
+const resizeableDivRefs = ref<InstanceType<typeof HTMLDivElement> | null>(null);
+const divHeight = ref(200); // 初始高度
+
+let defaultCursorY: number;
+let maxDivHeight: number;
+let minDivHeight = 100;
+const initResize = (event: MouseEvent | TouchEvent) => {
+  // 当鼠标按下时，开始监听鼠标移动和鼠标松开事件
+  event.preventDefault();
+  defaultCursorY = ('touches' in event) ? event.touches[0].clientY : event.clientY;
+  maxDivHeight = Math.floor(window.innerHeight * 0.7);
+  window.addEventListener('mousemove', startResizing);
+  window.addEventListener('mouseup', stopResizing);
+  window.addEventListener('touchmove', startResizing);
+  window.addEventListener('touchend', stopResizing);
+};
+
+const startResizing = (event: MouseEvent | TouchEvent) => {
+  // 获取光标在y轴移动的距离，以及方向
+  const clientY = ('touches' in event) ? event.touches[0].clientY : event.clientY;
+  const distance = clientY - defaultCursorY;
+  // 更新 div 的高度
+  if (divHeight.value <= minDivHeight && distance > 0) return;
+  if (divHeight.value >= maxDivHeight && distance < 0) return;
+  divHeight.value = divHeight.value - distance;
+  defaultCursorY = clientY;
+};
+
+const stopResizing = () => {
+  // 移除事件监听
+  window.removeEventListener('mousemove', startResizing);
+  window.removeEventListener('mouseup', stopResizing);
+  window.removeEventListener('touchmove', startResizing);
+  window.removeEventListener('touchend', stopResizing);
+};
 </script>
 
 <template>
-  <div class="px-2 py-4 flex flex-row">
-    <textarea
-        ref="chatInputTextAreaRefs"
-        class="flex-1 h-full m-0 p-2 inline-block rounded-md bg-neutral-100 box-border border-2 border-neutral-300 focus:border-neutral-400 dark:bg-neutral-800 dark:border-neutral-600 dark:focus:border-neutral-400 resize-none"
-        v-model="chatInputContent"
-        placeholder="Please input message"
-        @keydown.enter.prevent.exact="enterKeyDown"
-        @keydown.shift.enter.prevent.exact="shiftEnterKeyDown"
-        @keydown.ctrl.enter.prevent.exact="ctrlEnterKeyDown"
-        rows="3"/>
+  <div ref="resizeableDivRefs" class="pb-4" :style="{ height: divHeight + 'px' }">
     <div
-        @click.stop="submitContent"
-        class="w-16 h-full rounded-md flex justify-center items-center ml-2 text-sm cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 dark:hover:bg-neutral-700 dark:active:bg-neutral-800 border-2 border-neutral-200 hover:border-neutral-300 active:border-neutral-400 dark:border-neutral-600">
-      <i class="iconfont icon-stop-fill text-xl" v-if="isGenerating"/>
-      <send-outlined v-else/>
+        class="w-full h-3 text-[1rem] leading-[0.8rem] text-center cursor-ns-resize"
+        @mousedown="initResize"
+        @touchstart="initResize">
+      <i class="iconfont icon-more"/>
+    </div>
+    <div class="w-full h-full flex flex-row relative">
+      <textarea
+          ref="chatInputTextAreaRefs"
+          class="flex-1 w-full h-full m-0 py-2 pl-2 pr-14 block rounded-md bg-neutral-100 box-border border-2 border-neutral-300 focus:border-neutral-400 dark:bg-neutral-800 dark:border-neutral-600 dark:focus:border-neutral-400 resize-none"
+          v-model="chatInputContent"
+          placeholder="Please input message"
+          @keydown.enter.prevent.exact="enterKeyDown"
+          @keydown.shift.enter.prevent.exact="shiftEnterKeyDown"
+          @keydown.ctrl.enter.prevent.exact="ctrlEnterKeyDown"/>
+      <div
+          @click.stop="submitContent"
+          class="w-10 h-10 rounded-md absolute right-3 top-1/2 transform -translate-y-1/2 flex justify-center items-center ml-2 text-sm cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 dark:hover:bg-neutral-700 dark:active:bg-neutral-800 border-2 border-neutral-200 hover:border-neutral-300 active:border-neutral-400 dark:border-neutral-600">
+        <i class="iconfont icon-stop-fill text-xl" v-if="isGenerating"/>
+        <send-outlined v-else/>
+      </div>
     </div>
   </div>
 </template>

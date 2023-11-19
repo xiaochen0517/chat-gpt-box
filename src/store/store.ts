@@ -6,7 +6,7 @@ export const useStore = defineStore("store", {
   state: () => {
     return {
       // 版本号
-      version: "0.2.2" as string,
+      version: "0.2.3" as string,
       // 机器人列表
       robotList: [
         {

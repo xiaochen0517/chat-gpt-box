@@ -2,7 +2,7 @@ import {useStore} from "@/store/store.ts";
 import _ from "lodash";
 import {RequestBody, RobotOptions, SendRequest} from "@/types/SendRequest.ts";
 import {ChatMessage} from "@/types/State.ts";
-import {encoding_for_model, Tiktoken} from "tiktoken";
+import {encoding_for_model, Tiktoken, TiktokenModel} from "tiktoken";
 
 // 请求地址
 const API_URL: string = "v1/chat/completions";
@@ -81,7 +81,7 @@ export class RequestUtil {
       contextMessages = [systemMessage, ...messages.slice(-(options.context_max_message + 1))];
     }
     // 初始化token编码器
-    const tokenEncoder = encoding_for_model(options.model);
+    const tokenEncoder = encoding_for_model(options.model as TiktokenModel);
     while (this.getMessagesTokenSize(contextMessages, tokenEncoder) > options.context_max_tokens) {
       // 消息的token数量超过了最大token数量，需要删除消息
       if (contextMessages.length === 1) {
