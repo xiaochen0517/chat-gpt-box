@@ -25,7 +25,14 @@
         "icons/icon.ico"
       ],
       "identifier": "fun.mochen.chat-gpt-box",
-      "targets": "all"
+      "targets": "all",
+      "windows": {
+        "nsis": {
+          "license": "../LICENSE",
+          "installerIcon": "icons/icon.ico",
+          "installMode": "both"
+        }
+      }
     },
     "security": {
       "csp": null
