@@ -5,20 +5,23 @@ import {computed, onMounted, Ref, watch} from "vue";
 
 const store = useStore();
 
-// 暗模式配置
 const isDarkMode: Ref<boolean> = computed(() => store.config.isDarkMode);
 
 onMounted(() => {
-  // 初始化暗模式
+  // add dark class in html
   switchDarkMode(isDarkMode.value);
 });
 
-// 监听 isDarkMode
 watch(isDarkMode, (newVal) => {
-  // 给html标签添加dark类
+  // add dark class in html
   switchDarkMode(newVal);
 });
 
+/**
+ * if isDark is true, add dark class in html
+ * else remove dark class in html
+ * @param isDark is dark mode
+ */
 const switchDarkMode = (isDark: boolean) => {
   let querySelector = document.querySelector("html");
   if (!querySelector) {
@@ -53,6 +56,7 @@ html {
 @apply h-full w-full text-sm;
 }
 
+/* scroll bar */
 div::-webkit-scrollbar {
 @apply w-2 h-2 rounded-full;
 }

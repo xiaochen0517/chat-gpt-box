@@ -3,9 +3,6 @@ import {getCurrentInstance, ref} from "vue";
 import MenuListBlock from "@/components/sidebar/MenuListBlock.vue";
 import RobotListBlock from "@/components/sidebar/RobotListBlock.vue";
 
-/**
- * 初始化机器人列表
- */
 const instance = getCurrentInstance();
 const onRobotClick = (index: number, item: number) => {
   if (!instance) return;

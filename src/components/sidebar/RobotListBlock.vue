@@ -15,7 +15,7 @@ const changeActiveRobot = (index: number, item: Robot) => {
 };
 
 /**
- * 快捷键操作
+ * Shortcuts configuration.
  */
 const store = useStore();
 const shortcut = computed(() => store.config.shortcut);

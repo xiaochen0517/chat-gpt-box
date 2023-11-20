@@ -4,9 +4,6 @@ import RobotListBlock from "./RobotListBlock.vue";
 import MenuListBlock from "./MenuListBlock.vue";
 import {Robot} from "@/types/State.ts";
 
-/**
- * 初始化机器人列表
- */
 const instance = getCurrentInstance();
 const onRobotClick = (index: number, item: Robot) => {
   if (!instance) return;

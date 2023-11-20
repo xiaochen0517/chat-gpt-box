@@ -8,7 +8,7 @@ import {useStore} from "@/store/store.ts";
 import {Robot} from "@/types/State.ts";
 
 /**
- * 监听窗口关闭事件，直接退出程序
+ * Listen for the window close event and exit the program directly.
  */
 onMounted(() => {
   checkConfig();
@@ -23,7 +23,7 @@ const addWindowsCloseListener = () => {
 };
 
 /**
- * 检查配置项内容
+ * Check the content of the configuration items.
  */
 const store = useStore();
 const checkConfig = () => {

@@ -1,27 +1,16 @@
 import {RequestUtil} from "@/util/RequestUtil.ts";
 
 export interface ShortcutState {
-  // 聚焦到输入框
   focusInput: string;
-  // 打开设置窗口
   openSetting: string;
-  // 添加tab
   addTab: string;
-  // 删除tab
   removeTab: string;
-  // 清空当前tab页聊天记录
   cleanTabChat: string;
-  // 上一个tab页
   prevTab: string;
-  // 下一个tab页
   nextTab: string;
-  // 新增机器人
   addRobot: string;
-  // 切换机器人
   switchRobot: string;
-  // 上一个机器人
   prevRobot: string;
-  // 下一个机器人
   nextRobot: string;
 }
 

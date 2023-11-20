@@ -11,7 +11,7 @@ import SlideSideBarBlock from "@/components/sidebar/SlideSideBarBlock.vue";
 import {Robot, RobotTabChatInfo} from "@/types/State.ts";
 
 /**
- * 注册操作tab的快捷键
+ * register shortcut
  */
 const store = useStore();
 const shortcut = computed(() => store.config.shortcut);
@@ -20,7 +20,7 @@ const addTabKey = keys[shortcut.value.addTab];
 const addTabDialogRefs = ref<InstanceType<typeof AddTabDialog> | null>(null);
 whenever(addTabKey, () => {
   if (!addTabDialogRefs.value) return;
-  addTabDialogRefs.value.show();
+  addTabDialogRefs.value.show(chatTabNameList.value.length + 1);
 });
 const removeTabKey = keys[shortcut.value.removeTab];
 whenever(removeTabKey, () => {
@@ -65,7 +65,6 @@ watch(
     () => activeTabIndex.value,
     () => {
       scrollToBottom();
-      // 更新props.tabIndex
       if (!instance) return;
       instance.emit('update:tabIndex', activeTabIndex.value)
     }
@@ -82,15 +81,16 @@ const addTab = () => {
 
 const removeTab = (targetKey: number) => {
   if (activeTabIndex.value === targetKey) {
-    // 切换tab
+    // switch tab
     if (targetKey === chatTabNameList.value.length - 1) {
       activeTabIndex.value = targetKey - 1;
     } else {
       activeTabIndex.value = targetKey;
     }
   }
+  // remove tab
   store.removeChatTab(props.robotIndex, targetKey);
-  // 检查当前tab是否是最后一个tab
+  // check current tab is last tab
   if (chatTabNameList.value.length === 0) {
     store.addChatTab(props.robotIndex, "default");
     activeTabIndex.value = 0;
@@ -130,7 +130,6 @@ const getTabIndex = () => {
 };
 const scrollContainerRefs = ref();
 const scrollToBottom = () => {
-  // 滚动到底部
   nextTick(() => {
     scrollContainerRefs.value.scrollTop = scrollContainerRefs.value.scrollHeight;
   });

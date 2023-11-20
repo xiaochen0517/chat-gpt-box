@@ -23,9 +23,6 @@ whenever(openSettingKey, () => {
   openSettingsWindow();
 });
 
-/**
- * 初始化机器人列表
- */
 const addRobotDialogRefs = ref<InstanceType<typeof AddRobotDialog> | null>(null);
 const addRobotClick = () => {
   nextTick(() => {

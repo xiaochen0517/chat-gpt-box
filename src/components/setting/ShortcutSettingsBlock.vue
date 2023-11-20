@@ -24,7 +24,7 @@ const saveData = async () => {
       store.saveShortcutConfig(shortcut.value);
     } else {
       console.log('error', fields);
-      throw new Error("表单验证失败");
+      throw new Error("Please check the form data");
     }
   });
 };

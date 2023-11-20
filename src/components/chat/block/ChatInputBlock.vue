@@ -75,7 +75,7 @@ const enterKeyDown = (event: KeyboardEvent) => {
   if (enterSend.value) {
     event.preventDefault();
     if (isGenerating.value) {
-      ElMessage.warning("对话正在生成中，请稍后再试");
+      ElMessage.warning("The conversation is being generated, please try again later.");
       return;
     }
     submitContent();
@@ -88,7 +88,7 @@ const shiftEnterKeyDown = (event: KeyboardEvent) => {
   if (!enterSend.value) {
     event.preventDefault();
     if (isGenerating.value) {
-      ElMessage.warning("对话正在生成中，请稍后再试");
+      ElMessage.warning("The conversation is being generated, please try again later.");
       return;
     }
     submitContent();
@@ -101,7 +101,7 @@ const ctrlEnterKeyDown = (event: KeyboardEvent) => {
   if (!enterSend.value) {
     event.preventDefault();
     if (isGenerating.value) {
-      ElMessage.warning("对话正在生成中，请稍后再试");
+      ElMessage.warning("The conversation is being generated, please try again later.");
       return;
     }
     submitContent();

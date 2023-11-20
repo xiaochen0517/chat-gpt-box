@@ -69,7 +69,6 @@ defineExpose({
   show
 });
 
-// 通过判断窗口宽度来设置对话框宽度
 const dialogWidth = inject("dialogWidth");
 </script>
 

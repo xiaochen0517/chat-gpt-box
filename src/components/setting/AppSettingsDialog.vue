@@ -15,7 +15,6 @@ const saveSettings = async () => {
     if (!baseSettingsBlockRefs.value || !shortcutSettingsBlockRefs.value) return;
     await baseSettingsBlockRefs.value.saveData();
     await shortcutSettingsBlockRefs.value.saveData();
-    // 刷新页面
     dialogVisible.value = false;
   } catch (ignore) {
   }

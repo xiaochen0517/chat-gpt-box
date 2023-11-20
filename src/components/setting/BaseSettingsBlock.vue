@@ -9,23 +9,14 @@ import {ElForm} from "element-plus";
 const store = useStore();
 
 const baseConfig = ref<BaseConfig>({
-  // openai api key
   apiKey: "",
-  // 聊天输入框enter键发送消息
   enterSend: true,
-  // ctrl+enter或者shift+enter发送消息/换行
   ctrlEnterSend: false,
-  // api请求地址
   apiUrl: "https://api.openai.com/",
-  // 模型名称
   model: "gpt-3.5-turbo",
-  // 温度
   temperature: 0.7,
-  // 上下文消息数量
   context_max_message: 1,
-  // 上下文最大token数量
   context_max_tokens: 2048,
-  // 响应最大token数量
   response_max_tokens: 0
 });
 const formRules = ref({
@@ -53,7 +44,7 @@ const saveData = async () => {
       store.saveBaseConfig(baseConfig.value);
     } else {
       console.log('error', fields);
-      throw new Error("表单验证失败");
+      throw new Error("Please check the form data");
     }
   });
 };
