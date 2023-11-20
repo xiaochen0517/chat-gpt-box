@@ -57,24 +57,36 @@ const submitContent = () => {
 
 const enterSend = computed(() => store.config.base.enterSend);
 const ctrlEnterSend = computed(() => store.config.base.ctrlEnterSend);
-const enterKeyDown = () => {
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Enter') {
+    if (event.shiftKey) {
+      // shift + enter
+      shiftEnterKeyDown(event);
+    } else if (event.ctrlKey) {
+      // ctrl + enter
+      ctrlEnterKeyDown(event);
+    } else {
+      // enter
+      enterKeyDown(event);
+    }
+  }
+}
+const enterKeyDown = (event: KeyboardEvent) => {
   if (enterSend.value) {
+    event.preventDefault();
     if (isGenerating.value) {
       ElMessage.warning("对话正在生成中，请稍后再试");
       return;
     }
     submitContent();
-  } else {
-    breakLine();
   }
 };
-const shiftEnterKeyDown = () => {
+const shiftEnterKeyDown = (event: KeyboardEvent) => {
   if (ctrlEnterSend.value) {
     return;
   }
-  if (enterSend.value) {
-    breakLine();
-  } else {
+  if (!enterSend.value) {
+    event.preventDefault();
     if (isGenerating.value) {
       ElMessage.warning("对话正在生成中，请稍后再试");
       return;
@@ -82,13 +94,12 @@ const shiftEnterKeyDown = () => {
     submitContent();
   }
 };
-const ctrlEnterKeyDown = () => {
+const ctrlEnterKeyDown = (event: KeyboardEvent) => {
   if (!ctrlEnterSend.value) {
     return;
   }
-  if (enterSend.value) {
-    breakLine();
-  } else {
+  if (!enterSend.value) {
+    event.preventDefault();
     if (isGenerating.value) {
       ElMessage.warning("对话正在生成中，请稍后再试");
       return;
@@ -96,10 +107,6 @@ const ctrlEnterKeyDown = () => {
     submitContent();
   }
 };
-const breakLine = () => {
-  chatInputContent.value += "\n";
-};
-
 
 const resizeableDivRefs = ref<InstanceType<typeof HTMLDivElement> | null>(null);
 const divHeight = ref(200); // 初始高度
@@ -152,9 +159,7 @@ const stopResizing = () => {
           class="flex-1 w-full h-full m-0 py-2 pl-2 pr-14 block rounded-md bg-neutral-100 box-border border-2 border-neutral-300 focus:border-neutral-400 dark:bg-neutral-800 dark:border-neutral-600 dark:focus:border-neutral-400 resize-none"
           v-model="chatInputContent"
           placeholder="Please input message"
-          @keydown.enter.prevent.exact="enterKeyDown"
-          @keydown.shift.enter.prevent.exact="shiftEnterKeyDown"
-          @keydown.ctrl.enter.prevent.exact="ctrlEnterKeyDown"/>
+          @keydown="handleKeydown"/>
       <div
           @click.stop="submitContent"
           class="w-10 h-10 rounded-md absolute right-3 top-1/2 transform -translate-y-1/2 flex justify-center items-center ml-2 text-sm cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 dark:hover:bg-neutral-700 dark:active:bg-neutral-800 border-2 border-neutral-200 hover:border-neutral-300 active:border-neutral-400 dark:border-neutral-600">
