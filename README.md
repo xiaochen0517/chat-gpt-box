@@ -23,7 +23,7 @@
 
 ## Features
 
-- Supports multiple platforms, including Windows, Linux, macOS
+- Supports multiple platforms, including Windows, Linux, macOS and Android
 - Allows for individual customization of chat settings, with multiple chat configurations that do not interfere with
   each other
 - Single chat configurations support multiple tabs, enabling multiple chat windows to be opened at the same time
