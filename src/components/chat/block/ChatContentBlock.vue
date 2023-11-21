@@ -31,7 +31,7 @@ defineExpose({
 
 <template>
   <div class="w-full box-border relative">
-    <div class="h-full w-full px-2 min-w-[12rem] xl:max-w-screen-2xl mx-auto flex flex-col">
+    <div class="h-full w-full px-2 min-w-[12rem] max-w-7xl mx-auto flex flex-col">
       <ChatTabsBlock
           class="flex-1"
           ref="chatTabsBlockRefs"
