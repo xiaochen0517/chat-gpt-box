@@ -27,9 +27,7 @@
         "src/*"
       ]
     },
-    "types": [
-      "pinia-plugin-persist"
-    ]
+    "types": []
   },
   "include": [
     "src/**/*.ts",
