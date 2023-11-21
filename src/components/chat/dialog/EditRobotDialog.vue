@@ -2,7 +2,7 @@
 import {getCurrentInstance, inject, nextTick, ref} from "vue";
 import {useStore} from "@/store/store.ts";
 import _ from "lodash";
-import modelList from "@/util/ModelList.ts";
+import modelList from "@/utils/ModelList.ts";
 import {ElForm, ElInput} from "element-plus";
 
 const store = useStore();

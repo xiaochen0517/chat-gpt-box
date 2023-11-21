@@ -39,8 +39,8 @@ export const useStore = defineStore("store", {
           apiUrl: "https://api.openai.com/",
           model: "gpt-3.5-turbo",
           temperature: 0.7,
-          context_max_message: 1,
-          context_max_tokens: 2048,
+          context_max_message: 2,
+          context_max_tokens: 2000,
           response_max_tokens: 0
         } as BaseConfig,
         shortcut: {
@@ -160,6 +160,30 @@ export const useStore = defineStore("store", {
       this.robotList = data.robotList;
       this.chatHistory = data.chatHistory;
       this.config = data.config;
+    },
+    setApiKey(apiKey: string) {
+      this.config.base.apiKey = apiKey;
+    },
+    setEnterSend(enterSend: boolean) {
+      this.config.base.enterSend = enterSend;
+    },
+    setApiUrl(apiUrl: string) {
+      this.config.base.apiUrl = apiUrl;
+    },
+    setDefaultModel(model: string) {
+      this.config.base.model = model;
+    },
+    setTemperature(temperature: number) {
+      this.config.base.temperature = temperature;
+    },
+    setContextMaxMessage(context_max_message: number) {
+      this.config.base.context_max_message = context_max_message;
+    },
+    setContextMaxTokens(context_max_tokens: number) {
+      this.config.base.context_max_tokens = context_max_tokens;
+    },
+    setResponseMaxTokens(response_max_tokens: number) {
+      this.config.base.response_max_tokens = response_max_tokens;
     }
   },
   persist: {

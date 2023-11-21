@@ -2,7 +2,7 @@
 import {onMounted, ref} from "vue";
 import {useStore} from "@/store/store.ts";
 import _ from "lodash";
-import modelList from "@/util/ModelList";
+import modelList from "@/utils/ModelList";
 import {BaseConfig} from "@/types/State.ts";
 import {ElForm} from "element-plus";
 

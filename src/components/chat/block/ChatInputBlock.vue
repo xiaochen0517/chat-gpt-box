@@ -3,7 +3,7 @@ import {computed, defineAsyncComponent, getCurrentInstance, ref, Ref} from "vue"
 import {useStore} from "@/store/store.ts";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import {ElMessage} from "element-plus";
-import {RequestUtil} from "@/util/RequestUtil.ts";
+import {RequestUtil} from "@/utils/RequestUtil.ts";
 import {RobotTabChatInfo} from "@/types/State.ts";
 
 const SendOutlined = defineAsyncComponent(() => import("@ant-design/icons-vue/SendOutlined"));

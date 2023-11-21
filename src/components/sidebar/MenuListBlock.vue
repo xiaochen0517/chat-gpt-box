@@ -4,6 +4,7 @@ import {useStore} from "@/store/store.ts";
 import AddRobotDialog from "../chat/dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import AppSettingsDialog from "@/components/setting/AppSettingsDialog.vue";
+import router from "@/router/router.ts";
 
 const store = useStore();
 
@@ -33,8 +34,9 @@ const addRobotClick = () => {
 
 const appSettingsDialogRefs = ref<InstanceType<typeof AppSettingsDialog> | null>(null);
 const openSettingsWindow = () => {
-  if (!appSettingsDialogRefs.value) return;
-  appSettingsDialogRefs.value.show();
+  // if (!appSettingsDialogRefs.value) return;
+  // appSettingsDialogRefs.value.show();
+  router.push({path: "/settings"});
 };
 </script>
 
@@ -55,8 +57,12 @@ const openSettingsWindow = () => {
           class="group w-10 h-10 flex justify-center items-center rounded-xl bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-700 hover:dark:bg-neutral-600 active:dark:bg-neutral-700 cursor-pointer"
           @click="handleChange">
         <transition name="fade" mode="out-in">
-          <i v-if="isDarkMode" class="iconfont icon-daytime-mode text-xl transition ease-in-out group-hover:rotate-180 duration-700"/>
-          <i v-else class="iconfont icon-night-mode text-xl transition ease-in-out group-hover:rotate-180 duration-700"/>
+          <i
+              v-if="isDarkMode"
+              class="iconfont icon-daytime-mode text-xl transition ease-in-out group-hover:rotate-180 duration-700"/>
+          <i
+              v-else
+              class="iconfont icon-night-mode text-xl transition ease-in-out group-hover:rotate-180 duration-700"/>
         </transition>
       </div>
     </div>

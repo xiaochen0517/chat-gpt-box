@@ -1,4 +1,4 @@
-import {RequestUtil} from "@/util/RequestUtil.ts";
+import {RequestUtil} from "@/utils/RequestUtil.ts";
 
 export interface ShortcutState {
   focusInput: string;
