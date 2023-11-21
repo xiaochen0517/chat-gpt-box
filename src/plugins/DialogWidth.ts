@@ -5,16 +5,16 @@ export default {
   install(app: App) {
     const windowWidth = ref(window.innerWidth);
     const updateWidth = () => {
-      if ((windowWidth.value < 1024 && window.innerWidth >= 1024) || (windowWidth.value >= 1024 && window.innerWidth < 1024)) {
-        windowWidth.value = window.innerWidth;
-      }
+      windowWidth.value = window.innerWidth;
     };
     window.addEventListener('resize', updateWidth);
     const dialogWidth = computed(() => {
       if (windowWidth.value < 1024) {
         return "90%";
+      } else if (windowWidth.value < 1536) {
+        return "500px";
       } else {
-        return "50%";
+        return "400px";
       }
     });
     app.provide('dialogWidth', dialogWidth);
