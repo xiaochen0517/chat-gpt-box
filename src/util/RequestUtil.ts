@@ -27,6 +27,8 @@ export class RequestUtil {
 
   stopFlag: boolean = false;
 
+  abortController: AbortController | null = null;
+
   sendRequest = async ({robotIndex, tabIndex, content}: SendRequest, change: () => void) => {
     if (change) {
       this.changeFunc = change;
@@ -101,6 +103,10 @@ export class RequestUtil {
 
   cancel() {
     this.stopFlag = true;
+    if (this.abortController) {
+      this.abortController.abort();
+      this.abortController = null;
+    }
     if (!this.reader) return;
     this.reader.cancel().then(() => {
       console.log("取消读取");
@@ -109,38 +115,6 @@ export class RequestUtil {
       console.error(error);
       this.reader = null;
     });
-  }
-
-  addUserMessage() {
-    store.addUserMessage(this.data.robotIndex, this.data.tabIndex, this.data.content);
-    this.changeFunc();
-  }
-
-  addAssistantMessage = () => {
-    store.addAssistantMessage(this.data.robotIndex, this.data.tabIndex);
-    this.changeFunc();
-  };
-
-  setAssistantMsgContent = (content: string) => {
-    store.setAssistantMsgContent(this.data.robotIndex, this.data.tabIndex, content);
-    this.changeFunc();
-  };
-
-  addAssistantMsgContent = (content: string) => {
-    store.addAssistantMsgContent(this.data.robotIndex, this.data.tabIndex, content);
-    this.changeFunc();
-  };
-
-  setGenerating = (generating: boolean) => {
-    store.setGenerating(this.data.robotIndex, this.data.tabIndex, generating);
-  };
-
-  getRobotOptions = (robotIndex: number): RobotOptions => {
-    let robotOptions = store.robotList[robotIndex].options;
-    if (!robotOptions.enabled) {
-      return store.config.base;
-    }
-    return robotOptions;
   }
 
   checkRequestData = (robotIndex: number, tabIndex: number, content: string) => {
@@ -179,12 +153,12 @@ export class RequestUtil {
   };
 
   sendFetch = (messages: ChatMessage[], options: RobotOptions) => {
-    const controller = new AbortController();
+    this.abortController = new AbortController();
     fetch(options.apiUrl + API_URL, {
       method: REQ_TYPE,
       headers: this.buildHeaders(),
       body: this.buildBodyJson(messages, options),
-      signal: controller.signal,
+      signal: this.abortController.signal,
     }).then(async (data: Response) => {
       if (data.status !== 200 || !data.body) {
         this.addAssistantMsgContent(`request failure status：${data.status}，message：${data.statusText}`);
@@ -263,4 +237,37 @@ export class RequestUtil {
     }
   };
 
+  addUserMessage() {
+    store.addUserMessage(this.data.robotIndex, this.data.tabIndex, this.data.content);
+    this.changeFunc();
+  }
+
+  addAssistantMessage = () => {
+    store.addAssistantMessage(this.data.robotIndex, this.data.tabIndex);
+    this.changeFunc();
+  };
+
+  setAssistantMsgContent = (content: string) => {
+    store.setAssistantMsgContent(this.data.robotIndex, this.data.tabIndex, content);
+    this.changeFunc();
+  };
+
+  addAssistantMsgContent = (content: string) => {
+    store.addAssistantMsgContent(this.data.robotIndex, this.data.tabIndex, content);
+    this.changeFunc();
+  };
+
+  setGenerating = (generating: boolean) => {
+    if (this.reader) this.reader = null;
+    if (this.abortController) this.abortController = null;
+    store.setGenerating(this.data.robotIndex, this.data.tabIndex, generating);
+  };
+
+  getRobotOptions = (robotIndex: number): RobotOptions => {
+    let robotOptions = store.robotList[robotIndex].options;
+    if (!robotOptions.enabled) {
+      return store.config.base;
+    }
+    return robotOptions;
+  }
 }
