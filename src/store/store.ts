@@ -1,6 +1,5 @@
 import {defineStore} from "pinia";
-import {BaseConfig, Robot, RobotTabChatInfo, ShortcutState, StoreRobotOptions} from "@/types/State.ts";
-import {ChatMessage} from "@/types/State.ts";
+import {BaseConfig, ChatMessage, Robot, RobotTabChatInfo, ShortcutState, StoreRobotOptions} from "@/types/State.ts";
 
 export const useStore = defineStore("store", {
   state: () => {
@@ -61,6 +60,15 @@ export const useStore = defineStore("store", {
     }
   },
   actions: {
+    initGeneralStatus() {
+      for (let tabList of this.chatHistory) {
+        for (let tab of tabList) {
+          tab.generating = false;
+          tab.request = null;
+        }
+      }
+    },
+    // 删除机器人
     removeRobot(index: number) {
       this.robotList.splice(index, 1);
       this.chatHistory.splice(index, 1);

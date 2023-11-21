@@ -10,6 +10,7 @@ const isDarkMode: Ref<boolean> = computed(() => store.config.isDarkMode);
 onMounted(() => {
   // add dark class in html
   switchDarkMode(isDarkMode.value);
+  store.initGeneralStatus();
 });
 
 watch(isDarkMode, (newVal) => {
