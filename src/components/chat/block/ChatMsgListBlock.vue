@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import {computed, onMounted, onUnmounted, ref} from "vue";
+import {computed, PropType, ref, watch} from "vue";
 import ChatMessageBlock from "./ChatMessageBlock.vue";
-import {useStore} from "@/store/store.ts";
+import {useChatTabsStore} from "@/store/ChatTabs.ts";
 import EditMessageDialog from "../dialog/EditMessageDialog.vue";
-import {ChatMessage} from "@/types/State.ts";
+import {ChatInfo, ChatMessage} from "@/types/Store.ts";
 
-const store = useStore();
+const chatTabsStore = useChatTabsStore();
 
 const props = defineProps({
-  robotIndex: {
-    type: Number,
+  chatInfo: {
+    type: Object as PropType<ChatInfo | null>,
     default: 0
   },
   tabIndex: {
@@ -18,23 +18,28 @@ const props = defineProps({
   }
 });
 
-const msgList = computed(() => store.chatHistory[props.robotIndex][props.tabIndex].chat);
-onMounted(() => {
-});
+const propsChatInfo = ref<ChatInfo | null>(props.chatInfo);
+watch(
+    () => props.chatInfo,
+    (value) => {
+      propsChatInfo.value = value;
+    }
+);
 
-onUnmounted(() => {
+const msgList = computed(() => {
+  if (!propsChatInfo.value) return [];
+  return chatTabsStore.chatTabs[propsChatInfo.value.id][props.tabIndex];
 });
 
 const deleteMessage = (_message: ChatMessage, index: number) => {
-  store.removeChatMessage(props.robotIndex, props.tabIndex, index);
+  if (!propsChatInfo.value) return;
+  chatTabsStore.removeChatMessage(propsChatInfo.value.id, props.tabIndex, index);
 };
 
 const editMessageDialogRefs = ref<InstanceType<typeof EditMessageDialog> | null>(null);
 const editMessage = (_message: ChatMessage, index: number) => {
-  if (!editMessageDialogRefs.value) {
-    return;
-  }
-  editMessageDialogRefs.value.show(props.robotIndex, props.tabIndex, index);
+  if (!editMessageDialogRefs.value || !propsChatInfo.value) return;
+  editMessageDialogRefs.value.show(propsChatInfo.value.id, props.tabIndex, index);
 };
 
 </script>
@@ -48,7 +53,7 @@ const editMessage = (_message: ChatMessage, index: number) => {
         :message="item"
         @delete="deleteMessage"
         @edit="editMessage"
-        :options="store.robotList[robotIndex].options"/>
+        :options="propsChatInfo?.options"/>
     <EditMessageDialog ref="editMessageDialogRefs"/>
   </div>
 </template>

@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import {getCurrentInstance, inject, nextTick, ref} from "vue";
-import {useStore} from "@/store/store.ts";
 import _ from "lodash";
 import modelList from "@/utils/ModelList.ts";
 import {ElForm, ElInput} from "element-plus";
+import {ChatInfo} from "@/types/Store.ts";
+import {useChatListStore} from "@/store/ChatList.ts";
 
-const store = useStore();
+const chatListStore = useChatListStore();
 
 const isEdit = ref(false);
 
 const dialogVisible = ref(false);
-const formData = ref({
-  name: "TestRobot",
+const formData = ref<ChatInfo>({
+  id: "",
+  name: "Default Chat",
   prompt: "You are a helpful assistant.",
   options: {
     enabled: false,
@@ -41,7 +43,7 @@ const formRules = ref({
   ],
 });
 
-const robotIndex = ref<number | null>(null);
+const currentChatInfo = ref<ChatInfo | null>(null);
 
 const rulesFormRef = ref<InstanceType<typeof ElForm> | null>(null);
 const commit = async () => {
@@ -61,15 +63,15 @@ const commit = async () => {
 };
 
 const updateRobot = () => {
-  if (robotIndex.value == null) {
+  if (currentChatInfo.value == null) {
     return;
   }
-  store.updateRobot(robotIndex.value, _.cloneDeep(formData.value));
+  chatListStore.updateChat(currentChatInfo.value.id, formData.value);
 };
 
 const instance = getCurrentInstance();
 const addRobot = () => {
-  store.addRobot(_.cloneDeep(formData.value));
+  chatListStore.addChat(formData.value);
   if (!instance) return;
   instance.emit("commit", formData.value);
 };
@@ -82,11 +84,15 @@ const focusNameInput = () => {
   });
 };
 
-const show = (edit: boolean, index: number) => {
+const show = (edit: boolean, chatInfo: ChatInfo | null) => {
   isEdit.value = edit;
   if (isEdit.value) {
-    robotIndex.value = index;
-    formData.value = _.cloneDeep(store.robotList[index]);
+    if (chatInfo == null) {
+      console.error("edit chat info can not be null.")
+      return;
+    }
+    currentChatInfo.value = chatInfo;
+    formData.value = _.cloneDeep(chatInfo);
   }
   dialogVisible.value = true;
   focusNameInput();

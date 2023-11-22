@@ -5,10 +5,10 @@ import _ from "lodash";
 import {ElForm} from "element-plus";
 
 import shortcutState from "@/components/setting/ShortcutState";
-import {ShortcutState} from "@/types/State.ts";
+import {ShortcutConfig} from "@/types/Store.ts";
 
 const store = useStore();
-const shortcut = ref<ShortcutState>(shortcutState);
+const shortcut = ref<ShortcutConfig>(shortcutState);
 onMounted(() => {
   initSettingsData();
 });

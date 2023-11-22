@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import {defineAsyncComponent, nextTick, ref} from "vue";
-import {Robot} from "@/types/State.ts";
+import {ChatInfo} from "@/types/Store.ts";
 import ChatInputBlock from "@/components/chat/block/ChatInputBlock.vue";
 
 const ChatTabsBlock = defineAsyncComponent(() => import("@/components/chat/block/ChatTabsBlock.vue"));
 
-const robotIndex = ref<number>(0);
 const tabIndex = ref<number>(0);
 const chatTabsBlockRefs = ref<InstanceType<typeof ChatTabsBlock> | null>(null);
 const messageRefresh = () => {
@@ -13,9 +12,9 @@ const messageRefresh = () => {
   chatTabsBlockRefs.value.scrollToBottom();
 };
 
-const changeRobot = (index: number, item: Robot) => {
-  console.log(`changeRobot: ${index}, ${item}`)
-  robotIndex.value = index;
+const activeChatInfo = ref<ChatInfo | null>(null);
+const changeChat = (chatInfo: ChatInfo) => {
+  activeChatInfo.value = chatInfo;
   setTimeout(() => {
     nextTick(() => {
       if (!chatTabsBlockRefs.value) return;
@@ -25,7 +24,7 @@ const changeRobot = (index: number, item: Robot) => {
 };
 
 defineExpose({
-  changeRobot
+  changeChat
 });
 </script>
 
@@ -36,8 +35,8 @@ defineExpose({
           class="flex-1"
           ref="chatTabsBlockRefs"
           v-model:tabIndex="tabIndex"
-          :robot-index="robotIndex"
-          @changeRobotClick="changeRobot"/>
+          :active-chat="activeChatInfo"
+          @changeRobotClick="changeChat"/>
       <ChatInputBlock :robot-index="robotIndex" :tab-index="tabIndex" @refresh="messageRefresh"/>
     </div>
   </div>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {useStore} from "@/store/store.ts";
+import {useConfigStore} from "@/store/Config.ts";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 import {ElMessage} from "element-plus";
 import modelList from "@/utils/modelList.ts";
@@ -13,11 +13,11 @@ defineExpose({
   show
 })
 
-const store = useStore();
+const configStore = useConfigStore();
 
 const model = ref("");
 onMounted(() => {
-  model.value = store.config.base.model;
+  model.value = configStore.baseConfig.model;
 })
 
 const save = () => {
@@ -25,7 +25,7 @@ const save = () => {
     ElMessage.error("Model can not be empty!");
     return;
   }
-  store.setDefaultModel(model.value);
+  configStore.setDefaultModel(model.value);
   showDialog.value = false;
 }
 </script>

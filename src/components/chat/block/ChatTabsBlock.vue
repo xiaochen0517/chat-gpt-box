@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import {computed, getCurrentInstance, nextTick, ref, watch} from "vue";
+import {computed, getCurrentInstance, nextTick, PropType, ref, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
-import {useStore} from "@/store/store.ts";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/tab/CTabs.vue";
 import CTabPane from "@/components/base/tab/CTabPane.vue";
 import {ElMessageBox} from "element-plus";
 import SlideSideBarBlock from "@/components/sidebar/SlideSideBarBlock.vue";
-import {Robot, RobotTabChatInfo} from "@/types/State.ts";
+import {ChatInfo, ChatOptions, ChatTabInfo} from "@/types/Store.ts";
+import {useConfigStore} from "@/store/Config.ts";
+import {useChatTabsStore} from "@/store/ChatTabs.ts";
 
 /**
  * register shortcut
  */
-const store = useStore();
-const shortcut = computed(() => store.config.shortcut);
+const configStore = useConfigStore();
+const shortcut = computed(() => configStore.shortcut);
 const keys = useMagicKeys();
 const addTabKey = keys[shortcut.value.addTab];
 const addTabDialogRefs = ref<InstanceType<typeof AddTabDialog> | null>(null);
@@ -46,9 +47,9 @@ whenever(cleanTabChatKey, () => {
 });
 
 const props = defineProps({
-  robotIndex: {
-    type: Number,
-    default: 0
+  activeChat: {
+    type: Object as PropType<ChatInfo | null>,
+    default: null
   },
   tabIndex: {
     type: Number,
@@ -56,8 +57,18 @@ const props = defineProps({
   }
 });
 
+const propsActiveChat = ref<ChatInfo | null>(props.activeChat);
+watch(
+    () => props.activeChat,
+    (value) => {
+      propsActiveChat.value = value;
+    }
+);
+
+const chatTabsStore = useChatTabsStore();
 const cleanTabChat = () => {
-  store.cleanTabChat(props.robotIndex, activeTabIndex.value);
+  if (!propsActiveChat.value) return;
+  chatTabsStore.cleanTabChat(propsActiveChat.value.id, activeTabIndex.value);
 };
 
 const activeTabIndex = ref<number>(0);
@@ -89,19 +100,27 @@ const removeTab = (targetKey: number) => {
     }
   }
   // remove tab
-  store.removeChatTab(props.robotIndex, targetKey);
-  // check current tab is last tab
-  if (chatTabNameList.value.length === 0) {
-    store.addChatTab(props.robotIndex, "default");
-    activeTabIndex.value = 0;
-  }
+  if (!propsActiveChat.value) return;
+  chatTabsStore.removeChatTab(propsActiveChat.value.id, targetKey);
 };
 
 const chatTabNameList = computed(() => {
-  return store.chatHistory[props.robotIndex]
-      .map((item: RobotTabChatInfo) => item.name);
+  if (!propsActiveChat.value) return [];
+  return chatTabsStore.chatTabs[propsActiveChat.value.id]
+      .map((item: ChatTabInfo) => item.name);
 });
-const robotOptions = computed(() => store.robotList[props.robotIndex].options);
+const robotOptions = computed((): ChatOptions => {
+  if (!propsActiveChat.value) return {
+    enabled: false,
+    apiUrl: '',
+    model: '',
+    temperature: 0,
+    context_max_message: 0,
+    context_max_tokens: 0,
+    response_max_tokens: 0,
+  };
+  return propsActiveChat.value.options
+});
 const removeTabClick = (index: number) => {
   ElMessageBox.confirm("Are you sure to remove this tab?", "Warning", {
     confirmButtonText: "OK",
@@ -120,7 +139,7 @@ const showSlideSideBar = () => {
 };
 
 const instance = getCurrentInstance();
-const changeRobotClick = (index: number, item: Robot) => {
+const changeRobotClick = (index: number, item: ChatInfo) => {
   if (!instance) return;
   instance.emit('changeRobotClick', index, item);
 };
@@ -153,7 +172,7 @@ defineExpose({
         @removeTabClick="removeTabClick"
         @showSlideSideBarClick="showSlideSideBar">
       <CTabPane v-for="(_number, index) in chatTabNameList.length" :key="index">
-        <ChatMsgListBlock :robotIndex="props.robotIndex" :tabIndex="index"/>
+        <ChatMsgListBlock :chatInfo="propsActiveChat" :tabIndex="index"/>
       </CTabPane>
     </CTabs>
     <AddTabDialog ref="addTabDialogRefs" :robotIndex="props.robotIndex"/>

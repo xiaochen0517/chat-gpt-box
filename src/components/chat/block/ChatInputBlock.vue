@@ -4,7 +4,7 @@ import {useStore} from "@/store/store.ts";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import {ElMessage} from "element-plus";
 import {RequestUtil} from "@/utils/RequestUtil.ts";
-import {RobotTabChatInfo} from "@/types/State.ts";
+import {ChatTabInfo} from "@/types/Store.ts";
 
 const SendOutlined = defineAsyncComponent(() => import("@ant-design/icons-vue/SendOutlined"));
 
@@ -36,7 +36,7 @@ const instance = getCurrentInstance();
 const chatInputContent = ref("");
 
 const isGenerating: Ref<boolean> = computed(() => store.chatHistory[props.robotIndex][props.tabIndex].generating);
-const tabChatsInfo: Ref<RobotTabChatInfo> = computed(() => store.chatHistory[props.robotIndex][props.tabIndex]);
+const tabChatsInfo: Ref<ChatTabInfo> = computed(() => store.chatHistory[props.robotIndex][props.tabIndex]);
 const submitContent = () => {
   if (!instance) return;
   if (isGenerating.value) {

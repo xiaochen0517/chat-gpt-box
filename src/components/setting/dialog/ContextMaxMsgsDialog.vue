@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {useStore} from "@/store/store.ts";
+import {useConfigStore} from "@/store/Config.ts";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 
 const showDialog = ref(false);
@@ -11,15 +11,15 @@ defineExpose({
   show
 })
 
-const store = useStore();
+const configStore = useConfigStore();
 
 const contextMaxMessage = ref(2);
 onMounted(() => {
-  contextMaxMessage.value = store.config.base.context_max_message;
+  contextMaxMessage.value = configStore.baseConfig.context_max_message;
 })
 
 const save = () => {
-  store.setContextMaxMessage(contextMaxMessage.value);
+  configStore.setContextMaxMessage(contextMaxMessage.value);
   showDialog.value = false;
 }
 

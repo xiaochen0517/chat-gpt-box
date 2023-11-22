@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
-import {useStore} from "@/store/store.ts";
+import {useConfigStore} from "@/store/Config.ts";
 import ApiKeyDialog from "@/components/setting/dialog/ApiKeyDialog.vue";
 import router from "@/router/router.ts";
 import CListItem from "@/components/base/list/CListItem.vue";
@@ -15,22 +15,22 @@ const jumpToHomePage = () => {
   router.push({path: "/"});
 }
 
-const store = useStore();
+const configStore = useConfigStore();
 
 const isDarkMode = ref(false);
 const enterSend = ref(false);
 const ctrlEnterSend = ref(false);
 onMounted(() => {
-  isDarkMode.value = store.config.isDarkMode;
-  enterSend.value = store.config.base.enterSend;
-  ctrlEnterSend.value = store.config.base.ctrlEnterSend;
+  isDarkMode.value = configStore.isDarkMode;
+  enterSend.value = configStore.baseConfig.enterSend;
+  ctrlEnterSend.value = configStore.baseConfig.ctrlEnterSend;
 })
 
 watch(isDarkMode, (value) => {
-  store.setDarkMode(value);
+  configStore.setDarkMode(value);
 })
 watch(enterSend, (value) => {
-  store.setEnterSend(value);
+  configStore.setEnterSend(value);
 })
 
 const apiKeyDialogRefs = ref<InstanceType<typeof ApiKeyDialog> | null>(null);

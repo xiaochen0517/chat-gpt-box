@@ -1,7 +1,7 @@
 import {useStore} from "@/store/store.ts";
 import _ from "lodash";
 import {RequestBody, RobotOptions, SendRequest} from "@/types/SendRequest.ts";
-import {ChatMessage} from "@/types/State.ts";
+import {ChatMessage} from "@/types/Store.ts";
 import {encoding_for_model, Tiktoken, TiktokenModel} from "tiktoken";
 
 // gpt api url

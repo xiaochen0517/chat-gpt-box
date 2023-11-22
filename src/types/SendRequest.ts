@@ -1,4 +1,4 @@
-import {ChatMessage} from "@/types/State.ts";
+import {ChatMessage} from "@/types/Store.ts";
 
 export interface SendRequest {
   robotIndex: number;

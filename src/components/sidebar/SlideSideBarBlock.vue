@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {getCurrentInstance, ref} from "vue";
 import MenuListBlock from "@/components/sidebar/MenuListBlock.vue";
-import RobotListBlock from "@/components/sidebar/RobotListBlock.vue";
+import RobotListBlock from "@/components/sidebar/ChatListBlock.vue";
 
 const instance = getCurrentInstance();
 const onRobotClick = (index: number, item: number) => {

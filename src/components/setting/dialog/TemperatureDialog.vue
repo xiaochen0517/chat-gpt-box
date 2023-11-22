@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {useStore} from "@/store/store.ts";
+import {useConfigStore} from "@/store/Config.ts";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 
 const showDialog = ref(false);
@@ -11,15 +11,15 @@ defineExpose({
   show
 })
 
-const store = useStore();
+const configStore = useConfigStore();
 
 const temperature = ref(0.7);
 onMounted(() => {
-  temperature.value = store.config.base.temperature;
+  temperature.value = configStore.baseConfig.temperature;
 })
 
 const save = () => {
-  store.setTemperature(temperature.value);
+  configStore.setTemperature(temperature.value);
   showDialog.value = false;
 }
 

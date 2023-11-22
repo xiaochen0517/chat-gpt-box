@@ -4,8 +4,7 @@ import SideBarBlock from "@/components/sidebar/SideBarBlock.vue";
 import {appWindow} from "@tauri-apps/api/window";
 import {exit} from '@tauri-apps/api/process';
 import ChatContentBlock from "@/components/chat/block/ChatContentBlock.vue";
-import {useStore} from "@/store/store.ts";
-import {Robot} from "@/types/State.ts";
+import {ChatInfo} from "@/types/Store.ts";
 
 /**
  * Listen for the window close event and exit the program directly.
@@ -25,38 +24,21 @@ const addWindowsCloseListener = () => {
 /**
  * Check the content of the configuration items.
  */
-const store = useStore();
 const checkConfig = () => {
-  const oldVersion = store.version;
-  const newVersion = import.meta.env.VITE_APP_VERSION;
-  if (oldVersion !== newVersion) store.version = newVersion;
-  console.log(`oldVersion: ${oldVersion}, newVersion: ${newVersion}`);
-  // vuex -> pinia
-  switchVuex2Pinia();
 };
 
-const switchVuex2Pinia = () => {
-  let oldLocalData = localStorage.getItem("vuex");
-  if (!oldLocalData || oldLocalData.length <= 0) return;
-  const oldState = JSON.parse(oldLocalData);
-  if (!oldState.version) return;
-  console.log("vuex -> pinia");
-  store.setAllData(oldState);
-  localStorage.removeItem("vuex");
-}
-
 const chatContentBlockRefs = ref<InstanceType<typeof ChatContentBlock> | null>(null);
-const changeRobotClick = (index: number, item: Robot) => {
+const changeChatClick = (chatInfo: ChatInfo) => {
   nextTick(() => {
     if (!chatContentBlockRefs.value) return;
-    chatContentBlockRefs.value.changeRobot(index, item);
+    chatContentBlockRefs.value.changeChat(chatInfo);
   });
 };
 </script>
 
 <template>
   <div class="w-full h-full flex flex-row box-border">
-    <SideBarBlock class="hidden lg:flex" @onClick="changeRobotClick"/>
+    <SideBarBlock class="hidden lg:flex" @changeChatClick="changeChatClick"/>
     <ChatContentBlock class="flex-1" ref="chatContentBlockRefs"/>
   </div>
 </template>

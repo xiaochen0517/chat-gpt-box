@@ -3,7 +3,7 @@ import {onMounted, ref} from "vue";
 import {useStore} from "@/store/store.ts";
 import _ from "lodash";
 import modelList from "@/utils/ModelList";
-import {BaseConfig} from "@/types/State.ts";
+import {BaseConfig} from "@/types/Store.ts";
 import {ElForm} from "element-plus";
 
 const store = useStore();

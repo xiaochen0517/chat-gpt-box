@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {computed, provide, ref, watch} from "vue";
-import {StoreRobotOptions} from "@/types/State.ts";
+import {ChatOptions} from "@/types/Store.ts";
 
 const props = defineProps({
   activeKey: {
@@ -13,7 +13,7 @@ const props = defineProps({
     default: () => []
   },
   robotOptions: {
-    type: Object as () => StoreRobotOptions,
+    type: Object as () => ChatOptions,
     default: () => {
       return {
         enabled: false,

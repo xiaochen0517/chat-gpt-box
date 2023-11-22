@@ -3,7 +3,7 @@ import {inject, ref} from "vue";
 import {useStore} from "@/store/store.ts";
 import _ from "lodash";
 import {ElForm, ElMessage} from "element-plus";
-import {ChatMessage} from "@/types/State.ts";
+import {ChatMessage} from "@/types/Store.ts";
 
 const store = useStore();
 const dialogVisible = ref(false);
@@ -50,11 +50,11 @@ const commit = async () => {
   });
 };
 
-const show = (rIndex: number, tIndex: number, mIndex: number) => {
-  robotIndex.value = rIndex;
+const show = (chatId: string, tIndex: number, mIndex: number) => {
+  robotIndex.value = chatId;
   tabIndex.value = tIndex;
   messageIndex.value = mIndex;
-  const message = store.chatHistory[rIndex][tIndex].chat[mIndex];
+  const message = store.chatHistory[chatId][tIndex].chat[mIndex];
   formData.value = _.cloneDeep(message);
   dialogVisible.value = true;
 };

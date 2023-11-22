@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {BaseConfig, ChatMessage, Robot, RobotTabChatInfo, ShortcutState, StoreRobotOptions} from "@/types/State.ts";
+import {BaseConfig, ChatMessage, ChatInfo, ChatTabInfo, ShortcutConfig, ChatOptions} from "@/types/Store.ts";
 
 export const useStore = defineStore("store", {
   state: () => {
@@ -17,9 +17,9 @@ export const useStore = defineStore("store", {
             context_max_message: 1,
             context_max_tokens: 2048,
             response_max_tokens: 0
-          } as StoreRobotOptions,
+          } as ChatOptions,
         },
-      ] as Array<Robot>,
+      ] as Array<ChatInfo>,
       chatHistory: [
         [
           {
@@ -29,7 +29,7 @@ export const useStore = defineStore("store", {
             chat: [{role: "system", content: "You are a helpful assistant."}],
           },
         ],
-      ] as Array<Array<RobotTabChatInfo>>,
+      ] as Array<Array<ChatTabInfo>>,
       config: {
         isDarkMode: true as boolean,
         base: {
@@ -55,7 +55,7 @@ export const useStore = defineStore("store", {
           switchRobot: "ctrl+tab",
           prevRobot: "ctrl+up",
           nextRobot: "ctrl+down",
-        } as ShortcutState,
+        } as ShortcutConfig,
       }
     }
   },
@@ -73,10 +73,10 @@ export const useStore = defineStore("store", {
       this.robotList.splice(index, 1);
       this.chatHistory.splice(index, 1);
     },
-    addRobot(robot: Robot) {
+    addRobot(robot: ChatInfo) {
       this.robotList.push(robot);
       const defaultChatMessage: ChatMessage = {role: "system", content: robot.prompt};
-      const defaultTabChatInfo: RobotTabChatInfo = {
+      const defaultTabChatInfo: ChatTabInfo = {
         name: "default",
         generating: false,
         request: null,
@@ -84,7 +84,7 @@ export const useStore = defineStore("store", {
       };
       this.chatHistory.push([defaultTabChatInfo]);
     },
-    updateRobot(robotIndex: number, robot: Robot) {
+    updateRobot(robotIndex: number, robot: ChatInfo) {
       this.robotList[robotIndex] = robot;
     },
     removeChatTab(robotIndex: number, tabIndex: number) {
@@ -152,7 +152,7 @@ export const useStore = defineStore("store", {
     saveBaseConfig(base: BaseConfig) {
       this.config.base = base;
     },
-    saveShortcutConfig(shortcut: ShortcutState) {
+    saveShortcutConfig(shortcut: ShortcutConfig) {
       this.config.shortcut = shortcut;
     },
     setAllData(data: any) {

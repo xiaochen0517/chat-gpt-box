@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import {computed, nextTick, ref} from "vue";
-import {useStore} from "@/store/store.ts";
 import AddRobotDialog from "../chat/dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import AppSettingsDialog from "@/components/setting/AppSettingsDialog.vue";
 import router from "@/router/router.ts";
+import {useConfigStore} from "@/store/Config.ts";
 
-const store = useStore();
+const configStore = useConfigStore();
 
-const isDarkMode = computed(() => store.config.isDarkMode);
+const isDarkMode = computed(() => configStore.isDarkMode);
 const handleChange = () => {
-  store.setDarkMode(!isDarkMode.value);
+  configStore.setDarkMode(!isDarkMode.value);
 };
 
-const shortcut = computed(() => store.config.shortcut);
+const shortcut = computed(() => configStore.shortcut);
 const keys = useMagicKeys();
 const addRobotKey = keys[shortcut.value.addRobot];
 whenever(addRobotKey, () => {
@@ -28,14 +28,12 @@ const addRobotDialogRefs = ref<InstanceType<typeof AddRobotDialog> | null>(null)
 const addRobotClick = () => {
   nextTick(() => {
     if (!addRobotDialogRefs.value) return;
-    addRobotDialogRefs.value.show(false, 0);
+    addRobotDialogRefs.value.show(false, null);
   });
 };
 
 const appSettingsDialogRefs = ref<InstanceType<typeof AppSettingsDialog> | null>(null);
 const openSettingsWindow = () => {
-  // if (!appSettingsDialogRefs.value) return;
-  // appSettingsDialogRefs.value.show();
   router.push({path: "/settings"});
 };
 </script>

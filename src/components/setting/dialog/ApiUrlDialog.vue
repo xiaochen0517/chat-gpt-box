@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {useStore} from "@/store/store.ts";
+import {useConfigStore} from "@/store/Config.ts";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 import {ElMessage} from "element-plus";
 
@@ -12,11 +12,11 @@ defineExpose({
   show
 })
 
-const store = useStore();
+const configStore = useConfigStore();
 
 const apiUrl = ref("");
 onMounted(() => {
-  apiUrl.value = store.config.base.apiUrl;
+  apiUrl.value = configStore.baseConfig.apiUrl;
 })
 
 const save = () => {
@@ -24,7 +24,7 @@ const save = () => {
     ElMessage.error("Api key can not be empty!");
     return;
   }
-  store.setApiUrl(apiUrl.value);
+  configStore.setApiUrl(apiUrl.value);
   showDialog.value = false;
 }
 </script>
