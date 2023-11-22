@@ -39,7 +39,9 @@ const switchDarkMode = (isDark: boolean) => {
 
 <template>
   <div class="bg-neutral-100 text-black dark:bg-neutral-900 dark:text-white flex-row w-full h-full">
-    <router-view/>
+    <transition name="el-zoom-in-top" mode="out-in">
+      <router-view/>
+    </transition>
   </div>
 </template>
 
@@ -48,28 +50,28 @@ const switchDarkMode = (isDark: boolean) => {
 
 body,
 html {
-@apply p-0 m-0 h-screen w-full;
+  @apply p-0 m-0 h-screen w-full;
   font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #app {
-@apply h-full w-full text-sm;
+  @apply h-full w-full text-sm;
 }
 
 /* scroll bar */
 div::-webkit-scrollbar {
-@apply w-2 h-2 rounded-full;
+  @apply w-2 h-2 rounded-full;
 }
 
 div::-webkit-scrollbar-track {
-@apply bg-neutral-300 dark:bg-neutral-800 rounded-full;
+  @apply bg-neutral-300 dark:bg-neutral-800 rounded-full;
 }
 
 div::-webkit-scrollbar-thumb {
-@apply bg-neutral-400 dark:bg-neutral-600 rounded-full;
+  @apply bg-neutral-400 dark:bg-neutral-600 rounded-full;
 }
 
 div::-webkit-scrollbar-thumb:hover {
-@apply bg-neutral-500 dark:bg-neutral-700;
+  @apply bg-neutral-500 dark:bg-neutral-700;
 }
 </style>
