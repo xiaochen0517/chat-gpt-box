@@ -21,3 +21,8 @@ app.use(router);
 app.use(ElementPlus)
 app.use(dialogWidth)
 app.mount("#app");
+
+import AppUtil from "@/utils/AppUtil.ts";
+
+const platform = AppUtil.checkPlatform();
+console.log("Platform: " + platform);

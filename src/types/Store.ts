@@ -70,3 +70,17 @@ export interface ShortcutConfig {
   prevRobot: string;
   nextRobot: string;
 }
+
+export interface AppStateStore {
+  currentChatId: string | null;
+  currentTabIndex: number;
+  windowState: "normal" | "maximized" | "minimized";
+  windowSize: {
+    width: number;
+    height: number;
+  };
+  windowPosition: {
+    x: number;
+    y: number;
+  };
+}
