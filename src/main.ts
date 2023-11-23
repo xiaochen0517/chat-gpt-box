@@ -1,5 +1,5 @@
 import {createApp} from "vue";
-import router from "./router/router.ts";
+import router from "./router/Router.ts";
 import {createPinia} from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 

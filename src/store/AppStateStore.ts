@@ -18,16 +18,15 @@ export const useAppStateStore = defineStore("appState", {
     }
   },
   actions: {
-    setWindowWidth(width: number) {
+    setWindowSize(width: number, height: number) {
+      if (width < 400 || height < 200) return;
       this.windowSize.width = width;
-    },
-    setWindowHeight(height: number) {
       this.windowSize.height = height;
     },
-    setWindowX(x: number) {
+    setWindowPosition(x: number, y: number) {
+      if (x < 0 || y < 0) return;
+      if (x > 1800 || y > 1000) return;
       this.windowPosition.x = x;
-    },
-    setWindowY(y: number) {
       this.windowPosition.y = y;
     },
     setWindowState(state: "normal" | "maximized") {

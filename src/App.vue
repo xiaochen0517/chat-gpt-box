@@ -29,13 +29,21 @@ const addTauriListener = () => {
     await saveWindowState();
     await exit(0);
   });
-  appWindow.onResized((event) => {
-    appStateStore.setWindowWidth(event.payload.width);
-    appStateStore.setWindowHeight(event.payload.height);
+  appWindow.onResized(async (event) => {
+    let oldWidth = appStateStore.windowSize.width;
+    let oldHeight = appStateStore.windowSize.height;
+    appStateStore.setWindowSize(event.payload.width, event.payload.height);
+    await saveWindowState();
+    // If the current window is maximized and then refreshed, it will cause the maximization to fail,
+    // and maximizing will trigger a resize, leading to incorrect display size when returning to normal.
+    setTimeout(async () => {
+      if (await appWindow.isMaximized()) {
+        appStateStore.setWindowSize(oldWidth, oldHeight);
+      }
+    }, 100);
   });
   appWindow.onMoved((event) => {
-    appStateStore.setWindowX(event.payload.x);
-    appStateStore.setWindowY(event.payload.y);
+    appStateStore.setWindowPosition(event.payload.x, event.payload.y);
   });
 };
 

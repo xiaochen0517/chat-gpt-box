@@ -10,6 +10,11 @@ const routes = [
     path: "/settings",
     name: "Settings",
     component: () => import('../views/SettingsPage.vue')
+  },
+  {
+    path: "/chat/editor/:chatId",
+    name: "ChatEditor",
+    component: () => import('../views/ChatEditorPage.vue')
   }
 ];
 

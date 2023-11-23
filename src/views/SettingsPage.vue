@@ -2,7 +2,7 @@
 import {onMounted, ref, watch} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import ApiKeyDialog from "@/components/setting/dialog/ApiKeyDialog.vue";
-import router from "@/router/router.ts";
+import router from "@/router/Router.ts";
 import CListItem from "@/components/base/list/CListItem.vue";
 import ApiUrlDialog from "@/components/setting/dialog/ApiUrlDialog.vue";
 import ModelDialog from "@/components/setting/dialog/ModelDialog.vue";
@@ -10,6 +10,7 @@ import TemperatureDialog from "@/components/setting/dialog/TemperatureDialog.vue
 import ContextMaxMsgsDialog from "@/components/setting/dialog/ContextMaxMsgsDialog.vue";
 import ContextMaxTokensDialog from "@/components/setting/dialog/ContextMaxTokensDialog.vue";
 import ResponseMaxTokensDialog from "@/components/setting/dialog/ResponseMaxTokensDialog.vue";
+import CTopNavBar from "@/components/base/nav/CTopNavBar.vue";
 
 const jumpToHomePage = () => {
   router.push({path: "/"});
@@ -72,14 +73,7 @@ const openResponseMaxTokensDialog = () => {
 
 <template>
   <div class="w-full h-full bg-neutral-50 dark:bg-neutral-900">
-    <div class="flex flex-row items-center select-none rounded-b-2xl bg-neutral-100 dark:bg-neutral-800">
-      <div
-          class="w-10 h-10 ml-4 rounded-xl flex justify-center cursor-pointer bg-neutral-200 dark:bg-neutral-700 hover:dark:bg-neutral-600"
-          @click.stop="jumpToHomePage">
-        <i class="iconfont icon-left-arrow text-xl leading-10"/>
-      </div>
-      <div class="w-full ml-4 text-xl leading-16"> Settings</div>
-    </div>
+    <CTopNavBar title="Settings" @backClick="jumpToHomePage"/>
     <div class="px-2 xl:p-0 max-w-2xl m-auto mt-2">
       <div class="mt-1 text-lg leading-13">Basic Settings</div>
       <div class="rounded-xl overflow-hidden text-base select-none">

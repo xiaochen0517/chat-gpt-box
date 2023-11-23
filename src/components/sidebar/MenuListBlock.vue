@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {computed, nextTick, ref} from "vue";
+import {computed, ref} from "vue";
 import AddRobotDialog from "../chat/dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
-import router from "@/router/router.ts";
+import router from "@/router/Router.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 
 const configStore = useConfigStore();
@@ -16,7 +16,7 @@ const shortcut = computed(() => configStore.shortcut);
 const keys = useMagicKeys();
 const addRobotKey = keys[shortcut.value.addRobot];
 whenever(addRobotKey, () => {
-  addRobotClick();
+  addChatClick();
 });
 const openSettingKey = keys[shortcut.value.openSetting];
 whenever(openSettingKey, () => {
@@ -24,11 +24,8 @@ whenever(openSettingKey, () => {
 });
 
 const addRobotDialogRefs = ref<InstanceType<typeof AddRobotDialog> | null>(null);
-const addRobotClick = () => {
-  nextTick(() => {
-    if (!addRobotDialogRefs.value) return;
-    addRobotDialogRefs.value.show(false, null);
-  });
+const addChatClick = () => {
+  router.push({path: "/chat/editor/add"});
 };
 
 const openSettingsWindow = () => {
@@ -41,7 +38,7 @@ const openSettingsWindow = () => {
     <div class="w-full h-14 px-2 flex flex-row items-center rounded-xl border border-neutral-200 dark:border-neutral-700 gap-2">
       <div
           class="group h-10 flex-1 flex justify-center items-center rounded-xl bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-700 hover:dark:bg-neutral-600 active:dark:bg-neutral-700 cursor-pointer"
-          @click="addRobotClick">
+          @click="addChatClick">
         <i class="iconfont icon-add text-xl transition ease-in-out group-hover:rotate-180 duration-700"/>
       </div>
       <div
