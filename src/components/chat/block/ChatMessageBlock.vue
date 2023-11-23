@@ -13,10 +13,6 @@ const props = withDefaults(defineProps<Props>(), {
   index: null
 });
 
-watch(() => props.message, (value) => {
-  console.log("message", value);
-});
-
 const copySuccess = ref(false);
 const copyMessageContent = () => {
   navigator.clipboard.writeText(props.message.content);
