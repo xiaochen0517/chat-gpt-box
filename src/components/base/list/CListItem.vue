@@ -1,42 +1,26 @@
 <script setup lang="ts">
-import {useStore} from "@/store/store.ts";
 import {computed, getCurrentInstance, ref, watch} from "vue";
+import {useConfigStore} from "@/store/Config.ts";
 
-const store = useStore();
-
-const props = defineProps({
-  switchValue: {
-    type: Boolean,
-    default: false
-  },
-  switchEnabled: {
-    type: Boolean,
-    default: false
-  },
-  content: {
-    type: String,
-    default: ""
-  },
-  tooltip: {
-    type: String,
-    default: ""
-  },
-  placement: {
-    type: String,
-    default: "top"
-  },
-  leftIcon: {
-    type: String,
-    default: "icon-lock"
-  },
-  rightIcon: {
-    type: String,
-    default: "icon-right"
-  },
-  bottomBorder: {
-    type: Boolean,
-    default: true
-  }
+type Props = {
+  switchValue?: boolean,
+  switchEnabled?: boolean,
+  content: string,
+  tooltip?: string,
+  placement?: string,
+  leftIcon?: string,
+  rightIcon?: string,
+  bottomBorder?: boolean
+}
+const props = withDefaults(defineProps<Props>(), {
+  switchValue: false,
+  switchEnabled: false,
+  content: "",
+  tooltip: "",
+  placement: "top",
+  leftIcon: "icon-lock",
+  rightIcon: "icon-right",
+  bottomBorder: true,
 });
 
 const instance = getCurrentInstance();
@@ -49,7 +33,8 @@ watch(switchValue, (value) => {
   instance.emit("update:switchValue", value);
 })
 
-const isDarkMode = computed(() => store.config.isDarkMode);
+const configStore = useConfigStore();
+const isDarkMode = computed(() => configStore.isDarkMode);
 </script>
 
 <template>

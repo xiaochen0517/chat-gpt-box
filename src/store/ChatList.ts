@@ -21,6 +21,20 @@ export const useChatListStore = defineStore("chatList", {
             response_max_tokens: 0
           },
         },
+        {
+          id: "default1",
+          name: "Default Chat GPT-4",
+          prompt: "You are a helpful assistant. Please ask me anything.",
+          options: {
+            enabled: true,
+            apiUrl: "https://api.openai.com/",
+            model: "gpt-4-1106-preview",
+            temperature: 0.7,
+            context_max_message: 1,
+            context_max_tokens: 2048,
+            response_max_tokens: 0
+          },
+        },
       ]
     }
   },

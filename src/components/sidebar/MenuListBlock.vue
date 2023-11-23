@@ -2,7 +2,6 @@
 import {computed, nextTick, ref} from "vue";
 import AddRobotDialog from "../chat/dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
-import AppSettingsDialog from "@/components/setting/AppSettingsDialog.vue";
 import router from "@/router/router.ts";
 import {useConfigStore} from "@/store/Config.ts";
 
@@ -32,7 +31,6 @@ const addRobotClick = () => {
   });
 };
 
-const appSettingsDialogRefs = ref<InstanceType<typeof AppSettingsDialog> | null>(null);
 const openSettingsWindow = () => {
   router.push({path: "/settings"});
 };
@@ -65,7 +63,6 @@ const openSettingsWindow = () => {
       </div>
     </div>
     <AddRobotDialog ref="addRobotDialogRefs" @commit="$emit('addedRobot')"/>
-    <AppSettingsDialog ref="appSettingsDialogRefs"/>
   </div>
 </template>
 

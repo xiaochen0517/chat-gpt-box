@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {getCurrentInstance, inject, nextTick, ref} from "vue";
+import {getCurrentInstance, inject, nextTick, ref, onMounted} from "vue";
 import _ from "lodash";
 import modelList from "@/utils/ModelList.ts";
 import {ElForm, ElInput} from "element-plus";
@@ -106,65 +106,63 @@ const dialogWidth = inject("dialogWidth");
 </script>
 
 <template>
-  <div class="add-robot-dialog">
-    <el-dialog v-model="dialogVisible" :title="isEdit?'Edit robot':'Add robot'" :width="dialogWidth">
-      <el-form ref="rulesFormRef" :model="formData" :rules="formRules" label-width="150px">
-        <el-form-item label="Robot Name" prop="name">
-          <el-input ref="robotNameInputRefs" v-model="formData.name" @pressEnter="commit"/>
-        </el-form-item>
-        <el-form-item label="Robot Prompt" prop="prompt">
-          <el-input v-model="formData.prompt" @pressEnter="commit"/>
-        </el-form-item>
-        <el-form-item label="Enable Option">
-          <el-switch v-model="formData.options.enabled"/>
-        </el-form-item>
-        <el-form-item v-if="formData.options.enabled" label="Api Url" prop="apiUrl">
-          <el-input v-model="formData.options.apiUrl"/>
-        </el-form-item>
-        <el-form-item v-if="formData.options.enabled" label="Model" prop="model">
-          <el-select v-model="formData.options.model">
-            <el-option v-for="(item, index) in modelList" :key="index" :label="item.label" :value="item.value"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item v-if="formData.options.enabled" label="Temperature" prop="temperature">
-          <el-slider class="ml-2" v-model="formData.options.temperature" :min="0" :max="1" :step="0.1" show-input/>
-        </el-form-item>
-        <el-form-item v-if="formData.options.enabled" label="Context Msg" prop="context_max_message">
-          <el-slider
-              class="ml-2"
-              v-model="formData.options.context_max_message"
-              :min="0"
-              :max="20"
-              :step="2"
-              show-input/>
-        </el-form-item>
-        <el-form-item v-if="formData.options.enabled" label="Context Token" prop="context_max_tokens">
-          <el-slider
-              class="ml-2"
-              v-model="formData.options.context_max_tokens"
-              :min="0"
-              :max="4000"
-              :step="1"
-              show-input/>
-        </el-form-item>
-        <el-form-item v-if="formData.options.enabled" label="Res Token" prop="response_max_tokens">
-          <el-slider
-              class="ml-2"
-              v-model="formData.options.response_max_tokens"
-              :min="0"
-              :max="4000"
-              :step="1"
-              show-input/>
-        </el-form-item>
-      </el-form>
-      <template #footer>
+  <el-dialog v-model="dialogVisible" :title="isEdit?'Edit robot':'Add robot'" :width="dialogWidth">
+    <el-form ref="rulesFormRef" :model="formData" :rules="formRules" label-width="150px">
+      <el-form-item label="Robot Name" prop="name">
+        <el-input ref="robotNameInputRefs" v-model="formData.name" @pressEnter="commit"/>
+      </el-form-item>
+      <el-form-item label="Robot Prompt" prop="prompt">
+        <el-input v-model="formData.prompt" @pressEnter="commit"/>
+      </el-form-item>
+      <el-form-item label="Enable Option">
+        <el-switch v-model="formData.options.enabled"/>
+      </el-form-item>
+      <el-form-item v-if="formData.options.enabled" label="Api Url" prop="apiUrl">
+        <el-input v-model="formData.options.apiUrl"/>
+      </el-form-item>
+      <el-form-item v-if="formData.options.enabled" label="Model" prop="model">
+        <el-select v-model="formData.options.model">
+          <el-option v-for="(item, index) in modelList" :key="index" :label="item.label" :value="item.value"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item v-if="formData.options.enabled" label="Temperature" prop="temperature">
+        <el-slider class="ml-2" v-model="formData.options.temperature" :min="0" :max="1" :step="0.1" show-input/>
+      </el-form-item>
+      <el-form-item v-if="formData.options.enabled" label="Context Msg" prop="context_max_message">
+        <el-slider
+            class="ml-2"
+            v-model="formData.options.context_max_message"
+            :min="0"
+            :max="20"
+            :step="2"
+            show-input/>
+      </el-form-item>
+      <el-form-item v-if="formData.options.enabled" label="Context Token" prop="context_max_tokens">
+        <el-slider
+            class="ml-2"
+            v-model="formData.options.context_max_tokens"
+            :min="0"
+            :max="4000"
+            :step="1"
+            show-input/>
+      </el-form-item>
+      <el-form-item v-if="formData.options.enabled" label="Res Token" prop="response_max_tokens">
+        <el-slider
+            class="ml-2"
+            v-model="formData.options.response_max_tokens"
+            :min="0"
+            :max="4000"
+            :step="1"
+            show-input/>
+      </el-form-item>
+    </el-form>
+    <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogVisible = false">Cancel</el-button>
         <el-button type="primary" @click="commit">
           Confirm
         </el-button>
       </span>
-      </template>
-    </el-dialog>
-  </div>
+    </template>
+  </el-dialog>
 </template>

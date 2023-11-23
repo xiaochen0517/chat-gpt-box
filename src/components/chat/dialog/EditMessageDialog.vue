@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import {inject, ref} from "vue";
-import {useStore} from "@/store/store.ts";
 import _ from "lodash";
 import {ElForm, ElMessage} from "element-plus";
 import {ChatMessage} from "@/types/Store.ts";
+import {useChatTabsStore} from "@/store/ChatTabs.ts";
 
-const store = useStore();
 const dialogVisible = ref(false);
 
 const formData = ref<ChatMessage>({
@@ -29,20 +28,21 @@ const formRules = ref({
   ]
 });
 
-const robotIndex = ref<number>(0);
+const chatId = ref<string | null>(null);
 const tabIndex = ref<number>(0);
 const messageIndex = ref<number>(0);
 
 const editMessageFormRef = ref<InstanceType<typeof ElForm> | null>(null);
+const chatTabsStore = useChatTabsStore();
 const commit = async () => {
   if (!editMessageFormRef.value) return;
-  if (!robotIndex.value || !tabIndex.value || !messageIndex.value) {
+  if (!chatId.value || !tabIndex.value || !messageIndex.value) {
     ElMessage.warning("Please select a message first")
     return;
   }
   await editMessageFormRef.value.validate((valid, fields) => {
-    if (valid) {
-      store.updateMessage(robotIndex.value, tabIndex.value, messageIndex.value, formData.value);
+    if (valid && chatId.value) {
+      chatTabsStore.updateMessage(chatId.value, tabIndex.value, messageIndex.value, formData.value);
       dialogVisible.value = false;
     } else {
       console.log('error', fields);
@@ -50,11 +50,11 @@ const commit = async () => {
   });
 };
 
-const show = (chatId: string, tIndex: number, mIndex: number) => {
-  robotIndex.value = chatId;
+const show = (id: string, tIndex: number, mIndex: number) => {
+  chatId.value = id;
   tabIndex.value = tIndex;
   messageIndex.value = mIndex;
-  const message = store.chatHistory[chatId][tIndex].chat[mIndex];
+  const message = chatTabsStore.chatTabs[chatId.value][tIndex].chat[mIndex];
   formData.value = _.cloneDeep(message);
   dialogVisible.value = true;
 };
@@ -68,7 +68,12 @@ const dialogWidth = inject("dialogWidth");
 
 <template>
   <div class="edit-message-dialog">
-    <el-dialog v-model="dialogVisible" title="Edit message" @ok="commit" @cancel="dialogVisible = false" :width="dialogWidth">
+    <el-dialog
+        v-model="dialogVisible"
+        title="Edit message"
+        @ok="commit"
+        @cancel="dialogVisible = false"
+        :width="dialogWidth">
       <el-form ref="editMessageFormRef" :model="formData" :rules="formRules" label-width="120px">
         <el-form-item label="Role" prop="role">
           <el-select v-model="formData.role" placeholder="Please select role">

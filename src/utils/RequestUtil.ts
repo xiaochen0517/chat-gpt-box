@@ -1,8 +1,10 @@
-import {useStore} from "@/store/store.ts";
 import _ from "lodash";
 import {RequestBody, RobotOptions, SendRequest} from "@/types/SendRequest.ts";
 import {ChatMessage} from "@/types/Store.ts";
 import {encoding_for_model, Tiktoken, TiktokenModel} from "tiktoken";
+import {useConfigStore} from "@/store/Config.ts";
+import {useChatTabsStore} from "@/store/ChatTabs.ts";
+import {useChatListStore} from "@/store/ChatList.ts";
 
 // gpt api url
 const API_URL: string = "v1/chat/completions";
@@ -11,7 +13,9 @@ const REQ_TYPE: string = "POST";
 // charset decoder
 const decoder: TextDecoder = new TextDecoder('utf-8');
 // global store
-const store = useStore();
+const configStore = useConfigStore();
+const chatTabsStore = useChatTabsStore();
+const chatListStore = useChatListStore();
 
 export class RequestUtil {
   // stream读取器
@@ -19,8 +23,8 @@ export class RequestUtil {
   changeFunc: () => void = () => {
   };
 
-  data = {
-    robotIndex: 0,
+  data: SendRequest = {
+    chatId: "",
     tabIndex: 0,
     content: "",
   };
@@ -29,45 +33,41 @@ export class RequestUtil {
 
   abortController: AbortController | null = null;
 
-  sendRequest = async ({robotIndex, tabIndex, content}: SendRequest, change: () => void) => {
+  sendRequest = async (data: SendRequest, change: () => void) => {
     if (change) {
       this.changeFunc = change;
     }
     // check and init data
-    this.checkRequestData(robotIndex, tabIndex, content);
-    this.data = {
-      robotIndex: robotIndex,
-      tabIndex: tabIndex,
-      content: content,
-    };
+    this.checkRequestData(data);
+    this.data = data;
     try {
       // set tab status to generating
       this.setGenerating(true);
       // add user message into chat history
       this.addUserMessage();
       // get chat config
-      const robotOptions = this.getRobotOptions(robotIndex);
-      const messages = await this.getContextMessages(robotIndex, tabIndex, robotOptions);
+      const chatOptions = this.getRobotOptions();
+      const messages = await this.getContextMessages(chatOptions);
       console.log("send messages = ", messages);
       // add assistant message into chat history
       this.addAssistantMessage();
       // send fetch request
-      this.sendFetch(messages, robotOptions);
+      this.sendFetch(messages, chatOptions);
     } catch (exception: unknown) {
       if (exception instanceof Error) {
-        this.setAssistantMsgContent(exception.message);
+        this.setErrorMsgContent(exception.message);
       } else {
         console.error(exception);
-        this.setAssistantMsgContent(String(exception));
+        this.setErrorMsgContent(String(exception));
       }
       // generated finished
       this.setGenerating(false);
     }
   }
 
-  getContextMessages = async (robotIndex: number, tabIndex: number, options: RobotOptions) => {
+  getContextMessages = async (options: RobotOptions) => {
     // clone chat history
-    let messages = _.cloneDeep(store.chatHistory[robotIndex][tabIndex].chat);
+    let messages = _.cloneDeep(chatTabsStore.chatTabs[this.data.chatId][this.data.tabIndex].chat);
     if (options.context_max_message <= 0 || options.context_max_tokens <= 0) {
       return [messages[0], messages[messages.length - 1]];
     }
@@ -117,19 +117,20 @@ export class RequestUtil {
     });
   }
 
-  checkRequestData = (robotIndex: number, tabIndex: number, content: string) => {
-    if (content.length <= 0) {
+  checkRequestData = (data: SendRequest) => {
+    console.log("check request data = ", data);
+    if (data.content.length <= 0) {
       console.error("none message to send");
       throw Error("none message to send");
     }
-    if (!(robotIndex >= 0 && tabIndex >= 0)) {
+    if (!data.chatId || data.chatId.length <= 0 || data.tabIndex < 0) {
       console.error("invalid index");
       throw Error("invalid index");
     }
   };
 
   buildHeaders = () => {
-    const apiKey = store.config.base.apiKey;
+    const apiKey = configStore.baseConfig.apiKey;
     if (!apiKey || apiKey === "" || apiKey.length < 3) {
       throw Error("please config your api key");
     }
@@ -161,7 +162,7 @@ export class RequestUtil {
       signal: this.abortController.signal,
     }).then(async (data: Response) => {
       if (data.status !== 200 || !data.body) {
-        this.addAssistantMsgContent(`request failure status：${data.status}，message：${data.statusText}`);
+        this.setErrorMsgContent(`request failure status：${data.status}，message：${data.statusText}`);
         this.setGenerating(false);
         return;
       }
@@ -172,15 +173,15 @@ export class RequestUtil {
       } catch (error) {
         console.error(error);
         if (error instanceof Error) {
-          this.addAssistantMsgContent(error.message);
+          this.setErrorMsgContent(error.message);
         } else {
-          this.addAssistantMsgContent(String(error));
+          this.setErrorMsgContent(String(error));
         }
         this.setGenerating(false);
       }
     }).catch((error) => {
       console.error(error);
-      this.addAssistantMsgContent(error.message);
+      this.setErrorMsgContent(error.message);
       this.setGenerating(false);
     });
   };
@@ -210,7 +211,7 @@ export class RequestUtil {
       let resultData = JSON.parse(data);
       // check error
       if (resultData.error) {
-        this.setAssistantMsgContent(resultData.error.message);
+        this.setErrorMsgContent(resultData.error.message);
         return;
       }
       // parse choices
@@ -218,7 +219,7 @@ export class RequestUtil {
         let content = choice.delta.content;
         // check content
         if (content) {
-          this.addAssistantMsgContent(content);
+          this.appendAssistantMsgContent(content);
         }
       }
     }
@@ -232,42 +233,42 @@ export class RequestUtil {
     } catch (error) {
       console.error(error);
       const errorMessage = error instanceof Error ? error.message : String(error);
-      this.addAssistantMsgContent(errorMessage);
+      this.setErrorMsgContent(errorMessage);
       this.setGenerating(false);
     }
   };
 
   addUserMessage() {
-    store.addUserMessage(this.data.robotIndex, this.data.tabIndex, this.data.content);
+    chatTabsStore.addUserMessage(this.data.chatId, this.data.tabIndex, this.data.content);
     this.changeFunc();
   }
 
   addAssistantMessage = () => {
-    store.addAssistantMessage(this.data.robotIndex, this.data.tabIndex);
+    chatTabsStore.addAssistantMessage(this.data.chatId, this.data.tabIndex);
     this.changeFunc();
   };
 
-  setAssistantMsgContent = (content: string) => {
-    store.setAssistantMsgContent(this.data.robotIndex, this.data.tabIndex, content);
+  appendAssistantMsgContent = (content: string) => {
+    chatTabsStore.appendAssistantMsgContent(this.data.chatId, this.data.tabIndex, content);
     this.changeFunc();
   };
 
-  addAssistantMsgContent = (content: string) => {
-    store.addAssistantMsgContent(this.data.robotIndex, this.data.tabIndex, content);
+  setErrorMsgContent = (content: string) => {
+    chatTabsStore.setAssistantErrorMsgContent(this.data.chatId, this.data.tabIndex, content);
     this.changeFunc();
   };
 
   setGenerating = (generating: boolean) => {
     if (this.reader) this.reader = null;
     if (this.abortController) this.abortController = null;
-    store.setGenerating(this.data.robotIndex, this.data.tabIndex, generating);
+    chatTabsStore.setGenerating(this.data.chatId, this.data.tabIndex, generating);
   };
 
-  getRobotOptions = (robotIndex: number): RobotOptions => {
-    let robotOptions = store.robotList[robotIndex].options;
-    if (!robotOptions.enabled) {
-      return store.config.base;
+  getRobotOptions = (): RobotOptions => {
+    let chatOptions = chatListStore.getChatInfo(this.data.chatId)?.options;
+    if (!chatOptions || !chatOptions.enabled) {
+      return configStore.baseConfig;
     }
-    return robotOptions;
+    return chatOptions;
   }
 }

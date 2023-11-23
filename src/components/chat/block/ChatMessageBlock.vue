@@ -1,24 +1,20 @@
 <script setup lang="ts">
 import {CheckOutlined, CopyOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons-vue";
 import MarkdownBlock from "@/components/chat/block/MarkdownBlock.vue";
-import {ref} from "vue";
+import {ref, watch} from "vue";
+import {ChatMessage} from "@/types/Store.ts";
 
-const props = defineProps({
-  message: {
-    type: Object,
-    required: true,
-    default: () => {
-      return {
-        role: "system",
-        content: "..."
-      };
-    }
-  },
-  index: {
-    type: Number,
-    required: true,
-    default: null
-  }
+type Props = {
+  message: ChatMessage;
+  index: number | null;
+}
+const props = withDefaults(defineProps<Props>(), {
+  message: () => ({role: "system", content: "..."}),
+  index: null
+});
+
+watch(() => props.message, (value) => {
+  console.log("message", value);
 });
 
 const copySuccess = ref(false);
@@ -36,17 +32,17 @@ const copyMessageContent = () => {
   <div class="group py-1 pb-2 mt-3">
     <div class="flex flex-row gap-2">
       <div
-          v-if="message.role === 'system'"
+          v-if="message?.role === 'system'"
           class="w-10 h-10 bg-indigo-500 dark:bg-indigo-600 rounded-md leading-10 text-center flex justify-center items-center select-none">
         <i class="iconfont icon-settings text-2xl leading-10"/>
       </div>
       <div
-          v-if="message.role === 'user'"
+          v-if="message?.role === 'user'"
           class="w-10 h-10 bg-green-500 dark:bg-green-600 rounded-md leading-10 text-center flex justify-center items-center select-none">
         <i class="iconfont icon-customer text-2xl leading-10"/>
       </div>
       <div
-          v-if="message.role === 'assistant'"
+          v-if="message?.role === 'assistant'"
           class="w-10 h-10 bg-sky-500 dark:bg-sky-600 rounded-md leading-10 text-center flex justify-center items-center select-none">
         <img
             src="../../../assets/images/chat_gpt.svg"
@@ -54,7 +50,7 @@ const copyMessageContent = () => {
             class="w-6 h-6"/>
       </div>
       <div class="flex-1 min-w-0 scroll-auto">
-        <MarkdownBlock :content="message.content"/>
+        <MarkdownBlock :content="message?.content"/>
       </div>
     </div>
     <div

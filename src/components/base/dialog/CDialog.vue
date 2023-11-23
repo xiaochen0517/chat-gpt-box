@@ -2,27 +2,19 @@
 
 import {getCurrentInstance, inject, ref, watch} from "vue";
 
-const props = defineProps({
-  visible: {
-    type: Boolean,
-    default: false
-  },
-  title: {
-    type: String,
-    default: ""
-  },
-  cancelText: {
-    type: String,
-    default: "CANCEL"
-  },
-  okText: {
-    type: String,
-    default: "OK"
-  },
-  description: {
-    type: String,
-    default: ""
-  }
+type Props = {
+  visible: boolean,
+  title: string,
+  cancelText?: string,
+  okText?: string,
+  description?: string
+}
+const props = withDefaults(defineProps<Props>(), {
+  visible: false,
+  title: "",
+  cancelText: "CANCEL",
+  okText: "OK",
+  description: ""
 });
 
 const showDialog = ref(false);
@@ -36,6 +28,7 @@ watch(showDialog, (value) => {
 
 const instance = getCurrentInstance();
 const cancelDialog = () => {
+  if (!instance) return;
   showDialog.value = false;
   instance.emit("cancel");
 }

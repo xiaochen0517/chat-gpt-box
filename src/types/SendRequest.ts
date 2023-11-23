@@ -1,7 +1,7 @@
 import {ChatMessage} from "@/types/Store.ts";
 
 export interface SendRequest {
-  robotIndex: number;
+  chatId: string;
   tabIndex: number;
   content: string;
 }

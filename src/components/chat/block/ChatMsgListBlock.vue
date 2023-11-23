@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, PropType, ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import ChatMessageBlock from "./ChatMessageBlock.vue";
 import {useChatTabsStore} from "@/store/ChatTabs.ts";
 import EditMessageDialog from "../dialog/EditMessageDialog.vue";
@@ -7,15 +7,13 @@ import {ChatInfo, ChatMessage} from "@/types/Store.ts";
 
 const chatTabsStore = useChatTabsStore();
 
-const props = defineProps({
-  chatInfo: {
-    type: Object as PropType<ChatInfo | null>,
-    default: 0
-  },
-  tabIndex: {
-    type: Number,
-    default: 0
-  }
+type Props = {
+  chatInfo: ChatInfo | null,
+  tabIndex: number
+}
+const props = withDefaults(defineProps<Props>(), {
+  chatInfo: null,
+  tabIndex: 0,
 });
 
 const propsChatInfo = ref<ChatInfo | null>(props.chatInfo);
@@ -28,7 +26,7 @@ watch(
 
 const msgList = computed(() => {
   if (!propsChatInfo.value) return [];
-  return chatTabsStore.chatTabs[propsChatInfo.value.id][props.tabIndex];
+  return chatTabsStore.chatTabs[propsChatInfo.value.id][props.tabIndex].chat;
 });
 
 const deleteMessage = (_message: ChatMessage, index: number) => {
@@ -47,10 +45,10 @@ const editMessage = (_message: ChatMessage, index: number) => {
 <template>
   <div>
     <ChatMessageBlock
-        v-for="(item, index) in msgList"
+        v-for="(chatMessage, index) in msgList"
         :key="index"
         :index="index"
-        :message="item"
+        :message="chatMessage"
         @delete="deleteMessage"
         @edit="editMessage"
         :options="propsChatInfo?.options"/>

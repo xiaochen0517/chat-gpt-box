@@ -1,15 +1,13 @@
 <script setup lang="ts">
-import {getCurrentInstance, inject, nextTick, ref} from "vue";
-import {useStore} from "@/store/store.ts";
+import {getCurrentInstance, inject, nextTick, PropType, ref} from "vue";
+import {useChatTabsStore} from "@/store/ChatTabs.ts";
 import {ElForm, ElInput, ElMessage} from "element-plus";
 
-const store = useStore();
-
-const props = defineProps({
-  robotIndex: {
-    type: Number,
-    default: -1
-  },
+type Props = {
+  chatId: string | null,
+}
+const props = withDefaults(defineProps<Props>(), {
+  chatId: null,
 });
 
 const dialogVisible = ref(false);
@@ -27,11 +25,12 @@ const formRules = ref({
   ]
 });
 
+const chatTabsStore = useChatTabsStore();
 const instance = getCurrentInstance();
 const addTabFormRef = ref<InstanceType<typeof ElForm> | null>(null);
 const commit = async () => {
   if (!addTabFormRef.value) return;
-  if (props.robotIndex < 0) {
+  if (!props.chatId) {
     ElMessage.warning("Please select a robot first");
     return;
   }
@@ -39,8 +38,8 @@ const commit = async () => {
     formData.value.name = namePlaceholder.value;
   }
   await addTabFormRef.value.validate((valid, fields) => {
-    if (valid) {
-      store.addChatTab(props.robotIndex, formData.value.name);
+    if (valid && props.chatId) {
+      chatTabsStore.addChatTab(props.chatId, formData.value.name);
       dialogVisible.value = false;
       if (!instance) return;
       instance.emit("addTabSuccess");

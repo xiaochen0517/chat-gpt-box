@@ -48,8 +48,6 @@ whenever(switchRobotKey, () => {
   changeActiveRobot(switchChatInfo);
 });
 
-const tooltipEffect = computed(() => configStore.isDarkMode ? 'dark' : 'light');
-
 const chatList: Ref<ChatInfo[]> = computed(() => {
   return chatListStore.chatList;
 });
@@ -91,13 +89,12 @@ defineExpose({
             {{ chatInfo.name }}
           </div>
           <el-tooltip
-              :effect="tooltipEffect"
+              v-if="chatInfo.options.enabled"
               :content="chatInfo.options.model.toUpperCase()"
               placement="right"
               :hide-after="0"
               :enterable="false">
             <div
-                v-if="chatInfo.options.enabled"
                 class="w-24 overflow-hidden overflow-ellipsis whitespace-nowrap border border-neutral-300 dark:border-neutral-700 rounded px-1 bg-yellow-400 dark:bg-amber-600 text-xs leading-5 select-none"
                 @click.stop="editRobotClick(chatInfo)">
               <i class="iconfont icon-settings font-normal"/>

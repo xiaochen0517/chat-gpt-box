@@ -15,7 +15,6 @@ const robotListScrollToBottom = () => {
   if (!robotListBlockRefs.value) return;
   robotListBlockRefs.value.scrollToBottom();
 };
-
 </script>
 
 <template>

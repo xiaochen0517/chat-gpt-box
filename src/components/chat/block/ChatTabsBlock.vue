@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, getCurrentInstance, nextTick, PropType, ref, watch} from "vue";
+import {computed, getCurrentInstance, nextTick, onMounted, PropType, ref, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
@@ -46,15 +46,13 @@ whenever(cleanTabChatKey, () => {
   cleanTabChat();
 });
 
-const props = defineProps({
-  activeChat: {
-    type: Object as PropType<ChatInfo | null>,
-    default: null
-  },
-  tabIndex: {
-    type: Number,
-    default: 0
-  }
+type Props = {
+  activeChat: ChatInfo | null,
+  tabIndex: number
+}
+const props = withDefaults(defineProps<Props>(), {
+  activeChat: null,
+  tabIndex: 0,
 });
 
 const propsActiveChat = ref<ChatInfo | null>(props.activeChat);
@@ -167,7 +165,7 @@ defineExpose({
     <CTabs
         v-model:activeKey="activeTabIndex"
         :tabNames="chatTabNameList"
-        :robotOptions="robotOptions"
+        :chatOptions="robotOptions"
         @addTabClick="addTab"
         @removeTabClick="removeTabClick"
         @showSlideSideBarClick="showSlideSideBar">
@@ -175,7 +173,7 @@ defineExpose({
         <ChatMsgListBlock :chatInfo="propsActiveChat" :tabIndex="index"/>
       </CTabPane>
     </CTabs>
-    <AddTabDialog ref="addTabDialogRefs" :robotIndex="props.robotIndex"/>
+    <AddTabDialog ref="addTabDialogRefs" :chat-id="props.activeChat?.id"/>
     <SlideSideBarBlock ref="slideSideBarBlockRefs" @onClick="changeRobotClick"/>
   </div>
 </template>

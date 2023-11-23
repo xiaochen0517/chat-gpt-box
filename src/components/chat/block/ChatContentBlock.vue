@@ -37,7 +37,7 @@ defineExpose({
           v-model:tabIndex="tabIndex"
           :active-chat="activeChatInfo"
           @changeRobotClick="changeChat"/>
-      <ChatInputBlock :robot-index="robotIndex" :tab-index="tabIndex" @refresh="messageRefresh"/>
+      <ChatInputBlock :chat-id="activeChatInfo?.id" :tab-index="tabIndex" @refresh="messageRefresh"/>
     </div>
   </div>
 </template>

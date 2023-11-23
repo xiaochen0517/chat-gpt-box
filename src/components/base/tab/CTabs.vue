@@ -3,29 +3,25 @@
 import {computed, provide, ref, watch} from "vue";
 import {ChatOptions} from "@/types/Store.ts";
 
-const props = defineProps({
-  activeKey: {
-    type: Number,
-    default: 0
-  },
-  tabNames: {
-    type: Array,
-    default: () => []
-  },
-  robotOptions: {
-    type: Object as () => ChatOptions,
-    default: () => {
-      return {
-        enabled: false,
-        apiUrl: "",
-        model: "gpt-3.5-turbo",
-        temperature: 0.7,
-        context_max_message: 0,
-        context_max_tokens: 0,
-        response_max_tokens: 0,
-      };
-    }
-  }
+
+type Props = {
+  activeKey: number;
+  tabNames: string[];
+  chatOptions: ChatOptions;
+};
+
+const props = withDefaults(defineProps<Props>(), {
+  activeKey: 0,
+  tabNames: () => [],
+  chatOptions: () => ({
+    enabled: false,
+    apiUrl: "",
+    model: "gpt-3.5-turbo",
+    temperature: 0.7,
+    context_max_message: 0,
+    context_max_tokens: 0,
+    response_max_tokens: 0,
+  }),
 });
 
 const propsTabNames = computed(() => props.tabNames);
@@ -77,11 +73,11 @@ const closeInactiveClass = ref("hover:bg-neutral-400 dark:hover:bg-neutral-600")
           </div>
         </div>
         <div
-            v-if="robotOptions && robotOptions.enabled"
+            v-if="chatOptions && chatOptions.enabled"
             class="flex flex-row w-full py-2">
           <div class="border border-neutral-300 dark:border-neutral-700 rounded px-2 py-1 bg-yellow-400 dark:bg-amber-600 text-sm font-bold select-none">
             <i class="iconfont icon-settings font-normal"/>
-            {{ robotOptions.model?.toUpperCase() }}
+            {{ chatOptions.model?.toUpperCase() }}
           </div>
         </div>
       </div>

@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import {computed, onMounted} from "vue";
-import {useStore} from "@/store/store.ts";
+import {useConfigStore} from "@/store/Config.ts";
 import {MdPreview} from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
 
-const props = defineProps({
-  content: {
-    type: String,
-    required: true,
-    default: "# None Content"
-  },
+type Props = {
+  content: string
+}
+const props = withDefaults(defineProps<Props>(), {
+  content: "# None Content",
 });
 
-const store = useStore();
-const theme = computed(() => store.config.isDarkMode ? 'dark' : 'light');
+const configStore = useConfigStore();
+const theme = computed(() => configStore.isDarkMode ? 'dark' : 'light');
 
 const id = 'preview-only';
 onMounted(() => {
@@ -33,6 +32,7 @@ onMounted(() => {
 .md-editor-dark {
   --md-color: #fff;
 }
+
 .md-editor {
   --md-bk-color: transparent;
 }
