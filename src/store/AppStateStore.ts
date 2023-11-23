@@ -17,7 +17,23 @@ export const useAppStateStore = defineStore("appState", {
       },
     }
   },
-  actions: {},
+  actions: {
+    setWindowWidth(width: number) {
+      this.windowSize.width = width;
+    },
+    setWindowHeight(height: number) {
+      this.windowSize.height = height;
+    },
+    setWindowX(x: number) {
+      this.windowPosition.x = x;
+    },
+    setWindowY(y: number) {
+      this.windowPosition.y = y;
+    },
+    setWindowState(state: "normal" | "maximized") {
+      this.windowState = state;
+    }
+  },
   persist: {
     key: 'AppState',
   },

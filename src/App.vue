@@ -3,20 +3,55 @@ import {onMounted, watch} from "vue";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
+import {useAppStateStore} from "@/store/AppStateStore.ts";
 import {v4 as uuidv4} from "uuid";
+import {appWindow, PhysicalPosition, PhysicalSize} from "@tauri-apps/api/window";
+import {exit} from "@tauri-apps/api/process";
+import AppUtil from "@/utils/AppUtil.ts";
 
 const configStore = useConfigStore();
 const chatTabsStore = useChatTabsStore();
 const chatListStore = useChatListStore();
+const appStateStore = useAppStateStore();
 
-
-onMounted(() => {
+onMounted(async () => {
   // add dark class in html
   switchDarkMode(configStore.isDarkMode);
   chatTabsStore.initGeneralStatus();
-  // check the configuration
   checkConfig();
+  addTauriListener();
+  await recoverWindowState();
 });
+
+const addTauriListener = () => {
+  if (!AppUtil.isTauri()) return;
+  appWindow.onCloseRequested(async () => {
+    await saveWindowState();
+    await exit(0);
+  });
+  appWindow.onResized((event) => {
+    appStateStore.setWindowWidth(event.payload.width);
+    appStateStore.setWindowHeight(event.payload.height);
+  });
+  appWindow.onMoved((event) => {
+    appStateStore.setWindowX(event.payload.x);
+    appStateStore.setWindowY(event.payload.y);
+  });
+};
+
+const saveWindowState = async () => {
+  // get current window state
+  const isMaximized = await appWindow.isMaximized();
+  appStateStore.setWindowState(isMaximized ? "maximized" : "normal");
+};
+
+const recoverWindowState = async () => {
+  await appWindow.setSize(new PhysicalSize(appStateStore.windowSize.width, appStateStore.windowSize.height));
+  await appWindow.setPosition(new PhysicalPosition(appStateStore.windowPosition.x, appStateStore.windowPosition.y));
+  if (appStateStore.windowState === "maximized") {
+    await appWindow.maximize();
+  }
+}
 
 const checkConfig = () => {
   const oldStoreJsonStr = localStorage.getItem("state");
