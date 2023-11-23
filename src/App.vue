@@ -2,15 +2,49 @@
 import {onMounted, watch} from "vue";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
+import {useChatListStore} from "@/store/ChatListStore.ts";
+import {v4 as uuidv4} from "uuid";
 
 const configStore = useConfigStore();
-
 const chatTabsStore = useChatTabsStore();
+const chatListStore = useChatListStore();
+
+
 onMounted(() => {
   // add dark class in html
   switchDarkMode(configStore.isDarkMode);
   chatTabsStore.initGeneralStatus();
+  // check the configuration
+  checkConfig();
 });
+
+const checkConfig = () => {
+  const oldStoreJsonStr = localStorage.getItem("state");
+  if (!oldStoreJsonStr) return;
+  let oldStore;
+  try {
+    oldStore = JSON.parse(oldStoreJsonStr);
+  } catch (ignore) {
+    return;
+  }
+  if (!oldStore && !oldStore.version) return;
+  chatListStore.chatList = [];
+  chatTabsStore.chatTabs = {};
+  for (let index = 0; index < oldStore.robotList.length; index++) {
+    let chatInfo = oldStore.robotList[index];
+    let chatTab = oldStore.chatHistory[index];
+    if (!chatInfo || !chatTab) continue;
+    const chatId = uuidv4();
+    chatInfo['id'] = chatId;
+    chatListStore.chatList.push(chatInfo);
+    chatTabsStore.chatTabs[chatId] = chatTab;
+  }
+  configStore.isDarkMode = oldStore.config.isDarkMode;
+  configStore.baseConfig = oldStore.config.base;
+  configStore.shortcut = oldStore.config.shortcut;
+
+  localStorage.removeItem("state");
+}
 
 watch(() => configStore.isDarkMode, (newVal) => {
   // add dark class in html
