@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import {getCurrentInstance, inject, nextTick, ref} from "vue";
+import {getCurrentInstance, nextTick, ref} from "vue";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {ElForm, ElInput, ElMessage} from "element-plus";
+import CDialog from "@/components/base/dialog/CDialog.vue";
 
 type Props = {
   chatId: string | null,
@@ -67,30 +68,24 @@ const focusNameInput = () => {
 defineExpose({
   show
 });
-
-const dialogWidth = inject("dialogWidth");
 </script>
 
 <template>
-  <div class="add-tab-dialog">
-    <el-dialog v-model="dialogVisible" title="Add Tab" :width="dialogWidth" @submit.native.prevent="commit">
-      <el-form ref="addTabFormRef" :model="formData" :rules="formRules" label-width="120px">
-        <el-form-item label="Tab Name" prop="name">
-          <el-input
-              ref="addTabInputRefs"
-              v-model="formData.name"
-              @pressEnter.stop="commit"
-              :placeholder="namePlaceholder"/>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="commit">
-          Confirm
-        </el-button>
-      </span>
-      </template>
-    </el-dialog>
-  </div>
+  <CDialog v-model:visible="dialogVisible" title="Add Tab" @ok.stop="commit">
+    <el-form
+        class="w-full"
+        ref="addTabFormRef"
+        :model="formData"
+        :rules="formRules"
+        label-width="100px"
+        label-position="left">
+      <el-form-item label="Tab Name" prop="name">
+        <el-input
+            ref="addTabInputRefs"
+            v-model="formData.name"
+            @pressEnter.stop="commit"
+            :placeholder="namePlaceholder"/>
+      </el-form-item>
+    </el-form>
+  </CDialog>
 </template>
