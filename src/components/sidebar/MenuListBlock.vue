@@ -3,7 +3,7 @@ import {computed, nextTick, ref} from "vue";
 import AddRobotDialog from "../chat/dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import router from "@/router/router.ts";
-import {useConfigStore} from "@/store/Config.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
 
 const configStore = useConfigStore();
 

@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {ChatTabInfo, ChatTabsStore} from "@/types/Store.ts";
-import {useChatListStore} from "@/store/ChatList.ts";
+import {useChatListStore} from "@/store/ChatListStore.ts";
 
 export const useChatTabsStore = defineStore("chatTabs", {
   state: (): ChatTabsStore => {

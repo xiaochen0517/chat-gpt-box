@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {getCurrentInstance, inject, nextTick, PropType, ref} from "vue";
-import {useChatTabsStore} from "@/store/ChatTabs.ts";
+import {getCurrentInstance, inject, nextTick, ref} from "vue";
+import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {ElForm, ElInput, ElMessage} from "element-plus";
 
 type Props = {

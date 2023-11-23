@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, getCurrentInstance, nextTick, onMounted, PropType, ref, watch} from "vue";
+import {computed, getCurrentInstance, nextTick, ref, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
@@ -8,8 +8,8 @@ import CTabPane from "@/components/base/tab/CTabPane.vue";
 import {ElMessageBox} from "element-plus";
 import SlideSideBarBlock from "@/components/sidebar/SlideSideBarBlock.vue";
 import {ChatInfo, ChatOptions, ChatTabInfo} from "@/types/Store.ts";
-import {useConfigStore} from "@/store/Config.ts";
-import {useChatTabsStore} from "@/store/ChatTabs.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
+import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 
 /**
  * register shortcut

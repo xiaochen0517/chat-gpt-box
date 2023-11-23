@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {computed, getCurrentInstance, ref, watch} from "vue";
-import {useConfigStore} from "@/store/Config.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
 
 type Props = {
   switchValue?: boolean,

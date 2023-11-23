@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {onMounted, watch} from "vue";
-import {useChatTabsStore} from "@/store/ChatTabs.ts";
-import {useConfigStore} from "@/store/Config.ts";
+import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
 
 const configStore = useConfigStore();
 

@@ -4,8 +4,8 @@ import {EllipsisOutlined} from "@ant-design/icons-vue";
 import EditRobotDialog from "../chat/dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import {ChatInfo} from "@/types/Store.ts";
-import {useChatListStore} from "@/store/ChatList.ts";
-import {useConfigStore} from "@/store/Config.ts";
+import {useChatListStore} from "@/store/ChatListStore.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
 
 const instance = getCurrentInstance();
 const activeChatInfo = ref<ChatInfo | null>(null);

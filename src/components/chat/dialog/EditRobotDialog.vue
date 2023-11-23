@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {getCurrentInstance, inject, nextTick, ref, onMounted} from "vue";
+import {getCurrentInstance, inject, nextTick, ref} from "vue";
 import _ from "lodash";
 import modelList from "@/utils/ModelList.ts";
 import {ElForm, ElInput} from "element-plus";
 import {ChatInfo} from "@/types/Store.ts";
-import {useChatListStore} from "@/store/ChatList.ts";
+import {useChatListStore} from "@/store/ChatListStore.ts";
 
 const chatListStore = useChatListStore();
 

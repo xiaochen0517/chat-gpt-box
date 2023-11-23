@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, ref, watch} from "vue";
 import ChatMessageBlock from "./ChatMessageBlock.vue";
-import {useChatTabsStore} from "@/store/ChatTabs.ts";
+import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import EditMessageDialog from "../dialog/EditMessageDialog.vue";
 import {ChatInfo, ChatMessage} from "@/types/Store.ts";
 

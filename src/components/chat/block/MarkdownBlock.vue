@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {computed, onMounted} from "vue";
-import {useConfigStore} from "@/store/Config.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
 import {MdPreview} from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
 

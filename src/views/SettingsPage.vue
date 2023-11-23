@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
-import {useConfigStore} from "@/store/Config.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
 import ApiKeyDialog from "@/components/setting/dialog/ApiKeyDialog.vue";
 import router from "@/router/router.ts";
 import CListItem from "@/components/base/list/CListItem.vue";

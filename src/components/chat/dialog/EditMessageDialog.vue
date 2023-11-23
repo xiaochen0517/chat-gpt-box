@@ -3,7 +3,7 @@ import {inject, ref} from "vue";
 import _ from "lodash";
 import {ElForm, ElMessage} from "element-plus";
 import {ChatMessage} from "@/types/Store.ts";
-import {useChatTabsStore} from "@/store/ChatTabs.ts";
+import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 
 const dialogVisible = ref(false);
 

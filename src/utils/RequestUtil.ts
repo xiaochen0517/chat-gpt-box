@@ -2,9 +2,9 @@ import _ from "lodash";
 import {RequestBody, RobotOptions, SendRequest} from "@/types/SendRequest.ts";
 import {ChatMessage} from "@/types/Store.ts";
 import {encoding_for_model, Tiktoken, TiktokenModel} from "tiktoken";
-import {useConfigStore} from "@/store/Config.ts";
-import {useChatTabsStore} from "@/store/ChatTabs.ts";
-import {useChatListStore} from "@/store/ChatList.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
+import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
+import {useChatListStore} from "@/store/ChatListStore.ts";
 
 // gpt api url
 const API_URL: string = "v1/chat/completions";

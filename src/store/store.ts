@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {BaseConfig, ChatMessage, ChatInfo, ChatTabInfo, ShortcutConfig, ChatOptions} from "@/types/Store.ts";
+import {BaseConfig, ChatInfo, ChatMessage, ChatOptions, ChatTabInfo, ShortcutConfig} from "@/types/Store.ts";
 
 export const useStore = defineStore("store", {
   state: () => {

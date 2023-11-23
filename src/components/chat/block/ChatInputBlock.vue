@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {computed, defineAsyncComponent, getCurrentInstance, PropType, ref, watch} from "vue";
+import {computed, defineAsyncComponent, getCurrentInstance, ref, watch} from "vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import {ElMessage} from "element-plus";
 import {RequestUtil} from "@/utils/RequestUtil.ts";
 import {ChatTabInfo} from "@/types/Store.ts";
-import {useConfigStore} from "@/store/Config.ts";
-import {useChatTabsStore} from "@/store/ChatTabs.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
+import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 
 const SendOutlined = defineAsyncComponent(() => import("@ant-design/icons-vue/SendOutlined"));
 
