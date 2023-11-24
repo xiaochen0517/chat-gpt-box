@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {getCurrentInstance, onMounted, ref} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 
@@ -7,8 +7,12 @@ const showDialog = ref(false);
 const show = () => {
   showDialog.value = true;
 }
+const hide = () => {
+  showDialog.value = false;
+}
 defineExpose({
-  show
+  show,
+  hide
 })
 
 const configStore = useConfigStore();
@@ -18,9 +22,9 @@ onMounted(() => {
   contextMaxMessage.value = configStore.baseConfig.context_max_message;
 })
 
+const instance = getCurrentInstance();
 const save = () => {
-  configStore.setContextMaxMessage(contextMaxMessage.value);
-  showDialog.value = false;
+  instance?.emit("ok", "context_max_message", contextMaxMessage.value);
 }
 
 const description = "If the number of tokens in a message exceeds the maximum number of tokens configured for the current request, " +

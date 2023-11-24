@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {getCurrentInstance, onMounted, ref} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 
@@ -7,8 +7,12 @@ const showDialog = ref(false);
 const show = () => {
   showDialog.value = true;
 }
+const hide = () => {
+  showDialog.value = false;
+}
 defineExpose({
-  show
+  show,
+  hide
 })
 
 const configStore = useConfigStore();
@@ -18,9 +22,9 @@ onMounted(() => {
   responseMaxTokens.value = configStore.baseConfig.response_max_tokens;
 })
 
+const instance = getCurrentInstance();
 const save = () => {
-  configStore.setResponseMaxTokens(responseMaxTokens.value);
-  showDialog.value = false;
+  instance?.emit("ok", "response_max_tokens", responseMaxTokens.value);
 }
 </script>
 

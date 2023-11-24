@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {getCurrentInstance, onMounted, ref} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 
@@ -7,8 +7,12 @@ const showDialog = ref(false);
 const show = () => {
   showDialog.value = true;
 }
+const hide = () => {
+  showDialog.value = false;
+}
 defineExpose({
-  show
+  show,
+  hide
 })
 
 const configStore = useConfigStore();
@@ -18,9 +22,9 @@ onMounted(() => {
   temperature.value = configStore.baseConfig.temperature;
 })
 
+const instance = getCurrentInstance();
 const save = () => {
-  configStore.setTemperature(temperature.value);
-  showDialog.value = false;
+  instance?.emit("ok", "temperature", temperature.value);
 }
 
 const description = "The lower this value, the more rigorous the output will be; " +

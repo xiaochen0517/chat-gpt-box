@@ -35,8 +35,8 @@ export const useConfigStore = defineStore("config", {
     setDarkMode(isDarkMode: boolean) {
       this.isDarkMode = isDarkMode;
     },
-    setBaseConfig(config: any) {
-      this.baseConfig = config;
+    setBaseConfig(key: string, value: any) {
+      this.baseConfig[key] = value;
     },
     setApiKey(apiKey: string) {
       this.baseConfig.apiKey = apiKey;

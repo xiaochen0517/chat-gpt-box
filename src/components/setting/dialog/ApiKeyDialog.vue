@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {getCurrentInstance, onMounted, ref} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 import {ElMessage} from "element-plus";
@@ -8,8 +8,12 @@ const showDialog = ref(false);
 const show = () => {
   showDialog.value = true;
 }
+const hide = () => {
+  showDialog.value = false;
+}
 defineExpose({
-  show
+  show,
+  hide
 })
 
 const configStore = useConfigStore();
@@ -19,13 +23,13 @@ onMounted(() => {
   apiKey.value = configStore.baseConfig.apiKey;
 })
 
+const instance = getCurrentInstance();
 const save = () => {
   if (apiKey.value.length === 0) {
     ElMessage.error("Api key can not be empty!");
     return;
   }
-  configStore.setApiKey(apiKey.value);
-  showDialog.value = false;
+  instance?.emit("ok", "apiKey", apiKey.value);
 }
 </script>
 
