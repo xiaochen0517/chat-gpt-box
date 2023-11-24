@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {ChatTabInfo, ChatTabsStore} from "@/types/Store.ts";
+import {ChatMessage, ChatTabInfo, ChatTabsStore} from "@/types/Store.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 
 export const useChatTabsStore = defineStore("chatTabs", {
@@ -62,9 +62,9 @@ export const useChatTabsStore = defineStore("chatTabs", {
         this.addDefaultChatTab(id);
       }
     },
-    updateMessage(id: string, tabIndex: number, messageIndex: number, content: string) {
+    updateMessage(id: string, tabIndex: number, messageIndex: number, content: ChatMessage) {
       if (!id || !this.chatTabs[id] || tabIndex < 0 || messageIndex < 0) return;
-      this.chatTabs[id][tabIndex].chat[messageIndex].content = content;
+      this.chatTabs[id][tabIndex].chat[messageIndex] = content;
     },
     removeChatMessage(id: string, tabIndex: number, messageIndex: number) {
       if (!id || !this.chatTabs[id] || tabIndex < 0 || messageIndex < 0) return;

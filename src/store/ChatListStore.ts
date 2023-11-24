@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {ChatInfo, ChatListStore} from "@/types/Store.ts";
+import {ChatInfo, ChatListStore, ChatOptions} from "@/types/Store.ts";
 import {v4 as uuidv4} from "uuid";
 import _ from "lodash";
 
@@ -41,6 +41,11 @@ export const useChatListStore = defineStore("chatList", {
   actions: {
     getChatInfo(id: string): ChatInfo | null {
       return _.cloneDeep(this.chatList.find((chat: ChatInfo): boolean => chat.id === id) ?? null);
+    },
+    setChatOptions<K extends keyof ChatOptions>(id: string, key: K, value: ChatOptions[K]) {
+      const index = this.getChatInfoIndex(id);
+      if (index < 0) return;
+      this.chatList[index].options[key] = value;
     },
     addChat(chatInfo: ChatInfo) {
       chatInfo.id = uuidv4();

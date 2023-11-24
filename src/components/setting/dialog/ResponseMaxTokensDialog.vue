@@ -24,7 +24,7 @@ onMounted(() => {
 
 const instance = getCurrentInstance();
 const save = () => {
-  instance?.emit("ok", "response_max_tokens", responseMaxTokens.value);
+  instance?.emit("commit", "response_max_tokens", responseMaxTokens.value);
 }
 </script>
 

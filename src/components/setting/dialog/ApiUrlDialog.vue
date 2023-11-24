@@ -29,7 +29,7 @@ const save = () => {
     ElMessage.error("Api key can not be empty!");
     return;
   }
-  instance?.emit("ok", "apiUrl", apiUrl.value);
+  instance?.emit("commit", "apiUrl", apiUrl.value);
 }
 </script>
 

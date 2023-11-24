@@ -24,7 +24,7 @@ onMounted(() => {
 
 const instance = getCurrentInstance();
 const save = () => {
-  instance?.emit("ok", "context_max_message", contextMaxMessage.value);
+  instance?.emit("commit", "context_max_message", contextMaxMessage.value);
 }
 
 const description = "If the number of tokens in a message exceeds the maximum number of tokens configured for the current request, " +

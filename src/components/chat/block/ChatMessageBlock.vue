@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {CheckOutlined, CopyOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons-vue";
 import MarkdownBlock from "@/components/chat/block/MarkdownBlock.vue";
-import {ref, watch} from "vue";
+import {ref} from "vue";
 import {ChatMessage} from "@/types/Store.ts";
 
 type Props = {

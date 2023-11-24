@@ -24,7 +24,7 @@ onMounted(() => {
 
 const instance = getCurrentInstance();
 const save = () => {
-  instance?.emit("ok", "temperature", temperature.value);
+  instance?.emit("commit", "temperature", temperature.value);
 }
 
 const description = "The lower this value, the more rigorous the output will be; " +

@@ -1,5 +1,5 @@
-<script lang="ts">
-import {nextTick, onMounted, Ref, ref, watch} from "vue";
+<script setup lang="ts">
+import {defineComponent, markRaw, nextTick, onMounted, ref, watch} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import router from "@/router/Router.ts";
 import CListItem from "@/components/base/list/CListItem.vue";
@@ -11,115 +11,61 @@ import ContextMaxMsgsDialog from "@/components/setting/dialog/ContextMaxMsgsDial
 import ContextMaxTokensDialog from "@/components/setting/dialog/ContextMaxTokensDialog.vue";
 import ResponseMaxTokensDialog from "@/components/setting/dialog/ResponseMaxTokensDialog.vue";
 import CTopNavBar from "@/components/base/nav/CTopNavBar.vue";
+import {BaseConfig} from "@/types/Store.ts";
 
-export default {
-  name: "SettingsPage",
-  components: {
-    CListItem,
-    ApiKeyDialog,
-    ApiUrlDialog,
-    ModelDialog,
-    TemperatureDialog,
-    ContextMaxMsgsDialog,
-    ContextMaxTokensDialog,
-    ResponseMaxTokensDialog,
-    CTopNavBar
-  },
-  setup: () => {
+onMounted(() => {
+  console.log("onMounted")
+  isDarkMode.value = configStore.isDarkMode;
+  enterSend.value = configStore.baseConfig.enterSend;
+  ctrlEnterSend.value = configStore.baseConfig.ctrlEnterSend;
+})
 
-    onMounted(() => {
-      console.log("onMounted")
-      isDarkMode.value = configStore.isDarkMode;
-      enterSend.value = configStore.baseConfig.enterSend;
-      ctrlEnterSend.value = configStore.baseConfig.ctrlEnterSend;
-    })
+const jumpToHomePage = () => {
+  router.push({path: "/"});
+}
 
-    const jumpToHomePage = () => {
-      router.push({path: "/"});
-    }
+const configStore = useConfigStore();
 
-    const configStore = useConfigStore();
+const isDarkMode = ref(false);
+const enterSend = ref(false);
+const ctrlEnterSend = ref(false);
 
-    const isDarkMode = ref(false);
-    const enterSend = ref(false);
-    const ctrlEnterSend = ref(false);
+watch(isDarkMode, (value) => {
+  configStore.setDarkMode(value);
+})
+watch(enterSend, (value) => {
+  configStore.setEnterSend(value);
+})
 
-    watch(isDarkMode, (value) => {
-      configStore.setDarkMode(value);
-    })
-    watch(enterSend, (value) => {
-      configStore.setEnterSend(value);
-    })
+type ComponentMap = {
+  [key: string]: ReturnType<typeof defineComponent>;
+};
 
-    const apiKeyDialogRefs = ref<InstanceType<typeof ApiKeyDialog> | null>(null);
-    const openApiKeyDialog = () => {
-      if (!apiKeyDialogRefs.value) return;
-      apiKeyDialogRefs.value.show();
-    }
-    const apiUrlDialogRefs = ref<InstanceType<typeof ApiUrlDialog> | null>(null);
-    const openApiUrlDialog = () => {
-      if (!apiUrlDialogRefs.value) return;
-      apiUrlDialogRefs.value.show();
-    }
-    const modelDialogRefs = ref<InstanceType<typeof ModelDialog> | null>(null);
-    const openModelDialog = () => {
-      if (!modelDialogRefs.value) return;
-      modelDialogRefs.value.show();
-    }
-    const temperatureDialogRefs = ref<InstanceType<typeof TemperatureDialog> | null>(null);
-    const openTemperatureDialog = () => {
-      if (!temperatureDialogRefs.value) return;
-      temperatureDialogRefs.value.show();
-    }
-    const contextMaxMsgsDialogRefs = ref<InstanceType<typeof ContextMaxMsgsDialog> | null>(null);
-    const openContextMaxMsgsDialog = () => {
-      if (!contextMaxMsgsDialogRefs.value) return;
-      contextMaxMsgsDialogRefs.value.show();
-    }
-    const contextMaxTokensDialogRefs = ref<InstanceType<typeof ContextMaxTokensDialog> | null>(null);
-    const openContextMaxTokensDialog = () => {
-      if (!contextMaxTokensDialogRefs.value) return;
-      contextMaxTokensDialogRefs.value.show();
-    }
-    const responseMaxTokensDialogRefs = ref<InstanceType<typeof ResponseMaxTokensDialog> | null>(null);
-    const openResponseMaxTokensDialog = () => {
-      if (!responseMaxTokensDialogRefs.value) return;
-      responseMaxTokensDialogRefs.value.show();
-    }
+const components: ComponentMap = {
+  ApiKeyDialog,
+  ApiUrlDialog,
+  ModelDialog,
+  TemperatureDialog,
+  ContextMaxMsgsDialog,
+  ContextMaxTokensDialog,
+  ResponseMaxTokensDialog,
+}
 
-    const currentDialogRefs = ref<any>(null);
-    const currentDialog: Ref<string | null> = ref(null);
-    const openDialog = (name: string) => {
-      console.log(`openDialog: ${name}`)
-      currentDialog.value = name;
-      nextTick(() => {
-        if (!currentDialogRefs.value) return;
-        currentDialogRefs.value.show();
-      })
-    }
+const currentDialogRefs = ref<any>(null);
+const currentDialog = ref<string | ReturnType<typeof defineComponent>>("");
+const openDialog = (name: string) => {
+  if (!components[name]) return;
+  currentDialog.value = markRaw(components[name]);
+  nextTick(() => {
+    if (!currentDialogRefs.value) return;
+    currentDialogRefs.value.show();
+  })
+}
 
-    const saveConfig = (key: string, value: any) => {
-      configStore.setBaseConfig(key, value);
-    }
-
-    return {
-      jumpToHomePage,
-      isDarkMode,
-      enterSend,
-      ctrlEnterSend,
-      openApiKeyDialog,
-      openApiUrlDialog,
-      openModelDialog,
-      openTemperatureDialog,
-      openContextMaxMsgsDialog,
-      openContextMaxTokensDialog,
-      openResponseMaxTokensDialog,
-      currentDialog,
-      currentDialogRefs,
-      saveConfig,
-      openDialog
-    }
-  }
+const saveConfig = (key: keyof BaseConfig, value: any) => {
+  configStore.setBaseConfig(key, value);
+  if (!currentDialogRefs.value) return;
+  currentDialogRefs.value.hide();
 }
 </script>
 
@@ -166,6 +112,6 @@ export default {
             @click="openDialog('ResponseMaxTokensDialog')"/>
       </div>
     </div>
-    <Component ref="currentDialogRefs" :is="currentDialog" v-if="currentDialog" @ok.stop="saveConfig"/>
+    <Component ref="currentDialogRefs" :is="currentDialog" v-if="currentDialog" @commit="saveConfig"/>
   </div>
 </template>

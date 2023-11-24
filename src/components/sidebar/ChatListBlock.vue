@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import {computed, getCurrentInstance, onMounted, Ref, ref} from "vue";
 import {EllipsisOutlined} from "@ant-design/icons-vue";
-import EditRobotDialog from "../chat/dialog/EditRobotDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import {ChatInfo} from "@/types/Store.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
+import router from "@/router/Router.ts";
 
 const instance = getCurrentInstance();
 const activeChatInfo = ref<ChatInfo | null>(null);
@@ -31,18 +31,21 @@ const shortcut = computed(() => configStore.shortcut);
 const keys = useMagicKeys();
 const prevRobotKey = keys[shortcut.value.prevRobot];
 whenever(prevRobotKey, () => {
+  if (!activeChatInfo.value) return;
   const prevChatInfo = chatListStore.getPrevChatInfo(activeChatInfo.value);
   if (!prevChatInfo) return;
   changeActiveRobot(prevChatInfo);
 });
 const nextRobotKey = keys[shortcut.value.nextRobot];
 whenever(nextRobotKey, () => {
+  if (!activeChatInfo.value) return;
   const nextChatInfo = chatListStore.getNextChatInfo(activeChatInfo.value);
   if (!nextChatInfo) return;
   changeActiveRobot(nextChatInfo);
 });
 const switchRobotKey = keys[shortcut.value.switchRobot];
 whenever(switchRobotKey, () => {
+  if (!activeChatInfo.value) return;
   const switchChatInfo = chatListStore.getSwitchChatInfo(activeChatInfo.value);
   if (!switchChatInfo) return;
   changeActiveRobot(switchChatInfo);
@@ -52,12 +55,8 @@ const chatList: Ref<ChatInfo[]> = computed(() => {
   return chatListStore.chatList;
 });
 
-const robotListPopoverVisible = ref(false);
-const editRobotDialogRefs = ref<InstanceType<typeof EditRobotDialog> | null>(null);
 const editRobotClick = (chatInfo: ChatInfo) => {
-  if (!editRobotDialogRefs.value) return;
-  editRobotDialogRefs.value.show(true, chatInfo);
-  robotListPopoverVisible.value = false;
+  router.push({path: `/chat/editor/${chatInfo.id}`});
 };
 
 const robotListRefs = ref<InstanceType<typeof HTMLDivElement> | null>(null);
@@ -126,6 +125,5 @@ defineExpose({
         </el-popover>
       </div>
     </div>
-    <EditRobotDialog ref="editRobotDialogRefs"/>
   </div>
 </template>

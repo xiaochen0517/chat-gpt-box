@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {ConfigStore} from "@/types/Store.ts";
+import {BaseConfig, ConfigStore} from "@/types/Store.ts";
 
 export const useConfigStore = defineStore("config", {
   state: (): ConfigStore => {
@@ -35,7 +35,7 @@ export const useConfigStore = defineStore("config", {
     setDarkMode(isDarkMode: boolean) {
       this.isDarkMode = isDarkMode;
     },
-    setBaseConfig(key: string, value: any) {
+    setBaseConfig<K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) {
       this.baseConfig[key] = value;
     },
     setApiKey(apiKey: string) {

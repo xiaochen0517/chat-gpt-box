@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import {computed, ref} from "vue";
-import AddRobotDialog from "../chat/dialog/EditRobotDialog.vue";
+import {computed} from "vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import router from "@/router/Router.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
@@ -23,7 +22,6 @@ whenever(openSettingKey, () => {
   openSettingsWindow();
 });
 
-const addRobotDialogRefs = ref<InstanceType<typeof AddRobotDialog> | null>(null);
 const addChatClick = () => {
   router.push({path: "/chat/editor/add"});
 };
@@ -59,7 +57,6 @@ const openSettingsWindow = () => {
         </transition>
       </div>
     </div>
-    <AddRobotDialog ref="addRobotDialogRefs" @commit="$emit('addedRobot')"/>
   </div>
 </template>
 
