@@ -6,6 +6,7 @@ import {ChatInfo} from "@/types/Store.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import router from "@/router/Router.ts";
+import {ElMessageBox} from "element-plus";
 
 const instance = getCurrentInstance();
 const activeChatInfo = ref<ChatInfo | null>(null);
@@ -55,8 +56,19 @@ const chatList: Ref<ChatInfo[]> = computed(() => {
   return chatListStore.chatList;
 });
 
-const editRobotClick = (chatInfo: ChatInfo) => {
+const editChatClick = (chatInfo: ChatInfo) => {
   router.push({path: `/chat/editor/${chatInfo.id}`});
+};
+
+const deleteChatClick = (chatInfo: ChatInfo) => {
+  ElMessageBox.confirm(`Are you sure to delete ${chatInfo.name}?`, "Warning", {
+    confirmButtonText: "OK",
+    cancelButtonText: "Cancel",
+    type: "warning"
+  }).then(() => {
+    chatListStore.deleteChat(chatInfo.id);
+  }).catch(() => {
+  });
 };
 
 const robotListRefs = ref<InstanceType<typeof HTMLDivElement> | null>(null);
@@ -95,7 +107,7 @@ defineExpose({
               :enterable="false">
             <div
                 class="w-24 overflow-hidden overflow-ellipsis whitespace-nowrap border border-neutral-300 dark:border-neutral-700 rounded px-1 bg-yellow-400 dark:bg-amber-600 text-xs leading-5 select-none"
-                @click.stop="editRobotClick(chatInfo)">
+                @click.stop="editChatClick(chatInfo)">
               <i class="iconfont icon-settings font-normal"/>
               {{ chatInfo.options.model.toUpperCase() }}
             </div>
@@ -105,12 +117,13 @@ defineExpose({
           <template #default>
             <div class="p-2 m-0">
               <div
-                  @click.stop="editRobotClick(chatInfo)"
-                  class="cursor-pointer rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-700 leading-6 box-border py-1 px-2 mb-1">
+                  class="cursor-pointer rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-700 leading-6 box-border py-1 px-2 mb-1"
+                  @click.stop="editChatClick(chatInfo)">
                 Edit Chat
               </div>
               <div
-                  class="cursor-pointer rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-700 leading-6 box-border py-1 px-2">
+                  class="cursor-pointer rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-700 leading-6 box-border py-1 px-2"
+                  @click.stop="deleteChatClick(chatInfo)">
                 Delete Chat
               </div>
             </div>

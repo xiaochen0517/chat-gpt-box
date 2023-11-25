@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import {getCurrentInstance, onMounted, ref} from "vue";
-import {useConfigStore} from "@/store/ConfigStore.ts";
+import {getCurrentInstance, ref} from "vue";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 
 const showDialog = ref(false);
-const show = () => {
+const temperature = ref(0.7);
+const show = (value: number | string | null) => {
+  if (typeof value !== "number") return;
+  temperature.value = value;
   showDialog.value = true;
 }
 const hide = () => {
@@ -13,13 +15,6 @@ const hide = () => {
 defineExpose({
   show,
   hide
-})
-
-const configStore = useConfigStore();
-
-const temperature = ref(0.7);
-onMounted(() => {
-  temperature.value = configStore.baseConfig.temperature;
 })
 
 const instance = getCurrentInstance();

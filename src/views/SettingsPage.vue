@@ -53,16 +53,16 @@ const components: ComponentMap = {
 
 const currentDialogRefs = ref<any>(null);
 const currentDialog = ref<string | ReturnType<typeof defineComponent>>("");
-const openDialog = (name: string) => {
+const openDialog = (name: string, key: keyof BaseConfig) => {
   if (!components[name]) return;
   currentDialog.value = markRaw(components[name]);
   nextTick(() => {
     if (!currentDialogRefs.value) return;
-    currentDialogRefs.value.show();
+    currentDialogRefs.value.show(configStore.baseConfig[key]);
   })
 }
 
-const saveConfig = (key: keyof BaseConfig, value: any) => {
+const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) => {
   configStore.setBaseConfig(key, value);
   if (!currentDialogRefs.value) return;
   currentDialogRefs.value.hide();
@@ -75,7 +75,7 @@ const saveConfig = (key: keyof BaseConfig, value: any) => {
     <div class="px-2 xl:p-0 max-w-2xl m-auto mt-2">
       <div class="mt-1 text-lg leading-13">Basic Settings</div>
       <div class="rounded-xl overflow-hidden text-base select-none">
-        <CListItem content="Api key" left-icon="icon-lock" @click.stop="openDialog('ApiKeyDialog')"/>
+        <CListItem content="Api key" left-icon="icon-lock" @click.stop="openDialog('ApiKeyDialog', 'apiKey')"/>
         <CListItem
             content="Enter Line break"
             left-icon="icon-enter"
@@ -88,7 +88,7 @@ const saveConfig = (key: keyof BaseConfig, value: any) => {
             tooltip="Use ctrl+enter to replace shift+enter."
             switch-enabled
             v-model:switch-value="ctrlEnterSend"/>
-        <CListItem content="Api url" left-icon="icon-link1" @click.stop="openDialog('ApiUrlDialog')"/>
+        <CListItem content="Api url" left-icon="icon-link1" @click.stop="openDialog('ApiUrlDialog', 'apiUrl')"/>
         <CListItem
             content="Dark Mode"
             :left-icon="isDarkMode?'icon-night-mode':'icon-daytime-mode'"
@@ -98,18 +98,24 @@ const saveConfig = (key: keyof BaseConfig, value: any) => {
       </div>
       <div class="mt-1 text-lg leading-13">Advanced Settings</div>
       <div class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
-        <CListItem content="Default Model" left-icon="icon-connections" @click="openDialog('ModelDialog')"/>
-        <CListItem content="Temperature" left-icon="icon-hot-for-ux" @click="openDialog('TemperatureDialog')"/>
-        <CListItem content="Context max msgs" left-icon="icon-file-text" @click="openDialog('ContextMaxMsgsDialog')"/>
+        <CListItem content="Default Model" left-icon="icon-connections" @click="openDialog('ModelDialog', 'model')"/>
+        <CListItem
+            content="Temperature"
+            left-icon="icon-hot-for-ux"
+            @click="openDialog('TemperatureDialog', 'temperature')"/>
+        <CListItem
+            content="Context max msgs"
+            left-icon="icon-file-text"
+            @click="openDialog('ContextMaxMsgsDialog', 'context_max_message')"/>
         <CListItem
             content="Context max tokens"
             left-icon="icon-translate"
-            @click="openDialog('ContextMaxTokensDialog')"/>
+            @click="openDialog('ContextMaxTokensDialog', 'context_max_tokens')"/>
         <CListItem
             content="Response max tokens"
             left-icon="icon-rollback"
             :bottom-border="false"
-            @click="openDialog('ResponseMaxTokensDialog')"/>
+            @click="openDialog('ResponseMaxTokensDialog', 'response_max_tokens')"/>
       </div>
     </div>
     <Component ref="currentDialogRefs" :is="currentDialog" v-if="currentDialog" @commit="saveConfig"/>

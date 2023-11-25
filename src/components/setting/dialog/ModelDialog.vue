@@ -6,8 +6,10 @@ import {ElMessage} from "element-plus";
 import {ModelList} from "@/utils/ModelList.ts";
 
 const showDialog = ref(false);
-const show = () => {
+const show = (value: number | string | null) => {
   showDialog.value = true;
+  if (typeof value !== "string") return;
+  model.value = value;
 }
 const hide = () => {
   showDialog.value = false;
@@ -23,6 +25,7 @@ const model = ref("");
 onMounted(() => {
   model.value = configStore.baseConfig.model;
 })
+
 
 const instance = getCurrentInstance();
 const save = () => {

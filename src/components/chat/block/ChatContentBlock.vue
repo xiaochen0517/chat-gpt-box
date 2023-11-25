@@ -3,7 +3,24 @@ import {defineAsyncComponent, nextTick, ref} from "vue";
 import {ChatInfo} from "@/types/Store.ts";
 import ChatInputBlock from "@/components/chat/block/ChatInputBlock.vue";
 
-const ChatTabsBlock = defineAsyncComponent(() => import("@/components/chat/block/ChatTabsBlock.vue"));
+const ChatTabsBlock = defineAsyncComponent({
+  loader: () => import("@/components/chat/block/ChatTabsBlock.vue"),
+  loadingComponent: {
+    template: `
+    <div class="flex-1 flex w-full text-center items-center">
+      <div class="w-full text-2xl">Loading...</div>
+    </div>
+  `,
+  },
+  errorComponent: {
+    template: `
+    <div class="flex-1 flex w-full text-center items-center">
+      <div class="w-full text-2xl">Error!</div>
+    </div>
+  `
+  },
+  delay: 0,
+});
 
 const tabIndex = ref<number>(0);
 const chatTabsBlockRefs = ref<InstanceType<typeof ChatTabsBlock> | null>(null);

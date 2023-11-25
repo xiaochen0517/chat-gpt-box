@@ -104,7 +104,9 @@ const removeTab = (targetKey: number) => {
 
 const chatTabNameList = computed(() => {
   if (!propsActiveChat.value) return [];
-  return chatTabsStore.chatTabs[propsActiveChat.value.id]
+  let chatTabList = chatTabsStore.chatTabs[propsActiveChat.value.id];
+  if (!chatTabList) return [];
+  return chatTabList
       .map((item: ChatTabInfo) => item.name);
 });
 const robotOptions = computed((): ChatOptions => {

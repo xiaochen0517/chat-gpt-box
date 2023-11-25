@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import {getCurrentInstance, onMounted, ref} from "vue";
-import {useConfigStore} from "@/store/ConfigStore.ts";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 import {ElMessage} from "element-plus";
 
 const showDialog = ref(false);
+const chatPrompt = ref("");
 const show = (value: number | string | null) => {
   showDialog.value = true;
   if (typeof value !== "string") return;
-  apiUrl.value = value;
+  chatPrompt.value = value;
 }
 const hide = () => {
   showDialog.value = false;
@@ -18,25 +18,19 @@ defineExpose({
   hide
 })
 
-const configStore = useConfigStore();
-
-const apiUrl = ref("");
-onMounted(() => {
-  apiUrl.value = configStore.baseConfig.apiUrl;
-})
 
 const instance = getCurrentInstance();
 const save = () => {
-  if (apiUrl.value.length === 0) {
-    ElMessage.error("Api url can not be empty!");
+  if (chatPrompt.value.length === 0) {
+    ElMessage.error("Chat prompt can not be empty!");
     return;
   }
-  instance?.emit("commit", "apiUrl", apiUrl.value);
+  instance?.emit("save", "prompt", chatPrompt.value);
 }
 </script>
 
 <template>
-  <CDialog v-model:visible="showDialog" title="Api Url" @ok="save">
-    <el-input v-model="apiUrl" placeholder="Please input Api url. eg: https://api.openai.com/"/>
+  <CDialog v-model:visible="showDialog" title="Chat Prompt" @ok="save">
+    <el-input v-model="chatPrompt" placeholder="Please input chat prompt."/>
   </CDialog>
 </template>

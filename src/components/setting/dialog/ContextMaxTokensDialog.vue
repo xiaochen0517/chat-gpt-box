@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import {getCurrentInstance, onMounted, ref} from "vue";
-import {useConfigStore} from "@/store/ConfigStore.ts";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 
 const showDialog = ref(false);
-const show = () => {
+const contextMaxTokens = ref(2000);
+const show = (value: number | string | null) => {
   showDialog.value = true;
+  if (typeof value !== "number") return;
+  contextMaxTokens.value = value;
 }
 const hide = () => {
   showDialog.value = false;
@@ -13,13 +15,6 @@ const hide = () => {
 defineExpose({
   show,
   hide
-})
-
-const configStore = useConfigStore();
-
-const contextMaxTokens = ref(2000);
-onMounted(() => {
-  contextMaxTokens.value = configStore.baseConfig.context_max_tokens;
 })
 
 const instance = getCurrentInstance();

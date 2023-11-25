@@ -4,6 +4,7 @@ import path from 'path';
 import packageJson from './package.json';
 import wasm from "vite-plugin-wasm";
 import topLevelAwait from "vite-plugin-top-level-await";
+import vueJsx from "@vitejs/plugin-vue-jsx";
 
 function resolve(url: string) {
   return path.resolve(__dirname, url);
@@ -14,6 +15,7 @@ export default defineConfig({
     vue(),
     wasm(),
     topLevelAwait(),
+    vueJsx(),
   ],
   clearScreen: false,
   server: {
@@ -30,6 +32,7 @@ export default defineConfig({
     alias: {
       '@': resolve('./src'),
       '~@': resolve('./src'),
+      'vue': 'vue/dist/vue.esm-bundler.js'
     },
   },
   css: {

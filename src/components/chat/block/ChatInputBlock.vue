@@ -44,7 +44,9 @@ watch(() => props.chatId,
 const chatTabsStore = useChatTabsStore();
 const tabInfo = computed<ChatTabInfo>(() => {
   if (!propsChatId.value) return {generating: false} as ChatTabInfo;
-  return chatTabsStore.chatTabs[propsChatId.value][props.tabIndex]
+  let chatTabList = chatTabsStore.chatTabs[propsChatId.value];
+  if (!chatTabList) return {generating: false} as ChatTabInfo;
+  return chatTabList[props.tabIndex]
 });
 const submitContent = () => {
   if (!instance) return;

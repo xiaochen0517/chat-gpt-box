@@ -39,7 +39,8 @@ export const useChatTabsStore = defineStore("chatTabs", {
       this.addChatTab(id, "default");
     },
     addChatTab(id: string, tabName: string) {
-      if (!id || !this.chatTabs[id]) return;
+      if (!id) return;
+      if (!this.chatTabs[id]) this.chatTabs[id] = [];
       const chatInfo = useChatListStore().getChatInfo(id);
       if (!chatInfo) return;
       this.chatTabs[id].push({
@@ -48,6 +49,10 @@ export const useChatTabsStore = defineStore("chatTabs", {
         request: null,
         chat: [{role: "system", content: chatInfo.prompt}],
       });
+    },
+    removeChatTabs(id: string) {
+      if (!id || !this.chatTabs[id]) return;
+      delete this.chatTabs[id];
     },
     cleanTabChat(id: string, tabIndex: number) {
       if (!id || !this.chatTabs[id]) return;
