@@ -1,7 +1,7 @@
 {
   "name": "chat-gpt-box",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.3.1",
   "type": "module",
   "engines": {
     "node": "16.x"
