@@ -1,27 +1,26 @@
 <script setup lang="ts">
-import {computed, defineAsyncComponent, getCurrentInstance, ref, Ref} from "vue";
-import {useStore} from "@/store/store.ts";
+import {computed, defineAsyncComponent, getCurrentInstance, ref, watch} from "vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import {ElMessage} from "element-plus";
-import {RequestUtil} from "@/util/RequestUtil.ts";
-import {RobotTabChatInfo} from "@/types/State.ts";
+import {RequestUtil} from "@/utils/RequestUtil.ts";
+import {ChatTabInfo} from "@/types/Store.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
+import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 
 const SendOutlined = defineAsyncComponent(() => import("@ant-design/icons-vue/SendOutlined"));
 
-const props = defineProps({
-  robotIndex: {
-    type: Number,
-    default: 0
-  },
-  tabIndex: {
-    type: Number,
-    default: 0
-  }
+type Props = {
+  chatId: string | null,
+  tabIndex: number
+}
+const props = withDefaults(defineProps<Props>(), {
+  chatId: null,
+  tabIndex: 0,
 });
 
-const store = useStore();
+const configStore = useConfigStore();
 const keys = useMagicKeys();
-const shortcut = computed(() => store.config.shortcut);
+const shortcut = computed(() => configStore.shortcut);
 const focusInputKey = keys[shortcut.value.focusInput];
 whenever(focusInputKey, () => {
   focusInput();
@@ -34,19 +33,32 @@ const focusInput = () => {
 
 const instance = getCurrentInstance();
 const chatInputContent = ref("");
+const propsChatId = ref(props.chatId);
+watch(() => props.chatId,
+    (newChatId) => {
+      propsChatId.value = newChatId;
+    },
+    {immediate: true}
+);
 
-const isGenerating: Ref<boolean> = computed(() => store.chatHistory[props.robotIndex][props.tabIndex].generating);
-const tabChatsInfo: Ref<RobotTabChatInfo> = computed(() => store.chatHistory[props.robotIndex][props.tabIndex]);
+const chatTabsStore = useChatTabsStore();
+const tabInfo = computed<ChatTabInfo>(() => {
+  if (!propsChatId.value) return {generating: false} as ChatTabInfo;
+  let chatTabList = chatTabsStore.chatTabs[propsChatId.value];
+  if (!chatTabList) return {generating: false} as ChatTabInfo;
+  return chatTabList[props.tabIndex]
+});
 const submitContent = () => {
   if (!instance) return;
-  if (isGenerating.value) {
-    tabChatsInfo.value.request?.cancel();
+  if (tabInfo.value.generating) {
+    tabInfo.value.request?.cancel();
     return;
   }
   if (chatInputContent.value.length <= 0 || /^\s*$/.test(chatInputContent.value)) return;
-  tabChatsInfo.value.request = new RequestUtil();
-  tabChatsInfo.value.request.sendRequest({
-    robotIndex: props.robotIndex,
+  if (!props.chatId) return;
+  tabInfo.value.request = new RequestUtil();
+  tabInfo.value.request.sendRequest({
+    chatId: props.chatId,
     tabIndex: props.tabIndex,
     content: chatInputContent.value.trim(),
   }, () => {
@@ -55,51 +67,58 @@ const submitContent = () => {
   chatInputContent.value = "";
 };
 
-const enterSend = computed(() => store.config.base.enterSend);
-const ctrlEnterSend = computed(() => store.config.base.ctrlEnterSend);
-const enterKeyDown = () => {
+const enterSend = computed(() => configStore.baseConfig.enterSend);
+const ctrlEnterSend = computed(() => configStore.baseConfig.ctrlEnterSend);
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Enter') {
+    if (event.shiftKey) {
+      // shift + enter
+      shiftEnterKeyDown(event);
+    } else if (event.ctrlKey) {
+      // ctrl + enter
+      ctrlEnterKeyDown(event);
+    } else {
+      // enter
+      enterKeyDown(event);
+    }
+  }
+}
+const enterKeyDown = (event: KeyboardEvent) => {
   if (enterSend.value) {
-    if (isGenerating.value) {
-      ElMessage.warning("对话正在生成中，请稍后再试");
+    event.preventDefault();
+    if (tabInfo.value.generating) {
+      ElMessage.warning("The conversation is being generated, please try again later.");
       return;
     }
     submitContent();
-  } else {
-    breakLine();
   }
 };
-const shiftEnterKeyDown = () => {
+const shiftEnterKeyDown = (event: KeyboardEvent) => {
   if (ctrlEnterSend.value) {
     return;
   }
-  if (enterSend.value) {
-    breakLine();
-  } else {
-    if (isGenerating.value) {
-      ElMessage.warning("对话正在生成中，请稍后再试");
+  if (!enterSend.value) {
+    event.preventDefault();
+    if (tabInfo.value.generating) {
+      ElMessage.warning("The conversation is being generated, please try again later.");
       return;
     }
     submitContent();
   }
 };
-const ctrlEnterKeyDown = () => {
+const ctrlEnterKeyDown = (event: KeyboardEvent) => {
   if (!ctrlEnterSend.value) {
     return;
   }
-  if (enterSend.value) {
-    breakLine();
-  } else {
-    if (isGenerating.value) {
-      ElMessage.warning("对话正在生成中，请稍后再试");
+  if (!enterSend.value) {
+    event.preventDefault();
+    if (tabInfo.value.generating) {
+      ElMessage.warning("The conversation is being generated, please try again later.");
       return;
     }
     submitContent();
   }
 };
-const breakLine = () => {
-  chatInputContent.value += "\n";
-};
-
 
 const resizeableDivRefs = ref<InstanceType<typeof HTMLDivElement> | null>(null);
 const divHeight = ref(200); // 初始高度
@@ -152,13 +171,11 @@ const stopResizing = () => {
           class="flex-1 w-full h-full m-0 py-2 pl-2 pr-14 block rounded-md bg-neutral-100 box-border border-2 border-neutral-300 focus:border-neutral-400 dark:bg-neutral-800 dark:border-neutral-600 dark:focus:border-neutral-400 resize-none"
           v-model="chatInputContent"
           placeholder="Please input message"
-          @keydown.enter.prevent.exact="enterKeyDown"
-          @keydown.shift.enter.prevent.exact="shiftEnterKeyDown"
-          @keydown.ctrl.enter.prevent.exact="ctrlEnterKeyDown"/>
+          @keydown="handleKeydown"/>
       <div
           @click.stop="submitContent"
           class="w-10 h-10 rounded-md absolute right-3 top-1/2 transform -translate-y-1/2 flex justify-center items-center ml-2 text-sm cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 dark:hover:bg-neutral-700 dark:active:bg-neutral-800 border-2 border-neutral-200 hover:border-neutral-300 active:border-neutral-400 dark:border-neutral-600">
-        <i class="iconfont icon-stop-fill text-xl" v-if="isGenerating"/>
+        <i class="iconfont icon-stop-fill text-xl" v-if="tabInfo.generating"/>
         <send-outlined v-else/>
       </div>
     </div>

@@ -2,23 +2,15 @@
 import {CheckOutlined, CopyOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons-vue";
 import MarkdownBlock from "@/components/chat/block/MarkdownBlock.vue";
 import {ref} from "vue";
+import {ChatMessage} from "@/types/Store.ts";
 
-const props = defineProps({
-  message: {
-    type: Object,
-    required: true,
-    default: () => {
-      return {
-        role: "system",
-        content: "..."
-      };
-    }
-  },
-  index: {
-    type: Number,
-    required: true,
-    default: null
-  }
+type Props = {
+  message: ChatMessage;
+  index: number | null;
+}
+const props = withDefaults(defineProps<Props>(), {
+  message: () => ({role: "system", content: "..."}),
+  index: null
 });
 
 const copySuccess = ref(false);
@@ -54,11 +46,11 @@ const copyMessageContent = () => {
             class="w-6 h-6"/>
       </div>
       <div class="flex-1 min-w-0 scroll-auto">
-        <MarkdownBlock :content="message.content"/>
+        <MarkdownBlock :content="message?.content"/>
       </div>
     </div>
     <div
-        class="flex flex-row gap-1 mt-2 pointer-events-none opacity-100 lg:opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto">
+        class="flex flex-row gap-1 mt-2 ml-12 pointer-events-none opacity-100 3xl:opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto">
       <button
           class="p-2 rounded-md flex justify-center items-center bg-neutral-50 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
           @click="copyMessageContent">

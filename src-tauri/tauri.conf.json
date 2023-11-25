@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "chat-gpt-box",
-    "version": "0.2.3"
+    "version": "0.3.1"
   },
   "tauri": {
     "allowlist": {
@@ -25,7 +25,14 @@
         "icons/icon.ico"
       ],
       "identifier": "fun.mochen.chat-gpt-box",
-      "targets": "all"
+      "targets": "all",
+      "windows": {
+        "nsis": {
+          "license": "../LICENSE",
+          "installerIcon": "icons/icon.ico",
+          "installMode": "both"
+        }
+      }
     },
     "security": {
       "csp": null
@@ -39,8 +46,8 @@
         "fullscreen": false,
         "resizable": true,
         "title": "chat-gpt-box",
-        "width": 1400,
-        "height": 900
+        "width": 1650,
+        "height": 970
       }
     ]
   }

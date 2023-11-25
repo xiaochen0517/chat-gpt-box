@@ -1,62 +1,21 @@
 <script setup lang="ts">
-import {nextTick, onMounted, ref} from "vue";
+import {nextTick, ref} from "vue";
 import SideBarBlock from "@/components/sidebar/SideBarBlock.vue";
-import {appWindow} from "@tauri-apps/api/window";
-import {exit} from '@tauri-apps/api/process';
 import ChatContentBlock from "@/components/chat/block/ChatContentBlock.vue";
-import {useStore} from "@/store/store.ts";
-import {Robot} from "@/types/State.ts";
-
-/**
- * 监听窗口关闭事件，直接退出程序
- */
-onMounted(() => {
-  checkConfig();
-  addWindowsCloseListener();
-});
-
-const addWindowsCloseListener = () => {
-  if (!(window as any).__TAURI__ || !(window as any).__TAURI__.isRunningInTauri) return;
-  appWindow.onCloseRequested(async () => {
-    await exit(0);
-  });
-};
-
-/**
- * 检查配置项内容
- */
-const store = useStore();
-const checkConfig = () => {
-  const oldVersion = store.version;
-  const newVersion = import.meta.env.VITE_APP_VERSION;
-  if (oldVersion !== newVersion) store.version = newVersion;
-  console.log(`oldVersion: ${oldVersion}, newVersion: ${newVersion}`);
-  // vuex -> pinia
-  switchVuex2Pinia();
-};
-
-const switchVuex2Pinia = () => {
-  let oldLocalData = localStorage.getItem("vuex");
-  if (!oldLocalData || oldLocalData.length <= 0) return;
-  const oldState = JSON.parse(oldLocalData);
-  if (!oldState.version) return;
-  console.log("vuex -> pinia");
-  store.setAllData(oldState);
-  localStorage.removeItem("vuex");
-}
+import {ChatInfo} from "@/types/Store.ts";
 
 const chatContentBlockRefs = ref<InstanceType<typeof ChatContentBlock> | null>(null);
-const changeRobotClick = (index: number, item: Robot) => {
+const changeChatClick = (chatInfo: ChatInfo) => {
   nextTick(() => {
     if (!chatContentBlockRefs.value) return;
-    chatContentBlockRefs.value.changeRobot(index, item);
+    chatContentBlockRefs.value.changeChat(chatInfo);
   });
 };
 </script>
 
 <template>
   <div class="w-full h-full flex flex-row box-border">
-    <SideBarBlock class="hidden lg:flex" @onClick="changeRobotClick"/>
+    <SideBarBlock class="hidden 3xl:flex" @changeChatClick="changeChatClick"/>
     <ChatContentBlock class="flex-1" ref="chatContentBlockRefs"/>
   </div>
 </template>

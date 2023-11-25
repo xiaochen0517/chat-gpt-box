@@ -11,9 +11,10 @@
 </p>
 
 <p align="center">
-    <img alt="windows" src="https://img.shields.io/badge/windows->=7-brightgreen?logo=windows">
+    <img alt="windows" src="https://img.shields.io/badge/windows->=10-brightgreen?logo=microsoft">
     <img alt="ubuntu" src="https://img.shields.io/badge/ubuntu->=20-orange?logo=ubuntu">
     <img alt="macOS" src="https://img.shields.io/badge/macOS->=10-blue?logo=apple">
+    <img alt="Android" src="https://img.shields.io/badge/Android->=5.1-green?logo=android">
 </p>
 
 <p align="center">
@@ -22,7 +23,7 @@
 
 ## Features
 
-- Supports multiple platforms, including Windows, Linux, macOS
+- Supports multiple platforms, including Windows, Linux, macOS and Android
 - Allows for individual customization of chat settings, with multiple chat configurations that do not interfere with
   each other
 - Single chat configurations support multiple tabs, enabling multiple chat windows to be opened at the same time

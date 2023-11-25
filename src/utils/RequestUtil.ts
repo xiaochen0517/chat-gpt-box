@@ -1,17 +1,21 @@
-import {useStore} from "@/store/store.ts";
 import _ from "lodash";
 import {RequestBody, RobotOptions, SendRequest} from "@/types/SendRequest.ts";
-import {ChatMessage} from "@/types/State.ts";
+import {ChatMessage} from "@/types/Store.ts";
 import {encoding_for_model, Tiktoken, TiktokenModel} from "tiktoken";
+import {useConfigStore} from "@/store/ConfigStore.ts";
+import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
+import {useChatListStore} from "@/store/ChatListStore.ts";
 
-// 请求地址
+// gpt api url
 const API_URL: string = "v1/chat/completions";
-// 请求方式
+// request method
 const REQ_TYPE: string = "POST";
-// 字符解码器
+// charset decoder
 const decoder: TextDecoder = new TextDecoder('utf-8');
-// 全局store
-const store = useStore();
+// global store
+const configStore = useConfigStore();
+const chatTabsStore = useChatTabsStore();
+const chatListStore = useChatListStore();
 
 export class RequestUtil {
   // stream读取器
@@ -19,60 +23,55 @@ export class RequestUtil {
   changeFunc: () => void = () => {
   };
 
-  data = {
-    robotIndex: 0,
+  data: SendRequest = {
+    chatId: "",
     tabIndex: 0,
     content: "",
   };
 
   stopFlag: boolean = false;
 
-  sendRequest = async ({robotIndex, tabIndex, content}: SendRequest, change: () => void) => {
+  abortController: AbortController | null = null;
+
+  sendRequest = async (data: SendRequest, change: () => void) => {
     if (change) {
       this.changeFunc = change;
     }
-    // 检查并初始化数据
-    this.checkRequestData(robotIndex, tabIndex, content);
-    // 设置内容
-    this.data = {
-      robotIndex: robotIndex,
-      tabIndex: tabIndex,
-      content: content,
-    };
+    // check and init data
+    this.checkRequestData(data);
+    this.data = data;
     try {
-      // encodeChat = await loadGptTokenizer();
-      // 设置当前状态为生成中
+      // set tab status to generating
       this.setGenerating(true);
-      // 添加用户信息
+      // add user message into chat history
       this.addUserMessage();
-      // 获取配置信息
-      const robotOptions = this.getRobotOptions(robotIndex);
-      const messages = await this.getContextMessages(robotIndex, tabIndex, robotOptions);
+      // get chat config
+      const chatOptions = this.getRobotOptions();
+      const messages = await this.getContextMessages(chatOptions);
       console.log("send messages = ", messages);
-      // 添加助手信息
+      // add assistant message into chat history
       this.addAssistantMessage();
-      // 发送请求
-      this.sendFetch(messages, robotOptions);
+      // send fetch request
+      this.sendFetch(messages, chatOptions);
     } catch (exception: unknown) {
       if (exception instanceof Error) {
-        // 写入错误信息
-        this.setAssistantMsgContent(exception.message);
+        this.setErrorMsgContent(exception.message);
       } else {
         console.error(exception);
-        this.setAssistantMsgContent(String(exception));
+        this.setErrorMsgContent(String(exception));
       }
-      // 当前状态为生成完成
+      // generated finished
       this.setGenerating(false);
     }
   }
 
-  getContextMessages = async (robotIndex: number, tabIndex: number, options: RobotOptions) => {
-    // 拷贝聊天记录，用于发送请求
-    let messages = _.cloneDeep(store.chatHistory[robotIndex][tabIndex].chat);
+  getContextMessages = async (options: RobotOptions) => {
+    // clone chat history
+    let messages = _.cloneDeep(chatTabsStore.chatTabs[this.data.chatId][this.data.tabIndex].chat);
     if (options.context_max_message <= 0 || options.context_max_tokens <= 0) {
       return [messages[0], messages[messages.length - 1]];
     }
-    // 获取指定数量的上下文消息
+    // get context messages
     let contextMessages: ChatMessage[];
     if (options.context_max_message >= messages.length - 1) {
       contextMessages = messages;
@@ -80,18 +79,18 @@ export class RequestUtil {
       const systemMessage = messages[0];
       contextMessages = [systemMessage, ...messages.slice(-(options.context_max_message + 1))];
     }
-    // 初始化token编码器
+    // check context messages token size
     const tokenEncoder = encoding_for_model(options.model as TiktokenModel);
     while (this.getMessagesTokenSize(contextMessages, tokenEncoder) > options.context_max_tokens) {
-      // 消息的token数量超过了最大token数量，需要删除消息
+      // if context messages token size is greater than context_max_tokens, remove the first message
       if (contextMessages.length === 1) {
-        // 只有一条消息，为prompt，无法删除
+        // only one message, is system message, break
         break;
       }
-      // 有多条消息，删除除了prompt之外的第一条消息
+      // remove the first message except system message
       contextMessages.splice(1, 1);
     }
-    // 释放资源
+    // free token encoder
     tokenEncoder.free();
     return contextMessages;
   }
@@ -104,6 +103,10 @@ export class RequestUtil {
 
   cancel() {
     this.stopFlag = true;
+    if (this.abortController) {
+      this.abortController.abort();
+      this.abortController = null;
+    }
     if (!this.reader) return;
     this.reader.cancel().then(() => {
       console.log("取消读取");
@@ -114,56 +117,22 @@ export class RequestUtil {
     });
   }
 
-  addUserMessage() {
-    store.addUserMessage(this.data.robotIndex, this.data.tabIndex, this.data.content);
-    this.changeFunc();
-  }
-
-  addAssistantMessage = () => {
-    store.addAssistantMessage(this.data.robotIndex, this.data.tabIndex);
-    this.changeFunc();
-  };
-
-  setAssistantMsgContent = (content: string) => {
-    store.setAssistantMsgContent(this.data.robotIndex, this.data.tabIndex, content);
-    this.changeFunc();
-  };
-
-  addAssistantMsgContent = (content: string) => {
-    store.addAssistantMsgContent(this.data.robotIndex, this.data.tabIndex, content);
-    this.changeFunc();
-  };
-
-  setGenerating = (generating: boolean) => {
-    store.setGenerating(this.data.robotIndex, this.data.tabIndex, generating);
-  };
-
-  getRobotOptions = (robotIndex: number): RobotOptions => {
-    let robotOptions = store.robotList[robotIndex].options;
-    // 获取配置信息
-    if (!robotOptions.enabled) {
-      // 获取全局配置
-      return store.config.base;
+  checkRequestData = (data: SendRequest) => {
+    console.log("check request data = ", data);
+    if (data.content.length <= 0) {
+      console.error("none message to send");
+      throw Error("none message to send");
     }
-    return robotOptions;
-  }
-
-  checkRequestData = (robotIndex: number, tabIndex: number, content: string) => {
-    // 检查并初始化数据
-    if (content.length <= 0) {
-      console.error("无信息可发送");
-      throw Error("无信息可发送");
-    }
-    if (!(robotIndex >= 0 && tabIndex >= 0)) {
-      console.error("无效的索引");
-      throw Error("无效的索引");
+    if (!data.chatId || data.chatId.length <= 0 || data.tabIndex < 0) {
+      console.error("invalid index");
+      throw Error("invalid index");
     }
   };
 
   buildHeaders = () => {
-    const apiKey = store.config.base.apiKey;
+    const apiKey = configStore.baseConfig.apiKey;
     if (!apiKey || apiKey === "" || apiKey.length < 3) {
-      throw Error("请输入正确的ApiKey");
+      throw Error("please config your api key");
     }
     return {
       'Authorization': `Bearer ${apiKey}`,
@@ -185,16 +154,15 @@ export class RequestUtil {
   };
 
   sendFetch = (messages: ChatMessage[], options: RobotOptions) => {
-    const controller = new AbortController();
+    this.abortController = new AbortController();
     fetch(options.apiUrl + API_URL, {
       method: REQ_TYPE,
       headers: this.buildHeaders(),
       body: this.buildBodyJson(messages, options),
-      signal: controller.signal,
+      signal: this.abortController.signal,
     }).then(async (data: Response) => {
       if (data.status !== 200 || !data.body) {
-        this.addAssistantMsgContent(`请求失败，状态码：${data.status}，状态信息：${data.statusText}`);
-        // 当前状态为生成完成
+        this.setErrorMsgContent(`request failure status：${data.status}，message：${data.statusText}`);
         this.setGenerating(false);
         return;
       }
@@ -205,20 +173,15 @@ export class RequestUtil {
       } catch (error) {
         console.error(error);
         if (error instanceof Error) {
-          // 显示错误信息
-          this.addAssistantMsgContent(error.message);
+          this.setErrorMsgContent(error.message);
         } else {
-          // 显示错误信息
-          this.addAssistantMsgContent(String(error));
+          this.setErrorMsgContent(String(error));
         }
-        // 当前状态为生成完成
         this.setGenerating(false);
       }
     }).catch((error) => {
       console.error(error);
-      // 显示错误信息
-      this.addAssistantMsgContent(error.message);
-      // 当前状态为生成完成
+      this.setErrorMsgContent(error.message);
       this.setGenerating(false);
     });
   };
@@ -229,35 +192,34 @@ export class RequestUtil {
       this.setGenerating(false);
       return;
     }
-    // 这是一个 Uint8Array 类型的字节数组，需要进行解码
-    // 有可能获取的一个数据包中有多个独立的块，使用data:进行分割
+    // This is a Uint8Array type byte array that needs to be decoded.
+    // It is possible that a single data packet contains multiple independent blocks, which are split using "data:".
     let dataList = decoder.decode(result.value).split("data:");
-    // 循环解析
+    // parse data
     for (let data of dataList) {
-      // 跳过空字符串
+      // skip empty data
       if (data.length === 0) {
         continue;
       }
-      // 判断是否读取完成
+      // [DONE] means the end of the data
       if (data.trim() === "[DONE]") {
-        console.log("读取完成");
+        console.log("read data done");
         this.setGenerating(false);
         return;
       }
-      // 解析返回的json格式数据
+      // parse json data
       let resultData = JSON.parse(data);
-      // 判断是否存在错误信息，若存在错误信息则表示请求失败
+      // check error
       if (resultData.error) {
-        // 返回错误信息
-        this.setAssistantMsgContent(resultData.error.message);
+        this.setErrorMsgContent(resultData.error.message);
         return;
       }
-      // 解析获取到的数据
+      // parse choices
       for (let choice of resultData.choices) {
         let content = choice.delta.content;
-        // 检查content，没有直接跳过
+        // check content
         if (content) {
-          this.addAssistantMsgContent(content);
+          this.appendAssistantMsgContent(content);
         }
       }
     }
@@ -271,9 +233,42 @@ export class RequestUtil {
     } catch (error) {
       console.error(error);
       const errorMessage = error instanceof Error ? error.message : String(error);
-      this.addAssistantMsgContent(errorMessage);
+      this.setErrorMsgContent(errorMessage);
       this.setGenerating(false);
     }
   };
 
+  addUserMessage() {
+    chatTabsStore.addUserMessage(this.data.chatId, this.data.tabIndex, this.data.content);
+    this.changeFunc();
+  }
+
+  addAssistantMessage = () => {
+    chatTabsStore.addAssistantMessage(this.data.chatId, this.data.tabIndex);
+    this.changeFunc();
+  };
+
+  appendAssistantMsgContent = (content: string) => {
+    chatTabsStore.appendAssistantMsgContent(this.data.chatId, this.data.tabIndex, content);
+    this.changeFunc();
+  };
+
+  setErrorMsgContent = (content: string) => {
+    chatTabsStore.setAssistantErrorMsgContent(this.data.chatId, this.data.tabIndex, content);
+    this.changeFunc();
+  };
+
+  setGenerating = (generating: boolean) => {
+    if (this.reader) this.reader = null;
+    if (this.abortController) this.abortController = null;
+    chatTabsStore.setGenerating(this.data.chatId, this.data.tabIndex, generating);
+  };
+
+  getRobotOptions = (): RobotOptions => {
+    let chatOptions = chatListStore.getChatInfo(this.data.chatId)?.options;
+    if (!chatOptions || !chatOptions.enabled) {
+      return configStore.baseConfig;
+    }
+    return chatOptions;
+  }
 }
