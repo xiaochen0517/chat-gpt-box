@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {getCurrentInstance, onMounted, ref} from "vue";
+import {getCurrentInstance, ref} from "vue";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 
 const showDialog = ref(false);

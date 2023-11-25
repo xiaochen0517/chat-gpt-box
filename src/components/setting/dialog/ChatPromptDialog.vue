@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {getCurrentInstance, onMounted, ref} from "vue";
+import {getCurrentInstance, ref} from "vue";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 import {ElMessage} from "element-plus";
 
@@ -17,7 +17,6 @@ defineExpose({
   show,
   hide
 })
-
 
 const instance = getCurrentInstance();
 const save = () => {
