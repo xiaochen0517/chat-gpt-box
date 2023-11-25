@@ -54,6 +54,7 @@ const saveWindowState = async () => {
 };
 
 const recoverWindowState = async () => {
+  if (!AppUtil.isTauri()) return;
   await appWindow.setSize(new PhysicalSize(appStateStore.windowSize.width, appStateStore.windowSize.height));
   await appWindow.setPosition(new PhysicalPosition(appStateStore.windowPosition.x, appStateStore.windowPosition.y));
   if (appStateStore.windowState === "maximized") {
