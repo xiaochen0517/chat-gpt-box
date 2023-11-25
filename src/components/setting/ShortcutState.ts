@@ -1,6 +1,6 @@
-import {ShortcutState} from "@/types/State.ts";
+import {ShortcutConfig} from "@/types/Store.ts";
 
-const shortcutState: ShortcutState = {
+const shortcutState: ShortcutConfig = {
   focusInput: "ctrl+/",
   openSetting: "ctrl+s",
   addTab: "ctrl+t",

@@ -1,27 +1,26 @@
 <script setup lang="ts">
-import {computed, defineAsyncComponent, getCurrentInstance, ref, Ref} from "vue";
-import {useStore} from "@/store/store.ts";
+import {computed, defineAsyncComponent, getCurrentInstance, ref, watch} from "vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import {ElMessage} from "element-plus";
-import {RequestUtil} from "@/util/RequestUtil.ts";
-import {RobotTabChatInfo} from "@/types/State.ts";
+import {RequestUtil} from "@/utils/RequestUtil.ts";
+import {ChatTabInfo} from "@/types/Store.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
+import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 
 const SendOutlined = defineAsyncComponent(() => import("@ant-design/icons-vue/SendOutlined"));
 
-const props = defineProps({
-  robotIndex: {
-    type: Number,
-    default: 0
-  },
-  tabIndex: {
-    type: Number,
-    default: 0
-  }
+type Props = {
+  chatId: string | null,
+  tabIndex: number
+}
+const props = withDefaults(defineProps<Props>(), {
+  chatId: null,
+  tabIndex: 0,
 });
 
-const store = useStore();
+const configStore = useConfigStore();
 const keys = useMagicKeys();
-const shortcut = computed(() => store.config.shortcut);
+const shortcut = computed(() => configStore.shortcut);
 const focusInputKey = keys[shortcut.value.focusInput];
 whenever(focusInputKey, () => {
   focusInput();
@@ -34,19 +33,32 @@ const focusInput = () => {
 
 const instance = getCurrentInstance();
 const chatInputContent = ref("");
+const propsChatId = ref(props.chatId);
+watch(() => props.chatId,
+    (newChatId) => {
+      propsChatId.value = newChatId;
+    },
+    {immediate: true}
+);
 
-const isGenerating: Ref<boolean> = computed(() => store.chatHistory[props.robotIndex][props.tabIndex].generating);
-const tabChatsInfo: Ref<RobotTabChatInfo> = computed(() => store.chatHistory[props.robotIndex][props.tabIndex]);
+const chatTabsStore = useChatTabsStore();
+const tabInfo = computed<ChatTabInfo>(() => {
+  if (!propsChatId.value) return {generating: false} as ChatTabInfo;
+  let chatTabList = chatTabsStore.chatTabs[propsChatId.value];
+  if (!chatTabList) return {generating: false} as ChatTabInfo;
+  return chatTabList[props.tabIndex]
+});
 const submitContent = () => {
   if (!instance) return;
-  if (isGenerating.value) {
-    tabChatsInfo.value.request?.cancel();
+  if (tabInfo.value.generating) {
+    tabInfo.value.request?.cancel();
     return;
   }
   if (chatInputContent.value.length <= 0 || /^\s*$/.test(chatInputContent.value)) return;
-  tabChatsInfo.value.request = new RequestUtil();
-  tabChatsInfo.value.request.sendRequest({
-    robotIndex: props.robotIndex,
+  if (!props.chatId) return;
+  tabInfo.value.request = new RequestUtil();
+  tabInfo.value.request.sendRequest({
+    chatId: props.chatId,
     tabIndex: props.tabIndex,
     content: chatInputContent.value.trim(),
   }, () => {
@@ -55,8 +67,8 @@ const submitContent = () => {
   chatInputContent.value = "";
 };
 
-const enterSend = computed(() => store.config.base.enterSend);
-const ctrlEnterSend = computed(() => store.config.base.ctrlEnterSend);
+const enterSend = computed(() => configStore.baseConfig.enterSend);
+const ctrlEnterSend = computed(() => configStore.baseConfig.ctrlEnterSend);
 const handleKeydown = (event: KeyboardEvent) => {
   if (event.key === 'Enter') {
     if (event.shiftKey) {
@@ -74,7 +86,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 const enterKeyDown = (event: KeyboardEvent) => {
   if (enterSend.value) {
     event.preventDefault();
-    if (isGenerating.value) {
+    if (tabInfo.value.generating) {
       ElMessage.warning("The conversation is being generated, please try again later.");
       return;
     }
@@ -87,7 +99,7 @@ const shiftEnterKeyDown = (event: KeyboardEvent) => {
   }
   if (!enterSend.value) {
     event.preventDefault();
-    if (isGenerating.value) {
+    if (tabInfo.value.generating) {
       ElMessage.warning("The conversation is being generated, please try again later.");
       return;
     }
@@ -100,7 +112,7 @@ const ctrlEnterKeyDown = (event: KeyboardEvent) => {
   }
   if (!enterSend.value) {
     event.preventDefault();
-    if (isGenerating.value) {
+    if (tabInfo.value.generating) {
       ElMessage.warning("The conversation is being generated, please try again later.");
       return;
     }
@@ -163,7 +175,7 @@ const stopResizing = () => {
       <div
           @click.stop="submitContent"
           class="w-10 h-10 rounded-md absolute right-3 top-1/2 transform -translate-y-1/2 flex justify-center items-center ml-2 text-sm cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 dark:hover:bg-neutral-700 dark:active:bg-neutral-800 border-2 border-neutral-200 hover:border-neutral-300 active:border-neutral-400 dark:border-neutral-600">
-        <i class="iconfont icon-stop-fill text-xl" v-if="isGenerating"/>
+        <i class="iconfont icon-stop-fill text-xl" v-if="tabInfo.generating"/>
         <send-outlined v-else/>
       </div>
     </div>

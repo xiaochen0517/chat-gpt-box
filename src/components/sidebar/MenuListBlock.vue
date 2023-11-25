@@ -1,40 +1,33 @@
 <script setup lang="ts">
-import {computed, nextTick, ref} from "vue";
-import {useStore} from "@/store/store.ts";
-import AddRobotDialog from "../chat/dialog/EditRobotDialog.vue";
+import {computed} from "vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
-import AppSettingsDialog from "@/components/setting/AppSettingsDialog.vue";
+import router from "@/router/Router.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
 
-const store = useStore();
+const configStore = useConfigStore();
 
-const isDarkMode = computed(() => store.config.isDarkMode);
+const isDarkMode = computed(() => configStore.isDarkMode);
 const handleChange = () => {
-  store.setDarkMode(!isDarkMode.value);
+  configStore.setDarkMode(!isDarkMode.value);
 };
 
-const shortcut = computed(() => store.config.shortcut);
+const shortcut = computed(() => configStore.shortcut);
 const keys = useMagicKeys();
 const addRobotKey = keys[shortcut.value.addRobot];
 whenever(addRobotKey, () => {
-  addRobotClick();
+  addChatClick();
 });
 const openSettingKey = keys[shortcut.value.openSetting];
 whenever(openSettingKey, () => {
   openSettingsWindow();
 });
 
-const addRobotDialogRefs = ref<InstanceType<typeof AddRobotDialog> | null>(null);
-const addRobotClick = () => {
-  nextTick(() => {
-    if (!addRobotDialogRefs.value) return;
-    addRobotDialogRefs.value.show(false, 0);
-  });
+const addChatClick = () => {
+  router.push({path: "/chat/editor/add"});
 };
 
-const appSettingsDialogRefs = ref<InstanceType<typeof AppSettingsDialog> | null>(null);
 const openSettingsWindow = () => {
-  if (!appSettingsDialogRefs.value) return;
-  appSettingsDialogRefs.value.show();
+  router.push({path: "/settings"});
 };
 </script>
 
@@ -43,7 +36,7 @@ const openSettingsWindow = () => {
     <div class="w-full h-14 px-2 flex flex-row items-center rounded-xl border border-neutral-200 dark:border-neutral-700 gap-2">
       <div
           class="group h-10 flex-1 flex justify-center items-center rounded-xl bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-700 hover:dark:bg-neutral-600 active:dark:bg-neutral-700 cursor-pointer"
-          @click="addRobotClick">
+          @click="addChatClick">
         <i class="iconfont icon-add text-xl transition ease-in-out group-hover:rotate-180 duration-700"/>
       </div>
       <div
@@ -55,13 +48,15 @@ const openSettingsWindow = () => {
           class="group w-10 h-10 flex justify-center items-center rounded-xl bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-700 hover:dark:bg-neutral-600 active:dark:bg-neutral-700 cursor-pointer"
           @click="handleChange">
         <transition name="fade" mode="out-in">
-          <i v-if="isDarkMode" class="iconfont icon-daytime-mode text-xl transition ease-in-out group-hover:rotate-180 duration-700"/>
-          <i v-else class="iconfont icon-night-mode text-xl transition ease-in-out group-hover:rotate-180 duration-700"/>
+          <i
+              v-if="isDarkMode"
+              class="iconfont icon-daytime-mode text-xl transition ease-in-out group-hover:rotate-180 duration-700"/>
+          <i
+              v-else
+              class="iconfont icon-night-mode text-xl transition ease-in-out group-hover:rotate-180 duration-700"/>
         </transition>
       </div>
     </div>
-    <AddRobotDialog ref="addRobotDialogRefs" @commit="$emit('addedRobot')"/>
-    <AppSettingsDialog ref="appSettingsDialogRefs"/>
   </div>
 </template>
 

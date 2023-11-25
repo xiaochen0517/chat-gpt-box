@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import {computed, getCurrentInstance, nextTick, ref, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
-import {useStore} from "@/store/store.ts";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
-import CTabs from "@/components/base/CTabs.vue";
-import CTabPane from "@/components/base/CTabPane.vue";
+import CTabs from "@/components/base/tab/CTabs.vue";
+import CTabPane from "@/components/base/tab/CTabPane.vue";
 import {ElMessageBox} from "element-plus";
-import SlideSideBarBlock from "@/components/sidebar/SlideSideBarBlock.vue";
-import {Robot, RobotTabChatInfo} from "@/types/State.ts";
+import {ChatInfo, ChatOptions, ChatTabInfo} from "@/types/Store.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
+import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 
 /**
  * register shortcut
  */
-const store = useStore();
-const shortcut = computed(() => store.config.shortcut);
+const configStore = useConfigStore();
+const shortcut = computed(() => configStore.shortcut);
 const keys = useMagicKeys();
 const addTabKey = keys[shortcut.value.addTab];
 const addTabDialogRefs = ref<InstanceType<typeof AddTabDialog> | null>(null);
@@ -45,21 +45,30 @@ whenever(cleanTabChatKey, () => {
   cleanTabChat();
 });
 
-const props = defineProps({
-  robotIndex: {
-    type: Number,
-    default: 0
-  },
-  tabIndex: {
-    type: Number,
-    default: 0
-  }
+type Props = {
+  activeChat: ChatInfo | null,
+  tabIndex: number
+}
+const props = withDefaults(defineProps<Props>(), {
+  activeChat: null,
+  tabIndex: 0,
 });
 
+const propsActiveChat = ref<ChatInfo | null>(props.activeChat);
+watch(
+    () => props.activeChat,
+    (value) => {
+      propsActiveChat.value = value;
+    }
+);
+
+const chatTabsStore = useChatTabsStore();
 const cleanTabChat = () => {
-  store.cleanTabChat(props.robotIndex, activeTabIndex.value);
+  if (!propsActiveChat.value) return;
+  chatTabsStore.cleanTabChat(propsActiveChat.value.id, activeTabIndex.value);
 };
 
+const instance = getCurrentInstance();
 const activeTabIndex = ref<number>(0);
 watch(
     () => activeTabIndex.value,
@@ -89,19 +98,29 @@ const removeTab = (targetKey: number) => {
     }
   }
   // remove tab
-  store.removeChatTab(props.robotIndex, targetKey);
-  // check current tab is last tab
-  if (chatTabNameList.value.length === 0) {
-    store.addChatTab(props.robotIndex, "default");
-    activeTabIndex.value = 0;
-  }
+  if (!propsActiveChat.value) return;
+  chatTabsStore.removeChatTab(propsActiveChat.value.id, targetKey);
 };
 
 const chatTabNameList = computed(() => {
-  return store.chatHistory[props.robotIndex]
-      .map((item: RobotTabChatInfo) => item.name);
+  if (!propsActiveChat.value) return [];
+  let chatTabList = chatTabsStore.chatTabs[propsActiveChat.value.id];
+  if (!chatTabList) return [];
+  return chatTabList
+      .map((item: ChatTabInfo) => item.name);
 });
-const robotOptions = computed(() => store.robotList[props.robotIndex].options);
+const robotOptions = computed((): ChatOptions => {
+  if (!propsActiveChat.value) return {
+    enabled: false,
+    apiUrl: '',
+    model: '',
+    temperature: 0,
+    context_max_message: 0,
+    context_max_tokens: 0,
+    response_max_tokens: 0,
+  };
+  return propsActiveChat.value.options
+});
 const removeTabClick = (index: number) => {
   ElMessageBox.confirm("Are you sure to remove this tab?", "Warning", {
     confirmButtonText: "OK",
@@ -111,18 +130,6 @@ const removeTabClick = (index: number) => {
     removeTab(index);
   }).catch(() => {
   });
-};
-
-const slideSideBarBlockRefs = ref<InstanceType<typeof SlideSideBarBlock> | null>(null);
-const showSlideSideBar = () => {
-  if (!slideSideBarBlockRefs.value) return;
-  slideSideBarBlockRefs.value.show();
-};
-
-const instance = getCurrentInstance();
-const changeRobotClick = (index: number, item: Robot) => {
-  if (!instance) return;
-  instance.emit('changeRobotClick', index, item);
 };
 
 const getTabIndex = () => {
@@ -148,15 +155,14 @@ defineExpose({
     <CTabs
         v-model:activeKey="activeTabIndex"
         :tabNames="chatTabNameList"
-        :robotOptions="robotOptions"
+        :chatOptions="robotOptions"
         @addTabClick="addTab"
         @removeTabClick="removeTabClick"
-        @showSlideSideBarClick="showSlideSideBar">
+        @showSlideSideBarClick="$emit('showSlideSideBarClick')">
       <CTabPane v-for="(_number, index) in chatTabNameList.length" :key="index">
-        <ChatMsgListBlock :robotIndex="props.robotIndex" :tabIndex="index"/>
+        <ChatMsgListBlock :chatInfo="propsActiveChat" :tabIndex="index"/>
       </CTabPane>
     </CTabs>
-    <AddTabDialog ref="addTabDialogRefs" :robotIndex="props.robotIndex"/>
-    <SlideSideBarBlock ref="slideSideBarBlockRefs" @onClick="changeRobotClick"/>
+    <AddTabDialog ref="addTabDialogRefs" :chat-id="props.activeChat?.id"/>
   </div>
 </template>

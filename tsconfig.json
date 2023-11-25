@@ -27,8 +27,8 @@
         "src/*"
       ]
     },
-    "types": [
-      "pinia-plugin-persist"
+    "typeRoots": [
+      "node_modules/@types"
     ]
   },
   "include": [

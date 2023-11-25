@@ -1,40 +1,43 @@
 <script setup lang="ts">
-import {computed, onMounted, onUnmounted, ref} from "vue";
+import {computed, ref, watch} from "vue";
 import ChatMessageBlock from "./ChatMessageBlock.vue";
-import {useStore} from "@/store/store.ts";
+import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import EditMessageDialog from "../dialog/EditMessageDialog.vue";
-import {ChatMessage} from "@/types/State.ts";
+import {ChatInfo, ChatMessage} from "@/types/Store.ts";
 
-const store = useStore();
+const chatTabsStore = useChatTabsStore();
 
-const props = defineProps({
-  robotIndex: {
-    type: Number,
-    default: 0
-  },
-  tabIndex: {
-    type: Number,
-    default: 0
-  }
+type Props = {
+  chatInfo: ChatInfo | null,
+  tabIndex: number
+}
+const props = withDefaults(defineProps<Props>(), {
+  chatInfo: null,
+  tabIndex: 0,
 });
 
-const msgList = computed(() => store.chatHistory[props.robotIndex][props.tabIndex].chat);
-onMounted(() => {
-});
+const propsChatInfo = ref<ChatInfo | null>(props.chatInfo);
+watch(
+    () => props.chatInfo,
+    (value) => {
+      propsChatInfo.value = value;
+    }
+);
 
-onUnmounted(() => {
+const msgList = computed(() => {
+  if (!propsChatInfo.value) return [];
+  return chatTabsStore.chatTabs[propsChatInfo.value.id][props.tabIndex].chat;
 });
 
 const deleteMessage = (_message: ChatMessage, index: number) => {
-  store.removeChatMessage(props.robotIndex, props.tabIndex, index);
+  if (!propsChatInfo.value) return;
+  chatTabsStore.removeChatMessage(propsChatInfo.value.id, props.tabIndex, index);
 };
 
 const editMessageDialogRefs = ref<InstanceType<typeof EditMessageDialog> | null>(null);
 const editMessage = (_message: ChatMessage, index: number) => {
-  if (!editMessageDialogRefs.value) {
-    return;
-  }
-  editMessageDialogRefs.value.show(props.robotIndex, props.tabIndex, index);
+  if (!editMessageDialogRefs.value || !propsChatInfo.value) return;
+  editMessageDialogRefs.value.show(propsChatInfo.value.id, props.tabIndex, index);
 };
 
 </script>
@@ -42,13 +45,13 @@ const editMessage = (_message: ChatMessage, index: number) => {
 <template>
   <div>
     <ChatMessageBlock
-        v-for="(item, index) in msgList"
+        v-for="(chatMessage, index) in msgList"
         :key="index"
         :index="index"
-        :message="item"
+        :message="chatMessage"
         @delete="deleteMessage"
         @edit="editMessage"
-        :options="store.robotList[robotIndex].options"/>
+        :options="propsChatInfo?.options"/>
     <EditMessageDialog ref="editMessageDialogRefs"/>
   </div>
 </template>

@@ -1,19 +1,95 @@
 <script setup lang="ts">
+import {onMounted, watch} from "vue";
+import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
+import {useChatListStore} from "@/store/ChatListStore.ts";
+import {useAppStateStore} from "@/store/AppStateStore.ts";
+import {v4 as uuidv4} from "uuid";
+import {appWindow, PhysicalPosition, PhysicalSize} from "@tauri-apps/api/window";
+import {exit} from "@tauri-apps/api/process";
+import AppUtil from "@/utils/AppUtil.ts";
 
-import {useStore} from "@/store/store.ts";
-import {computed, onMounted, Ref, watch} from "vue";
+const configStore = useConfigStore();
+const chatTabsStore = useChatTabsStore();
+const chatListStore = useChatListStore();
+const appStateStore = useAppStateStore();
 
-const store = useStore();
-
-const isDarkMode: Ref<boolean> = computed(() => store.config.isDarkMode);
-
-onMounted(() => {
+onMounted(async () => {
   // add dark class in html
-  switchDarkMode(isDarkMode.value);
-  store.initGeneralStatus();
+  switchDarkMode(configStore.isDarkMode);
+  chatTabsStore.initGeneralStatus();
+  checkConfig();
+  addTauriListener();
+  await recoverWindowState();
 });
 
-watch(isDarkMode, (newVal) => {
+const addTauriListener = () => {
+  if (!AppUtil.isTauri()) return;
+  appWindow.onCloseRequested(async () => {
+    await saveWindowState();
+    await exit(0);
+  });
+  appWindow.onResized(async (event) => {
+    let oldWidth = appStateStore.windowSize.width;
+    let oldHeight = appStateStore.windowSize.height;
+    appStateStore.setWindowSize(event.payload.width, event.payload.height);
+    await saveWindowState();
+    // If the current window is maximized and then refreshed, it will cause the maximization to fail,
+    // and maximizing will trigger a resize, leading to incorrect display size when returning to normal.
+    setTimeout(async () => {
+      if (await appWindow.isMaximized()) {
+        appStateStore.setWindowSize(oldWidth, oldHeight);
+      }
+    }, 100);
+  });
+  appWindow.onMoved((event) => {
+    appStateStore.setWindowPosition(event.payload.x, event.payload.y);
+  });
+};
+
+const saveWindowState = async () => {
+  // get current window state
+  const isMaximized = await appWindow.isMaximized();
+  appStateStore.setWindowState(isMaximized ? "maximized" : "normal");
+};
+
+const recoverWindowState = async () => {
+  await appWindow.setSize(new PhysicalSize(appStateStore.windowSize.width, appStateStore.windowSize.height));
+  await appWindow.setPosition(new PhysicalPosition(appStateStore.windowPosition.x, appStateStore.windowPosition.y));
+  if (appStateStore.windowState === "maximized") {
+    await appWindow.maximize();
+  }
+}
+
+const checkConfig = () => {
+  const oldStoreJsonStr = localStorage.getItem("state");
+  if (!oldStoreJsonStr) return;
+  let oldStore;
+  try {
+    oldStore = JSON.parse(oldStoreJsonStr);
+  } catch (ignore) {
+    return;
+  }
+  if (!oldStore && !oldStore.version) return;
+  chatListStore.chatList = [];
+  chatTabsStore.chatTabs = {};
+  for (let index = 0; index < oldStore.robotList.length; index++) {
+    let chatInfo = oldStore.robotList[index];
+    let chatTab = oldStore.chatHistory[index];
+    if (!chatInfo || !chatTab) continue;
+    const chatId = uuidv4();
+    chatInfo['id'] = chatId;
+    chatListStore.chatList.push(chatInfo);
+    chatTabsStore.chatTabs[chatId] = chatTab;
+  }
+  configStore.isDarkMode = oldStore.config.isDarkMode;
+  configStore.baseConfig = oldStore.config.base;
+  configStore.shortcut = oldStore.config.shortcut;
+
+  localStorage.removeItem("state");
+}
+
+watch(() => configStore.isDarkMode, (newVal) => {
   // add dark class in html
   switchDarkMode(newVal);
 });
@@ -39,7 +115,11 @@ const switchDarkMode = (isDark: boolean) => {
 
 <template>
   <div class="bg-neutral-100 text-black dark:bg-neutral-900 dark:text-white flex-row w-full h-full">
-    <router-view/>
+    <router-view v-slot="{Component}">
+      <transition name="el-zoom-in-top" mode="out-in">
+        <component :is="Component"/>
+      </transition>
+    </router-view>
   </div>
 </template>
 
@@ -54,22 +134,5 @@ html {
 
 #app {
 @apply h-full w-full text-sm;
-}
-
-/* scroll bar */
-div::-webkit-scrollbar {
-@apply w-2 h-2 rounded-full;
-}
-
-div::-webkit-scrollbar-track {
-@apply bg-neutral-300 dark:bg-neutral-800 rounded-full;
-}
-
-div::-webkit-scrollbar-thumb {
-@apply bg-neutral-400 dark:bg-neutral-600 rounded-full;
-}
-
-div::-webkit-scrollbar-thumb:hover {
-@apply bg-neutral-500 dark:bg-neutral-700;
 }
 </style>
