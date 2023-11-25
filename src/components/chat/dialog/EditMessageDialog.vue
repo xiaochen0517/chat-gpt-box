@@ -66,7 +66,7 @@ defineExpose({
 </script>
 
 <template>
-  <CDialog v-model:visible="dialogVisible" title="Edit Message" @ok.stop="commit">
+  <CDialog v-model:visible="dialogVisible" title="Edit Message" @ok.stop="commit" size="large">
     <el-form
         class="w-full"
         ref="editMessageFormRef"

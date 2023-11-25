@@ -1,4 +1,4 @@
-import {computed, ref} from 'vue';
+import {ref, watch} from 'vue';
 import {App} from "@vue/runtime-core";
 
 export default {
@@ -8,15 +8,18 @@ export default {
       windowWidth.value = window.innerWidth;
     };
     window.addEventListener('resize', updateWidth);
-    const dialogWidth = computed(() => {
+    watch(windowWidth, () => {
       if (windowWidth.value < 1024) {
-        return "90%";
-      } else if (windowWidth.value < 1536) {
-        return "500px";
+        dialogWidth.value = "90%";
+        dialogWidthLg.value = "90%";
       } else {
-        return "400px";
+        dialogWidth.value = "500px";
+        dialogWidthLg.value = "70%";
       }
     });
+    const dialogWidth = ref("500px");
+    const dialogWidthLg = ref("700px");
     app.provide('dialogWidth', dialogWidth);
+    app.provide('dialogWidthLg', dialogWidthLg);
   },
 };

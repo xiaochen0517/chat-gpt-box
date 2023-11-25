@@ -8,13 +8,15 @@ type Props = {
   cancelText?: string,
   okText?: string,
   description?: string
+  size?: 'default' | 'large'
 }
 const props = withDefaults(defineProps<Props>(), {
   visible: false,
   title: "",
   cancelText: "CANCEL",
   okText: "OK",
-  description: ""
+  description: "",
+  size: "default"
 });
 
 const showDialog = ref(false);
@@ -34,10 +36,15 @@ const cancelDialog = () => {
 }
 
 const dialogWidth = inject("dialogWidth");
+const dialogWidthLg = inject("dialogWidthLg");
 </script>
 
 <template>
-  <el-dialog v-model="showDialog" close-on-click-modal :show-close="false" :width="dialogWidth">
+  <el-dialog
+      v-model="showDialog"
+      close-on-click-modal
+      :show-close="false"
+      :width="size == 'large' ? dialogWidthLg : dialogWidth">
     <div class="bg-neutral-100 dark:bg-neutral-800">
       <div v-if="title && title.length !== 0" slot="title">
         <div class="text-base leading-10 text-center">{{ title }}</div>
