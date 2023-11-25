@@ -16,6 +16,9 @@ export default {
         '16': '4rem',
       },
     },
+    screens: {
+      '3xl': '1600px',
+    }
   },
   plugins: [],
 }
