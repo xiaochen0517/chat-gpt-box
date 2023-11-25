@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import {getCurrentInstance, ref} from "vue";
+import {getCurrentInstance, onMounted, ref} from "vue";
 import MenuListBlock from "@/components/sidebar/MenuListBlock.vue";
 import RobotListBlock from "@/components/sidebar/ChatListBlock.vue";
+import {ChatInfo} from "@/types/Store.ts";
 
 const instance = getCurrentInstance();
-const onRobotClick = (index: number, item: number) => {
+const changeChatClick = (chatInfo: ChatInfo) => {
+  console.log('changeChatClick')
   if (!instance) return;
-  instance.emit('onClick', index, item);
-  drawerVisible.value = false;
+  instance.emit('changeChatClick', chatInfo);
 };
+
+onMounted(() => {
+  console.log('SlideSideBarBlock mounted');
+});
 
 const robotListBlockRefs = ref<InstanceType<typeof RobotListBlock> | null>(null);
 const robotListScrollToBottom = () => {
@@ -21,8 +26,12 @@ const drawerVisible = ref(false);
 const show = () => {
   drawerVisible.value = true;
 };
+const hide = () => {
+  drawerVisible.value = false;
+};
 defineExpose({
-  show
+  show,
+  hide,
 });
 </script>
 
@@ -31,13 +40,14 @@ defineExpose({
       v-model="drawerVisible"
       :show-close="false"
       :with-header="false"
+      :append-to-body="true"
       direction="ltr"
       size="20rem">
     <div class="h-full w-80 flex flex-col">
       <RobotListBlock
           class="flex-1"
           ref="robotListBlockRefs"
-          @onClick="onRobotClick"/>
+          @changeChatClick="changeChatClick"/>
       <MenuListBlock @added-robot="robotListScrollToBottom"/>
     </div>
   </el-drawer>

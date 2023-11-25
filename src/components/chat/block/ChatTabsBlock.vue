@@ -6,7 +6,6 @@ import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/tab/CTabs.vue";
 import CTabPane from "@/components/base/tab/CTabPane.vue";
 import {ElMessageBox} from "element-plus";
-import SlideSideBarBlock from "@/components/sidebar/SlideSideBarBlock.vue";
 import {ChatInfo, ChatOptions, ChatTabInfo} from "@/types/Store.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
@@ -69,6 +68,7 @@ const cleanTabChat = () => {
   chatTabsStore.cleanTabChat(propsActiveChat.value.id, activeTabIndex.value);
 };
 
+const instance = getCurrentInstance();
 const activeTabIndex = ref<number>(0);
 watch(
     () => activeTabIndex.value,
@@ -132,18 +132,6 @@ const removeTabClick = (index: number) => {
   });
 };
 
-const slideSideBarBlockRefs = ref<InstanceType<typeof SlideSideBarBlock> | null>(null);
-const showSlideSideBar = () => {
-  if (!slideSideBarBlockRefs.value) return;
-  slideSideBarBlockRefs.value.show();
-};
-
-const instance = getCurrentInstance();
-const changeRobotClick = (index: number, item: ChatInfo) => {
-  if (!instance) return;
-  instance.emit('changeRobotClick', index, item);
-};
-
 const getTabIndex = () => {
   return activeTabIndex.value;
 };
@@ -170,12 +158,11 @@ defineExpose({
         :chatOptions="robotOptions"
         @addTabClick="addTab"
         @removeTabClick="removeTabClick"
-        @showSlideSideBarClick="showSlideSideBar">
+        @showSlideSideBarClick="$emit('showSlideSideBarClick')">
       <CTabPane v-for="(_number, index) in chatTabNameList.length" :key="index">
         <ChatMsgListBlock :chatInfo="propsActiveChat" :tabIndex="index"/>
       </CTabPane>
     </CTabs>
     <AddTabDialog ref="addTabDialogRefs" :chat-id="props.activeChat?.id"/>
-    <SlideSideBarBlock ref="slideSideBarBlockRefs" @onClick="changeRobotClick"/>
   </div>
 </template>

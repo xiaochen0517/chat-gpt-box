@@ -2,6 +2,8 @@
 import {defineAsyncComponent, nextTick, ref} from "vue";
 import {ChatInfo} from "@/types/Store.ts";
 import ChatInputBlock from "@/components/chat/block/ChatInputBlock.vue";
+import SlideSideBarBlock from "@/components/sidebar/SlideSideBarBlock.vue";
+import {useAppStateStore} from "@/store/AppStateStore.ts";
 
 const ChatTabsBlock = defineAsyncComponent({
   loader: () => import("@/components/chat/block/ChatTabsBlock.vue"),
@@ -29,9 +31,22 @@ const messageRefresh = () => {
   chatTabsBlockRefs.value.scrollToBottom();
 };
 
+const appStateStore = useAppStateStore();
 const activeChatInfo = ref<ChatInfo | null>(null);
+/**
+ * If the chat displayed in the current app configuration is different from the chat that has been changed,
+ * the new content needs to be written in. If there is a sidebar, its close function should be called. Moreover,
+ * regardless of whether a new chat has been switched to or not, the content should be scrolled to the bottom.
+ * @param chatInfo
+ */
 const changeChat = (chatInfo: ChatInfo) => {
   activeChatInfo.value = chatInfo;
+  if (appStateStore.currentChatId !== chatInfo.id) {
+    appStateStore.currentChatId = chatInfo.id;
+    if (slideSideBarBlockRefs.value) {
+      slideSideBarBlockRefs.value.hide();
+    }
+  }
   setTimeout(() => {
     nextTick(() => {
       if (!chatTabsBlockRefs.value) return;
@@ -40,6 +55,11 @@ const changeChat = (chatInfo: ChatInfo) => {
   }, 100);
 };
 
+const slideSideBarBlockRefs = ref<InstanceType<typeof SlideSideBarBlock> | null>(null);
+const showSlideSideBar = () => {
+  if (!slideSideBarBlockRefs.value) return;
+  slideSideBarBlockRefs.value.show();
+};
 defineExpose({
   changeChat
 });
@@ -53,8 +73,9 @@ defineExpose({
           ref="chatTabsBlockRefs"
           v-model:tabIndex="tabIndex"
           :active-chat="activeChatInfo"
-          @changeRobotClick="changeChat"/>
+          @showSlideSideBarClick="showSlideSideBar"/>
       <ChatInputBlock :chat-id="activeChatInfo?.id" :tab-index="tabIndex" @refresh="messageRefresh"/>
     </div>
+    <SlideSideBarBlock ref="slideSideBarBlockRefs" @changeChatClick="changeChat"/>
   </div>
 </template>

@@ -5,9 +5,11 @@ import {useMagicKeys, whenever} from "@vueuse/core";
 import {ChatInfo} from "@/types/Store.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
+import {useAppStateStore} from "@/store/AppStateStore.ts";
 import router from "@/router/Router.ts";
 import {ElMessageBox} from "element-plus";
 
+const appStateStore = useAppStateStore();
 const instance = getCurrentInstance();
 const activeChatInfo = ref<ChatInfo | null>(null);
 const changeActiveRobot = (chatInfo: ChatInfo) => {
@@ -19,9 +21,13 @@ const changeActiveRobot = (chatInfo: ChatInfo) => {
 const chatListStore = useChatListStore();
 
 onMounted(() => {
-  const firstChatInfo = chatListStore.chatList[0]
-  if (!firstChatInfo) return;
-  changeActiveRobot(firstChatInfo);
+  if (appStateStore.currentChatId) {
+    activeChatInfo.value = chatListStore.getChatInfo(appStateStore.currentChatId);
+  }
+  if (!activeChatInfo.value) {
+    activeChatInfo.value = chatListStore.chatList[0]
+  }
+  changeActiveRobot(activeChatInfo.value);
 });
 
 /**
@@ -92,7 +98,7 @@ defineExpose({
           v-for="(chatInfo, index) in chatList"
           :key="index"
           :class="chatInfo.id === activeChatInfo?.id?'robot-item-selected':''"
-          @click="changeActiveRobot(chatInfo)">
+          @click.stop="changeActiveRobot(chatInfo)">
         <div class="pr-1 flex-1 flex flex-row gap-1 items-center">
           <div
               class="flex-1 text-md leading-8 select-none overflow-hidden overflow-ellipsis whitespace-nowrap"
