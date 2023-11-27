@@ -40,6 +40,9 @@ export const useChatListStore = defineStore("chatList", {
     }
   },
   actions: {
+    setChatList(chatList: ChatInfo[]) {
+      this.chatList = chatList;
+    },
     getChatInfo(id: string): ChatInfo | null {
       return _.cloneDeep(this.chatList.find((chat: ChatInfo): boolean => chat.id === id) ?? null);
     },

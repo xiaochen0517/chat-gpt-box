@@ -37,7 +37,8 @@
     "uuid": "^9.0.1",
     "vue": "^3.3.4",
     "vue-cli-plugin-tauri": "^1.0.0",
-    "vue-router": "4"
+    "vue-router": "4",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.1",
