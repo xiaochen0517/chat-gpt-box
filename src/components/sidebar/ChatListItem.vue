@@ -8,11 +8,13 @@ import {useChatListStore} from "@/store/ChatListStore.ts";
 type Props = {
   chatInfo: ChatInfo | null,
   activeChatInfo: ChatInfo | null,
+  drag: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   chatInfo: null,
   activeChatInfo: null,
+  drag: false
 });
 
 const editChatClick = (chatInfo: ChatInfo | null) => {
@@ -37,12 +39,16 @@ const deleteChatClick = (chatInfo: ChatInfo | null) => {
 <template>
   <div
       class="flex flex-row items-center relative w-full box-border px-2 py-1 mb-1 rounded-xl hover:bg-neutral-200 active:bg-neutral-300 dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
-      :class="(chatInfo && chatInfo.id === activeChatInfo?.id)?'robot-item-selected':''">
+      :class="(chatInfo && chatInfo.id === activeChatInfo?.id)?'robot-item-selected':''"
+      @click.stop="$emit('itemClick', chatInfo)">
     <div class="pr-1 flex-1 flex flex-row gap-1 items-center">
+      <div class="handle rotate-90">
+        <i class="iconfont icon-more" :class="drag?'':'cursor-grab'"/>
+      </div>
       <div
           class="flex-1 text-md leading-8 select-none overflow-hidden overflow-ellipsis whitespace-nowrap"
           :class="chatInfo?.options.enabled?'max-w-[10rem]':'max-w-[16rem]'">
-        {{ chatInfo?.name }} {{ chatInfo?.id }}
+        {{ chatInfo?.name }}
       </div>
       <el-tooltip
           v-if="chatInfo?.options.enabled"

@@ -5,13 +5,13 @@ import {ChatInfo} from "@/types/Store.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useAppStateStore} from "@/store/AppStateStore.ts";
-import draggable from 'vuedraggable'
+import draggable from 'vuedraggable';
 import ChatListItem from "@/components/sidebar/ChatListItem.vue";
 
 const appStateStore = useAppStateStore();
 const instance = getCurrentInstance();
 const activeChatInfo = ref<ChatInfo | null>(null);
-const changeActiveRobot = (chatInfo: ChatInfo) => {
+const changeActiveChat = (chatInfo: ChatInfo) => {
   if (!instance) return;
   activeChatInfo.value = chatInfo;
   instance.emit('changeChatClick', chatInfo);
@@ -26,7 +26,7 @@ onMounted(() => {
   if (!activeChatInfo.value) {
     activeChatInfo.value = chatListStore.chatList[0]
   }
-  changeActiveRobot(activeChatInfo.value);
+  changeActiveChat(activeChatInfo.value);
 });
 
 /**
@@ -40,54 +40,27 @@ whenever(prevRobotKey, () => {
   if (!activeChatInfo.value) return;
   const prevChatInfo = chatListStore.getPrevChatInfo(activeChatInfo.value);
   if (!prevChatInfo) return;
-  changeActiveRobot(prevChatInfo);
+  changeActiveChat(prevChatInfo);
 });
 const nextRobotKey = keys[shortcut.value.nextRobot];
 whenever(nextRobotKey, () => {
   if (!activeChatInfo.value) return;
   const nextChatInfo = chatListStore.getNextChatInfo(activeChatInfo.value);
   if (!nextChatInfo) return;
-  changeActiveRobot(nextChatInfo);
+  changeActiveChat(nextChatInfo);
 });
 const switchRobotKey = keys[shortcut.value.switchRobot];
 whenever(switchRobotKey, () => {
   if (!activeChatInfo.value) return;
   const switchChatInfo = chatListStore.getSwitchChatInfo(activeChatInfo.value);
   if (!switchChatInfo) return;
-  changeActiveRobot(switchChatInfo);
+  changeActiveChat(switchChatInfo);
 });
 
 const chatList = computed({
   get: () => chatListStore.chatList,
   set: (value) => chatListStore.setChatList(value),
 });
-
-type DataInfo = {
-  id: number,
-  name: string,
-}
-const otherChatList = ref<DataInfo[]>([
-  {
-    id: 1,
-    name: "Robot 1"
-  },
-  {
-    id: 2,
-    name: "Robot 2"
-  },
-  {
-    id: 3,
-    name: "Robot 3"
-  },
-  {
-    id: 4,
-    name: "Robot 4"
-  },
-  {
-    id: 5,
-    name: "Robot 5"
-  }
-]);
 
 const robotListRefs = ref<InstanceType<typeof HTMLDivElement> | null>(null);
 const scrollToBottom = () => {
@@ -99,9 +72,9 @@ defineExpose({
   scrollToBottom
 });
 
-const drag = ref(false);
-watch(drag, (value) => {
-  console.log(value)
+const dragStatus = ref(false);
+watch(dragStatus, (newStatus) => {
+  console.log(newStatus);
 });
 </script>
 
@@ -109,19 +82,28 @@ watch(drag, (value) => {
   <div
       ref="robotListRefs"
       class="overflow-hidden overflow-y-auto">
-    <div class="min-h-full max-h-0 p-1">
-      <el-button type="primary" @click="$router.push({path: '/test'})">Test</el-button>
-      <draggable
-          class="min-h-full max-h-0 p-1"
-          v-model="otherChatList"
-          @start="drag=true"
-          @end="drag=false"
-          item-key="id"
-          handle=".handle">
-        <template #item="{element}">
-          <ChatListItem :chat-info="element" :active-chat-info="activeChatInfo"/>
-        </template>
-      </draggable>
-    </div>
+    <draggable
+        class="min-h-full max-h-0 p-1"
+        v-model="chatList"
+        item-key="id"
+        handle=".handle"
+        @start="dragStatus = true"
+        @end="dragStatus = false"
+        :forceFallback="true"
+        ghost-class="ghost-class">
+      <template #item="{element}">
+        <ChatListItem
+            :chat-info="element"
+            :active-chat-info="activeChatInfo"
+            :drag="dragStatus"
+            @itemClick="changeActiveChat"/>
+      </template>
+    </draggable>
   </div>
 </template>
+
+<style scoped lang="less">
+.ghost-class {
+  cursor: grabbing !important;
+}
+</style>
