@@ -47,7 +47,8 @@
         "resizable": true,
         "title": "chat-gpt-box",
         "width": 1650,
-        "height": 970
+        "height": 970,
+        "fileDropEnabled": false
       }
     ]
   }

@@ -186,7 +186,7 @@ export class RequestUtil {
     });
   };
 
-  readResponse = async (result: ReadableStreamReadResult<AllowSharedBufferSource>) => {
+  readResponse = async (result: ReadableStreamReadResult<any>) => {
     if (result.done || this.stopFlag) {
       console.log("读取完成");
       this.setGenerating(false);
