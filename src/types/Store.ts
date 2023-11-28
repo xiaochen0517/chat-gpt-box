@@ -1,4 +1,4 @@
-import {RequestUtil} from "@/utils/RequestUtil.ts";
+import {BaseRequest} from "@/utils/request/BaseRequest.ts";
 
 export interface ChatListStore {
   chatList: ChatInfo[];
@@ -8,7 +8,13 @@ export interface ChatInfo {
   id: string;
   name: string;
   prompt: string;
+  chatType: ChatType;
   options: ChatOptions;
+}
+
+export enum ChatType {
+  CHAT_GPT = "chat_gpt",
+  DALL_E = "dall_e",
 }
 
 export interface ChatOptions {
@@ -30,7 +36,7 @@ export interface ChatTabsStore {
 export interface ChatTabInfo {
   name: string;
   generating: boolean;
-  request: RequestUtil | null;
+  request: BaseRequest | null;
   chat: ChatMessage[];
 }
 

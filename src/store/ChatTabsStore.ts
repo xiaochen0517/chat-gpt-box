@@ -35,6 +35,10 @@ export const useChatTabsStore = defineStore("chatTabs", {
         }
       }
     },
+    getChatTabInfo(id: string, tabIndex: number): ChatTabInfo | null {
+      if (!id || !this.chatTabs[id]) return null;
+      return this.chatTabs[id][tabIndex];
+    },
     addDefaultChatTab(id: string) {
       this.addChatTab(id, "default");
     },

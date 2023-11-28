@@ -2,10 +2,11 @@
 import {computed, defineAsyncComponent, getCurrentInstance, ref, watch} from "vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import {ElMessage} from "element-plus";
-import {RequestUtil} from "@/utils/RequestUtil.ts";
-import {ChatTabInfo} from "@/types/Store.ts";
+import {createRequest} from "@/utils/RequestUtil.ts";
+import {ChatInfo, ChatTabInfo} from "@/types/Store.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
+import {useChatListStore} from "@/store/ChatListStore.ts";
 
 const SendOutlined = defineAsyncComponent(() => import("@ant-design/icons-vue/SendOutlined"));
 
@@ -33,34 +34,35 @@ const focusInput = () => {
 
 const instance = getCurrentInstance();
 const chatInputContent = ref("");
-const propsChatId = ref(props.chatId);
+
+const chatListStore = useChatListStore();
+const chatInfo = ref<ChatInfo | null>(null);
 watch(() => props.chatId,
     (newChatId) => {
-      propsChatId.value = newChatId;
+      chatInfo.value = chatListStore.getChatInfo(newChatId ?? "");
     },
     {immediate: true}
 );
 
 const chatTabsStore = useChatTabsStore();
 const tabInfo = computed<ChatTabInfo>(() => {
-  if (!propsChatId.value) return {generating: false} as ChatTabInfo;
-  let chatTabList = chatTabsStore.chatTabs[propsChatId.value];
+  if (!chatInfo.value) return {generating: false} as ChatTabInfo;
+  let chatTabList = chatTabsStore.chatTabs[chatInfo.value.id];
   if (!chatTabList) return {generating: false} as ChatTabInfo;
   return chatTabList[props.tabIndex]
 });
 const submitContent = () => {
-  if (!instance) return;
+  if (!instance || !chatInfo.value) return;
   if (tabInfo.value.generating) {
     tabInfo.value.request?.cancel();
     return;
   }
   if (chatInputContent.value.length <= 0 || /^\s*$/.test(chatInputContent.value)) return;
   if (!props.chatId) return;
-  tabInfo.value.request = new RequestUtil();
-  tabInfo.value.request.sendRequest({
-    chatId: props.chatId,
+  tabInfo.value.request = createRequest(chatInfo.value)
+  tabInfo.value.request.sendMessage({
     tabIndex: props.tabIndex,
-    content: chatInputContent.value.trim(),
+    message: chatInputContent.value.trim(),
   }, () => {
     instance.emit("refresh", chatInputContent.value);
   });
