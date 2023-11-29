@@ -9,38 +9,40 @@ import {ElMessageBox} from "element-plus";
 import {ChatInfo, ChatOptions, ChatTabInfo} from "@/types/Store.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
+import {KeyMapUtil} from "@/utils/KeyMapUtil.ts";
 
+let {getKeyValueToString} = KeyMapUtil;
 /**
  * register shortcut
  */
 const configStore = useConfigStore();
 const shortcut = computed(() => configStore.shortcut);
 const keys = useMagicKeys();
-const addTabKey = keys[shortcut.value.addTab];
+const addTabKey = keys[getKeyValueToString(shortcut.value.addTab)];
 const addTabDialogRefs = ref<InstanceType<typeof AddTabDialog> | null>(null);
 whenever(addTabKey, () => {
   if (!addTabDialogRefs.value) return;
   addTabDialogRefs.value.show(chatTabNameList.value.length + 1);
 });
-const removeTabKey = keys[shortcut.value.removeTab];
+const removeTabKey = keys[getKeyValueToString(shortcut.value.removeTab)];
 whenever(removeTabKey, () => {
   confirmRemoveTab(activeTabIndex.value);
 });
-const prevTabKey = keys[shortcut.value.prevTab];
+const prevTabKey = keys[getKeyValueToString(shortcut.value.prevTab)];
 whenever(prevTabKey, () => {
   const targetIndex = activeTabIndex.value - 1;
   if (targetIndex >= 0) {
     activeTabIndex.value = targetIndex;
   }
 });
-const nextTabKey = keys[shortcut.value.nextTab];
+const nextTabKey = keys[getKeyValueToString(shortcut.value.nextTab)];
 whenever(nextTabKey, () => {
   const targetIndex = activeTabIndex.value + 1;
   if (targetIndex < chatTabNameList.value.length) {
     activeTabIndex.value = targetIndex;
   }
 });
-const cleanTabChatKey = keys[shortcut.value.cleanTabChat];
+const cleanTabChatKey = keys[getKeyValueToString(shortcut.value.cleanTabChat)];
 whenever(cleanTabChatKey, () => {
   cleanTabChat();
 });

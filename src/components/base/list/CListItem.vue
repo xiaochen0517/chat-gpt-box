@@ -6,6 +6,7 @@ type Props = {
   switchValue?: boolean,
   switchEnabled?: boolean,
   content: string,
+  rightContent?: string[],
   tooltip?: string,
   placement?: string,
   leftIcon?: string,
@@ -16,6 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
   switchValue: false,
   switchEnabled: false,
   content: "",
+  rightContent: () => [],
   tooltip: "",
   placement: "top",
   leftIcon: "icon-lock",
@@ -57,6 +59,15 @@ const isDarkMode = computed(() => configStore.isDarkMode);
               class="iconfont icon-question-circle text-xl leading-12 ml-2"
               @click.stop=""/>
         </el-tooltip>
+      </div>
+      <div class="flex flex-row items-center">
+        <span class="text-base leading-12 mr-2 text-gray-400">
+          <span
+              class="mr-2 px-2  py-1 opacity-80 bg-gray-400 bg-opacity-10 font-bold"
+              v-for="(keyCode,index) in rightContent" :key="index">
+            {{ keyCode }}
+          </span>
+        </span>
       </div>
       <el-switch v-if="switchEnabled" v-model="switchValue"/>
       <i v-else class="iconfont" :class="rightIcon"/>

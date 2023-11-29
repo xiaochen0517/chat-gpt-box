@@ -8,6 +8,9 @@ import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useAppStateStore} from "@/store/AppStateStore.ts";
 import router from "@/router/Router.ts";
 import {ElMessageBox} from "element-plus";
+import {KeyMapUtil} from '@/utils/KeyMapUtil.ts'
+
+const {getKeyValueToString} = KeyMapUtil;
 
 const appStateStore = useAppStateStore();
 const instance = getCurrentInstance();
@@ -36,21 +39,21 @@ onMounted(() => {
 const configStore = useConfigStore();
 const shortcut = computed(() => configStore.shortcut);
 const keys = useMagicKeys();
-const prevRobotKey = keys[shortcut.value.prevRobot];
+const prevRobotKey = keys[getKeyValueToString(shortcut.value.prevRobot)];
 whenever(prevRobotKey, () => {
   if (!activeChatInfo.value) return;
   const prevChatInfo = chatListStore.getPrevChatInfo(activeChatInfo.value);
   if (!prevChatInfo) return;
   changeActiveRobot(prevChatInfo);
 });
-const nextRobotKey = keys[shortcut.value.nextRobot];
+const nextRobotKey = keys[getKeyValueToString(shortcut.value.nextRobot)];
 whenever(nextRobotKey, () => {
   if (!activeChatInfo.value) return;
   const nextChatInfo = chatListStore.getNextChatInfo(activeChatInfo.value);
   if (!nextChatInfo) return;
   changeActiveRobot(nextChatInfo);
 });
-const switchRobotKey = keys[shortcut.value.switchRobot];
+const switchRobotKey = keys[getKeyValueToString(shortcut.value.switchRobot)];
 whenever(switchRobotKey, () => {
   if (!activeChatInfo.value) return;
   const switchChatInfo = chatListStore.getSwitchChatInfo(activeChatInfo.value);

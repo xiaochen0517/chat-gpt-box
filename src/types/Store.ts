@@ -1,4 +1,5 @@
 import {RequestUtil} from "@/utils/RequestUtil.ts";
+import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
 
 export interface ChatListStore {
   chatList: ChatInfo[];
@@ -58,17 +59,17 @@ export interface BaseConfig {
 }
 
 export interface ShortcutConfig {
-  focusInput: string;
-  openSetting: string;
-  addTab: string;
-  removeTab: string;
-  cleanTabChat: string;
-  prevTab: string;
-  nextTab: string;
-  addRobot: string;
-  switchRobot: string;
-  prevRobot: string;
-  nextRobot: string;
+  focusInput: KeyMapEnum[];
+  openSetting: KeyMapEnum[];
+  addTab: KeyMapEnum[];
+  removeTab: KeyMapEnum[];
+  cleanTabChat: KeyMapEnum[];
+  prevTab: KeyMapEnum[];
+  nextTab: KeyMapEnum[];
+  addRobot: KeyMapEnum[];
+  switchRobot: KeyMapEnum[];
+  prevRobot: KeyMapEnum[];
+  nextRobot: KeyMapEnum[];
 }
 
 export interface AppStateStore {
