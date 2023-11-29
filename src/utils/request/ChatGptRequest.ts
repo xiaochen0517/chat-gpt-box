@@ -176,10 +176,13 @@ export class ChatGptRequest implements BaseRequest {
 
   private getMaxContextMessage(chatTabInfo: ChatTabInfo): ChatMessage[] {
     if (!this.chatConfig) throw new Error("chat config is null");
-    let tabChatLength = chatTabInfo.chat.length;
+    const tabChatLength = chatTabInfo.chat.length;
+    if (tabChatLength === 0) return [];
     let messages: ChatMessage[] = [];
     // context_max_message plus 1, because the last message is user new message
-    const maxContextMinCount = tabChatLength - (this.chatConfig.context_max_message + 1);
+    let maxContextMinCount = tabChatLength - (this.chatConfig.context_max_message + 1);
+    if (maxContextMinCount < 0) maxContextMinCount = 0;
+    debugger;
     for (let i = tabChatLength - 1; i >= maxContextMinCount; i--) {
       const chatMessage = chatTabInfo.chat[i];
       if (chatMessage.role === "system") continue;
