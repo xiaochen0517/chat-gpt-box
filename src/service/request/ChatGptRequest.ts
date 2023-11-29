@@ -1,5 +1,5 @@
-import {BaseRequest} from "@/utils/request/BaseRequest.ts";
-import {BaseConfig, ChatInfo, ChatMessage, ChatOptions, ChatTabInfo} from "@/types/Store.ts";
+import {BaseRequest} from "@/service/request/BaseRequest.ts";
+import {BaseConfig, ChatInfo, ChatMessage, ChatMessageRole, ChatOptions, ChatTabInfo} from "@/types/Store.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {RequestOptions} from "@/types/request/RequestOptions.ts";
@@ -158,7 +158,7 @@ export class ChatGptRequest implements BaseRequest {
     const chatTabInfo = this.getChatTabInfo(this.requestOptions.tabIndex);
     let messages: ChatMessage[] = this.getMaxContextMessage(chatTabInfo);
     messages = this.filterMessagesWithTokenLimit(messages);
-    messages.unshift({role: "system", content: this.chatInfo.prompt});
+    messages.unshift({role: ChatMessageRole.System, content: this.chatInfo.prompt});
     console.log("send messages: ", messages);
     return messages;
   }

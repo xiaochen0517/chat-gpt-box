@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {ChatMessage, ChatTabInfo, ChatTabsStore} from "@/types/Store.ts";
+import {ChatMessage, ChatMessageRole, ChatTabInfo, ChatTabsStore} from "@/types/Store.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 
 export const useChatTabsStore = defineStore("chatTabs", {
@@ -11,7 +11,7 @@ export const useChatTabsStore = defineStore("chatTabs", {
             name: "default",
             generating: false,
             request: null,
-            chat: [{role: "system", content: "You are a helpful assistant."}],
+            chat: [{role: ChatMessageRole.System, content: "You are a helpful assistant."}],
           },
         ],
         default1: [
@@ -19,7 +19,7 @@ export const useChatTabsStore = defineStore("chatTabs", {
             name: "default",
             generating: false,
             request: null,
-            chat: [{role: "system", content: "You are a helpful assistant. Please ask me anything."}],
+            chat: [{role: ChatMessageRole.System, content: "You are a helpful assistant. Please ask me anything."}],
           },
         ],
       }
@@ -51,7 +51,7 @@ export const useChatTabsStore = defineStore("chatTabs", {
         name: tabName,
         generating: false,
         request: null,
-        chat: [{role: "system", content: chatInfo.prompt}],
+        chat: [{role: ChatMessageRole.System, content: chatInfo.prompt}],
       });
     },
     removeChatTabs(id: string) {
@@ -62,7 +62,7 @@ export const useChatTabsStore = defineStore("chatTabs", {
       if (!id || !this.chatTabs[id]) return;
       let chatInfo = useChatListStore().getChatInfo(id);
       if (!chatInfo) return;
-      this.chatTabs[id][tabIndex].chat = [{role: "system", content: chatInfo.prompt}];
+      this.chatTabs[id][tabIndex].chat = [{role: ChatMessageRole.System, content: chatInfo.prompt}];
     },
     removeChatTab(id: string, tabIndex: number) {
       if (!id || !this.chatTabs[id]) return;
@@ -81,11 +81,11 @@ export const useChatTabsStore = defineStore("chatTabs", {
     },
     addUserMessage(id: string, tabIndex: number, content: string) {
       if (!id || !this.chatTabs[id]) return;
-      this.chatTabs[id][tabIndex].chat.push({role: "user", content: content});
+      this.chatTabs[id][tabIndex].chat.push({role: ChatMessageRole.User, content: content});
     },
     addAssistantMessage(id: string, tabIndex: number) {
       if (!id || !this.chatTabs[id]) return;
-      this.chatTabs[id][tabIndex].chat.push({role: "assistant", content: ""});
+      this.chatTabs[id][tabIndex].chat.push({role: ChatMessageRole.Assistant, content: ""});
     },
     appendAssistantMsgContent(id: string, tabIndex: number, content: string) {
       if (!id || !this.chatTabs[id]) return;

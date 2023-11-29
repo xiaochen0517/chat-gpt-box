@@ -1,7 +1,7 @@
 import {ChatInfo, ChatType} from "@/types/Store.ts";
-import {ChatGptRequest} from "@/utils/request/ChatGptRequest.ts";
-import {DallERequest} from "@/utils/request/DallERequest.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
+import {ChatGptRequest} from "@/service/request/ChatGptRequest.ts";
+import {DallERequest} from "@/service/request/DallERequest.ts";
 
 const chatListStore = useChatListStore();
 export const createRequest = (chatInfo: ChatInfo) => {
