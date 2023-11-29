@@ -1,4 +1,4 @@
-import {BaseRequest} from "@/utils/request/BaseRequest.ts";
+import {BaseRequest} from "@/service/request/BaseRequest.ts";
 
 export type ChatListStore = {
   chatList: ChatInfo[];

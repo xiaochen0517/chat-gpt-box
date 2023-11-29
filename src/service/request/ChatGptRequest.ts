@@ -44,9 +44,11 @@ export class ChatGptRequest implements BaseRequest {
     } catch (error) {
       if (error instanceof Error) {
         console.error(error.message);
+        this.setErrorMsgContent(error.message);
         return Promise.reject(error.message);
       }
       console.error(error);
+      this.setErrorMsgContent(String(error));
       return Promise.reject(error);
     }
   }
@@ -94,6 +96,7 @@ export class ChatGptRequest implements BaseRequest {
     this.abortController = new AbortController();
     const url: string = this.chatConfig?.apiUrl + CHAT_GPT_API_SUFFIX;
     let request: RequestInit = this.generateRequest();
+    this.setGenerating(true);
     return this.sendFetch(url, request);
   }
 
@@ -166,6 +169,7 @@ export class ChatGptRequest implements BaseRequest {
   private pushUserMessage2ChatTab(tabIndex: number) {
     if (!this.requestOptions) throw new Error("request options is null");
     chatTabsStore.addUserMessage(this.chatInfo.id, tabIndex, this.requestOptions.message);
+    this.refreshCallbackFunc();
   }
 
   private getChatTabInfo(tabIndex: number): ChatTabInfo {
@@ -182,7 +186,6 @@ export class ChatGptRequest implements BaseRequest {
     // context_max_message plus 1, because the last message is user new message
     let maxContextMinCount = tabChatLength - (this.chatConfig.context_max_message + 1);
     if (maxContextMinCount < 0) maxContextMinCount = 0;
-    debugger;
     for (let i = tabChatLength - 1; i >= maxContextMinCount; i--) {
       const chatMessage = chatTabInfo.chat[i];
       if (chatMessage.role === "system") continue;
@@ -213,6 +216,7 @@ export class ChatGptRequest implements BaseRequest {
   private addAssistantMessage() {
     if (!this.requestOptions) throw new Error("request options is null");
     chatTabsStore.addAssistantMessage(this.chatInfo.id, this.requestOptions.tabIndex);
+    this.refreshCallbackFunc();
   }
 
   private async readResponse(result: ReadableStreamReadResult<any>) {
@@ -236,8 +240,14 @@ export class ChatGptRequest implements BaseRequest {
         this.setGenerating(false);
         return;
       }
-      // parse json data
-      let resultData = JSON.parse(data);
+      let resultData: any;
+      try {
+        // parse json data
+        resultData = JSON.parse(data);
+      } catch (error) {
+        console.error("parse json data error: ", data, error);
+        throw error;
+      }
       // check error
       if (resultData.error) {
         this.setErrorMsgContent(resultData.error.message);

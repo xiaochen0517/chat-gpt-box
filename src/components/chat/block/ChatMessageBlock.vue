@@ -1,17 +1,27 @@
 <script setup lang="ts">
 import {CheckOutlined, CopyOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons-vue";
 import MarkdownBlock from "@/components/chat/block/MarkdownBlock.vue";
-import {ref} from "vue";
-import {ChatMessage} from "@/types/Store.ts";
+import {ref, watch} from "vue";
+import {ChatMessage, ChatMessageRole} from "@/types/Store.ts";
 
 type Props = {
   message: ChatMessage;
   index: number | null;
+  generating: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
-  message: () => ({role: "system", content: "..."}),
-  index: null
+  message: () => ({role: ChatMessageRole.System, content: "..."}),
+  index: null,
+  generating: false,
 });
+
+const propsGenerating = ref(false);
+watch(() => props.generating,
+    (value) => {
+      propsGenerating.value = value;
+    },
+    {immediate: true}
+);
 
 const copySuccess = ref(false);
 const copyMessageContent = () => {
@@ -46,7 +56,7 @@ const copyMessageContent = () => {
             class="w-6 h-6"/>
       </div>
       <div class="flex-1 min-w-0 scroll-auto">
-        <MarkdownBlock :content="message?.content"/>
+        <MarkdownBlock :content="message?.content + (propsGenerating?' ✨':'')"/>
       </div>
     </div>
     <div
