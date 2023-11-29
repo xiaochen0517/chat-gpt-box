@@ -1,4 +1,4 @@
-import {BaseRequest} from "@/utils/request/BaseRequest.ts";
+import {BaseRequest} from "@/service/request/BaseRequest.ts";
 import {ChatInfo} from "@/types/Store.ts";
 import {RequestOptions} from "@/types/request/RequestOptions.ts";
 
