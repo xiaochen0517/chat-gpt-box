@@ -34,22 +34,23 @@ onMounted(() => {
  */
 const configStore = useConfigStore();
 const shortcut = computed(() => configStore.shortcut);
+const shortcutStringConfig = computed(() => configStore.shortcutStringConfig)
 const keys = useMagicKeys();
-const prevRobotKey = keys[shortcut.value.prevRobot];
+const prevRobotKey = keys[shortcutStringConfig.value.prevRobot];
 whenever(prevRobotKey, () => {
   if (!activeChatInfo.value) return;
   const prevChatInfo = chatListStore.getPrevChatInfo(activeChatInfo.value);
   if (!prevChatInfo) return;
   changeActiveChat(prevChatInfo);
 });
-const nextRobotKey = keys[shortcut.value.nextRobot];
+const nextRobotKey = keys[shortcutStringConfig.value.nextRobot];
 whenever(nextRobotKey, () => {
   if (!activeChatInfo.value) return;
   const nextChatInfo = chatListStore.getNextChatInfo(activeChatInfo.value);
   if (!nextChatInfo) return;
   changeActiveChat(nextChatInfo);
 });
-const switchRobotKey = keys[shortcut.value.switchRobot];
+const switchRobotKey = keys[shortcutStringConfig.value.switchRobot];
 whenever(switchRobotKey, () => {
   if (!activeChatInfo.value) return;
   const switchChatInfo = chatListStore.getSwitchChatInfo(activeChatInfo.value);

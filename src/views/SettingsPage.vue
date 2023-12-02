@@ -24,6 +24,10 @@ const jumpToHomePage = () => {
   router.push({path: "/"});
 }
 
+const jumpToKeyMapSettingPage = () => {
+  router.push({path: "/settings/keyMap"});
+}
+
 const configStore = useConfigStore();
 
 const isDarkMode = ref(false);
@@ -114,8 +118,12 @@ const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) =>
         <CListItem
             content="Response max tokens"
             left-icon="icon-rollback"
-            :bottom-border="false"
             @click="openDialog('ResponseMaxTokensDialog', 'response_max_tokens')"/>
+        <CListItem
+            content="KeyMap"
+            left-icon="icon-gold"
+            :bottom-border="false"
+            @click="jumpToKeyMapSettingPage"/>
       </div>
     </div>
     <Component ref="currentDialogRefs" :is="currentDialog" v-if="currentDialog" @commit="saveConfig"/>

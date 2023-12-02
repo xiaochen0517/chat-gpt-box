@@ -12,6 +12,11 @@ const routes = [
     component: () => import('../views/SettingsPage.vue')
   },
   {
+    path:"/settings/keyMap",
+    name:"KeyMap",
+    component: () => import('../views/KeyMapPage.vue')
+  },
+  {
     path: "/chat/editor/:chatId",
     name: "ChatEditor",
     component: () => import('../views/ChatEditorPage.vue')

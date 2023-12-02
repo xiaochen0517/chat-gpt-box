@@ -15,32 +15,33 @@ import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
  */
 const configStore = useConfigStore();
 const shortcut = computed(() => configStore.shortcut);
+const shortcutStringConfig = computed(() => configStore.shortcutStringConfig);
 const keys = useMagicKeys();
-const addTabKey = keys[shortcut.value.addTab];
+const addTabKey = keys[shortcutStringConfig.value.addTab];
 const addTabDialogRefs = ref<InstanceType<typeof AddTabDialog> | null>(null);
 whenever(addTabKey, () => {
   if (!addTabDialogRefs.value) return;
   addTabDialogRefs.value.show(chatTabNameList.value.length + 1);
 });
-const removeTabKey = keys[shortcut.value.removeTab];
+const removeTabKey = keys[shortcutStringConfig.value.removeTab];
 whenever(removeTabKey, () => {
   confirmRemoveTab(activeTabIndex.value);
 });
-const prevTabKey = keys[shortcut.value.prevTab];
+const prevTabKey = keys[shortcutStringConfig.value.prevTab];
 whenever(prevTabKey, () => {
   const targetIndex = activeTabIndex.value - 1;
   if (targetIndex >= 0) {
     activeTabIndex.value = targetIndex;
   }
 });
-const nextTabKey = keys[shortcut.value.nextTab];
+const nextTabKey = keys[shortcutStringConfig.value.nextTab];
 whenever(nextTabKey, () => {
   const targetIndex = activeTabIndex.value + 1;
   if (targetIndex < chatTabNameList.value.length) {
     activeTabIndex.value = targetIndex;
   }
 });
-const cleanTabChatKey = keys[shortcut.value.cleanTabChat];
+const cleanTabChatKey = keys[shortcutStringConfig.value.cleanTabChat];
 whenever(cleanTabChatKey, () => {
   cleanTabChat();
 });

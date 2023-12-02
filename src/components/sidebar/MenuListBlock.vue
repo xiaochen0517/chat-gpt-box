@@ -4,6 +4,7 @@ import {useMagicKeys, whenever} from "@vueuse/core";
 import router from "@/router/Router.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 
+
 const configStore = useConfigStore();
 
 const isDarkMode = computed(() => configStore.isDarkMode);
@@ -12,12 +13,13 @@ const handleChange = () => {
 };
 
 const shortcut = computed(() => configStore.shortcut);
+const shortcutStringConfig = computed(() => configStore.shortcutStringConfig);
 const keys = useMagicKeys();
-const addRobotKey = keys[shortcut.value.addRobot];
+const addRobotKey = keys[shortcutStringConfig.value.addRobot];
 whenever(addRobotKey, () => {
   addChatClick();
 });
-const openSettingKey = keys[shortcut.value.openSetting];
+const openSettingKey = keys[shortcutStringConfig.value.openSetting];
 whenever(openSettingKey, () => {
   openSettingsWindow();
 });
@@ -33,7 +35,8 @@ const openSettingsWindow = () => {
 
 <template>
   <div class="menu-list-block p-2">
-    <div class="w-full h-14 px-2 flex flex-row items-center rounded-xl border border-neutral-200 dark:border-neutral-700 gap-2">
+    <div
+        class="w-full h-14 px-2 flex flex-row items-center rounded-xl border border-neutral-200 dark:border-neutral-700 gap-2">
       <div
           class="group h-10 flex-1 flex justify-center items-center rounded-xl bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-700 hover:dark:bg-neutral-600 active:dark:bg-neutral-700 cursor-pointer"
           @click="addChatClick">
