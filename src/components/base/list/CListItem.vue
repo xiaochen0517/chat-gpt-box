@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {computed, getCurrentInstance, ref, watch} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
+import TheKeyMapCode from "@/components/base/list/TheKeyMapCode.vue";
 
 type Props = {
   switchValue?: boolean,
@@ -60,14 +61,8 @@ const isDarkMode = computed(() => configStore.isDarkMode);
               @click.stop=""/>
         </el-tooltip>
       </div>
-      <div class="flex flex-row items-center">
-        <span class="text-base leading-12 mr-2 text-gray-400">
-          <span
-              class="mr-2 px-2  py-1 opacity-80 bg-gray-400 bg-opacity-10 font-bold"
-              v-for="(keyCode,index) in rightContent" :key="index">
-            {{ keyCode }}
-          </span>
-        </span>
+      <div v-if="rightContent.length>0" class="flex flex-row items-center">
+        <TheKeyMapCode v-for="(keyCode,index) in rightContent" :key="index" :key-map-code="keyCode"/>
       </div>
       <el-switch v-if="switchEnabled" v-model="switchValue"/>
       <i v-else class="iconfont" :class="rightIcon"/>

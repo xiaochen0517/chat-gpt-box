@@ -6,7 +6,6 @@ import {useConfigStore} from "@/store/ConfigStore.ts";
 import KeyMapChangeDialog from "@/components/setting/dialog/KeyMapChangeDialog.vue";
 import {computed, ref} from "vue";
 import {ShortcutConfigKey} from "@/types/Store.ts";
-import {ArrayUtil} from "@/utils/ArrayUtil.ts";
 
 const configStore = useConfigStore();
 
@@ -37,7 +36,7 @@ function openKeyMapChangeDialog(shortcutConfigKey: ShortcutConfigKey) {
             v-for="(keyMapList,shortcutKey,index) in configStore.shortcut"
             :key="shortcutKey"
             :content="shortcutKey"
-            :right-content="ArrayUtil.formatList2UpperCase(keyMapList)"
+            :right-content="keyMapList"
             :bottom-border="index !== shortcutSize - 1"
             @click="openKeyMapChangeDialog(shortcutKey)"
         />

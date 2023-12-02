@@ -73,6 +73,11 @@ function confirm() {
     return;
   }
 
+  if (RepeatKeyName && repeatTextShow.value) {
+    // set Empty
+    configStore.setShortcut(RepeatKeyName as ShortcutConfigKey, []);
+  }
+  
   // not repeat, or prompt has been saved
   configStore.setShortcut(editedShortcutName.value, editedKeyMapList.value as KeyMapEnum[]);
   hide();
@@ -86,7 +91,7 @@ function confirm() {
       <div class="flex justify-center w-full h-14">
         <div v-if="editedKeyMapList.length===0" class="mt-2.5 text-gray-400"> Press any key to set shortcut</div>
         <div class="p-2 m-2 px-4 opacity-80 bg-gray-200 bg-opacity-10 font-bold" v-for="key in editedKeyMapList">
-          {{ key.toUpperCase() }}
+          {{ KeyMapUtil.formatShortcutKeyMap2ShowCode(key) }}
         </div>
       </div>
       <div v-show="repeatTextShow" class="font-bold text-center mt-4">

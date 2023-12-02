@@ -55,4 +55,11 @@ export class KeyMapUtil {
     }
     return shortcutStringConfig as ShortcutStringConfig;
   }
+
+  public static formatShortcutKeyMap2ShowCode(code: string) {
+    if (code === KeyMapEnum.CTRL) {
+      code = "ctrl";
+    }
+    return code.toUpperCase();
+  }
 }
