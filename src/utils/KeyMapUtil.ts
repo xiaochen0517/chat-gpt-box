@@ -1,66 +1,58 @@
 import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {ArrayUtil} from "@/utils/ArrayUtil.ts";
+import {ShortcutConfig, ShortcutConfigKey, ShortcutStringConfig} from "@/types/Store.ts";
+import _ from "lodash";
 
 export class KeyMapUtil {
-  static shortcut = useConfigStore().shortcut;
 
-  /**
-   * 对快捷键进行排序
-   */
-  public static sortSaveKeys(keyValues: KeyMapEnum[]): KeyMapEnum[] {
-    let sortKeyList = [...keyValues];
-    // 优先级排序
-    let order = ["control", "shift", "alt", "tab"];
-    sortKeyList.sort((a, b) => {
-      let aIndex = order.indexOf(a);
-      let bIndex = order.indexOf(b);
+  public static sortKeyMapEnumList(KeyMapList: KeyMapEnum[]): KeyMapEnum[] {
+    KeyMapList = _.cloneDeep(KeyMapList);
+    let modifierKeyList = ["control", "shift", "alt"];
+    KeyMapList.sort((firstKey, secondKey) => {
+      let firstKeyInModifierKeyListIndex = modifierKeyList.indexOf(firstKey);
+      let secondKeyInModifierKeyListIndex = modifierKeyList.indexOf(secondKey);
 
-      let aIncludes = order.includes(a);
-      let bIncludes = order.includes(b);
+      let firstKeyIsModifierKey = firstKeyInModifierKeyListIndex >= 0;
+      let secondIsModifierKey = secondKeyInModifierKeyListIndex >= 0;
 
-      if (aIncludes && bIncludes) {
-        return aIndex - bIndex;
-      } else if (aIncludes) {
-        return -1;
-      } else if (bIncludes) {
-        return 1;
-      } else {
-        return a.localeCompare(b);
+      if (firstKeyIsModifierKey && secondIsModifierKey) {
+        return firstKeyInModifierKeyListIndex - secondKeyInModifierKeyListIndex;
       }
+      if (firstKeyIsModifierKey) return -1;
+      if (secondIsModifierKey) return 1;
+      return firstKey.localeCompare(secondKey);
     })
-    return sortKeyList;
+    return KeyMapList;
   }
 
-  /**
-   * 查找重复的 快捷键名称
-   * @param keyValues 根据Values查找
-   * @returns {string} 重复的快捷键名称
-   */
-  public static getRepeatKeyName(keyValues: KeyMapEnum[]): string {
-    if (!keyValues) {
-      throw new Error("keyValues is null");
-    }
-    let equalsKeyName = "";
-    Object.entries(this.shortcut).some(([keyName, values]) => {
-      if (ArrayUtil.isEqualsIgnoreOrder(values, keyValues)) {
-        equalsKeyName = keyName;
+  public static selectShortcutKeyByKeyMapList(keyMapList: KeyMapEnum[]): string {
+    if (!keyMapList || keyMapList.length === 0) throw new Error("keyMapList is null");
+
+    const configStore = useConfigStore();
+    let selectKey = "";
+    Object.entries(configStore.shortcut).some(([key, valueList]) => {
+      if (ArrayUtil.isEqualsIgnoreOrder(keyMapList, valueList)) {
+        selectKey = key;
         return true;
       }
     })
-    return equalsKeyName;
+    return selectKey;
   }
 
-  /**
-   * 根据快捷键名称获取快捷键值, 以字符串形式返回
-   * @param keyValues
-   */
-  public static getKeyValueToString(keyValues:  KeyMapEnum[], combination?: string): string {
-    if (!keyValues) return "";
+  public static formatShortcutKeyMapList2String(keyMapList: KeyMapEnum[] = [], isLowerCase = true, joinCode = "+"): string {
+    if (!keyMapList) return "";
 
-    return keyValues
-      .map(key => key.toLowerCase())
-      .join(combination || "+");
+    let joinString: string = keyMapList.join(joinCode);
+    return isLowerCase ? joinString.toLowerCase() : joinString;
   }
 
+  public static formatShortcutConfig2ShortcutStringConfig(shortcutConfig: ShortcutConfig): ShortcutStringConfig {
+    let shortcutStringConfig: Partial<ShortcutStringConfig> = {};
+    for (const keyStr in shortcutConfig) {
+      const key = keyStr as ShortcutConfigKey;
+      shortcutStringConfig[key] = this.formatShortcutKeyMapList2String(shortcutConfig[key]);
+    }
+    return shortcutStringConfig as ShortcutStringConfig;
+  }
 }

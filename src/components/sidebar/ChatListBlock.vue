@@ -9,7 +9,7 @@ import {KeyMapUtil} from '@/utils/KeyMapUtil.ts'
 import draggable from 'vuedraggable';
 import ChatListItem from "@/components/sidebar/ChatListItem.vue";
 
-const {getKeyValueToString} = KeyMapUtil;
+const {formatShortcutKeyMapList2String} = KeyMapUtil;
 const appStateStore = useAppStateStore();
 const instance = getCurrentInstance();
 const activeChatInfo = ref<ChatInfo | null>(null);
@@ -37,21 +37,21 @@ onMounted(() => {
 const configStore = useConfigStore();
 const shortcut = computed(() => configStore.shortcut);
 const keys = useMagicKeys();
-const prevRobotKey = keys[getKeyValueToString(shortcut.value.prevRobot)];
+const prevRobotKey = keys[formatShortcutKeyMapList2String(shortcut.value.prevRobot)];
 whenever(prevRobotKey, () => {
   if (!activeChatInfo.value) return;
   const prevChatInfo = chatListStore.getPrevChatInfo(activeChatInfo.value);
   if (!prevChatInfo) return;
   changeActiveChat(prevChatInfo);
 });
-const nextRobotKey = keys[getKeyValueToString(shortcut.value.nextRobot)];
+const nextRobotKey = keys[formatShortcutKeyMapList2String(shortcut.value.nextRobot)];
 whenever(nextRobotKey, () => {
   if (!activeChatInfo.value) return;
   const nextChatInfo = chatListStore.getNextChatInfo(activeChatInfo.value);
   if (!nextChatInfo) return;
   changeActiveChat(nextChatInfo);
 });
-const switchRobotKey = keys[getKeyValueToString(shortcut.value.switchRobot)];
+const switchRobotKey = keys[formatShortcutKeyMapList2String(shortcut.value.switchRobot)];
 whenever(switchRobotKey, () => {
   if (!activeChatInfo.value) return;
   const switchChatInfo = chatListStore.getSwitchChatInfo(activeChatInfo.value);

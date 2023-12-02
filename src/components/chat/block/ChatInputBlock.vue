@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
 const configStore = useConfigStore();
 const keys = useMagicKeys();
 const shortcut = computed(() => configStore.shortcut);
-const focusInputKey = keys[KeyMapUtil.getKeyValueToString(shortcut.value.focusInput)];
+const focusInputKey = keys[KeyMapUtil.formatShortcutKeyMapList2String(shortcut.value.focusInput)];
 whenever(focusInputKey, () => {
   focusInput();
 });

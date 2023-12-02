@@ -1,7 +1,4 @@
 export enum KeyMapEnum {
-  CONTROL = 'control',
-  SHIFT = 'shift',
-  ALT = 'alt',
   A = 'a',
   B = 'b',
   C = 'c',
@@ -28,11 +25,13 @@ export enum KeyMapEnum {
   X = 'x',
   Y = 'y',
   Z = 'z',
-  "BACKSLASH" = '/',
-  "DOWN" = "down",
-  "UP" = "up",
-  "LEFT" = "left",
-  "RIGHT" = "right",
-  "TAB" = "tab",
+  CTRL = 'control',
+  SHIFT = 'shift',
+  ALT = 'alt',
+  BACKSLASH = '/',
+  DOWN = "down",
+  UP = "up",
+  LEFT = "left",
+  RIGHT = "right",
 }
 

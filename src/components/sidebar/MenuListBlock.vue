@@ -5,7 +5,7 @@ import router from "@/router/Router.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {KeyMapUtil} from "@/utils/KeyMapUtil.ts";
 
-let {getKeyValueToString} = KeyMapUtil;
+let {formatShortcutKeyMapList2String} = KeyMapUtil;
 
 const configStore = useConfigStore();
 
@@ -16,11 +16,11 @@ const handleChange = () => {
 
 const shortcut = computed(() => configStore.shortcut);
 const keys = useMagicKeys();
-const addRobotKey = keys[getKeyValueToString(shortcut.value.addRobot)];
+const addRobotKey = keys[formatShortcutKeyMapList2String(shortcut.value.addRobot)];
 whenever(addRobotKey, () => {
   addChatClick();
 });
-const openSettingKey = keys[getKeyValueToString(shortcut.value.openSetting)];
+const openSettingKey = keys[formatShortcutKeyMapList2String(shortcut.value.openSetting)];
 whenever(openSettingKey, () => {
   openSettingsWindow();
 });

@@ -72,6 +72,12 @@ export interface ShortcutConfig {
   nextRobot: KeyMapEnum[];
 }
 
+export type ShortcutConfigKey = keyof ShortcutConfig;
+
+export type ShortcutStringConfig = {
+  [key in keyof ShortcutConfig]: string;
+}
+
 export interface AppStateStore {
   currentChatId: string | null;
   currentTabIndex: number;

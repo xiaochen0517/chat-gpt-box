@@ -1,21 +1,21 @@
 import {defineStore} from "pinia";
-import {BaseConfig, ConfigStore, ShortcutConfig} from "@/types/Store.ts";
+import {BaseConfig, ConfigStore, ShortcutConfig, ShortcutConfigKey, ShortcutStringConfig} from "@/types/Store.ts";
 import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
+import _ from "lodash";
+import {KeyMapUtil} from "@/utils/KeyMapUtil.ts";
 
-export function getBaseShortcut(): ShortcutConfig {
-  return {
-    focusInput: [KeyMapEnum.CONTROL, KeyMapEnum.BACKSLASH],
-    openSetting: [KeyMapEnum.CONTROL, KeyMapEnum.S],
-    addTab: [KeyMapEnum.CONTROL, KeyMapEnum.T],
-    removeTab: [KeyMapEnum.CONTROL, KeyMapEnum.W],
-    cleanTabChat: [KeyMapEnum.CONTROL, KeyMapEnum.E],
-    prevTab: [KeyMapEnum.CONTROL, KeyMapEnum.LEFT],
-    nextTab: [KeyMapEnum.CONTROL, KeyMapEnum.RIGHT],
-    addRobot: [KeyMapEnum.CONTROL, KeyMapEnum.N],
-    switchRobot: [KeyMapEnum.CONTROL, KeyMapEnum.TAB],
-    prevRobot: [KeyMapEnum.CONTROL, KeyMapEnum.UP],
-    nextRobot: [KeyMapEnum.CONTROL, KeyMapEnum.DOWN],
-  }
+const DEFAULT_SHORTCUT: ShortcutConfig = {
+  focusInput: [KeyMapEnum.CTRL, KeyMapEnum.BACKSLASH],
+  openSetting: [KeyMapEnum.CTRL, KeyMapEnum.S],
+  addTab: [KeyMapEnum.CTRL, KeyMapEnum.T],
+  removeTab: [KeyMapEnum.CTRL, KeyMapEnum.W],
+  cleanTabChat: [KeyMapEnum.CTRL, KeyMapEnum.E],
+  prevTab: [KeyMapEnum.CTRL, KeyMapEnum.LEFT],
+  nextTab: [KeyMapEnum.CTRL, KeyMapEnum.RIGHT],
+  addRobot: [KeyMapEnum.CTRL, KeyMapEnum.N],
+  switchRobot: [KeyMapEnum.CTRL, KeyMapEnum.TAB],
+  prevRobot: [KeyMapEnum.CTRL, KeyMapEnum.UP],
+  nextRobot: [KeyMapEnum.CTRL, KeyMapEnum.DOWN],
 }
 
 export const useConfigStore = defineStore("config", {
@@ -33,8 +33,13 @@ export const useConfigStore = defineStore("config", {
         context_max_tokens: 2000,
         response_max_tokens: 0,
       },
-      shortcut: getBaseShortcut()
+      shortcut: _.cloneDeep(DEFAULT_SHORTCUT)
     }
+  },
+  getters: {
+    shortcutStringConfig(state): ShortcutStringConfig {
+      return KeyMapUtil.formatShortcutConfig2ShortcutStringConfig(state.shortcut);
+    },
   },
   actions: {
     setDarkMode(isDarkMode: boolean) {
@@ -71,17 +76,16 @@ export const useConfigStore = defineStore("config", {
       this.baseConfig.response_max_tokens = responseMaxTokens;
     },
     resetShortcut() {
-      this.shortcut = getBaseShortcut();
+      this.shortcut = _.cloneDeep(DEFAULT_SHORTCUT);
     },
-    setShortcut(config: ShortcutConfig) {
+    setShortcutConfig(config: ShortcutConfig) {
       this.shortcut = config;
     },
-    updateShortcutKeyValues(keyName: keyof ShortcutConfig, keyValues: KeyMapEnum[]) {
+    setShortcut(keyName: ShortcutConfigKey, keyValues: KeyMapEnum[]) {
       if (!keyValues) return false;
-
       let shortcut = this.shortcut;
       shortcut[keyName] = keyValues;
-      this.setShortcut(shortcut);
+      this.setShortcutConfig(shortcut);
     },
   },
   persist: {

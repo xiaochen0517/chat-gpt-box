@@ -48,7 +48,7 @@ watch(currentKeys, (keyDownValueList: any[]) => {
     saveKeys.value.push(keyDownValue);
   })
   // 排序
-  saveKeys.value = KeyMapUtil.sortSaveKeys(saveKeys.value);
+  saveKeys.value = KeyMapUtil.sortKeyMapEnumList(saveKeys.value);
 })
 
 // 是否显示重复的提示
@@ -58,7 +58,7 @@ const configStore = useConfigStore();
 function confirm() {
   if (!saveKeyName.value) return;
   // 查找重复的键
-  let RepeatKeyName = KeyMapUtil.getRepeatKeyName(saveKeys.value);
+  let RepeatKeyName = KeyMapUtil.selectShortcutKeyByKeyMapList(saveKeys.value);
 
   // 是否和当前的快捷键名称重复
   if (RepeatKeyName === saveKeyName.value) {
@@ -73,7 +73,7 @@ function confirm() {
   }
 
   // 不重复，或者 提示过了, 则保存
-  configStore.updateShortcutKeyValues(saveKeyName.value, saveKeys.value);
+  configStore.setShortcut(saveKeyName.value, saveKeys.value);
   hide();
 }
 
