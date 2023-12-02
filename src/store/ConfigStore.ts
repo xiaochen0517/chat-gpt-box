@@ -33,7 +33,8 @@ export const useConfigStore = defineStore("config", {
         context_max_tokens: 2000,
         response_max_tokens: 0,
       },
-      shortcut: _.cloneDeep(DEFAULT_SHORTCUT)
+      shortcut: _.cloneDeep(DEFAULT_SHORTCUT),
+      shortcutKeyMapMaxSize: 5,
     }
   },
   getters: {

@@ -56,6 +56,7 @@ export type ConfigStore = {
   isDarkMode: boolean;
   baseConfig: BaseConfig;
   shortcut: ShortcutConfig;
+  shortcutKeyMapMaxSize: number;
 }
 
 export type BaseConfig = {

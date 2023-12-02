@@ -29,10 +29,10 @@ export enum KeyMapEnum {
   SHIFT = 'shift',
   ALT = 'alt',
   BACKSLASH = '/',
-  DOWN = "down",
-  UP = "up",
-  LEFT = "left",
-  RIGHT = "right",
+  DOWN = "arrowdown",
+  UP = "arrowup",
+  LEFT = "arrowleft",
+  RIGHT = "arrowright",
   TAB = "tab",
 }
 

@@ -6,9 +6,11 @@ import {KeyMapUtil} from "@/utils/KeyMapUtil.ts";
 
 type Props = {
   keyMapCode: string,
+  size: number
 }
 const props = withDefaults(defineProps<Props>(), {
   keyMapCode: "",
+  size: 100
 });
 
 const keyMapCodeEnum = {
@@ -30,7 +32,7 @@ const iconClass = computed(() => {
 </script>
 
 <template>
-  <span class="font-bold text-sm px-2 py-1 opacity-60 bg-gray-400 bg-opacity-10 scale-75">
+  <span class="font-bold text-sm px-2 py-1 opacity-60 bg-gray-400 bg-opacity-10" :class="`scale-${props.size}`">
     <i v-if="iconClass" class="iconfont  " :class="iconClass"/>
     <span v-else>{{ KeyMapUtil.formatShortcutKeyMap2ShowCode(props.keyMapCode) }}</span>
   </span>

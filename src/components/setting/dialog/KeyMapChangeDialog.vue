@@ -6,6 +6,7 @@ import {ShortcutConfigKey} from "@/types/Store.ts";
 import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
 import {KeyMapUtil} from '@/utils/KeyMapUtil.ts'
 import {useConfigStore} from '@/store/ConfigStore.ts'
+import TheKeyMapCode from "@/components/base/list/TheKeyMapCode.vue";
 
 const showDialog = ref(false);
 
@@ -30,6 +31,7 @@ defineExpose({
   hide
 })
 
+const configStore = useConfigStore();
 // The keyName currently being edited
 let editedShortcutName = ref<ShortcutConfigKey | null>(null);
 // The keyMapList currently being edited
@@ -42,6 +44,12 @@ const KeyMapEnumValueList: string[] = Object.values(KeyMapEnum);
 // sort the keyMapList
 watch(currentList, (list: string[]) => {
   list.forEach((pressedKey: string) => {
+
+    if (pressedKey === "backspace") {
+      editedKeyMapList.value.length = editedKeyMapList.value.length - 1;
+    }
+    if (editedKeyMapList.value.length >= configStore.shortcutKeyMapMaxSize) return;
+
     // is not a keyMap
     if (!KeyMapEnumValueList.includes(pressedKey)) return;
     // is already in the keyMapList
@@ -54,7 +62,6 @@ watch(currentList, (list: string[]) => {
 })
 
 let repeatTextShow = ref(false);
-const configStore = useConfigStore();
 
 function confirm() {
   if (!editedShortcutName.value) return;
@@ -77,7 +84,7 @@ function confirm() {
     // set Empty
     configStore.setShortcut(RepeatKeyName as ShortcutConfigKey, []);
   }
-  
+
   // not repeat, or prompt has been saved
   configStore.setShortcut(editedShortcutName.value, editedKeyMapList.value as KeyMapEnum[]);
   hide();
@@ -90,11 +97,9 @@ function confirm() {
     <div class="flex flex-col w-full">
       <div class="flex justify-center w-full h-14">
         <div v-if="editedKeyMapList.length===0" class="mt-2.5 text-gray-400"> Press any key to set shortcut</div>
-        <div class="p-2 m-2 px-4 opacity-80 bg-gray-200 bg-opacity-10 font-bold" v-for="key in editedKeyMapList">
-          {{ KeyMapUtil.formatShortcutKeyMap2ShowCode(key) }}
-        </div>
+        <TheKeyMapCode v-for="key in editedKeyMapList" class="h-min mx-2 mt-4" :key-map-code="key"/>
       </div>
-      <div v-show="repeatTextShow" class="font-bold text-center mt-4">
+      <div v-show="repeatTextShow" class="font-bold text-center mt-2">
         Keyboard shortcuts repeat: <span class="text-yellow-600">{{ editedShortcutName }}</span>.
         <div class="mt-2">Do you need to replace it ?</div>
       </div>

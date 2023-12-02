@@ -62,7 +62,7 @@ const isDarkMode = computed(() => configStore.isDarkMode);
         </el-tooltip>
       </div>
       <div v-if="rightContent.length>0" class="flex flex-row items-center">
-        <TheKeyMapCode v-for="(keyCode,index) in rightContent" :key="index" :key-map-code="keyCode"/>
+        <TheKeyMapCode v-for="(keyCode,index) in rightContent" :key="index" :key-map-code="keyCode" :size="75" />
       </div>
       <el-switch v-if="switchEnabled" v-model="switchValue"/>
       <i v-else class="iconfont" :class="rightIcon"/>
