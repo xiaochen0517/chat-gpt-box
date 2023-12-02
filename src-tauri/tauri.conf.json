@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "chat-gpt-box",
-    "version": "0.3.1"
+    "version": "0.4.0"
   },
   "tauri": {
     "allowlist": {
@@ -47,7 +47,8 @@
         "resizable": true,
         "title": "chat-gpt-box",
         "width": 1650,
-        "height": 970
+        "height": 970,
+        "fileDropEnabled": false
       }
     ]
   }

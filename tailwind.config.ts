@@ -15,6 +15,9 @@ export default {
         '15': '3.75rem',
         '16': '4rem',
       },
+      rotate: {
+        '90': '90deg',
+      }
     },
     screens: {
       '3xl': '1600px',

@@ -1,17 +1,23 @@
-import {RequestUtil} from "@/utils/RequestUtil.ts";
+import {BaseRequest} from "@/service/request/BaseRequest.ts";
 
-export interface ChatListStore {
+export type ChatListStore = {
   chatList: ChatInfo[];
 }
 
-export interface ChatInfo {
+export type ChatInfo = {
   id: string;
   name: string;
   prompt: string;
+  chatType: ChatType;
   options: ChatOptions;
 }
 
-export interface ChatOptions {
+export enum ChatType {
+  CHAT_GPT = "chat_gpt",
+  DALL_E = "dall_e",
+}
+
+export type ChatOptions = {
   enabled: boolean;
   apiUrl: string;
   model: string;
@@ -21,31 +27,37 @@ export interface ChatOptions {
   response_max_tokens: number;
 }
 
-export interface ChatTabsStore {
+export type ChatTabsStore = {
   chatTabs: {
     [key: string]: ChatTabInfo[];
   };
 }
 
-export interface ChatTabInfo {
+export type ChatTabInfo = {
   name: string;
   generating: boolean;
-  request: RequestUtil | null;
+  request: BaseRequest | null;
   chat: ChatMessage[];
 }
 
-export interface ChatMessage {
-  role: "system" | "user" | "assistant" | null;
+export type ChatMessage = {
+  role: ChatMessageRole;
   content: string;
 }
 
-export interface ConfigStore {
+export enum ChatMessageRole {
+  System = "system",
+  User = "user",
+  Assistant = "assistant",
+}
+
+export type ConfigStore = {
   isDarkMode: boolean;
   baseConfig: BaseConfig;
   shortcut: ShortcutConfig;
 }
 
-export interface BaseConfig {
+export type BaseConfig = {
   apiKey: string;
   enterSend: boolean;
   ctrlEnterSend: boolean;
@@ -57,7 +69,7 @@ export interface BaseConfig {
   response_max_tokens: number;
 }
 
-export interface ShortcutConfig {
+export type ShortcutConfig = {
   focusInput: string;
   openSetting: string;
   addTab: string;
@@ -71,10 +83,10 @@ export interface ShortcutConfig {
   nextRobot: string;
 }
 
-export interface AppStateStore {
+export type AppStateStore = {
   currentChatId: string | null;
   currentTabIndex: number;
-  windowState: "normal" | "maximized" | "minimized";
+  windowState: WindowState;
   windowSize: {
     width: number;
     height: number;
@@ -83,4 +95,10 @@ export interface AppStateStore {
     x: number;
     y: number;
   };
+}
+
+export enum WindowState {
+  Normal = "normal",
+  Maximized = "maximized",
+  Minimized = "minimized",
 }

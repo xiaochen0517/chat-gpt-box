@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {ChatInfo, ChatListStore, ChatOptions} from "@/types/Store.ts";
+import {ChatInfo, ChatListStore, ChatOptions, ChatType} from "@/types/Store.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {v4 as uuidv4} from "uuid";
 import _ from "lodash";
@@ -12,6 +12,7 @@ export const useChatListStore = defineStore("chatList", {
           id: "default",
           name: "Default Chat",
           prompt: "You are a helpful assistant.",
+          chatType: ChatType.CHAT_GPT,
           options: {
             enabled: false,
             apiUrl: "https://api.openai.com/",
@@ -26,6 +27,7 @@ export const useChatListStore = defineStore("chatList", {
           id: "default1",
           name: "Default Chat GPT-4",
           prompt: "You are a helpful assistant. Please ask me anything.",
+          chatType: ChatType.CHAT_GPT,
           options: {
             enabled: true,
             apiUrl: "https://api.openai.com/",
@@ -40,6 +42,9 @@ export const useChatListStore = defineStore("chatList", {
     }
   },
   actions: {
+    setChatList(chatList: ChatInfo[]) {
+      this.chatList = chatList;
+    },
     getChatInfo(id: string): ChatInfo | null {
       return _.cloneDeep(this.chatList.find((chat: ChatInfo): boolean => chat.id === id) ?? null);
     },

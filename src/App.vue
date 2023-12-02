@@ -8,6 +8,7 @@ import {v4 as uuidv4} from "uuid";
 import {appWindow, PhysicalPosition, PhysicalSize} from "@tauri-apps/api/window";
 import {exit} from "@tauri-apps/api/process";
 import AppUtil from "@/utils/AppUtil.ts";
+import {WindowState} from "@/types/Store.ts";
 
 const configStore = useConfigStore();
 const chatTabsStore = useChatTabsStore();
@@ -50,14 +51,14 @@ const addTauriListener = () => {
 const saveWindowState = async () => {
   // get current window state
   const isMaximized = await appWindow.isMaximized();
-  appStateStore.setWindowState(isMaximized ? "maximized" : "normal");
+  appStateStore.setWindowState(isMaximized ? WindowState.Maximized : WindowState.Normal);
 };
 
 const recoverWindowState = async () => {
   if (!AppUtil.isTauri()) return;
   await appWindow.setSize(new PhysicalSize(appStateStore.windowSize.width, appStateStore.windowSize.height));
   await appWindow.setPosition(new PhysicalPosition(appStateStore.windowPosition.x, appStateStore.windowPosition.y));
-  if (appStateStore.windowState === "maximized") {
+  if (appStateStore.windowState === WindowState.Maximized) {
     await appWindow.maximize();
   }
 }

@@ -24,9 +24,9 @@ watch(
     }
 );
 
-const msgList = computed(() => {
-  if (!propsChatInfo.value) return [];
-  return chatTabsStore.chatTabs[propsChatInfo.value.id][props.tabIndex].chat;
+const chatTabInfo = computed(() => {
+  if (!propsChatInfo.value) return null;
+  return chatTabsStore.chatTabs[propsChatInfo.value.id][props.tabIndex];
 });
 
 const deleteMessage = (_message: ChatMessage, index: number) => {
@@ -40,18 +40,23 @@ const editMessage = (_message: ChatMessage, index: number) => {
   editMessageDialogRefs.value.show(propsChatInfo.value.id, props.tabIndex, index);
 };
 
+const getGenerating = (index: number) => {
+  if (!chatTabInfo.value) return false;
+  return chatTabInfo.value.generating && index === chatTabInfo.value.chat.length - 1;
+};
 </script>
 
 <template>
   <div>
     <ChatMessageBlock
-        v-for="(chatMessage, index) in msgList"
+        v-for="(chatMessage, index) in chatTabInfo?.chat"
         :key="index"
         :index="index"
         :message="chatMessage"
+        :generating="getGenerating(index as number)"
+        :options="propsChatInfo?.options"
         @delete="deleteMessage"
-        @edit="editMessage"
-        :options="propsChatInfo?.options"/>
+        @edit="editMessage"/>
     <EditMessageDialog ref="editMessageDialogRefs"/>
   </div>
 </template>

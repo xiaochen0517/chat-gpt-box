@@ -1,11 +1,8 @@
 {
   "name": "chat-gpt-box",
   "private": true,
-  "version": "0.3.1",
+  "version": "0.4.0",
   "type": "module",
-  "engines": {
-    "node": "16.x"
-  },
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
@@ -37,7 +34,8 @@
     "uuid": "^9.0.1",
     "vue": "^3.3.4",
     "vue-cli-plugin-tauri": "^1.0.0",
-    "vue-router": "4"
+    "vue-router": "4",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.1",
