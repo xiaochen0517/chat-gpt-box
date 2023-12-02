@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<Props>(), {
   size: 100
 });
 
-let keyMapCodeEnum = {
+let keyMapCodeClassNameEnum = {
   [KeyMapEnum.UP]: "icon-arrowup",
   [KeyMapEnum.DOWN]: "icon-arrowdown",
   [KeyMapEnum.LEFT]: "icon-arrowleft",
@@ -21,9 +21,9 @@ let keyMapCodeEnum = {
 }
 
 let iconClass = computed(() => {
-  for (const key in keyMapCodeEnum) {
+  for (const key in keyMapCodeClassNameEnum) {
     if (key === props.keyMapCode) {
-      return keyMapCodeEnum[key as keyof typeof keyMapCodeEnum];
+      return keyMapCodeClassNameEnum[key as keyof typeof keyMapCodeClassNameEnum];
     }
   }
   return "";
