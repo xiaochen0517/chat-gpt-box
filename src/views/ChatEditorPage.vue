@@ -13,7 +13,7 @@ import ModelDialog from "@/components/setting/dialog/ModelDialog.vue";
 import ChatNameDialog from "@/components/setting/dialog/ChatNameDialog.vue";
 import ChatPromptDialog from "@/components/setting/dialog/ChatPromptDialog.vue";
 import {useChatListStore} from "@/store/ChatListStore.ts";
-import {ChatInfo, ChatOptions} from "@/types/Store.ts";
+import {ChatInfo, ChatOptions, ChatType} from "@/types/Store.ts";
 import {useRoute} from "vue-router";
 import {ElMessage} from "element-plus";
 import StrUtil from "@/utils/StrUtil.ts";
@@ -50,6 +50,7 @@ const addChatInfo = ref<ChatInfo>({
   id: "default",
   name: "Default Chat",
   prompt: "You are a helpful assistant.",
+  chatType: ChatType.CHAT_GPT,
   options: {
     enabled: false,
     apiUrl: "https://api.openai.com/",

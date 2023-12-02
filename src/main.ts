@@ -11,6 +11,7 @@ import "./assets/style/global.less";
 
 import App from "./App.vue";
 import dialogWidth from "@/plugins/DialogWidth.ts";
+import AppUtil from "@/utils/AppUtil.ts";
 
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate);
@@ -22,7 +23,5 @@ app.use(ElementPlus)
 app.use(dialogWidth)
 app.mount("#app");
 
-import AppUtil from "@/utils/AppUtil.ts";
-
 const platform = AppUtil.checkPlatform();
-console.log("Platform: " + platform);
+console.log("Current Platform: " + platform);

@@ -1,12 +1,12 @@
 import {defineStore} from "pinia";
-import {AppStateStore} from "@/types/Store.ts";
+import {AppStateStore, WindowState} from "@/types/Store.ts";
 
 export const useAppStateStore = defineStore("appState", {
   state: (): AppStateStore => {
     return {
       currentChatId: null,
       currentTabIndex: 0,
-      windowState: "normal",
+      windowState: WindowState.Normal,
       windowSize: {
         width: 1400,
         height: 900,
@@ -29,7 +29,7 @@ export const useAppStateStore = defineStore("appState", {
       this.windowPosition.x = x;
       this.windowPosition.y = y;
     },
-    setWindowState(state: "normal" | "maximized") {
+    setWindowState(state: WindowState) {
       this.windowState = state;
     }
   },
