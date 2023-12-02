@@ -13,6 +13,8 @@ const decoder: TextDecoder = new TextDecoder('utf-8');
 const configStore = useConfigStore();
 const chatTabsStore = useChatTabsStore();
 
+const DATA_DONE_FLAG: string = "[DONE]";
+
 export class ChatGptRequest implements BaseRequest {
 
   chatInfo: ChatInfo;
@@ -113,11 +115,8 @@ export class ChatGptRequest implements BaseRequest {
             await this.readResponse(await this.reader.read());
           } catch (error) {
             console.error(error);
-            if (error instanceof Error) {
-              this.setErrorMsgContent(error.message);
-            } else {
-              this.setErrorMsgContent(String(error));
-            }
+            const errMsg = error instanceof Error ? error.message : String(error);
+            this.setErrorMsgContent(errMsg);
           }
         })
         .catch((error) => {
@@ -227,32 +226,12 @@ export class ChatGptRequest implements BaseRequest {
     }
     // This is a Uint8Array type byte array that needs to be decoded.
     // It is possible that a single data packet contains multiple independent blocks, which are split using "data:".
-    let dataList = decoder.decode(result.value).split("data:");
+    let resultDecoded = decoder.decode(result.value);
+    let dataList = resultDecoded.split("data:");
     // parse data
     for (let data of dataList) {
-      // skip empty data
-      if (data.length === 0) {
-        continue;
-      }
-      // [DONE] means the end of the data
-      if (data.trim() === "[DONE]") {
-        console.log("read data done");
-        this.setGenerating(false);
-        return;
-      }
-      let resultData: any;
-      try {
-        // parse json data
-        resultData = JSON.parse(data);
-      } catch (error) {
-        console.error("parse json data error: ", data, error);
-        throw error;
-      }
-      // check error
-      if (resultData.error) {
-        this.setErrorMsgContent(resultData.error.message);
-        return;
-      }
+      const resultData = this.parsePieceData(data);
+      if (!resultData) continue;
       // parse choices
       for (let choice of resultData.choices) {
         let content = choice.delta.content;
@@ -267,14 +246,32 @@ export class ChatGptRequest implements BaseRequest {
       this.setGenerating(false);
       return;
     }
-    try {
-      await this.readResponse(await this.reader.read());
-    } catch (error) {
-      console.error(error);
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      this.setErrorMsgContent(errorMessage);
-    }
+    await this.readResponse(await this.reader.read());
   };
+
+  private parsePieceData(data: string): any | null {
+    // skip empty data
+    if (data.length === 0) {
+      return null;
+    }
+    // [DONE] means the end of the data
+    if (data.trim() === DATA_DONE_FLAG) {
+      console.log("read data done");
+      this.setGenerating(false);
+      return null;
+    }
+    try {
+      // parse json data
+      const resultData = JSON.parse(data);
+      // check error
+      if (resultData.error) {
+        throw new Error(resultData.error.message);
+      }
+      return resultData;
+    } catch (error) {
+      throw new Error(`parse json data error: ${error}\nparse data: ${data}`);
+    }
+  }
 
   private appendAssistantMsgContent(content: string) {
     if (!this.requestOptions) throw new Error("request options is null");
