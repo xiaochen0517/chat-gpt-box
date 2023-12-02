@@ -1,12 +1,6 @@
 import {ChatMessage} from "@/types/Store.ts";
 
-export interface SendRequest {
-  chatId: string;
-  tabIndex: number;
-  content: string;
-}
-
-export interface RobotOptions {
+export type ChatGptRequestTypes = {
   apiUrl: string;
   model: string;
   temperature: number;
@@ -15,7 +9,7 @@ export interface RobotOptions {
   response_max_tokens: number;
 }
 
-export interface RequestBody {
+export type ChatGptRequestBody = {
   messages: ChatMessage[];
   model: string;
   stream: boolean;

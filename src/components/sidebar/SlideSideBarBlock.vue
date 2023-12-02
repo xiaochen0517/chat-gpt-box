@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {getCurrentInstance, onMounted, ref} from "vue";
+import {getCurrentInstance, ref} from "vue";
 import MenuListBlock from "@/components/sidebar/MenuListBlock.vue";
 import RobotListBlock from "@/components/sidebar/ChatListBlock.vue";
 import {ChatInfo} from "@/types/Store.ts";
@@ -10,10 +10,6 @@ const changeChatClick = (chatInfo: ChatInfo) => {
   if (!instance) return;
   instance.emit('changeChatClick', chatInfo);
 };
-
-onMounted(() => {
-  console.log('SlideSideBarBlock mounted');
-});
 
 const robotListBlockRefs = ref<InstanceType<typeof RobotListBlock> | null>(null);
 const robotListScrollToBottom = () => {

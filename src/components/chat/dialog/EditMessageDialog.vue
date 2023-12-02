@@ -2,14 +2,14 @@
 import {ref} from "vue";
 import _ from "lodash";
 import {ElForm, ElInput, ElMessage} from "element-plus";
-import {ChatMessage} from "@/types/Store.ts";
+import {ChatMessage, ChatMessageRole} from "@/types/Store.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 
 const dialogVisible = ref(false);
 
 const formData = ref<ChatMessage>({
-  role: "system",
+  role: ChatMessageRole.System,
   content: ""
 });
 const formRules = ref({
