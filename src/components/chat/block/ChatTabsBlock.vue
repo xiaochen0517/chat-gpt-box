@@ -151,7 +151,7 @@ defineExpose({
   <div
       ref="scrollContainerRefs"
       class="overflow-hidden overflow-y-auto box-border scroll-container"
-      :class="robotOptions.enabled?'mt-28':'mt-16'">
+      :class="robotOptions.enabled?'options-enabled':'options-disabled'">
     <CTabs
         v-model:activeKey="activeTabIndex"
         :tabNames="chatTabNameList"
@@ -166,3 +166,21 @@ defineExpose({
     <AddTabDialog ref="addTabDialogRefs" :chat-id="props.activeChat?.id"/>
   </div>
 </template>
+
+<style scoped lang="less">
+.options-enabled {
+@apply pt-32;
+
+  &::-webkit-scrollbar-track {
+  @apply mt-32;
+  }
+}
+
+.options-disabled {
+@apply pt-20;
+
+  &::-webkit-scrollbar-track {
+  @apply mt-20;
+  }
+}
+</style>
