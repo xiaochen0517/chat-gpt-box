@@ -3,9 +3,7 @@ import {computed} from "vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import router from "@/router/Router.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
-import {KeyMapUtil} from "@/utils/KeyMapUtil.ts";
 
-let {formatShortcutKeyMapList2String} = KeyMapUtil;
 
 const configStore = useConfigStore();
 
@@ -15,12 +13,13 @@ const handleChange = () => {
 };
 
 const shortcut = computed(() => configStore.shortcut);
+const shortcutStringConfig = computed(() => configStore.shortcutStringConfig);
 const keys = useMagicKeys();
-const addRobotKey = keys[formatShortcutKeyMapList2String(shortcut.value.addRobot)];
+const addRobotKey = keys[shortcutStringConfig.value.addRobot];
 whenever(addRobotKey, () => {
   addChatClick();
 });
-const openSettingKey = keys[formatShortcutKeyMapList2String(shortcut.value.openSetting)];
+const openSettingKey = keys[shortcutStringConfig.value.openSetting];
 whenever(openSettingKey, () => {
   openSettingsWindow();
 });

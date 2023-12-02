@@ -1,6 +1,6 @@
 export class ArrayUtil {
 
-  public static isEqualsIgnoreOrder<T>(arr1: T[], arr2: T[]): boolean {
+  public static isEqualsListIgnoreOrder<T>(arr1: T[], arr2: T[]): boolean {
     if (arr1.length !== arr2.length) {
       return false;
     }
@@ -10,5 +10,13 @@ export class ArrayUtil {
       }
     }
     return true;
+  }
+
+  public static formatList2LowerCase(list: string[]): string[] {
+    return list.map((item) => item.toLowerCase());
+  }
+
+  public static formatList2UpperCase(list: string[]): string[] {
+    return list.map((item) => item.toUpperCase());
   }
 }

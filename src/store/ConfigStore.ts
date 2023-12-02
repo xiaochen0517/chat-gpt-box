@@ -81,10 +81,10 @@ export const useConfigStore = defineStore("config", {
     setShortcutConfig(config: ShortcutConfig) {
       this.shortcut = config;
     },
-    setShortcut(keyName: ShortcutConfigKey, keyValues: KeyMapEnum[]) {
-      if (!keyValues) return false;
-      let shortcut = this.shortcut;
-      shortcut[keyName] = keyValues;
+    setShortcut(shortcutConfigKey: ShortcutConfigKey, keyMapList: KeyMapEnum[]) {
+      if (!keyMapList) return false;
+      let shortcut = _.cloneDeep(this.shortcut);
+      shortcut[shortcutConfigKey] = keyMapList;
       this.setShortcutConfig(shortcut);
     },
   },

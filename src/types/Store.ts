@@ -87,7 +87,7 @@ export type ShortcutConfig = {
 export type ShortcutConfigKey = keyof ShortcutConfig;
 
 export type ShortcutStringConfig = {
-  [key in keyof ShortcutConfig]: string;
+  [key in ShortcutConfigKey]: string;
 }
 
 export type AppStateStore = {

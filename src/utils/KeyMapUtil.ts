@@ -6,7 +6,7 @@ import _ from "lodash";
 
 export class KeyMapUtil {
 
-  public static sortKeyMapEnumList(KeyMapList: KeyMapEnum[]): KeyMapEnum[] {
+  public static getKeyMapEnumListBySorted(KeyMapList: KeyMapEnum[]): KeyMapEnum[] {
     KeyMapList = _.cloneDeep(KeyMapList);
     let modifierKeyList = ["control", "shift", "alt"];
     KeyMapList.sort((firstKey, secondKey) => {
@@ -32,7 +32,7 @@ export class KeyMapUtil {
     const configStore = useConfigStore();
     let selectKey = "";
     Object.entries(configStore.shortcut).some(([key, valueList]) => {
-      if (ArrayUtil.isEqualsIgnoreOrder(keyMapList, valueList)) {
+      if (ArrayUtil.isEqualsListIgnoreOrder(keyMapList, valueList)) {
         selectKey = key;
         return true;
       }

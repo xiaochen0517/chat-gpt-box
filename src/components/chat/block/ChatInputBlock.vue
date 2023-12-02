@@ -6,7 +6,8 @@ import {createRequest} from "@/utils/RequestUtil.ts";
 import {ChatInfo, ChatTabInfo} from "@/types/Store.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
-import {KeyMapUtil} from "@/utils/KeyMapUtil.ts";
+import {useChatListStore} from "@/store/ChatListStore.ts";
+import AppUtil from "@/utils/AppUtil.ts";
 
 const SendOutlined = defineAsyncComponent(() => import("@ant-design/icons-vue/SendOutlined"));
 
@@ -22,7 +23,8 @@ const props = withDefaults(defineProps<Props>(), {
 const configStore = useConfigStore();
 const keys = useMagicKeys();
 const shortcut = computed(() => configStore.shortcut);
-const focusInputKey = keys[KeyMapUtil.formatShortcutKeyMapList2String(shortcut.value.focusInput)];
+const shortcutStringConfig = computed(() => configStore.shortcutStringConfig);
+const focusInputKey = keys[shortcutStringConfig.value.focusInput];
 whenever(focusInputKey, () => {
   focusInput();
 });
