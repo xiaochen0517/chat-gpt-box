@@ -20,7 +20,7 @@ let keyMapCodeEnum = {
   [KeyMapEnum.RIGHT]: "icon-arrowright",
 }
 
-const iconClass = computed(() => {
+let iconClass = computed(() => {
   for (const key in keyMapCodeEnum) {
     if (key === props.keyMapCode) {
       return keyMapCodeEnum[key as keyof typeof keyMapCodeEnum];
