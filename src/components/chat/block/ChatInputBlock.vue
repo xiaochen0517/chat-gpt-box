@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, defineAsyncComponent, getCurrentInstance, ref, watch} from "vue";
+import {computed, defineAsyncComponent, getCurrentInstance, onMounted, ref, watch} from "vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import {ElMessage} from "element-plus";
 import {createRequest} from "@/utils/RequestUtil.ts";
@@ -7,6 +7,7 @@ import {ChatInfo, ChatTabInfo} from "@/types/Store.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
+import AppUtil from "@/utils/AppUtil.ts";
 
 const SendOutlined = defineAsyncComponent(() => import("@ant-design/icons-vue/SendOutlined"));
 
@@ -123,7 +124,13 @@ const ctrlEnterKeyDown = (event: KeyboardEvent) => {
 };
 
 const resizeableDivRefs = ref<InstanceType<typeof HTMLDivElement> | null>(null);
-const divHeight = ref(200); // 初始高度
+const divHeight = ref(200); // Initial height
+onMounted(() => {
+  // check current environment
+  if (AppUtil.isMobile()) {
+    divHeight.value = 100;
+  }
+});
 
 let defaultCursorY: number;
 let maxDivHeight: number;
@@ -140,10 +147,10 @@ const initResize = (event: MouseEvent | TouchEvent) => {
 };
 
 const startResizing = (event: MouseEvent | TouchEvent) => {
-  // 获取光标在y轴移动的距离，以及方向
+  // Gets the distance the cursor moves on the y-axis, as well as the direction
   const clientY = ('touches' in event) ? event.touches[0].clientY : event.clientY;
   const distance = clientY - defaultCursorY;
-  // 更新 div 的高度
+  // Update the height of the div
   if (divHeight.value <= minDivHeight && distance > 0) return;
   if (divHeight.value >= maxDivHeight && distance < 0) return;
   divHeight.value = divHeight.value - distance;
@@ -151,7 +158,7 @@ const startResizing = (event: MouseEvent | TouchEvent) => {
 };
 
 const stopResizing = () => {
-  // 移除事件监听
+  // Remove event listeners
   window.removeEventListener('mousemove', startResizing);
   window.removeEventListener('mouseup', stopResizing);
   window.removeEventListener('touchmove', startResizing);
