@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<Props>(), {
   size: 100
 });
 
-const keyMapCodeEnum = {
+let keyMapCodeEnum = {
   [KeyMapEnum.UP]: "icon-arrowup",
   [KeyMapEnum.DOWN]: "icon-arrowdown",
   [KeyMapEnum.LEFT]: "icon-arrowleft",
