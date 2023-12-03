@@ -90,16 +90,18 @@ const addTab = () => {
 }
 
 const removeTab = (targetKey: number) => {
+  if (!propsActiveChat.value) return;
+  // if the tab to be removed is the active tab, switch to the previous tab
   if (activeTabIndex.value === targetKey) {
     // switch tab
     if (targetKey === chatTabNameList.value.length - 1) {
-      activeTabIndex.value = targetKey - 1;
+      // if this tab is last tab, don't switch
+      if (targetKey !== 0) activeTabIndex.value = targetKey - 1;
     } else {
       activeTabIndex.value = targetKey;
     }
   }
   // remove tab
-  if (!propsActiveChat.value) return;
   chatTabsStore.removeChatTab(propsActiveChat.value.id, targetKey);
 };
 
