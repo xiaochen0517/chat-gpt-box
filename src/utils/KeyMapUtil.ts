@@ -8,7 +8,7 @@ export class KeyMapUtil {
 
   public static getKeyMapEnumListBySorted(KeyMapList: KeyMapEnum[]): KeyMapEnum[] {
     KeyMapList = _.cloneDeep(KeyMapList);
-    let modifierKeyList = ["control", "shift", "alt"];
+    let modifierKeyList: string[] = [KeyMapEnum.CTRL, KeyMapEnum.SHIFT, KeyMapEnum.ALT, KeyMapEnum.META];
     KeyMapList.sort((firstKey, secondKey) => {
       let firstKeyInModifierKeyListIndex = modifierKeyList.indexOf(firstKey);
       let secondKeyInModifierKeyListIndex = modifierKeyList.indexOf(secondKey);

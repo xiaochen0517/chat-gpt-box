@@ -34,5 +34,6 @@ export enum KeyMapEnum {
   LEFT = "arrowleft",
   RIGHT = "arrowright",
   TAB = "tab",
+  META = "meta",
 }
 

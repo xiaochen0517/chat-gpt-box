@@ -3,20 +3,7 @@ import {BaseConfig, ConfigStore, ShortcutConfig, ShortcutConfigKey, ShortcutStri
 import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
 import _ from "lodash";
 import {KeyMapUtil} from "@/utils/KeyMapUtil.ts";
-
-const DEFAULT_SHORTCUT: ShortcutConfig = {
-  focusInput: [KeyMapEnum.CTRL, KeyMapEnum.BACKSLASH],
-  openSetting: [KeyMapEnum.CTRL, KeyMapEnum.S],
-  addTab: [KeyMapEnum.CTRL, KeyMapEnum.T],
-  removeTab: [KeyMapEnum.CTRL, KeyMapEnum.W],
-  cleanTabChat: [KeyMapEnum.CTRL, KeyMapEnum.E],
-  prevTab: [KeyMapEnum.CTRL, KeyMapEnum.LEFT],
-  nextTab: [KeyMapEnum.CTRL, KeyMapEnum.RIGHT],
-  addRobot: [KeyMapEnum.CTRL, KeyMapEnum.N],
-  switchRobot: [KeyMapEnum.CTRL, KeyMapEnum.TAB],
-  prevRobot: [KeyMapEnum.CTRL, KeyMapEnum.UP],
-  nextRobot: [KeyMapEnum.CTRL, KeyMapEnum.DOWN],
-}
+import {DEFAULT_SHORTCUT} from "./defaults/DefaultShortcut.ts";
 
 export const useConfigStore = defineStore("config", {
   state: (): ConfigStore => {
