@@ -18,7 +18,7 @@ let keyMapCodeClassNameEnum = {
   [KeyMapEnum.DOWN]: "icon-arrowdown",
   [KeyMapEnum.LEFT]: "icon-arrowleft",
   [KeyMapEnum.RIGHT]: "icon-arrowright",
-}
+};
 
 let iconClass = computed(() => {
   for (const key in keyMapCodeClassNameEnum) {

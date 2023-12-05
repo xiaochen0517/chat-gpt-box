@@ -22,7 +22,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const configStore = useConfigStore();
 const keys = useMagicKeys();
-const shortcut = computed(() => configStore.shortcut);
 const shortcutStringConfig = computed(() => configStore.shortcutStringConfig);
 const focusInputKey = keys[shortcutStringConfig.value.focusInput];
 whenever(focusInputKey, () => {
@@ -40,10 +39,10 @@ const chatInputContent = ref("");
 const chatListStore = useChatListStore();
 const chatInfo = ref<ChatInfo | null>(null);
 watch(() => props.chatId,
-    (newChatId) => {
-      chatInfo.value = chatListStore.getChatInfo(newChatId ?? "");
-    },
-    {immediate: true}
+  (newChatId) => {
+    chatInfo.value = chatListStore.getChatInfo(newChatId ?? "");
+  },
+  {immediate: true}
 );
 
 const chatTabsStore = useChatTabsStore();
@@ -51,7 +50,7 @@ const tabInfo = computed<ChatTabInfo>(() => {
   if (!chatInfo.value) return {generating: false} as ChatTabInfo;
   let chatTabList = chatTabsStore.chatTabs[chatInfo.value.id];
   if (!chatTabList) return {generating: false} as ChatTabInfo;
-  return chatTabList[props.tabIndex]
+  return chatTabList[props.tabIndex];
 });
 const submitContent = () => {
   if (!instance || !chatInfo.value) return;
@@ -61,7 +60,7 @@ const submitContent = () => {
   }
   if (chatInputContent.value.length <= 0 || /^\s*$/.test(chatInputContent.value)) return;
   if (!props.chatId) return;
-  tabInfo.value.request = createRequest(chatInfo.value)
+  tabInfo.value.request = createRequest(chatInfo.value);
   tabInfo.value.request.sendMessage({
     tabIndex: props.tabIndex,
     message: chatInputContent.value.trim(),
@@ -74,7 +73,7 @@ const submitContent = () => {
 const enterSend = computed(() => configStore.baseConfig.enterSend);
 const ctrlEnterSend = computed(() => configStore.baseConfig.ctrlEnterSend);
 const handleKeydown = (event: KeyboardEvent) => {
-  if (event.key === 'Enter') {
+  if (event.key === "Enter") {
     if (event.shiftKey) {
       // shift + enter
       shiftEnterKeyDown(event);
@@ -86,7 +85,7 @@ const handleKeydown = (event: KeyboardEvent) => {
       enterKeyDown(event);
     }
   }
-}
+};
 const enterKeyDown = (event: KeyboardEvent) => {
   if (enterSend.value) {
     event.preventDefault();
@@ -139,17 +138,17 @@ let minDivHeight = 100;
 const initResize = (event: MouseEvent | TouchEvent) => {
   // 当鼠标按下时，开始监听鼠标移动和鼠标松开事件
   event.preventDefault();
-  defaultCursorY = ('touches' in event) ? event.touches[0].clientY : event.clientY;
+  defaultCursorY = ("touches" in event) ? event.touches[0].clientY : event.clientY;
   maxDivHeight = Math.floor(window.innerHeight * 0.7);
-  window.addEventListener('mousemove', startResizing);
-  window.addEventListener('mouseup', stopResizing);
-  window.addEventListener('touchmove', startResizing);
-  window.addEventListener('touchend', stopResizing);
+  window.addEventListener("mousemove", startResizing);
+  window.addEventListener("mouseup", stopResizing);
+  window.addEventListener("touchmove", startResizing);
+  window.addEventListener("touchend", stopResizing);
 };
 
 const startResizing = (event: MouseEvent | TouchEvent) => {
   // Gets the distance the cursor moves on the y-axis, as well as the direction
-  const clientY = ('touches' in event) ? event.touches[0].clientY : event.clientY;
+  const clientY = ("touches" in event) ? event.touches[0].clientY : event.clientY;
   const distance = clientY - defaultCursorY;
   // Update the height of the div
   if (divHeight.value <= minDivHeight && distance > 0) return;
@@ -160,10 +159,10 @@ const startResizing = (event: MouseEvent | TouchEvent) => {
 
 const stopResizing = () => {
   // Remove event listeners
-  window.removeEventListener('mousemove', startResizing);
-  window.removeEventListener('mouseup', stopResizing);
-  window.removeEventListener('touchmove', startResizing);
-  window.removeEventListener('touchend', stopResizing);
+  window.removeEventListener("mousemove", startResizing);
+  window.removeEventListener("mouseup", stopResizing);
+  window.removeEventListener("touchmove", startResizing);
+  window.removeEventListener("touchend", stopResizing);
 };
 </script>
 
@@ -172,7 +171,8 @@ const stopResizing = () => {
     <div
         class="w-full h-3 text-[1rem] leading-[0.8rem] text-center cursor-ns-resize"
         @mousedown="initResize"
-        @touchstart="initResize">
+        @touchstart="initResize"
+    >
       <i class="iconfont icon-more"/>
     </div>
     <div class="w-full h-full flex flex-row relative">
@@ -181,10 +181,12 @@ const stopResizing = () => {
           class="flex-1 w-full h-full m-0 py-2 pl-2 pr-14 block rounded-md bg-neutral-100 box-border border-2 border-neutral-300 focus:border-neutral-400 dark:bg-neutral-800 dark:border-neutral-600 dark:focus:border-neutral-400 resize-none"
           v-model="chatInputContent"
           placeholder="Please input message"
-          @keydown="handleKeydown"/>
+          @keydown="handleKeydown"
+      />
       <div
           @click.stop="submitContent"
-          class="w-10 h-10 rounded-md absolute right-3 top-1/2 transform -translate-y-1/2 flex justify-center items-center ml-2 text-sm cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 dark:hover:bg-neutral-700 dark:active:bg-neutral-800 border-2 border-neutral-200 hover:border-neutral-300 active:border-neutral-400 dark:border-neutral-600">
+          class="w-10 h-10 rounded-md absolute right-3 top-1/2 transform -translate-y-1/2 flex justify-center items-center ml-2 text-sm cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 dark:hover:bg-neutral-700 dark:active:bg-neutral-800 border-2 border-neutral-200 hover:border-neutral-300 active:border-neutral-400 dark:border-neutral-600"
+      >
         <i class="iconfont icon-stop-fill text-xl" v-if="tabInfo.generating"/>
         <send-outlined v-else/>
       </div>
