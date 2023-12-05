@@ -9,6 +9,7 @@ import {appWindow, PhysicalPosition, PhysicalSize} from "@tauri-apps/api/window"
 import {exit} from "@tauri-apps/api/process";
 import AppUtil from "@/utils/AppUtil.ts";
 import {WindowState} from "@/types/Store.ts";
+import {StoreDataMigration} from "@/service/config/StoreDataMigration.ts";
 
 const configStore = useConfigStore();
 const chatTabsStore = useChatTabsStore();
@@ -16,6 +17,7 @@ const chatListStore = useChatListStore();
 const appStateStore = useAppStateStore();
 
 onMounted(async () => {
+  StoreDataMigration.migrate();
   // add dark class in html
   switchDarkMode(configStore.isDarkMode);
   chatTabsStore.initGeneralStatus();
