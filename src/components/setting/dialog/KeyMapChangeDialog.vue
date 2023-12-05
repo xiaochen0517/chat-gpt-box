@@ -4,8 +4,8 @@ import CDialog from "@/components/base/dialog/CDialog.vue";
 import {useMagicKeys} from "@vueuse/core";
 import {ShortcutConfigKey} from "@/types/Store.ts";
 import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
-import {KeyMapUtil} from '@/utils/KeyMapUtil.ts'
-import {useConfigStore} from '@/store/ConfigStore.ts'
+import {KeyMapUtil} from "@/utils/KeyMapUtil.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
 import TheKeyMapCode from "@/components/base/list/TheKeyMapCode.vue";
 
 const showDialog = ref(false);
@@ -29,7 +29,7 @@ function hide() {
 defineExpose({
   show,
   hide
-})
+});
 
 const configStore = useConfigStore();
 // The keyName currently being edited
@@ -56,10 +56,10 @@ watch(currentList, (list: string[]) => {
     if (editedKeyMapList.value.includes(pressedKey)) return;
 
     editedKeyMapList.value.push(pressedKey);
-  })
+  });
   // sort the keyMapList
   editedKeyMapList.value = KeyMapUtil.getKeyMapEnumListBySorted(editedKeyMapList.value as KeyMapEnum[]);
-})
+});
 
 let repeatTextShow = ref(false);
 
@@ -97,7 +97,7 @@ function confirm() {
     <div class="flex flex-col w-full">
       <div class="flex justify-center w-full h-14">
         <div v-if="editedKeyMapList.length===0" class="mt-2.5 text-gray-400"> Press any key to set shortcut</div>
-        <TheKeyMapCode v-for="key in editedKeyMapList" class="h-min mx-2 mt-4" :key-map-code="key"/>
+        <TheKeyMapCode v-for="key in editedKeyMapList" :key="key" class="h-min mx-2 mt-4" :key-map-code="key"/>
       </div>
       <div v-show="repeatTextShow" class="font-bold text-center mt-2">
         Keyboard shortcuts repeat: <span class="text-yellow-600">{{ editedShortcutName }}</span>.

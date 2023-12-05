@@ -8,7 +8,7 @@ type Props = {
   cancelText?: string,
   okText?: string,
   description?: string
-  size?: 'default' | 'large'
+  size?: "default" | "large"
 }
 const props = withDefaults(defineProps<Props>(), {
   visible: false,
@@ -22,18 +22,18 @@ const props = withDefaults(defineProps<Props>(), {
 const showDialog = ref(false);
 watch(() => props.visible, (value) => {
   showDialog.value = value;
-})
+});
 watch(showDialog, (value) => {
   if (!instance) return;
   instance.emit("update:visible", value);
-})
+});
 
 const instance = getCurrentInstance();
 const cancelDialog = () => {
   if (!instance) return;
   showDialog.value = false;
   instance.emit("cancel");
-}
+};
 
 const dialogWidth = inject("dialogWidth");
 const dialogWidthLg = inject("dialogWidthLg");
@@ -44,7 +44,8 @@ const dialogWidthLg = inject("dialogWidthLg");
       v-model="showDialog"
       close-on-click-modal
       :show-close="false"
-      :width="size == 'large' ? dialogWidthLg : dialogWidth">
+      :width="size == 'large' ? dialogWidthLg : dialogWidth"
+  >
     <div class="bg-neutral-100 dark:bg-neutral-800">
       <div v-if="title && title.length !== 0" slot="title">
         <div class="text-base leading-10 text-center">{{ title }}</div>
@@ -59,13 +60,15 @@ const dialogWidthLg = inject("dialogWidthLg");
       <div class="flex flex-row text-center text-md leading-10 border-t border-neutral-100 dark:border-neutral-700 select-none">
         <div
             class="flex-1 cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 hover:dark:bg-neutral-700 active:dark:bg-neutral-600"
-            @click.stop="cancelDialog">
+            @click.stop="cancelDialog"
+        >
           {{ cancelText }}
         </div>
         <div class="border-l border-neutral-100 dark:border-neutral-700 box-border"></div>
         <div
             class="flex-1 cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 hover:dark:bg-neutral-700 active:dark:bg-neutral-600"
-            @click.stop="$emit('ok')">
+            @click.stop="$emit('ok')"
+        >
           {{ okText }}
         </div>
       </div>
