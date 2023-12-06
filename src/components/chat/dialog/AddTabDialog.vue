@@ -71,7 +71,7 @@ defineExpose({
 </script>
 
 <template>
-  <CDialog v-model:visible="dialogVisible" title="Add Tab" @ok.stop="commit">
+  <CDialog v-model:visible="dialogVisible" title="Add Tab" @ok="commit">
     <el-form
         class="w-full"
         ref="addTabFormRef"
