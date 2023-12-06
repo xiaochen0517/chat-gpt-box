@@ -30,7 +30,6 @@ const chatTabsStore = useChatTabsStore();
 const instance = getCurrentInstance();
 const addTabFormRef = ref<InstanceType<typeof ElForm> | null>(null);
 const commit = async () => {
-  debugger
   if (!addTabFormRef.value) return;
   if (!props.chatId) {
     ElMessage.warning("Please select a robot first");
