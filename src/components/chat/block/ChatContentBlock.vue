@@ -73,8 +73,7 @@ defineExpose({
           ref="chatTabsBlockRefs"
           v-model:tabIndex="tabIndex"
           :active-chat="activeChatInfo"
-          @showSlideSideBarClick="showSlideSideBar"
-      />
+          @showSlideSideBarClick="showSlideSideBar"/>
       <ChatInputBlock :chat-id="activeChatInfo?.id" :tab-index="tabIndex" @refresh="messageRefresh"/>
     </div>
     <SlideSideBarBlock ref="slideSideBarBlockRefs" @changeChatClick="changeChat"/>

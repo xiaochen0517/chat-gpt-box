@@ -9,7 +9,6 @@ import {appWindow, PhysicalPosition, PhysicalSize} from "@tauri-apps/api/window"
 import {exit} from "@tauri-apps/api/process";
 import AppUtil from "@/utils/AppUtil.ts";
 import {WindowState} from "@/types/Store.ts";
-import {StoreDataMigration} from "@/service/config/StoreDataMigration.ts";
 
 const configStore = useConfigStore();
 const chatTabsStore = useChatTabsStore();
@@ -17,7 +16,6 @@ const chatListStore = useChatListStore();
 const appStateStore = useAppStateStore();
 
 onMounted(async () => {
-  StoreDataMigration.migrate();
   // add dark class in html
   switchDarkMode(configStore.isDarkMode);
   chatTabsStore.initGeneralStatus();
@@ -63,7 +61,7 @@ const recoverWindowState = async () => {
   if (appStateStore.windowState === WindowState.Maximized) {
     await appWindow.maximize();
   }
-};
+}
 
 const checkConfig = () => {
   const oldStoreJsonStr = localStorage.getItem("state");
@@ -82,7 +80,7 @@ const checkConfig = () => {
     let chatTab = oldStore.chatHistory[index];
     if (!chatInfo || !chatTab) continue;
     const chatId = uuidv4();
-    chatInfo["id"] = chatId;
+    chatInfo['id'] = chatId;
     chatListStore.chatList.push(chatInfo);
     chatTabsStore.chatTabs[chatId] = chatTab;
   }
@@ -91,7 +89,7 @@ const checkConfig = () => {
   configStore.shortcut = oldStore.config.shortcut;
 
   localStorage.removeItem("state");
-};
+}
 
 watch(() => configStore.isDarkMode, (newVal) => {
   // add dark class in html
@@ -113,7 +111,7 @@ const switchDarkMode = (isDark: boolean) => {
   } else {
     querySelector.classList.remove("dark");
   }
-};
+}
 
 </script>
 

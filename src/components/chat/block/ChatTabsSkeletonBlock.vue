@@ -7,5 +7,5 @@ export default {
       <div class="w-20 h-4 mt-2 rounded-full bg-gray-200 animate-pulse"></div>
     </div>
   `,
-};
+}
 </script>

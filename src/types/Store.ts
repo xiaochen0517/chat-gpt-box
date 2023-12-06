@@ -1,5 +1,4 @@
 import {BaseRequest} from "@/service/request/BaseRequest.ts";
-import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
 
 export type ChatListStore = {
   chatList: ChatInfo[];
@@ -56,7 +55,6 @@ export type ConfigStore = {
   isDarkMode: boolean;
   baseConfig: BaseConfig;
   shortcut: ShortcutConfig;
-  shortcutKeyMapMaxSize: number;
 }
 
 export type BaseConfig = {
@@ -72,23 +70,17 @@ export type BaseConfig = {
 }
 
 export type ShortcutConfig = {
-  focusInput: KeyMapEnum[];
-  openSetting: KeyMapEnum[];
-  addTab: KeyMapEnum[];
-  removeTab: KeyMapEnum[];
-  cleanTabChat: KeyMapEnum[];
-  prevTab: KeyMapEnum[];
-  nextTab: KeyMapEnum[];
-  addRobot: KeyMapEnum[];
-  switchRobot: KeyMapEnum[];
-  prevRobot: KeyMapEnum[];
-  nextRobot: KeyMapEnum[];
-}
-
-export type ShortcutConfigKey = keyof ShortcutConfig;
-
-export type ShortcutStringConfig = {
-  [key in ShortcutConfigKey]: string;
+  focusInput: string;
+  openSetting: string;
+  addTab: string;
+  removeTab: string;
+  cleanTabChat: string;
+  prevTab: string;
+  nextTab: string;
+  addRobot: string;
+  switchRobot: string;
+  prevRobot: string;
+  nextRobot: string;
 }
 
 export type AppStateStore = {

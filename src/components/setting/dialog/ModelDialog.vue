@@ -10,21 +10,21 @@ const show = (value: number | string | null) => {
   showDialog.value = true;
   if (typeof value !== "string") return;
   model.value = value;
-};
+}
 const hide = () => {
   showDialog.value = false;
-};
+}
 defineExpose({
   show,
   hide
-});
+})
 
 const configStore = useConfigStore();
 
 const model = ref("");
 onMounted(() => {
   model.value = configStore.baseConfig.model;
-});
+})
 
 
 const instance = getCurrentInstance();
@@ -34,18 +34,13 @@ const save = () => {
     return;
   }
   instance?.emit("commit", "model", model.value);
-};
+}
 </script>
 
 <template>
   <CDialog v-model:visible="showDialog" title="Default Model" @ok="save">
     <el-select v-model="model" placeholder="Please select a model" width="100%">
-      <el-option
-          v-for="item in ModelList"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-      />
+      <el-option v-for="item in ModelList" :key="item.value" :label="item.label" :value="item.value"/>
     </el-select>
   </CDialog>
 </template>

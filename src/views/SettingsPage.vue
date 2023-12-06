@@ -14,19 +14,15 @@ import CTopNavBar from "@/components/base/nav/CTopNavBar.vue";
 import {BaseConfig} from "@/types/Store.ts";
 
 onMounted(() => {
-  console.log("onMounted");
+  console.log("onMounted")
   isDarkMode.value = configStore.isDarkMode;
   enterSend.value = configStore.baseConfig.enterSend;
   ctrlEnterSend.value = configStore.baseConfig.ctrlEnterSend;
-});
+})
 
 const jumpToHomePage = () => {
   router.push({path: "/"});
-};
-
-const jumpToKeyMapSettingPage = () => {
-  router.push({path: "/settings/keyMap"});
-};
+}
 
 const configStore = useConfigStore();
 
@@ -36,10 +32,10 @@ const ctrlEnterSend = ref(false);
 
 watch(isDarkMode, (value) => {
   configStore.setDarkMode(value);
-});
+})
 watch(enterSend, (value) => {
   configStore.setEnterSend(value);
-});
+})
 
 type ComponentMap = {
   [key: string]: ReturnType<typeof defineComponent>;
@@ -53,9 +49,8 @@ const components: ComponentMap = {
   ContextMaxMsgsDialog,
   ContextMaxTokensDialog,
   ResponseMaxTokensDialog,
-};
+}
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const currentDialogRefs = ref<any>(null);
 const currentDialog = ref<string | ReturnType<typeof defineComponent>>("");
 const openDialog = (name: string, key: keyof BaseConfig) => {
@@ -64,14 +59,14 @@ const openDialog = (name: string, key: keyof BaseConfig) => {
   nextTick(() => {
     if (!currentDialogRefs.value) return;
     currentDialogRefs.value.show(configStore.baseConfig[key]);
-  });
-};
+  })
+}
 
 const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) => {
   configStore.setBaseConfig(key, value);
   if (!currentDialogRefs.value) return;
   currentDialogRefs.value.hide();
-};
+}
 </script>
 
 <template>
@@ -86,23 +81,20 @@ const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) =>
             left-icon="icon-enter"
             tooltip="After enabling, press Enter to start a new line, and Shift+Enter to send the message."
             switch-enabled
-            v-model:switch-value="enterSend"
-        />
+            v-model:switch-value="enterSend"/>
         <CListItem
             content="Enable Ctrl+Enter"
             left-icon="icon-a-sorting2"
             tooltip="Use ctrl+enter to replace shift+enter."
             switch-enabled
-            v-model:switch-value="ctrlEnterSend"
-        />
+            v-model:switch-value="ctrlEnterSend"/>
         <CListItem content="Api url" left-icon="icon-link1" @click.stop="openDialog('ApiUrlDialog', 'apiUrl')"/>
         <CListItem
             content="Dark Mode"
             :left-icon="isDarkMode?'icon-night-mode':'icon-daytime-mode'"
             switch-enabled
             v-model:switch-value="isDarkMode"
-            :bottom-border="false"
-        />
+            :bottom-border="false"/>
       </div>
       <div class="mt-1 text-lg leading-13">Advanced Settings</div>
       <div class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
@@ -110,36 +102,22 @@ const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) =>
         <CListItem
             content="Temperature"
             left-icon="icon-hot-for-ux"
-            @click="openDialog('TemperatureDialog', 'temperature')"
-        />
+            @click="openDialog('TemperatureDialog', 'temperature')"/>
         <CListItem
             content="Context max msgs"
             left-icon="icon-file-text"
-            @click="openDialog('ContextMaxMsgsDialog', 'context_max_message')"
-        />
+            @click="openDialog('ContextMaxMsgsDialog', 'context_max_message')"/>
         <CListItem
             content="Context max tokens"
             left-icon="icon-translate"
-            @click="openDialog('ContextMaxTokensDialog', 'context_max_tokens')"
-        />
+            @click="openDialog('ContextMaxTokensDialog', 'context_max_tokens')"/>
         <CListItem
             content="Response max tokens"
             left-icon="icon-rollback"
-            @click="openDialog('ResponseMaxTokensDialog', 'response_max_tokens')"
-        />
-        <CListItem
-            content="KeyMap"
-            left-icon="icon-gold"
             :bottom-border="false"
-            @click="jumpToKeyMapSettingPage"
-        />
+            @click="openDialog('ResponseMaxTokensDialog', 'response_max_tokens')"/>
       </div>
     </div>
-    <Component
-        ref="currentDialogRefs"
-        :is="currentDialog"
-        v-if="currentDialog"
-        @commit="saveConfig"
-    />
+    <Component ref="currentDialogRefs" :is="currentDialog" v-if="currentDialog" @commit="saveConfig"/>
   </div>
 </template>

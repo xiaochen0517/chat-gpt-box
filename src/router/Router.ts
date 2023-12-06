@@ -9,17 +9,12 @@ const routes = [
   {
     path: "/settings",
     name: "Settings",
-    component: () => import("../views/SettingsPage.vue")
-  },
-  {
-    path: "/settings/keyMap",
-    name: "KeyMap",
-    component: () => import("../views/KeyMapPage.vue")
+    component: () => import('../views/SettingsPage.vue')
   },
   {
     path: "/chat/editor/:chatId",
     name: "ChatEditor",
-    component: () => import("../views/ChatEditorPage.vue")
+    component: () => import('../views/ChatEditorPage.vue')
   }
 ];
 
