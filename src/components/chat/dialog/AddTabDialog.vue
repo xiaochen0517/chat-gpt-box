@@ -45,7 +45,7 @@ const commit = async () => {
       if (!instance) return;
       instance.emit("addTabSuccess");
     } else {
-      console.log('error', fields);
+      console.log("error", fields);
     }
   });
 };
@@ -71,20 +71,22 @@ defineExpose({
 </script>
 
 <template>
-  <CDialog v-model:visible="dialogVisible" title="Add Tab" @ok.stop="commit">
+  <CDialog v-model:visible="dialogVisible" title="Add Tab" @ok="commit">
     <el-form
         class="w-full"
         ref="addTabFormRef"
         :model="formData"
         :rules="formRules"
         label-width="100px"
-        label-position="left">
+        label-position="left"
+    >
       <el-form-item label="Tab Name" prop="name">
         <el-input
             ref="addTabInputRefs"
             v-model="formData.name"
             @pressEnter.stop="commit"
-            :placeholder="namePlaceholder"/>
+            :placeholder="namePlaceholder"
+        />
       </el-form-item>
     </el-form>
   </CDialog>

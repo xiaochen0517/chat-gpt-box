@@ -9,21 +9,21 @@ const show = (value: number | string | null) => {
   showDialog.value = true;
   if (typeof value !== "string") return;
   apiUrl.value = value;
-}
+};
 const hide = () => {
   showDialog.value = false;
-}
+};
 defineExpose({
   show,
   hide
-})
+});
 
 const configStore = useConfigStore();
 
 const apiUrl = ref("");
 onMounted(() => {
   apiUrl.value = configStore.baseConfig.apiUrl;
-})
+});
 
 const instance = getCurrentInstance();
 const save = () => {
@@ -32,7 +32,7 @@ const save = () => {
     return;
   }
   instance?.emit("commit", "apiUrl", apiUrl.value);
-}
+};
 </script>
 
 <template>

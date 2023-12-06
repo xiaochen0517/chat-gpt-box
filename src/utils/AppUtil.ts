@@ -45,4 +45,8 @@ export default class AppUtil {
   public static isMobile(): boolean {
     return this.checkPlatform() === Platform.Android || this.checkPlatform() === Platform.iOS;
   }
+
+  public static isMac(): boolean {
+    return navigator.userAgent.indexOf('Mac') >= 0;
+  }
 }
