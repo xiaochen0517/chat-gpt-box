@@ -7,7 +7,7 @@ import {ChatInfo} from "@/types/Store.ts";
 const instance = getCurrentInstance();
 const changeChatClick = (chatInfo: ChatInfo) => {
   if (!instance) return;
-  instance.emit('changeChatClick', chatInfo);
+  instance.emit("changeChatClick", chatInfo);
 };
 
 const robotListBlockRefs = ref<InstanceType<typeof ChatListBlock> | null>(null);

@@ -14,33 +14,33 @@ import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
  * register shortcut
  */
 const configStore = useConfigStore();
-const shortcut = computed(() => configStore.shortcut);
+const shortcutStringConfig = computed(() => configStore.shortcutStringConfig);
 const keys = useMagicKeys();
-const addTabKey = keys[shortcut.value.addTab];
+const addTabKey = keys[shortcutStringConfig.value.addTab];
 const addTabDialogRefs = ref<InstanceType<typeof AddTabDialog> | null>(null);
 whenever(addTabKey, () => {
   if (!addTabDialogRefs.value) return;
   addTabDialogRefs.value.show(chatTabNameList.value.length + 1);
 });
-const removeTabKey = keys[shortcut.value.removeTab];
+const removeTabKey = keys[shortcutStringConfig.value.removeTab];
 whenever(removeTabKey, () => {
   confirmRemoveTab(activeTabIndex.value);
 });
-const prevTabKey = keys[shortcut.value.prevTab];
+const prevTabKey = keys[shortcutStringConfig.value.prevTab];
 whenever(prevTabKey, () => {
   const targetIndex = activeTabIndex.value - 1;
   if (targetIndex >= 0) {
     activeTabIndex.value = targetIndex;
   }
 });
-const nextTabKey = keys[shortcut.value.nextTab];
+const nextTabKey = keys[shortcutStringConfig.value.nextTab];
 whenever(nextTabKey, () => {
   const targetIndex = activeTabIndex.value + 1;
   if (targetIndex < chatTabNameList.value.length) {
     activeTabIndex.value = targetIndex;
   }
 });
-const cleanTabChatKey = keys[shortcut.value.cleanTabChat];
+const cleanTabChatKey = keys[shortcutStringConfig.value.cleanTabChat];
 whenever(cleanTabChatKey, () => {
   cleanTabChat();
 });
@@ -56,10 +56,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 const propsActiveChat = ref<ChatInfo | null>(props.activeChat);
 watch(
-    () => props.activeChat,
-    (value) => {
-      propsActiveChat.value = value;
-    }
+  () => props.activeChat,
+  (value) => {
+    propsActiveChat.value = value;
+  }
 );
 
 const chatTabsStore = useChatTabsStore();
@@ -71,12 +71,12 @@ const cleanTabChat = () => {
 const instance = getCurrentInstance();
 const activeTabIndex = ref<number>(0);
 watch(
-    () => activeTabIndex.value,
-    () => {
-      scrollToBottom();
-      if (!instance) return;
-      instance.emit('update:tabIndex', activeTabIndex.value)
-    }
+  () => activeTabIndex.value,
+  () => {
+    scrollToBottom();
+    if (!instance) return;
+    instance.emit("update:tabIndex", activeTabIndex.value);
+  }
 );
 const confirmRemoveTab = (targetKey: number) => {
   removeTab(targetKey);
@@ -86,19 +86,21 @@ const addTab = () => {
   if (!addTabDialogRefs.value) return;
   let tabsSize = chatTabNameList.value.length;
   addTabDialogRefs.value.show(tabsSize + 1);
-}
+};
 
 const removeTab = (targetKey: number) => {
+  if (!propsActiveChat.value) return;
+  // if the tab to be removed is the active tab, switch to the previous tab
   if (activeTabIndex.value === targetKey) {
     // switch tab
     if (targetKey === chatTabNameList.value.length - 1) {
-      activeTabIndex.value = targetKey - 1;
+      // if this tab is last tab, don't switch
+      if (targetKey !== 0) activeTabIndex.value = targetKey - 1;
     } else {
       activeTabIndex.value = targetKey;
     }
   }
   // remove tab
-  if (!propsActiveChat.value) return;
   chatTabsStore.removeChatTab(propsActiveChat.value.id, targetKey);
 };
 
@@ -107,19 +109,19 @@ const chatTabNameList = computed(() => {
   let chatTabList = chatTabsStore.chatTabs[propsActiveChat.value.id];
   if (!chatTabList) return [];
   return chatTabList
-      .map((item: ChatTabInfo) => item.name);
+    .map((item: ChatTabInfo) => item.name);
 });
 const robotOptions = computed((): ChatOptions => {
   if (!propsActiveChat.value) return {
     enabled: false,
-    apiUrl: '',
-    model: '',
+    apiUrl: "",
+    model: "",
     temperature: 0,
     context_max_message: 0,
     context_max_tokens: 0,
     response_max_tokens: 0,
   };
-  return propsActiveChat.value.options
+  return propsActiveChat.value.options;
 });
 const removeTabClick = (index: number) => {
   ElMessageBox.confirm("Are you sure to remove this tab?", "Warning", {
@@ -151,14 +153,16 @@ defineExpose({
   <div
       ref="scrollContainerRefs"
       class="overflow-hidden overflow-y-auto box-border scroll-container"
-      :class="robotOptions.enabled?'options-enabled':'options-disabled'">
+      :class="robotOptions.enabled?'options-enabled':'options-disabled'"
+  >
     <CTabs
         v-model:activeKey="activeTabIndex"
         :tabNames="chatTabNameList"
         :chatOptions="robotOptions"
         @addTabClick="addTab"
         @removeTabClick="removeTabClick"
-        @showSlideSideBarClick="$emit('showSlideSideBarClick')">
+        @showSlideSideBarClick="$emit('showSlideSideBarClick')"
+    >
       <CTabPane v-for="(_number, index) in chatTabNameList.length" :key="index">
         <ChatMsgListBlock :chatInfo="propsActiveChat" :tabIndex="index"/>
       </CTabPane>

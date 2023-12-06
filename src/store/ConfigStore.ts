@@ -1,5 +1,9 @@
 import {defineStore} from "pinia";
-import {BaseConfig, ConfigStore} from "@/types/Store.ts";
+import {BaseConfig, ConfigStore, ShortcutConfig, ShortcutConfigKey, ShortcutStringConfig} from "@/types/Store.ts";
+import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
+import _ from "lodash";
+import {KeyMapUtil} from "@/utils/KeyMapUtil.ts";
+import {DEFAULT_SHORTCUT} from "./defaults/DefaultShortcut.ts";
 
 export const useConfigStore = defineStore("config", {
   state: (): ConfigStore => {
@@ -16,20 +20,14 @@ export const useConfigStore = defineStore("config", {
         context_max_tokens: 2000,
         response_max_tokens: 0,
       },
-      shortcut: {
-        focusInput: "ctrl+/",
-        openSetting: "ctrl+s",
-        addTab: "ctrl+t",
-        removeTab: "ctrl+w",
-        cleanTabChat: "ctrl+e",
-        prevTab: "ctrl+left",
-        nextTab: "ctrl+right",
-        addRobot: "ctrl+n",
-        switchRobot: "ctrl+tab",
-        prevRobot: "ctrl+up",
-        nextRobot: "ctrl+down",
-      },
+      shortcut: _.cloneDeep(DEFAULT_SHORTCUT),
+      shortcutKeyMapMaxSize: 5,
     }
+  },
+  getters: {
+    shortcutStringConfig(state): ShortcutStringConfig {
+      return KeyMapUtil.formatShortcutConfig2ShortcutStringConfig(state.shortcut);
+    },
   },
   actions: {
     setDarkMode(isDarkMode: boolean) {
@@ -65,41 +63,17 @@ export const useConfigStore = defineStore("config", {
     setResponseMaxTokens(responseMaxTokens: number) {
       this.baseConfig.response_max_tokens = responseMaxTokens;
     },
-    setShortcut(config: any) {
+    resetShortcut() {
+      this.shortcut = _.cloneDeep(DEFAULT_SHORTCUT);
+    },
+    setShortcutConfig(config: ShortcutConfig) {
       this.shortcut = config;
     },
-    setFocusInput(shortcut: string) {
-      this.shortcut.focusInput = shortcut;
-    },
-    setOpenSetting(shortcut: string) {
-      this.shortcut.openSetting = shortcut;
-    },
-    setAddTab(shortcut: string) {
-      this.shortcut.addTab = shortcut;
-    },
-    setRemoveTab(shortcut: string) {
-      this.shortcut.removeTab = shortcut;
-    },
-    setCleanTabChat(shortcut: string) {
-      this.shortcut.cleanTabChat = shortcut;
-    },
-    setPrevTab(shortcut: string) {
-      this.shortcut.prevTab = shortcut;
-    },
-    setNextTab(shortcut: string) {
-      this.shortcut.nextTab = shortcut;
-    },
-    setAddRobot(shortcut: string) {
-      this.shortcut.addRobot = shortcut;
-    },
-    setSwitchRobot(shortcut: string) {
-      this.shortcut.switchRobot = shortcut;
-    },
-    setPrevRobot(shortcut: string) {
-      this.shortcut.prevRobot = shortcut;
-    },
-    setNextRobot(shortcut: string) {
-      this.shortcut.nextRobot = shortcut;
+    setShortcut(shortcutConfigKey: ShortcutConfigKey, keyMapList: KeyMapEnum[]) {
+      if (!keyMapList) return false;
+      let shortcut = _.cloneDeep(this.shortcut);
+      shortcut[shortcutConfigKey] = keyMapList;
+      this.setShortcutConfig(shortcut);
     },
   },
   persist: {

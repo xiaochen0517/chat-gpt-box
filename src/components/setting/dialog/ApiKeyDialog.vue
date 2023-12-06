@@ -7,21 +7,21 @@ import {ElMessage} from "element-plus";
 const showDialog = ref(false);
 const show = () => {
   showDialog.value = true;
-}
+};
 const hide = () => {
   showDialog.value = false;
-}
+};
 defineExpose({
   show,
   hide
-})
+});
 
 const configStore = useConfigStore();
 
 const apiKey = ref("");
 onMounted(() => {
   apiKey.value = configStore.baseConfig.apiKey;
-})
+});
 
 const instance = getCurrentInstance();
 const save = () => {
@@ -30,7 +30,7 @@ const save = () => {
     return;
   }
   instance?.emit("commit", "apiKey", apiKey.value);
-}
+};
 </script>
 
 <template>
