@@ -30,6 +30,7 @@ const chatTabsStore = useChatTabsStore();
 const instance = getCurrentInstance();
 const addTabFormRef = ref<InstanceType<typeof ElForm> | null>(null);
 const commit = async () => {
+  debugger
   if (!addTabFormRef.value) return;
   if (!props.chatId) {
     ElMessage.warning("Please select a robot first");
@@ -71,7 +72,7 @@ defineExpose({
 </script>
 
 <template>
-  <CDialog v-model:visible="dialogVisible" title="Add Tab" @ok.stop="commit">
+  <CDialog v-model:visible="dialogVisible" title="Add Tab" @ok="commit">
     <el-form
         class="w-full"
         ref="addTabFormRef"
