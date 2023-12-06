@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {computed, onMounted} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
-import {MdPreview} from "md-editor-v3";
-import "md-editor-v3/lib/preview.css";
+import {MdPreview} from 'md-editor-v3';
+import 'md-editor-v3/lib/preview.css';
 
 type Props = {
   content: string
@@ -12,9 +12,9 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const configStore = useConfigStore();
-const theme = computed(() => configStore.isDarkMode ? "dark" : "light");
+const theme = computed(() => configStore.isDarkMode ? 'dark' : 'light');
 
-const id = "preview-only";
+const id = 'preview-only';
 onMounted(() => {
 });
 
@@ -25,8 +25,7 @@ onMounted(() => {
       class="overflow-x-auto"
       :theme="theme"
       :editorId="id"
-      :modelValue="props.content"
-  />
+      :modelValue="props.content"/>
 </template>
 
 <style lang="less">

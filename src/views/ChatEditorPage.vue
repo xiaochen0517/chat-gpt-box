@@ -20,7 +20,7 @@ import StrUtil from "@/utils/StrUtil.ts";
 
 const jumpToHomePage = () => {
   router.push({path: "/"});
-};
+}
 
 const chatListStore = useChatListStore();
 
@@ -77,7 +77,7 @@ onMounted(() => {
   isAddChat.value = chatId.value === "add";
   const chatInfo = chatListStore.getChatInfo(chatId.value);
   configEnabled.value = chatInfo?.options.enabled ?? false;
-});
+})
 
 const addChat = () => {
   if (StrUtil.hasEmpty(addChatInfo.value.name, addChatInfo.value.prompt)) {
@@ -90,7 +90,7 @@ const addChat = () => {
   }
   chatListStore.addChat(addChatInfo.value);
   jumpToHomePage();
-};
+}
 
 type ComponentMap = {
   [key: string]: ReturnType<typeof defineComponent>;
@@ -106,9 +106,8 @@ const components: ComponentMap = {
   ResponseMaxTokensDialog,
   ChatNameDialog,
   ChatPromptDialog,
-};
+}
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const currentDialogRefs = ref<any>(null);
 const currentDialog = ref<string | ReturnType<typeof defineComponent>>("");
 const openBaseDialog = (name: string, key: keyof ChatInfo) => {
@@ -118,8 +117,8 @@ const openBaseDialog = (name: string, key: keyof ChatInfo) => {
     if (!currentDialogRefs.value) return;
     if (!chatInfo.value) return;
     currentDialogRefs.value.show(chatInfo.value[key]);
-  });
-};
+  })
+}
 const openOptionsDialog = (name: string, key: keyof ChatOptions) => {
   if (!components[name]) return;
   currentDialog.value = markRaw(components[name]);
@@ -127,8 +126,8 @@ const openOptionsDialog = (name: string, key: keyof ChatOptions) => {
     if (!currentDialogRefs.value) return;
     if (!chatInfo.value) return;
     currentDialogRefs.value.show(chatInfo.value.options[key]);
-  });
-};
+  })
+}
 
 const saveChatOptions = <K extends keyof ChatOptions>(key: K, value: ChatOptions[K]) => {
   if (!chatId.value) return;
@@ -139,7 +138,7 @@ const saveChatOptions = <K extends keyof ChatOptions>(key: K, value: ChatOptions
     chatListStore.setChatOptions(chatId.value, key, value);
   }
   currentDialogRefs.value.hide();
-};
+}
 
 const saveChatInfo = <K extends keyof ChatInfo>(key: K, value: ChatInfo[K]) => {
   if (!chatId.value) return;
@@ -150,7 +149,7 @@ const saveChatInfo = <K extends keyof ChatInfo>(key: K, value: ChatInfo[K]) => {
     chatListStore.setChatInfo(chatId.value, key, value);
   }
   currentDialogRefs.value.hide();
-};
+}
 </script>
 
 <template>
@@ -160,57 +159,48 @@ const saveChatInfo = <K extends keyof ChatInfo>(key: K, value: ChatInfo[K]) => {
         :save-button="isAddChat"
         save-button-text="Add"
         @backClick="jumpToHomePage"
-        @saveClick="addChat"
-    />
+        @saveClick="addChat"/>
     <div class="px-2 xl:p-0 max-w-2xl m-auto mt-2">
       <div class="mt-1 text-lg leading-13">Basic Settings</div>
       <div class="rounded-xl overflow-hidden text-base select-none">
         <CListItem
             content="Chat name"
             left-icon="icon-discount"
-            @click.stop="openBaseDialog('ChatNameDialog', 'name')"
-        />
+            @click.stop="openBaseDialog('ChatNameDialog', 'name')"/>
         <CListItem
             content="Chat prompt"
             left-icon="icon-product-list"
-            @click.stop="openBaseDialog('ChatPromptDialog', 'prompt')"
-        />
+            @click.stop="openBaseDialog('ChatPromptDialog', 'prompt')"/>
         <CListItem
             content="Advanced Settings"
             left-icon="icon-settings"
             switch-enabled
             v-model:switch-value="configEnabled"
-            :bottom-border="false"
-        />
+            :bottom-border="false"/>
       </div>
       <div v-if="configEnabled" class="mt-1 text-lg leading-13">Advanced Settings</div>
       <div
           v-if="configEnabled"
-          class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800"
-      >
+          class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
         <CListItem content="Api url" left-icon="icon-link1" @click.stop="openOptionsDialog('ApiUrlDialog', 'apiUrl')"/>
         <CListItem content="Model" left-icon="icon-connections" @click="openOptionsDialog('ModelDialog', 'model')"/>
         <CListItem
             content="Temperature"
             left-icon="icon-hot-for-ux"
-            @click="openOptionsDialog('TemperatureDialog', 'temperature')"
-        />
+            @click="openOptionsDialog('TemperatureDialog', 'temperature')"/>
         <CListItem
             content="Context max msgs"
             left-icon="icon-file-text"
-            @click="openOptionsDialog('ContextMaxMsgsDialog', 'context_max_message')"
-        />
+            @click="openOptionsDialog('ContextMaxMsgsDialog', 'context_max_message')"/>
         <CListItem
             content="Context max tokens"
             left-icon="icon-translate"
-            @click="openOptionsDialog('ContextMaxTokensDialog', 'context_max_tokens')"
-        />
+            @click="openOptionsDialog('ContextMaxTokensDialog', 'context_max_tokens')"/>
         <CListItem
             content="Response max tokens"
             left-icon="icon-rollback"
             :bottom-border="false"
-            @click="openOptionsDialog('ResponseMaxTokensDialog', 'response_max_tokens')"
-        />
+            @click="openOptionsDialog('ResponseMaxTokensDialog', 'response_max_tokens')"/>
       </div>
     </div>
     <Component
@@ -218,7 +208,6 @@ const saveChatInfo = <K extends keyof ChatInfo>(key: K, value: ChatInfo[K]) => {
         :is="currentDialog"
         v-if="currentDialog"
         @commit="saveChatOptions"
-        @save="saveChatInfo"
-    />
+        @save="saveChatInfo"/>
   </div>
 </template>

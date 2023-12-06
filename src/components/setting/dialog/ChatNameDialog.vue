@@ -9,14 +9,14 @@ const show = (value: number | string | null) => {
   showDialog.value = true;
   if (typeof value !== "string") return;
   chatName.value = value;
-};
+}
 const hide = () => {
   showDialog.value = false;
-};
+}
 defineExpose({
   show,
   hide
-});
+})
 
 const instance = getCurrentInstance();
 const save = () => {
@@ -25,7 +25,7 @@ const save = () => {
     return;
   }
   instance?.emit("save", "name", chatName.value);
-};
+}
 </script>
 
 <template>

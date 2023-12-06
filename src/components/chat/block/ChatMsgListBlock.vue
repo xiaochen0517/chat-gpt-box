@@ -18,10 +18,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 const propsChatInfo = ref<ChatInfo | null>(props.chatInfo);
 watch(
-  () => props.chatInfo,
-  (value) => {
-    propsChatInfo.value = value;
-  }
+    () => props.chatInfo,
+    (value) => {
+      propsChatInfo.value = value;
+    }
 );
 
 const chatTabInfo = computed(() => {
@@ -56,8 +56,7 @@ const getGenerating = (index: number) => {
         :generating="getGenerating(index as number)"
         :options="propsChatInfo?.options"
         @delete="deleteMessage"
-        @edit="editMessage"
-    />
+        @edit="editMessage"/>
     <EditMessageDialog ref="editMessageDialogRefs"/>
   </div>
 </template>
