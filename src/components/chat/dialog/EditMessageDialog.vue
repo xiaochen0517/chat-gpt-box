@@ -69,7 +69,7 @@ defineExpose({
   <CDialog
       v-model:visible="dialogVisible"
       title="Edit Message"
-      @ok.stop="commit"
+      @ok="commit"
       size="large"
   >
     <el-form
