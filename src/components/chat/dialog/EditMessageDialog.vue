@@ -38,7 +38,7 @@ const chatTabsStore = useChatTabsStore();
 const commit = async () => {
   if (!editMessageFormRef.value) return;
   if (!chatId.value || !tabIndex.value || !messageIndex.value) {
-    ElMessage.warning("Please select a message first")
+    ElMessage.warning("Please select a message first");
     return;
   }
   await editMessageFormRef.value.validate((valid, fields) => {
@@ -46,7 +46,7 @@ const commit = async () => {
       chatTabsStore.updateMessage(chatId.value, tabIndex.value, messageIndex.value, formData.value);
       dialogVisible.value = false;
     } else {
-      console.log('error', fields);
+      console.log("error", fields);
     }
   });
 };
@@ -66,14 +66,20 @@ defineExpose({
 </script>
 
 <template>
-  <CDialog v-model:visible="dialogVisible" title="Edit Message" @ok.stop="commit" size="large">
+  <CDialog
+      v-model:visible="dialogVisible"
+      title="Edit Message"
+      @ok="commit"
+      size="large"
+  >
     <el-form
         class="w-full"
         ref="editMessageFormRef"
         :model="formData"
         :rules="formRules"
         label-width="100px"
-        label-position="left">
+        label-position="left"
+    >
       <el-form-item label="Role" prop="role">
         <el-select v-model="formData.role" placeholder="Please select role">
           <el-option value="system">system</el-option>

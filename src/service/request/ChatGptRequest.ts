@@ -8,7 +8,7 @@ import {encoding_for_model, Tiktoken, TiktokenModel} from "tiktoken";
 
 const CHAT_GPT_API_SUFFIX: string = "v1/chat/completions";
 const HTTP_REQ_TYPE: string = "POST";
-const decoder: TextDecoder = new TextDecoder('utf-8');
+const decoder: TextDecoder = new TextDecoder("utf-8");
 // global store
 const configStore = useConfigStore();
 const chatTabsStore = useChatTabsStore();
@@ -97,7 +97,7 @@ export class ChatGptRequest implements BaseRequest {
   private requestOpenAI(): Promise<string> {
     this.abortController = new AbortController();
     const url: string = this.chatConfig?.apiUrl + CHAT_GPT_API_SUFFIX;
-    let request: RequestInit = this.generateRequest();
+    const request: RequestInit = this.generateRequest();
     this.setGenerating(true);
     return this.sendFetch(url, request);
   }
@@ -105,24 +105,24 @@ export class ChatGptRequest implements BaseRequest {
   private sendFetch(url: string, request: RequestInit): Promise<string> {
     this.addAssistantMessage();
     fetch(url, request)
-        .then(async (data: Response) => {
-          if (!data.ok || data.status !== 200 || !data.body) {
-            this.setErrorMsgContent(`request failure status：${data.status}，message：${data.statusText}`);
-            return;
-          }
-          try {
-            this.reader = data.body.getReader();
-            await this.readResponse(await this.reader.read());
-          } catch (error) {
-            console.error(error);
-            const errMsg = error instanceof Error ? error.message : String(error);
-            this.setErrorMsgContent(errMsg);
-          }
-        })
-        .catch((error) => {
+      .then(async (data: Response) => {
+        if (!data.ok || data.status !== 200 || !data.body) {
+          this.setErrorMsgContent(`request failure status：${data.status}，message：${data.statusText}`);
+          return;
+        }
+        try {
+          this.reader = data.body.getReader();
+          await this.readResponse(await this.reader.read());
+        } catch (error) {
           console.error(error);
-          this.setErrorMsgContent(error.message);
-        });
+          const errMsg = error instanceof Error ? error.message : String(error);
+          this.setErrorMsgContent(errMsg);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        this.setErrorMsgContent(error.message);
+      });
     return Promise.resolve("");
   }
 
@@ -181,7 +181,7 @@ export class ChatGptRequest implements BaseRequest {
     if (!this.chatConfig) throw new Error("chat config is null");
     const tabChatLength = chatTabInfo.chat.length;
     if (tabChatLength === 0) return [];
-    let messages: ChatMessage[] = [];
+    const messages: ChatMessage[] = [];
     // context_max_message plus 1, because the last message is user new message
     let maxContextMinCount = tabChatLength - (this.chatConfig.context_max_message + 1);
     if (maxContextMinCount < 0) maxContextMinCount = 0;
@@ -226,15 +226,15 @@ export class ChatGptRequest implements BaseRequest {
     }
     // This is a Uint8Array type byte array that needs to be decoded.
     // It is possible that a single data packet contains multiple independent blocks, which are split using "data:".
-    let resultDecoded = decoder.decode(result.value);
-    let dataList = resultDecoded.split("data:");
+    const resultDecoded = decoder.decode(result.value);
+    const dataList = resultDecoded.split("data:");
     // parse data
-    for (let data of dataList) {
+    for (const data of dataList) {
       const resultData = this.parsePieceData(data);
       if (!resultData) continue;
       // parse choices
-      for (let choice of resultData.choices) {
-        let content = choice.delta.content;
+      for (const choice of resultData.choices) {
+        const content = choice.delta.content;
         // check content
         if (content) {
           this.appendAssistantMsgContent(content);
@@ -247,7 +247,7 @@ export class ChatGptRequest implements BaseRequest {
       return;
     }
     await this.readResponse(await this.reader.read());
-  };
+  }
 
   private parsePieceData(data: string): any | null {
     // skip empty data
