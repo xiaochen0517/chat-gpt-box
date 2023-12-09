@@ -134,6 +134,7 @@ body,
 html {
 @apply p-0 m-0 h-screen w-full;
   font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16px;
 }
 
 #app {
