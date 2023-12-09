@@ -6,9 +6,9 @@ import {ChatInfo} from "@/types/Store.ts";
 
 const instance = getCurrentInstance();
 const changeChatClick = (chatInfo: ChatInfo) => {
-  console.log('changeChatClick')
+  console.log("changeChatClick");
   if (!instance) return;
-  instance.emit('changeChatClick', chatInfo);
+  instance.emit("changeChatClick", chatInfo);
 };
 
 const robotListBlockRefs = ref<InstanceType<typeof RobotListBlock> | null>(null);
@@ -38,12 +38,14 @@ defineExpose({
       :with-header="false"
       :append-to-body="true"
       direction="ltr"
-      size="20rem">
+      size="20rem"
+  >
     <div class="h-full w-80 flex flex-col">
       <RobotListBlock
           class="flex-1"
           ref="robotListBlockRefs"
-          @changeChatClick="changeChatClick"/>
+          @changeChatClick="changeChatClick"
+      />
       <MenuListBlock @added-robot="robotListScrollToBottom"/>
     </div>
   </el-drawer>
