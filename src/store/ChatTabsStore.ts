@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
-import {ChatMessage, ChatMessageRole, ChatTabInfo, ChatTabsStore} from "@/types/Store.ts";
+import {ChatTabsStore} from "@/types/StoreTypes.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
+import {ChatMessage, ChatMessageRole, ChatTabInfoTypes} from "@/types/chat/ChatTabInfoTypes.ts";
 
 export const useChatTabsStore = defineStore("chatTabs", {
   state: (): ChatTabsStore => {
@@ -23,19 +24,19 @@ export const useChatTabsStore = defineStore("chatTabs", {
           },
         ],
       }
-    }
+    };
   },
   actions: {
     initGeneralStatus() {
-      for (let id in this.chatTabs) {
+      for (const id in this.chatTabs) {
         if (!this.chatTabs.hasOwnProperty(id)) continue;
-        for (let tabInfo of this.chatTabs[id]) {
+        for (const tabInfo of this.chatTabs[id]) {
           tabInfo.generating = false;
           tabInfo.request = null;
         }
       }
     },
-    getChatTabInfo(id: string, tabIndex: number): ChatTabInfo | null {
+    getChatTabInfo(id: string, tabIndex: number): ChatTabInfoTypes | null {
       if (!id || !this.chatTabs[id]) return null;
       return this.chatTabs[id][tabIndex];
     },
@@ -60,7 +61,7 @@ export const useChatTabsStore = defineStore("chatTabs", {
     },
     cleanTabChat(id: string, tabIndex: number) {
       if (!id || !this.chatTabs[id]) return;
-      let chatInfo = useChatListStore().getChatInfo(id);
+      const chatInfo = useChatListStore().getChatInfo(id);
       if (!chatInfo) return;
       this.chatTabs[id][tabIndex].chat = [{role: ChatMessageRole.System, content: chatInfo.prompt}];
     },
@@ -89,19 +90,19 @@ export const useChatTabsStore = defineStore("chatTabs", {
     },
     appendAssistantMsgContent(id: string, tabIndex: number, content: string) {
       if (!id || !this.chatTabs[id]) return;
-      let chat = this.chatTabs[id][tabIndex].chat;
+      const chat = this.chatTabs[id][tabIndex].chat;
       if (chat.length === 0) return;
       chat[chat.length - 1].content += content;
     },
     setAssistantErrorMsgContent(id: string, tabIndex: number, content: string) {
       if (!id || !this.chatTabs[id]) return;
-      let chat = this.chatTabs[id][tabIndex].chat;
+      const chat = this.chatTabs[id][tabIndex].chat;
       if (chat.length === 0) return;
       chat[chat.length - 1].content = "\n> " + content;
     },
     setGenerating(id: string, tabIndex: number, generating: boolean) {
       if (!id || !this.chatTabs[id]) return;
-      const chatTabInfo: ChatTabInfo = this.chatTabs[id][tabIndex];
+      const chatTabInfo: ChatTabInfoTypes = this.chatTabs[id][tabIndex];
       chatTabInfo.generating = generating;
       if (!generating) {
         chatTabInfo.request = null;
@@ -109,6 +110,6 @@ export const useChatTabsStore = defineStore("chatTabs", {
     },
   },
   persist: {
-    key: 'ChatTabs',
+    key: "ChatTabs",
   },
-})
+});

@@ -1,20 +1,20 @@
 import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {ArrayUtil} from "@/utils/ArrayUtil.ts";
-import {ShortcutConfig, ShortcutConfigKey, ShortcutStringConfig} from "@/types/Store.ts";
 import _ from "lodash";
+import {ShortcutConfig, ShortcutConfigKey, ShortcutStringConfig} from "@/types/chat/BaseConfigTypes.ts";
 
 export class KeyMapUtil {
 
   public static getKeyMapEnumListBySorted(KeyMapList: KeyMapEnum[]): KeyMapEnum[] {
     KeyMapList = _.cloneDeep(KeyMapList);
-    let modifierKeyList: string[] = [KeyMapEnum.KEY_CTRL, KeyMapEnum.KEY_SHIFT, KeyMapEnum.KEY_ALT, KeyMapEnum.KEY_META];
+    const modifierKeyList: string[] = [KeyMapEnum.KEY_CTRL, KeyMapEnum.KEY_SHIFT, KeyMapEnum.KEY_ALT, KeyMapEnum.KEY_META];
     KeyMapList.sort((firstKey, secondKey) => {
-      let firstKeyInModifierKeyListIndex = modifierKeyList.indexOf(firstKey);
-      let secondKeyInModifierKeyListIndex = modifierKeyList.indexOf(secondKey);
+      const firstKeyInModifierKeyListIndex = modifierKeyList.indexOf(firstKey);
+      const secondKeyInModifierKeyListIndex = modifierKeyList.indexOf(secondKey);
 
-      let firstKeyIsModifierKey = firstKeyInModifierKeyListIndex >= 0;
-      let secondIsModifierKey = secondKeyInModifierKeyListIndex >= 0;
+      const firstKeyIsModifierKey = firstKeyInModifierKeyListIndex >= 0;
+      const secondIsModifierKey = secondKeyInModifierKeyListIndex >= 0;
 
       if (firstKeyIsModifierKey && secondIsModifierKey) {
         return firstKeyInModifierKeyListIndex - secondKeyInModifierKeyListIndex;
@@ -22,7 +22,7 @@ export class KeyMapUtil {
       if (firstKeyIsModifierKey) return -1;
       if (secondIsModifierKey) return 1;
       return firstKey.localeCompare(secondKey);
-    })
+    });
     return KeyMapList;
   }
 
@@ -36,19 +36,19 @@ export class KeyMapUtil {
         selectKey = key;
         return true;
       }
-    })
+    });
     return selectKey;
   }
 
   public static formatShortcutKeyMapList2String(keyMapList: KeyMapEnum[] = [], isLowerCase = true, joinCode = "+"): string {
     if (!keyMapList) return "";
 
-    let joinString: string = keyMapList.join(joinCode);
+    const joinString: string = keyMapList.join(joinCode);
     return isLowerCase ? joinString.toLowerCase() : joinString;
   }
 
   public static formatShortcutConfig2ShortcutStringConfig(shortcutConfig: ShortcutConfig): ShortcutStringConfig {
-    let shortcutStringConfig: Partial<ShortcutStringConfig> = {};
+    const shortcutStringConfig: Partial<ShortcutStringConfig> = {};
     for (const keyStr in shortcutConfig) {
       const key = keyStr as ShortcutConfigKey;
       shortcutStringConfig[key] = this.formatShortcutKeyMapList2String(shortcutConfig[key]);

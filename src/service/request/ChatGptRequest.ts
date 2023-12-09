@@ -1,10 +1,12 @@
 import {BaseRequest} from "@/service/request/BaseRequest.ts";
-import {BaseConfig, ChatInfo, ChatMessage, ChatMessageRole, ChatOptions, ChatTabInfo} from "@/types/Store.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
-import {RequestOptions} from "@/types/request/RequestOptions.ts";
+import {RequestOptionsTypes} from "@/types/request/RequestOptionsTypes.ts";
 import {ChatGptRequestBody, ChatGptRequestTypes} from "@/types/request/ChatGptRequestTypes.ts";
 import {encoding_for_model, Tiktoken, TiktokenModel} from "tiktoken";
+import {ChatInfoTypes, ChatOptions} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatMessage, ChatMessageRole, ChatTabInfoTypes} from "@/types/chat/ChatTabInfoTypes.ts";
+import {BaseConfigTypes} from "@/types/chat/BaseConfigTypes.ts";
 
 const CHAT_GPT_API_SUFFIX: string = "v1/chat/completions";
 const HTTP_REQ_TYPE: string = "POST";
@@ -17,12 +19,12 @@ const DATA_DONE_FLAG: string = "[DONE]";
 
 export class ChatGptRequest implements BaseRequest {
 
-  chatInfo: ChatInfo;
+  chatInfo: ChatInfoTypes;
 
   refreshCallbackFunc: () => void = () => {
   };
 
-  requestOptions: RequestOptions | null = null;
+  requestOptions: RequestOptionsTypes | null = null;
 
   stopFlag: boolean = false;
 
@@ -32,11 +34,11 @@ export class ChatGptRequest implements BaseRequest {
 
   reader: ReadableStreamDefaultReader | null = null;
 
-  constructor(chatInfo: ChatInfo) {
+  constructor(chatInfo: ChatInfoTypes) {
     this.chatInfo = chatInfo;
   }
 
-  public sendMessage(requestOptions: RequestOptions, refreshCallbackFunc: () => void): Promise<string> {
+  public sendMessage(requestOptions: RequestOptionsTypes, refreshCallbackFunc: () => void): Promise<string> {
     try {
       this.checkParams(requestOptions, refreshCallbackFunc);
       this.requestOptions = requestOptions;
@@ -74,7 +76,7 @@ export class ChatGptRequest implements BaseRequest {
   }
 
   private getChatConfig(): ChatGptRequestTypes {
-    const config: ChatOptions | BaseConfig = this.chatInfo.options.enabled ? this.chatInfo.options : configStore.baseConfig;
+    const config: ChatOptions | BaseConfigTypes = this.chatInfo.options.enabled ? this.chatInfo.options : configStore.baseConfig;
     return {
       apiUrl: config.apiUrl,
       model: config.model,
@@ -85,7 +87,7 @@ export class ChatGptRequest implements BaseRequest {
     };
   }
 
-  private checkParams(requestOptions: RequestOptions, refreshCallbackFunc: () => void): void {
+  private checkParams(requestOptions: RequestOptionsTypes, refreshCallbackFunc: () => void): void {
     console.log("message: ", requestOptions);
     console.log("refreshFunc: ", refreshCallbackFunc);
     if (!refreshCallbackFunc) throw new Error("refresh callback invalid");
@@ -171,13 +173,13 @@ export class ChatGptRequest implements BaseRequest {
     this.refreshCallbackFunc();
   }
 
-  private getChatTabInfo(tabIndex: number): ChatTabInfo {
+  private getChatTabInfo(tabIndex: number): ChatTabInfoTypes {
     const chatTabInfo = chatTabsStore.getChatTabInfo(this.chatInfo.id, tabIndex);
     if (!chatTabInfo) throw new Error("chat tab info is null");
     return chatTabInfo;
   }
 
-  private getMaxContextMessage(chatTabInfo: ChatTabInfo): ChatMessage[] {
+  private getMaxContextMessage(chatTabInfo: ChatTabInfoTypes): ChatMessage[] {
     if (!this.chatConfig) throw new Error("chat config is null");
     const tabChatLength = chatTabInfo.chat.length;
     if (tabChatLength === 0) return [];

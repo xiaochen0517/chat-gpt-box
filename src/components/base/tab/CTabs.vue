@@ -1,7 +1,8 @@
 <script setup lang="ts">
 
 import {computed, provide, ref, watch} from "vue";
-import {ChatOptions} from "@/types/Store.ts";
+
+import {ChatOptions} from "@/types/chat/ChatInfoTypes.ts";
 
 
 type Props = {

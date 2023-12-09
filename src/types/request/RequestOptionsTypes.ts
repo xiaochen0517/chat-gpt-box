@@ -1,4 +1,4 @@
-export type RequestOptions = {
+export type RequestOptionsTypes = {
   message: string,
   tabIndex: number,
 }

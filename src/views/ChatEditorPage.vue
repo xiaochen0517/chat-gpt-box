@@ -13,10 +13,10 @@ import ModelDialog from "@/components/setting/dialog/ModelDialog.vue";
 import ChatNameDialog from "@/components/setting/dialog/ChatNameDialog.vue";
 import ChatPromptDialog from "@/components/setting/dialog/ChatPromptDialog.vue";
 import {useChatListStore} from "@/store/ChatListStore.ts";
-import {ChatInfo, ChatOptions, ChatType} from "@/types/Store.ts";
 import {useRoute} from "vue-router";
 import {ElMessage} from "element-plus";
 import StrUtil from "@/utils/StrUtil.ts";
+import {ChatInfoTypes, ChatOptions, ChatType} from "@/types/chat/ChatInfoTypes.ts";
 
 const jumpToHomePage = () => {
   router.push({path: "/"});
@@ -46,7 +46,7 @@ const isAddChat = ref(false);
 /**
  * If chatId is "add", then we should use addChatInfo.
  */
-const addChatInfo = ref<ChatInfo>({
+const addChatInfo = ref<ChatInfoTypes>({
   id: "default",
   name: "Default Chat",
   prompt: "You are a helpful assistant.",
@@ -111,7 +111,7 @@ const components: ComponentMap = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const currentDialogRefs = ref<any>(null);
 const currentDialog = ref<string | ReturnType<typeof defineComponent>>("");
-const openBaseDialog = (name: string, key: keyof ChatInfo) => {
+const openBaseDialog = (name: string, key: keyof ChatInfoTypes) => {
   if (!components[name]) return;
   currentDialog.value = markRaw(components[name]);
   nextTick(() => {
@@ -141,7 +141,7 @@ const saveChatOptions = <K extends keyof ChatOptions>(key: K, value: ChatOptions
   currentDialogRefs.value.hide();
 };
 
-const saveChatInfo = <K extends keyof ChatInfo>(key: K, value: ChatInfo[K]) => {
+const saveChatInfo = <K extends keyof ChatInfoTypes>(key: K, value: ChatInfoTypes[K]) => {
   if (!chatId.value) return;
   if (!currentDialogRefs.value) return;
   if (isAddChat.value) {

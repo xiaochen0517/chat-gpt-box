@@ -1,17 +1,17 @@
-import {ChatInfo} from "@/types/Store.ts";
-import {RequestOptions} from "@/types/request/RequestOptions.ts";
+import {RequestOptionsTypes} from "@/types/request/RequestOptionsTypes.ts";
+import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
 
 export interface BaseRequest {
 
-  chatInfo: ChatInfo;
+  chatInfo: ChatInfoTypes;
 
   refreshCallbackFunc: () => void;
 
-  requestOptions: RequestOptions | null;
+  requestOptions: RequestOptionsTypes | null;
 
   stopFlag: boolean;
 
-  sendMessage(requestOptions: RequestOptions, refreshCallbackFunc: () => void): Promise<string>;
+  sendMessage(requestOptions: RequestOptionsTypes, refreshCallbackFunc: () => void): Promise<string>;
 
   cancel(): void;
 

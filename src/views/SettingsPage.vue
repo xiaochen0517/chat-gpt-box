@@ -11,7 +11,8 @@ import ContextMaxMsgsDialog from "@/components/setting/dialog/ContextMaxMsgsDial
 import ContextMaxTokensDialog from "@/components/setting/dialog/ContextMaxTokensDialog.vue";
 import ResponseMaxTokensDialog from "@/components/setting/dialog/ResponseMaxTokensDialog.vue";
 import CTopNavBar from "@/components/base/nav/CTopNavBar.vue";
-import {BaseConfig} from "@/types/Store.ts";
+
+import {BaseConfigTypes} from "@/types/chat/BaseConfigTypes.ts";
 
 onMounted(() => {
   console.log("onMounted");
@@ -58,7 +59,7 @@ const components: ComponentMap = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const currentDialogRefs = ref<any>(null);
 const currentDialog = ref<string | ReturnType<typeof defineComponent>>("");
-const openDialog = (name: string, key: keyof BaseConfig) => {
+const openDialog = (name: string, key: keyof BaseConfigTypes) => {
   if (!components[name]) return;
   currentDialog.value = markRaw(components[name]);
   nextTick(() => {
@@ -67,7 +68,7 @@ const openDialog = (name: string, key: keyof BaseConfig) => {
   });
 };
 
-const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) => {
+const saveConfig = <K extends keyof BaseConfigTypes>(key: K, value: BaseConfigTypes[K]) => {
   configStore.setBaseConfig(key, value);
   if (!currentDialogRefs.value) return;
   currentDialogRefs.value.hide();

@@ -1,4 +1,4 @@
-import {ChatMessage} from "@/types/Store.ts";
+import {ChatMessage} from "@/types/chat/ChatTabInfoTypes.ts";
 
 export type ChatGptRequestTypes = {
   apiUrl: string;

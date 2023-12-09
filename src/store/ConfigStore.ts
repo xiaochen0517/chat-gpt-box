@@ -1,9 +1,10 @@
 import {defineStore} from "pinia";
-import {BaseConfig, ConfigStore, ShortcutConfig, ShortcutConfigKey, ShortcutStringConfig} from "@/types/Store.ts";
+import {ConfigStore} from "@/types/StoreTypes.ts";
 import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
 import _ from "lodash";
 import {KeyMapUtil} from "@/utils/KeyMapUtil.ts";
 import {DEFAULT_SHORTCUT} from "./defaults/DefaultShortcut.ts";
+import {BaseConfigTypes, ShortcutConfig, ShortcutConfigKey, ShortcutStringConfig} from "@/types/chat/BaseConfigTypes.ts";
 
 export const useConfigStore = defineStore("config", {
   state: (): ConfigStore => {
@@ -22,7 +23,7 @@ export const useConfigStore = defineStore("config", {
       },
       shortcut: _.cloneDeep(DEFAULT_SHORTCUT),
       shortcutKeyMapMaxSize: 5,
-    }
+    };
   },
   getters: {
     shortcutStringConfig(state): ShortcutStringConfig {
@@ -33,7 +34,7 @@ export const useConfigStore = defineStore("config", {
     setDarkMode(isDarkMode: boolean) {
       this.isDarkMode = isDarkMode;
     },
-    setBaseConfig<K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) {
+    setBaseConfig<K extends keyof BaseConfigTypes>(key: K, value: BaseConfigTypes[K]) {
       this.baseConfig[key] = value;
     },
     setApiKey(apiKey: string) {
@@ -71,12 +72,12 @@ export const useConfigStore = defineStore("config", {
     },
     setShortcut(shortcutConfigKey: ShortcutConfigKey, keyMapList: KeyMapEnum[]) {
       if (!keyMapList) return false;
-      let shortcut = _.cloneDeep(this.shortcut);
+      const shortcut = _.cloneDeep(this.shortcut);
       shortcut[shortcutConfigKey] = keyMapList;
       this.setShortcutConfig(shortcut);
     },
   },
   persist: {
-    key: 'Config',
+    key: "Config",
   },
-})
+});

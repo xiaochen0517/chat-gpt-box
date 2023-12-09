@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {AppStateStore, WindowState} from "@/types/Store.ts";
+import {AppStateStore, WindowState} from "@/types/StoreTypes.ts";
 
 export const useAppStateStore = defineStore("appState", {
   state: (): AppStateStore => {
@@ -15,7 +15,7 @@ export const useAppStateStore = defineStore("appState", {
         x: 200,
         y: 200,
       },
-    }
+    };
   },
   actions: {
     setWindowSize(width: number, height: number) {
@@ -34,6 +34,6 @@ export const useAppStateStore = defineStore("appState", {
     }
   },
   persist: {
-    key: 'AppState',
+    key: "AppState",
   },
 });

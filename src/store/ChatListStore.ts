@@ -1,8 +1,9 @@
 import {defineStore} from "pinia";
-import {ChatInfo, ChatListStore, ChatOptions, ChatType} from "@/types/Store.ts";
+import {ChatListStore} from "@/types/StoreTypes.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {v4 as uuidv4} from "uuid";
 import _ from "lodash";
+import {ChatInfoTypes, ChatOptions, ChatType} from "@/types/chat/ChatInfoTypes.ts";
 
 export const useChatListStore = defineStore("chatList", {
   state: (): ChatListStore => {
@@ -39,16 +40,16 @@ export const useChatListStore = defineStore("chatList", {
           },
         },
       ]
-    }
+    };
   },
   actions: {
-    setChatList(chatList: ChatInfo[]) {
+    setChatList(chatList: ChatInfoTypes[]) {
       this.chatList = chatList;
     },
-    getChatInfo(id: string): ChatInfo | null {
-      return _.cloneDeep(this.chatList.find((chat: ChatInfo): boolean => chat.id === id) ?? null);
+    getChatInfo(id: string): ChatInfoTypes | null {
+      return _.cloneDeep(this.chatList.find((chat: ChatInfoTypes): boolean => chat.id === id) ?? null);
     },
-    setChatInfo<K extends keyof ChatInfo>(id: string, key: K, value: ChatInfo[K]) {
+    setChatInfo<K extends keyof ChatInfoTypes>(id: string, key: K, value: ChatInfoTypes[K]) {
       const index = this.getChatInfoIndex(id);
       if (index < 0) return;
       this.chatList[index][key] = value;
@@ -58,7 +59,7 @@ export const useChatListStore = defineStore("chatList", {
       if (index < 0) return;
       this.chatList[index].options[key] = value;
     },
-    addChat(chatInfo: ChatInfo) {
+    addChat(chatInfo: ChatInfoTypes) {
       chatInfo.id = uuidv4();
       this.chatList.push(chatInfo);
       useChatTabsStore().addDefaultChatTab(chatInfo.id);
@@ -69,16 +70,16 @@ export const useChatListStore = defineStore("chatList", {
       this.chatList.splice(index, 1);
       useChatTabsStore().removeChatTabs(id);
     },
-    getChatInfoIndex(chatInfo: ChatInfo | string): number {
-      let chatInfoId: string = typeof chatInfo !== "string" ? chatInfo.id : chatInfo;
-      return this.chatList.findIndex((chat: ChatInfo): boolean => chat.id === chatInfoId);
+    getChatInfoIndex(chatInfo: ChatInfoTypes | string): number {
+      const chatInfoId: string = typeof chatInfo !== "string" ? chatInfo.id : chatInfo;
+      return this.chatList.findIndex((chat: ChatInfoTypes): boolean => chat.id === chatInfoId);
     },
     removeChat(id: string) {
       const index = this.getChatInfoIndex(id);
       if (index < 0) return;
       this.chatList.splice(index, 1);
     },
-    updateChat(id: string, newChatInfo: ChatInfo) {
+    updateChat(id: string, newChatInfo: ChatInfoTypes) {
       const index = this.getChatInfoIndex(id);
       if (index < 0) return;
       this.chatList[index] = newChatInfo;
@@ -94,31 +95,31 @@ export const useChatListStore = defineStore("chatList", {
       const chat = this.chatList[index];
       this.chatList.splice(index, 1);
       switch (direction) {
-        case "up":
-          this.chatList.splice(index - size, 0, chat);
-          break;
-        case "down":
-          this.chatList.splice(index + size, 0, chat);
-          break;
+      case "up":
+        this.chatList.splice(index - size, 0, chat);
+        break;
+      case "down":
+        this.chatList.splice(index + size, 0, chat);
+        break;
       }
     },
-    getPrevChatInfo(chatInfo: ChatInfo): ChatInfo | null {
+    getPrevChatInfo(chatInfo: ChatInfoTypes): ChatInfoTypes | null {
       const index = this.getChatInfoIndex(chatInfo);
       if (index <= 0) return null;
       return this.chatList[index - 1];
     },
-    getNextChatInfo(chatInfo: ChatInfo): ChatInfo | null {
+    getNextChatInfo(chatInfo: ChatInfoTypes): ChatInfoTypes | null {
       const index = this.getChatInfoIndex(chatInfo);
       if (index < 0 || index >= this.chatList.length - 1) return null;
       return this.chatList[index + 1];
     },
-    getSwitchChatInfo(chatInfo: ChatInfo): ChatInfo {
+    getSwitchChatInfo(chatInfo: ChatInfoTypes): ChatInfoTypes {
       const index = this.getChatInfoIndex(chatInfo);
       if (index < 0 || index >= this.chatList.length - 1) return this.chatList[0];
       return this.chatList[index + 1];
     },
   },
   persist: {
-    key: 'ChatList',
+    key: "ChatList",
   },
-})
+});
