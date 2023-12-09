@@ -81,9 +81,9 @@ export class ChatGptRequest implements BaseRequest {
       apiUrl: config.apiUrl,
       model: config.model,
       temperature: config.temperature,
-      context_max_message: config.context_max_message,
-      context_max_tokens: config.context_max_tokens,
-      response_max_tokens: config.response_max_tokens,
+      contextMaxMessage: config.contextMaxMessage,
+      contextMaxTokens: config.contextMaxTokens,
+      responseMaxTokens: config.responseMaxTokens,
     };
   }
 
@@ -108,11 +108,9 @@ export class ChatGptRequest implements BaseRequest {
     this.addAssistantMessage();
     fetch(url, request)
       .then(async (data: Response) => {
-        if (!data.ok || data.status !== 200 || !data.body) {
-          this.setErrorMsgContent(`request failure status：${data.status}，message：${data.statusText}`);
-          return;
-        }
+        if (!await this.checkFetchResponse(data)) return;
         try {
+          if (!data.body) return;
           this.reader = data.body.getReader();
           await this.readResponse(await this.reader.read());
         } catch (error) {
@@ -126,6 +124,23 @@ export class ChatGptRequest implements BaseRequest {
         this.setErrorMsgContent(error.message);
       });
     return Promise.resolve("");
+  }
+
+  private async checkFetchResponse(data: Response): Promise<boolean> {
+    if (!data.ok || data.status !== 200) {
+      let errMsg = `request failure status：${data.status}`;
+      if (data.body) {
+        const dataText = await data.text();
+        errMsg += `; message: \n\`\`\`json\n${dataText}\n\`\`\``;
+      }
+      this.setErrorMsgContent(errMsg);
+      return false;
+    }
+    if (!data.body) {
+      this.setErrorMsgContent("response body is null");
+      return false;
+    }
+    return true;
   }
 
   private generateRequest(): RequestInit {
@@ -151,7 +166,7 @@ export class ChatGptRequest implements BaseRequest {
       model: this.chatConfig.model,
       stream: true,
       temperature: this.chatConfig.temperature,
-      max_tokens: this.chatConfig.response_max_tokens > 0 ? this.chatConfig.response_max_tokens : undefined,
+      max_tokens: this.chatConfig.responseMaxTokens > 0 ? this.chatConfig.responseMaxTokens : undefined,
     };
   }
 
@@ -184,8 +199,8 @@ export class ChatGptRequest implements BaseRequest {
     const tabChatLength = chatTabInfo.chat.length;
     if (tabChatLength === 0) return [];
     const messages: ChatMessage[] = [];
-    // context_max_message plus 1, because the last message is user new message
-    let maxContextMinCount = tabChatLength - (this.chatConfig.context_max_message + 1);
+    // contextMaxMessage plus 1, because the last message is user new message
+    let maxContextMinCount = tabChatLength - (this.chatConfig.contextMaxMessage + 1);
     if (maxContextMinCount < 0) maxContextMinCount = 0;
     for (let i = tabChatLength - 1; i >= maxContextMinCount; i--) {
       const chatMessage = chatTabInfo.chat[i];
@@ -199,8 +214,8 @@ export class ChatGptRequest implements BaseRequest {
     if (!this.chatConfig) throw new Error("chat config is null");
     // check context messages token size
     const tokenEncoder = encoding_for_model(this.chatConfig.model as TiktokenModel);
-    while (this.getMessagesTokenSize(messages, tokenEncoder) > this.chatConfig.context_max_tokens) {
-      // if context messages token size is greater than context_max_tokens, remove the first message
+    while (this.getMessagesTokenSize(messages, tokenEncoder) > this.chatConfig.contextMaxTokens) {
+      // if context messages token size is greater than contextMaxTokens, remove the first message
       messages.splice(1, 1);
     }
     // free token encoder
