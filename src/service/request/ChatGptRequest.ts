@@ -4,7 +4,7 @@ import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {RequestOptionsTypes} from "@/types/request/RequestOptionsTypes.ts";
 import {ChatGptRequestBody, ChatGptRequestTypes} from "@/types/request/ChatGptRequestTypes.ts";
 import {encoding_for_model, Tiktoken, TiktokenModel} from "tiktoken";
-import {ChatInfoTypes, ChatOptions} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfoTypes, GPTChatOptions} from "@/types/chat/ChatInfoTypes.ts";
 import {ChatMessage, ChatMessageRole, ChatTabInfoTypes} from "@/types/chat/ChatTabInfoTypes.ts";
 import {BaseConfigTypes} from "@/types/chat/BaseConfigTypes.ts";
 
@@ -76,7 +76,7 @@ export class ChatGptRequest implements BaseRequest {
   }
 
   private getChatConfig(): ChatGptRequestTypes {
-    const config: ChatOptions | BaseConfigTypes = this.chatInfo.options.enabled ? this.chatInfo.options : configStore.baseConfig;
+    const config: GPTChatOptions | BaseConfigTypes = this.chatInfo.options.enabled ? this.chatInfo.options as GPTChatOptions : configStore.baseConfig;
     return {
       apiUrl: config.apiUrl,
       model: config.model,

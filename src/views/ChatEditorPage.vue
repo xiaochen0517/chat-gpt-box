@@ -1,22 +1,14 @@
 <script setup lang="ts">
-import {computed, defineComponent, markRaw, nextTick, onMounted, Ref, ref, watch} from "vue";
+import {computed, onMounted, Ref, ref, watch} from "vue";
 import CTopNavBar from "@/components/base/nav/CTopNavBar.vue";
 import router from "@/router/Router.ts";
-import CListItem from "@/components/base/list/CListItem.vue";
-import ApiKeyDialog from "@/components/setting/dialog/ApiKeyDialog.vue";
-import TemperatureDialog from "@/components/setting/dialog/TemperatureDialog.vue";
-import ResponseMaxTokensDialog from "@/components/setting/dialog/ResponseMaxTokensDialog.vue";
-import ContextMaxMsgsDialog from "@/components/setting/dialog/ContextMaxMsgsDialog.vue";
-import ContextMaxTokensDialog from "@/components/setting/dialog/ContextMaxTokensDialog.vue";
-import ApiUrlDialog from "@/components/setting/dialog/ApiUrlDialog.vue";
-import ModelDialog from "@/components/setting/dialog/ModelDialog.vue";
-import ChatNameDialog from "@/components/setting/dialog/ChatNameDialog.vue";
-import ChatPromptDialog from "@/components/setting/dialog/ChatPromptDialog.vue";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {useRoute} from "vue-router";
 import {ElMessage} from "element-plus";
 import StrUtil from "@/utils/StrUtil.ts";
-import {ChatInfoTypes, ChatOptions, ChatType} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfoTypes, ChatType} from "@/types/chat/ChatInfoTypes.ts";
+import GPTChatSettingsBlock from "@/components/setting/chat/GPTChatSettingsBlock.vue";
+import DALLEChatSettingsBlock from "@/components/setting/chat/DALLEChatSettingsBlock.vue";
 
 const jumpToHomePage = () => {
   router.push({path: "/"});
@@ -43,6 +35,7 @@ watch(configEnabled, (value) => {
   chatListStore.setChatOptions(chatId.value, "enabled", value);
 });
 const isAddChat = ref(false);
+const chatType = ref(ChatType.CHAT_GPT);
 /**
  * If chatId is "add", then we should use addChatInfo.
  */
@@ -60,12 +53,6 @@ const addChatInfo = ref<ChatInfoTypes>({
     contextMaxTokens: 2048,
     responseMaxTokens: 0
   }
-});
-const chatInfo = computed(() => {
-  if (!chatId.value || chatId.value === "add") {
-    return addChatInfo.value;
-  }
-  return chatListStore.getChatInfo(chatId.value);
 });
 
 onMounted(() => {
@@ -92,65 +79,6 @@ const addChat = () => {
   jumpToHomePage();
 };
 
-type ComponentMap = {
-  [key: string]: ReturnType<typeof defineComponent>;
-};
-
-const components: ComponentMap = {
-  ApiKeyDialog,
-  ApiUrlDialog,
-  ModelDialog,
-  TemperatureDialog,
-  ContextMaxMsgsDialog,
-  ContextMaxTokensDialog,
-  ResponseMaxTokensDialog,
-  ChatNameDialog,
-  ChatPromptDialog,
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const currentDialogRefs = ref<any>(null);
-const currentDialog = ref<string | ReturnType<typeof defineComponent>>("");
-const openBaseDialog = (name: string, key: keyof ChatInfoTypes) => {
-  if (!components[name]) return;
-  currentDialog.value = markRaw(components[name]);
-  nextTick(() => {
-    if (!currentDialogRefs.value) return;
-    if (!chatInfo.value) return;
-    currentDialogRefs.value.show(chatInfo.value[key]);
-  });
-};
-const openOptionsDialog = (name: string, key: keyof ChatOptions) => {
-  if (!components[name]) return;
-  currentDialog.value = markRaw(components[name]);
-  nextTick(() => {
-    if (!currentDialogRefs.value) return;
-    if (!chatInfo.value) return;
-    currentDialogRefs.value.show(chatInfo.value.options[key]);
-  });
-};
-
-const saveChatOptions = <K extends keyof ChatOptions>(key: K, value: ChatOptions[K]) => {
-  if (!chatId.value) return;
-  if (!currentDialogRefs.value) return;
-  if (isAddChat.value) {
-    addChatInfo.value.options[key] = value;
-  } else {
-    chatListStore.setChatOptions(chatId.value, key, value);
-  }
-  currentDialogRefs.value.hide();
-};
-
-const saveChatInfo = <K extends keyof ChatInfoTypes>(key: K, value: ChatInfoTypes[K]) => {
-  if (!chatId.value) return;
-  if (!currentDialogRefs.value) return;
-  if (isAddChat.value) {
-    addChatInfo.value[key] = value;
-  } else {
-    chatListStore.setChatInfo(chatId.value, key, value);
-  }
-  currentDialogRefs.value.hide();
-};
 </script>
 
 <template>
@@ -163,62 +91,32 @@ const saveChatInfo = <K extends keyof ChatInfoTypes>(key: K, value: ChatInfoType
         @saveClick="addChat"
     />
     <div class="px-2 xl:p-0 max-w-2xl m-auto mt-2">
-      <div class="mt-1 text-lg leading-13">Basic Settings</div>
-      <div class="rounded-xl overflow-hidden text-base select-none">
-        <CListItem
-            content="Chat name"
-            left-icon="icon-discount"
-            @click.stop="openBaseDialog('ChatNameDialog', 'name')"
+      <div class="relative flex flex-row gap-2 p-2 rounded-xl overflow-hidden text-base text-center select-none dark:bg-neutral-800">
+        <div
+            class="tab-background absolute top-2 bottom-2 left-2 w-[calc(50%-0.5rem)] rounded-md dark:bg-neutral-700"
+            :style="{transform: chatType === ChatType.CHAT_GPT ? 'translateX(0)' : 'translateX(100%)'}"
         />
-        <CListItem
-            content="Chat prompt"
-            left-icon="icon-product-list"
-            @click.stop="openBaseDialog('ChatPromptDialog', 'prompt')"
-        />
-        <CListItem
-            content="Advanced Settings"
-            left-icon="icon-settings"
-            switch-enabled
-            v-model:switch-value="configEnabled"
-            :bottom-border="false"
-        />
-      </div>
-      <div v-if="configEnabled" class="mt-1 text-lg leading-13">Advanced Settings</div>
-      <div
-          v-if="configEnabled"
-          class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800"
-      >
-        <CListItem content="Api url" left-icon="icon-link1" @click.stop="openOptionsDialog('ApiUrlDialog', 'apiUrl')"/>
-        <CListItem content="Model" left-icon="icon-connections" @click="openOptionsDialog('ModelDialog', 'model')"/>
-        <CListItem
-            content="Temperature"
-            left-icon="icon-hot-for-ux"
-            @click="openOptionsDialog('TemperatureDialog', 'temperature')"
-        />
-        <CListItem
-            content="Context max msgs"
-            left-icon="icon-file-text"
-            @click="openOptionsDialog('ContextMaxMsgsDialog', 'contextMaxMessage')"
-        />
-        <CListItem
-            content="Context max tokens"
-            left-icon="icon-translate"
-            @click="openOptionsDialog('ContextMaxTokensDialog', 'contextMaxTokens')"
-        />
-        <CListItem
-            content="Response max tokens"
-            left-icon="icon-rollback"
-            :bottom-border="false"
-            @click="openOptionsDialog('ResponseMaxTokensDialog', 'responseMaxTokens')"
-        />
+        <div
+            class="flex-1 px-2 rounded-md text-base leading-8 cursor-pointer z-10"
+            @click.stop="chatType = ChatType.CHAT_GPT"
+        >
+          GPT Chat
+        </div>
+        <div
+            class="flex-1 px-2 rounded-md text-base leading-8 cursor-pointer z-10"
+            @click.stop="chatType = ChatType.DALL_E"
+        >
+          DALL-E Image
+        </div>
       </div>
     </div>
-    <Component
-        ref="currentDialogRefs"
-        :is="currentDialog"
-        v-if="currentDialog"
-        @commit="saveChatOptions"
-        @save="saveChatInfo"
-    />
+    <GPTChatSettingsBlock v-if="chatType === ChatType.CHAT_GPT" :is-add-chat="isAddChat"/>
+    <DALLEChatSettingsBlock v-if="chatType === ChatType.DALL_E" :is-add-chat="isAddChat"/>
   </div>
 </template>
+
+<style lang="less" scoped>
+.tab-background {
+  transition: all 0.2s ease;
+}
+</style>

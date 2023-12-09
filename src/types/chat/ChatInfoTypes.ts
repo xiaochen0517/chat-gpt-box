@@ -11,7 +11,9 @@ export enum ChatType {
   DALL_E = "dall_e",
 }
 
-export type ChatOptions = {
+export type ChatOptions = GPTChatOptions | DallEChatOptions;
+
+export type GPTChatOptions = {
   enabled: boolean;
   apiUrl: string;
   model: string;
@@ -19,4 +21,14 @@ export type ChatOptions = {
   contextMaxMessage: number;
   contextMaxTokens: number;
   responseMaxTokens: number;
+}
+
+export type DallEChatOptions = {
+  enabled: boolean;
+  apiUrl: string;
+  model: string;
+  imageCount: number;
+  imageSize: string;
+  imageStyle?: string;
+  imageQuality?: string;
 }

@@ -2,13 +2,13 @@
 
 import {computed, provide, ref, watch} from "vue";
 
-import {ChatOptions} from "@/types/chat/ChatInfoTypes.ts";
+import {GPTChatOptions} from "@/types/chat/ChatInfoTypes.ts";
 
 
 type Props = {
   activeKey: number;
   tabNames: string[];
-  chatOptions: ChatOptions;
+  chatOptions: GPTChatOptions;
 };
 
 const props = withDefaults(defineProps<Props>(), {

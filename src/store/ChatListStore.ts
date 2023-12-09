@@ -3,7 +3,7 @@ import {ChatListStore} from "@/types/StoreTypes.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {v4 as uuidv4} from "uuid";
 import _ from "lodash";
-import {ChatInfoTypes, ChatOptions, ChatType} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfoTypes, ChatOptions, ChatType, GPTChatOptions} from "@/types/chat/ChatInfoTypes.ts";
 
 export const useChatListStore = defineStore("chatList", {
   state: (): ChatListStore => {
@@ -53,6 +53,20 @@ export const useChatListStore = defineStore("chatList", {
       const index = this.getChatInfoIndex(id);
       if (index < 0) return;
       this.chatList[index][key] = value;
+    },
+    setGPTChatOptions<K extends keyof GPTChatOptions>(id: string, key: K, value: GPTChatOptions[K]) {
+      const index = this.getChatInfoIndex(id);
+      if (index < 0) return;
+      const chatInfo = this.chatList[index];
+      if (chatInfo.chatType !== ChatType.CHAT_GPT) return;
+      (chatInfo.options as GPTChatOptions)[key] = value;
+    },
+    setDallEChatOptions<K extends keyof ChatOptions>(id: string, key: K, value: ChatOptions[K]) {
+      const index = this.getChatInfoIndex(id);
+      if (index < 0) return;
+      const chatInfo = this.chatList[index];
+      if (chatInfo.chatType !== ChatType.DALL_E) return;
+      (chatInfo.options as ChatOptions)[key] = value;
     },
     setChatOptions<K extends keyof ChatOptions>(id: string, key: K, value: ChatOptions[K]) {
       const index = this.getChatInfoIndex(id);
