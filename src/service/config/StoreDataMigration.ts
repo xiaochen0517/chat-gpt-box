@@ -17,7 +17,10 @@ export class StoreDataMigration {
     const currentVersion = this.getCurrentVersion();
     const storedVersion = localStorage.getItem("version");
     if (!storedVersion) {
+      if (localStorage.length > 0) localStorage.clear();
       localStorage.setItem("version", currentVersion.toString());
+      // refresh page
+      window.location.reload();
       return;
     }
     const storedVersionNumber = parseInt(storedVersion);
