@@ -8,7 +8,7 @@ export class KeyMapUtil {
 
   public static getKeyMapEnumListBySorted(KeyMapList: KeyMapEnum[]): KeyMapEnum[] {
     KeyMapList = _.cloneDeep(KeyMapList);
-    let modifierKeyList: string[] = [KeyMapEnum.CTRL, KeyMapEnum.SHIFT, KeyMapEnum.ALT, KeyMapEnum.META];
+    let modifierKeyList: string[] = [KeyMapEnum.KEY_CTRL, KeyMapEnum.KEY_SHIFT, KeyMapEnum.KEY_ALT, KeyMapEnum.KEY_META];
     KeyMapList.sort((firstKey, secondKey) => {
       let firstKeyInModifierKeyListIndex = modifierKeyList.indexOf(firstKey);
       let secondKeyInModifierKeyListIndex = modifierKeyList.indexOf(secondKey);
@@ -57,7 +57,7 @@ export class KeyMapUtil {
   }
 
   public static formatShortcutKeyMap2ShowCode(code: string) {
-    if (code === KeyMapEnum.CTRL) {
+    if (code === KeyMapEnum.KEY_CTRL) {
       code = "ctrl";
     }
     return code.toUpperCase();

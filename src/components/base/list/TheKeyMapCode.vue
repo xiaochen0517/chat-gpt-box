@@ -14,10 +14,10 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 let keyMapCodeClassNameEnum = {
-  [KeyMapEnum.UP]: "icon-arrowup",
-  [KeyMapEnum.DOWN]: "icon-arrowdown",
-  [KeyMapEnum.LEFT]: "icon-arrowleft",
-  [KeyMapEnum.RIGHT]: "icon-arrowright",
+  [KeyMapEnum.KEY_UP]: "icon-arrowup",
+  [KeyMapEnum.KEY_DOWN]: "icon-arrowdown",
+  [KeyMapEnum.KEY_LEFT]: "icon-arrowleft",
+  [KeyMapEnum.KEY_RIGHT]: "icon-arrowright",
 };
 
 let iconClass = computed(() => {
@@ -32,8 +32,8 @@ let iconClass = computed(() => {
 </script>
 
 <template>
-  <span class="font-bold text-sm px-2 py-1 opacity-60 bg-gray-400 bg-opacity-10" :class="`scale-${props.size}`">
-    <i v-if="iconClass" class="iconfont  " :class="iconClass"/>
+  <span class="font-bold text-sm mr-2 px-2 py-1 opacity-60 bg-gray-400 bg-opacity-10" :class="`scale-${props.size}`">
+    <i v-if="iconClass" class="iconfont" :class="iconClass"/>
     <span v-else>{{ KeyMapUtil.formatShortcutKeyMap2ShowCode(props.keyMapCode) }}</span>
   </span>
 </template>
