@@ -19,9 +19,9 @@ const props = withDefaults(defineProps<Props>(), {
     apiUrl: "",
     model: "gpt-3.5-turbo",
     temperature: 0.7,
-    context_max_message: 0,
-    context_max_tokens: 0,
-    response_max_tokens: 0,
+    contextMaxMessage: 0,
+    contextMaxTokens: 0,
+    responseMaxTokens: 0,
   }),
 });
 

@@ -56,9 +56,9 @@ const addChatInfo = ref<ChatInfoTypes>({
     apiUrl: "https://api.openai.com/",
     model: "gpt-3.5-turbo",
     temperature: 0.7,
-    context_max_message: 1,
-    context_max_tokens: 2048,
-    response_max_tokens: 0
+    contextMaxMessage: 1,
+    contextMaxTokens: 2048,
+    responseMaxTokens: 0
   }
 });
 const chatInfo = computed(() => {
@@ -198,18 +198,18 @@ const saveChatInfo = <K extends keyof ChatInfoTypes>(key: K, value: ChatInfoType
         <CListItem
             content="Context max msgs"
             left-icon="icon-file-text"
-            @click="openOptionsDialog('ContextMaxMsgsDialog', 'context_max_message')"
+            @click="openOptionsDialog('ContextMaxMsgsDialog', 'contextMaxMessage')"
         />
         <CListItem
             content="Context max tokens"
             left-icon="icon-translate"
-            @click="openOptionsDialog('ContextMaxTokensDialog', 'context_max_tokens')"
+            @click="openOptionsDialog('ContextMaxTokensDialog', 'contextMaxTokens')"
         />
         <CListItem
             content="Response max tokens"
             left-icon="icon-rollback"
             :bottom-border="false"
-            @click="openOptionsDialog('ResponseMaxTokensDialog', 'response_max_tokens')"
+            @click="openOptionsDialog('ResponseMaxTokensDialog', 'responseMaxTokens')"
         />
       </div>
     </div>

@@ -17,9 +17,9 @@ export const useConfigStore = defineStore("config", {
         apiUrl: "https://api.openai.com/",
         model: "gpt-3.5-turbo",
         temperature: 0.7,
-        context_max_message: 2,
-        context_max_tokens: 2000,
-        response_max_tokens: 0,
+        contextMaxMessage: 2,
+        contextMaxTokens: 2000,
+        responseMaxTokens: 0,
       },
       shortcut: _.cloneDeep(DEFAULT_SHORTCUT),
       shortcutKeyMapMaxSize: 5,
@@ -56,13 +56,13 @@ export const useConfigStore = defineStore("config", {
       this.baseConfig.temperature = temperature;
     },
     setContextMaxMessage(contextMaxMessage: number) {
-      this.baseConfig.context_max_message = contextMaxMessage;
+      this.baseConfig.contextMaxMessage = contextMaxMessage;
     },
     setContextMaxTokens(contextMaxTokens: number) {
-      this.baseConfig.context_max_tokens = contextMaxTokens;
+      this.baseConfig.contextMaxTokens = contextMaxTokens;
     },
     setResponseMaxTokens(responseMaxTokens: number) {
-      this.baseConfig.response_max_tokens = responseMaxTokens;
+      this.baseConfig.responseMaxTokens = responseMaxTokens;
     },
     resetShortcut() {
       this.shortcut = _.cloneDeep(DEFAULT_SHORTCUT);

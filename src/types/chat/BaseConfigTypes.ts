@@ -7,9 +7,9 @@ export type BaseConfigTypes = {
   apiUrl: string;
   model: string;
   temperature: number;
-  context_max_message: number;
-  context_max_tokens: number;
-  response_max_tokens: number;
+  contextMaxMessage: number;
+  contextMaxTokens: number;
+  responseMaxTokens: number;
 }
 export type ShortcutConfig = {
   focusInput: KeyMapEnum[];

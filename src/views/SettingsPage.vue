@@ -116,17 +116,17 @@ const saveConfig = <K extends keyof BaseConfigTypes>(key: K, value: BaseConfigTy
         <CListItem
             content="Context max msgs"
             left-icon="icon-file-text"
-            @click="openDialog('ContextMaxMsgsDialog', 'context_max_message')"
+            @click="openDialog('ContextMaxMsgsDialog', 'contextMaxMessage')"
         />
         <CListItem
             content="Context max tokens"
             left-icon="icon-translate"
-            @click="openDialog('ContextMaxTokensDialog', 'context_max_tokens')"
+            @click="openDialog('ContextMaxTokensDialog', 'contextMaxTokens')"
         />
         <CListItem
             content="Response max tokens"
             left-icon="icon-rollback"
-            @click="openDialog('ResponseMaxTokensDialog', 'response_max_tokens')"
+            @click="openDialog('ResponseMaxTokensDialog', 'responseMaxTokens')"
         />
         <CListItem
             content="KeyMap"

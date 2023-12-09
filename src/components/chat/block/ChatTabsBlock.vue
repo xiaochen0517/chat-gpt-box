@@ -118,9 +118,9 @@ const robotOptions = computed((): ChatOptions => {
     apiUrl: "",
     model: "",
     temperature: 0,
-    context_max_message: 0,
-    context_max_tokens: 0,
-    response_max_tokens: 0,
+    contextMaxMessage: 0,
+    contextMaxTokens: 0,
+    responseMaxTokens: 0,
   };
   return propsActiveChat.value.options;
 });
