@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import {getCurrentInstance, onMounted, ref} from "vue";
-import {useConfigStore} from "@/store/ConfigStore.ts";
+import {getCurrentInstance, ref} from "vue";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 import {ElMessage} from "element-plus";
-import {ModelList} from "@/utils/ModelList.ts";
+import {DALLEModelList} from "@/utils/GPTModelList.ts";
 
 const showDialog = ref(false);
 const show = (value: number | string | null) => {
@@ -19,13 +18,7 @@ defineExpose({
   hide
 });
 
-const configStore = useConfigStore();
-
-const model = ref("");
-onMounted(() => {
-  model.value = configStore.baseConfig.model;
-});
-
+const model = ref("dall-e-3");
 
 const instance = getCurrentInstance();
 const save = () => {
@@ -41,7 +34,7 @@ const save = () => {
   <CDialog v-model:visible="showDialog" title="Default Model" @ok="save">
     <el-select v-model="model" placeholder="Please select a model" width="100%">
       <el-option
-          v-for="item in ModelList"
+          v-for="item in DALLEModelList"
           :key="item.value"
           :label="item.label"
           :value="item.value"

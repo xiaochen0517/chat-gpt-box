@@ -5,11 +5,11 @@ import router from "@/router/Router.ts";
 import CListItem from "@/components/base/list/CListItem.vue";
 import ApiKeyDialog from "@/components/setting/dialog/ApiKeyDialog.vue";
 import ApiUrlDialog from "@/components/setting/dialog/ApiUrlDialog.vue";
-import ModelDialog from "@/components/setting/dialog/ModelDialog.vue";
-import TemperatureDialog from "@/components/setting/dialog/TemperatureDialog.vue";
-import ContextMaxMsgsDialog from "@/components/setting/dialog/ContextMaxMsgsDialog.vue";
-import ContextMaxTokensDialog from "@/components/setting/dialog/ContextMaxTokensDialog.vue";
-import ResponseMaxTokensDialog from "@/components/setting/dialog/ResponseMaxTokensDialog.vue";
+import GPTModelDialog from "@/components/setting/dialog/gpt/GPTModelDialog.vue";
+import TemperatureDialog from "@/components/setting/dialog/gpt/TemperatureDialog.vue";
+import ContextMaxMsgsDialog from "@/components/setting/dialog/gpt/ContextMaxMsgsDialog.vue";
+import ContextMaxTokensDialog from "@/components/setting/dialog/gpt/ContextMaxTokensDialog.vue";
+import ResponseMaxTokensDialog from "@/components/setting/dialog/gpt/ResponseMaxTokensDialog.vue";
 import CTopNavBar from "@/components/base/nav/CTopNavBar.vue";
 
 import {BaseConfigTypes} from "@/types/chat/BaseConfigTypes.ts";
@@ -49,7 +49,7 @@ type ComponentMap = {
 const components: ComponentMap = {
   ApiKeyDialog,
   ApiUrlDialog,
-  ModelDialog,
+  GPTModelDialog,
   TemperatureDialog,
   ContextMaxMsgsDialog,
   ContextMaxTokensDialog,
@@ -107,7 +107,7 @@ const saveConfig = <K extends keyof BaseConfigTypes>(key: K, value: BaseConfigTy
       </div>
       <div class="mt-1 text-lg leading-13">Advanced Settings</div>
       <div class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
-        <CListItem content="Default Model" left-icon="icon-connections" @click="openDialog('ModelDialog', 'model')"/>
+        <CListItem content="Default Model" left-icon="icon-connections" @click="openDialog('GPTModelDialog', 'model')"/>
         <CListItem
             content="Temperature"
             left-icon="icon-hot-for-ux"

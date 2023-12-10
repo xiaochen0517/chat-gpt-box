@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import {computed, defineComponent, markRaw, nextTick, onMounted, Ref, ref, watch} from "vue";
+import {computed, defineComponent, markRaw, nextTick, onMounted, Ref, ref} from "vue";
 import router from "@/router/Router.ts";
 import CListItem from "@/components/base/list/CListItem.vue";
 import ApiKeyDialog from "@/components/setting/dialog/ApiKeyDialog.vue";
-import TemperatureDialog from "@/components/setting/dialog/TemperatureDialog.vue";
-import ResponseMaxTokensDialog from "@/components/setting/dialog/ResponseMaxTokensDialog.vue";
-import ContextMaxMsgsDialog from "@/components/setting/dialog/ContextMaxMsgsDialog.vue";
-import ContextMaxTokensDialog from "@/components/setting/dialog/ContextMaxTokensDialog.vue";
 import ApiUrlDialog from "@/components/setting/dialog/ApiUrlDialog.vue";
-import ModelDialog from "@/components/setting/dialog/ModelDialog.vue";
+import DALLEModelDialog from "@/components/setting/dialog/dalle/DALLEModelDialog.vue";
 import ChatNameDialog from "@/components/setting/dialog/ChatNameDialog.vue";
-import ChatPromptDialog from "@/components/setting/dialog/ChatPromptDialog.vue";
+import ImageCountDialog from "@/components/setting/dialog/dalle/ImageCountDialog.vue";
+import ImageQualityDialog from "@/components/setting/dialog/dalle/ImageQualityDialog.vue";
+import ImageSizeDialog from "@/components/setting/dialog/dalle/ImageSizeDialog.vue";
+import ImageStyleDialog from "@/components/setting/dialog/dalle/ImageStyleDialog.vue";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {useRoute} from "vue-router";
 import {ElMessage} from "element-plus";
@@ -36,25 +35,16 @@ const chatId: Ref<string | null> = computed(() => {
   }
   return chatId;
 });
-const configEnabled = ref(false);
-watch(configEnabled, (value) => {
-  if (!chatId.value) return;
-  if (chatId.value === "add") {
-    addChatInfo.value.options.enabled = value;
-    return;
-  }
-  chatListStore.setChatOptions(chatId.value, "enabled", value);
-});
 /**
- * If chatId is "add", then we should use addChatInfo.
+ * If chatId is "add", then we should use default chat info.
  */
-const addChatInfo = ref<ChatInfoTypes>({
+const defaultDallEChatInfo = ref<ChatInfoTypes>({
   id: "default",
   name: "Default Chat",
   prompt: "",
   chatType: ChatType.DALL_E,
   options: {
-    enabled: false,
+    enabled: true,
     apiUrl: "https://api.openai.com/",
     model: "dall-e-3",
     imageCount: 1,
@@ -65,7 +55,7 @@ const addChatInfo = ref<ChatInfoTypes>({
 });
 const chatInfo = computed(() => {
   if (!chatId.value || chatId.value === "add") {
-    return addChatInfo.value;
+    return defaultDallEChatInfo.value;
   }
   return chatListStore.getChatInfo(chatId.value);
 });
@@ -76,8 +66,6 @@ onMounted(() => {
     router.push({path: "/"});
     return;
   }
-  const chatInfo = chatListStore.getChatInfo(chatId.value);
-  configEnabled.value = chatInfo?.options.enabled ?? false;
 });
 
 type ComponentMap = {
@@ -87,13 +75,12 @@ type ComponentMap = {
 const components: ComponentMap = {
   ApiKeyDialog,
   ApiUrlDialog,
-  ModelDialog,
-  TemperatureDialog,
-  ContextMaxMsgsDialog,
-  ContextMaxTokensDialog,
-  ResponseMaxTokensDialog,
+  DALLEModelDialog,
   ChatNameDialog,
-  ChatPromptDialog,
+  ImageCountDialog,
+  ImageQualityDialog,
+  ImageSizeDialog,
+  ImageStyleDialog,
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -114,7 +101,7 @@ const openOptionsDialog = (name: string, key: keyof GPTChatOptions) => {
   nextTick(() => {
     if (!currentDialogRefs.value) return;
     if (!chatInfo.value) return;
-    currentDialogRefs.value.show((addChatInfo.value.options as GPTChatOptions)[key]);
+    currentDialogRefs.value.show((defaultDallEChatInfo.value.options as GPTChatOptions)[key]);
   });
 };
 
@@ -122,7 +109,7 @@ const saveChatOptions = <K extends keyof GPTChatOptions>(key: K, value: GPTChatO
   if (!chatId.value) return;
   if (!currentDialogRefs.value) return;
   if (props.isAddChat) {
-    (addChatInfo.value.options as GPTChatOptions)[key] = value;
+    (defaultDallEChatInfo.value.options as GPTChatOptions)[key] = value;
   } else {
     chatListStore.setGPTChatOptions(chatId.value, key, value);
   }
@@ -133,12 +120,26 @@ const saveChatInfo = <K extends keyof ChatInfoTypes>(key: K, value: ChatInfoType
   if (!chatId.value) return;
   if (!currentDialogRefs.value) return;
   if (props.isAddChat) {
-    addChatInfo.value[key] = value;
+    defaultDallEChatInfo.value[key] = value;
   } else {
     chatListStore.setChatInfo(chatId.value, key, value);
   }
   currentDialogRefs.value.hide();
 };
+
+const addChat = () => {
+  if (!chatId.value) return;
+  if (!props.isAddChat) return;
+  chatListStore.addChat(defaultDallEChatInfo.value);
+  jumpToHomePage();
+};
+const jumpToHomePage = () => {
+  router.push({path: "/"});
+};
+
+defineExpose({
+  addChat,
+});
 </script>
 
 <template>
@@ -151,41 +152,28 @@ const saveChatInfo = <K extends keyof ChatInfoTypes>(key: K, value: ChatInfoType
             left-icon="icon-discount"
             @click.stop="openBaseDialog('ChatNameDialog', 'name')"
         />
-        <CListItem
-            content="Advanced Settings"
-            left-icon="icon-settings"
-            switch-enabled
-            v-model:switch-value="configEnabled"
-            :bottom-border="false"
-        />
-      </div>
-      <div v-if="configEnabled" class="mt-1 text-lg leading-13">Advanced Settings</div>
-      <div
-          v-if="configEnabled"
-          class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800"
-      >
         <CListItem content="Api url" left-icon="icon-link1" @click.stop="openOptionsDialog('ApiUrlDialog', 'apiUrl')"/>
-        <CListItem content="Model" left-icon="icon-connections" @click="openOptionsDialog('ModelDialog', 'model')"/>
+        <CListItem content="Model" left-icon="icon-connections" @click="openOptionsDialog('DALLEModelDialog', 'model')"/>
         <CListItem
-            content="Temperature"
-            left-icon="icon-hot-for-ux"
-            @click="openOptionsDialog('TemperatureDialog', 'temperature')"
+            content="Image count"
+            left-icon="icon-pictures"
+            @click="openOptionsDialog('ImageCountDialog', 'temperature')"
         />
         <CListItem
-            content="Context max msgs"
-            left-icon="icon-file-text"
-            @click="openOptionsDialog('ContextMaxMsgsDialog', 'contextMaxMessage')"
+            content="Image size"
+            left-icon="icon-arrawsalt"
+            @click="openOptionsDialog('ImageSizeDialog', 'contextMaxMessage')"
         />
         <CListItem
-            content="Context max tokens"
-            left-icon="icon-translate"
-            @click="openOptionsDialog('ContextMaxTokensDialog', 'contextMaxTokens')"
+            content="Image style"
+            left-icon="icon-expand"
+            @click="openOptionsDialog('ImageStyleDialog', 'contextMaxTokens')"
         />
         <CListItem
-            content="Response max tokens"
-            left-icon="icon-rollback"
+            content="Image quality"
+            left-icon="icon-scenes"
             :bottom-border="false"
-            @click="openOptionsDialog('ResponseMaxTokensDialog', 'responseMaxTokens')"
+            @click="openOptionsDialog('ImageQualityDialog', 'responseMaxTokens')"
         />
       </div>
     </div>
@@ -193,6 +181,7 @@ const saveChatInfo = <K extends keyof ChatInfoTypes>(key: K, value: ChatInfoType
         ref="currentDialogRefs"
         :is="currentDialog"
         v-if="currentDialog"
+        :chat-info="chatInfo"
         @commit="saveChatOptions"
         @save="saveChatInfo"
     />

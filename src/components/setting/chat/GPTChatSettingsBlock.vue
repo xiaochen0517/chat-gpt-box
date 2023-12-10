@@ -3,14 +3,14 @@ import {computed, defineComponent, markRaw, nextTick, onMounted, Ref, ref, watch
 import router from "@/router/Router.ts";
 import CListItem from "@/components/base/list/CListItem.vue";
 import ApiKeyDialog from "@/components/setting/dialog/ApiKeyDialog.vue";
-import TemperatureDialog from "@/components/setting/dialog/TemperatureDialog.vue";
-import ResponseMaxTokensDialog from "@/components/setting/dialog/ResponseMaxTokensDialog.vue";
-import ContextMaxMsgsDialog from "@/components/setting/dialog/ContextMaxMsgsDialog.vue";
-import ContextMaxTokensDialog from "@/components/setting/dialog/ContextMaxTokensDialog.vue";
+import TemperatureDialog from "@/components/setting/dialog/gpt/TemperatureDialog.vue";
+import ResponseMaxTokensDialog from "@/components/setting/dialog/gpt/ResponseMaxTokensDialog.vue";
+import ContextMaxMsgsDialog from "@/components/setting/dialog/gpt/ContextMaxMsgsDialog.vue";
+import ContextMaxTokensDialog from "@/components/setting/dialog/gpt/ContextMaxTokensDialog.vue";
 import ApiUrlDialog from "@/components/setting/dialog/ApiUrlDialog.vue";
-import ModelDialog from "@/components/setting/dialog/ModelDialog.vue";
+import GPTModelDialog from "@/components/setting/dialog/gpt/GPTModelDialog.vue";
 import ChatNameDialog from "@/components/setting/dialog/ChatNameDialog.vue";
-import ChatPromptDialog from "@/components/setting/dialog/ChatPromptDialog.vue";
+import ChatPromptDialog from "@/components/setting/dialog/gpt/ChatPromptDialog.vue";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {useRoute} from "vue-router";
 import {ElMessage} from "element-plus";
@@ -40,7 +40,7 @@ const configEnabled = ref(false);
 watch(configEnabled, (value) => {
   if (!chatId.value) return;
   if (chatId.value === "add") {
-    addChatInfo.value.options.enabled = value;
+    defaultGptChatInfo.value.options.enabled = value;
     return;
   }
   chatListStore.setChatOptions(chatId.value, "enabled", value);
@@ -48,7 +48,7 @@ watch(configEnabled, (value) => {
 /**
  * If chatId is "add", then we should use addChatInfo.
  */
-const addChatInfo = ref<ChatInfoTypes>({
+const defaultGptChatInfo = ref<ChatInfoTypes>({
   id: "default",
   name: "Default Chat",
   prompt: "You are a helpful assistant.",
@@ -65,7 +65,7 @@ const addChatInfo = ref<ChatInfoTypes>({
 });
 const chatInfo = computed(() => {
   if (!chatId.value || chatId.value === "add") {
-    return addChatInfo.value;
+    return defaultGptChatInfo.value;
   }
   return chatListStore.getChatInfo(chatId.value);
 });
@@ -87,7 +87,7 @@ type ComponentMap = {
 const components: ComponentMap = {
   ApiKeyDialog,
   ApiUrlDialog,
-  ModelDialog,
+  GPTModelDialog,
   TemperatureDialog,
   ContextMaxMsgsDialog,
   ContextMaxTokensDialog,
@@ -114,7 +114,7 @@ const openOptionsDialog = (name: string, key: keyof GPTChatOptions) => {
   nextTick(() => {
     if (!currentDialogRefs.value) return;
     if (!chatInfo.value) return;
-    currentDialogRefs.value.show((addChatInfo.value.options as GPTChatOptions)[key]);
+    currentDialogRefs.value.show((defaultGptChatInfo.value.options as GPTChatOptions)[key]);
   });
 };
 
@@ -122,7 +122,7 @@ const saveChatOptions = <K extends keyof GPTChatOptions>(key: K, value: GPTChatO
   if (!chatId.value) return;
   if (!currentDialogRefs.value) return;
   if (props.isAddChat) {
-    (addChatInfo.value.options as GPTChatOptions)[key] = value;
+    (defaultGptChatInfo.value.options as GPTChatOptions)[key] = value;
   } else {
     chatListStore.setGPTChatOptions(chatId.value, key, value);
   }
@@ -133,12 +133,26 @@ const saveChatInfo = <K extends keyof ChatInfoTypes>(key: K, value: ChatInfoType
   if (!chatId.value) return;
   if (!currentDialogRefs.value) return;
   if (props.isAddChat) {
-    addChatInfo.value[key] = value;
+    defaultGptChatInfo.value[key] = value;
   } else {
     chatListStore.setChatInfo(chatId.value, key, value);
   }
   currentDialogRefs.value.hide();
 };
+
+const addChat = () => {
+  if (!chatId.value) return;
+  if (!props.isAddChat) return;
+  chatListStore.addChat(defaultGptChatInfo.value);
+  jumpToHomePage();
+};
+const jumpToHomePage = () => {
+  router.push({path: "/"});
+};
+
+defineExpose({
+  addChat,
+});
 </script>
 
 <template>
@@ -170,7 +184,7 @@ const saveChatInfo = <K extends keyof ChatInfoTypes>(key: K, value: ChatInfoType
           class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800"
       >
         <CListItem content="Api url" left-icon="icon-link1" @click.stop="openOptionsDialog('ApiUrlDialog', 'apiUrl')"/>
-        <CListItem content="Model" left-icon="icon-connections" @click="openOptionsDialog('ModelDialog', 'model')"/>
+        <CListItem content="Model" left-icon="icon-connections" @click="openOptionsDialog('GPTModelDialog', 'model')"/>
         <CListItem
             content="Temperature"
             left-icon="icon-hot-for-ux"
@@ -198,6 +212,7 @@ const saveChatInfo = <K extends keyof ChatInfoTypes>(key: K, value: ChatInfoType
         ref="currentDialogRefs"
         :is="currentDialog"
         v-if="currentDialog"
+        :chat-info="chatInfo"
         @commit="saveChatOptions"
         @save="saveChatInfo"
     />

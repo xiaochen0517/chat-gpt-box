@@ -1,5 +1,5 @@
-import {ref, watch} from 'vue';
-import {App} from "@vue/runtime-core";
+import {ref, watch} from "vue";
+import {App} from "vue";
 
 export default {
   install(app: App) {
@@ -7,7 +7,7 @@ export default {
     const updateWidth = () => {
       windowWidth.value = window.innerWidth;
     };
-    window.addEventListener('resize', updateWidth);
+    window.addEventListener("resize", updateWidth);
     // when window width changed, update dialog width
     watch(windowWidth, () => {
       setAllDialogWidth(windowWidth.value);
@@ -20,11 +20,11 @@ export default {
         dialogWidth.value = "500px";
         dialogWidthLg.value = "70%";
       }
-    }
+    };
     const dialogWidth = ref("500px");
     const dialogWidthLg = ref("700px");
-    app.provide('dialogWidth', dialogWidth);
-    app.provide('dialogWidthLg', dialogWidthLg);
+    app.provide("dialogWidth", dialogWidth);
+    app.provide("dialogWidthLg", dialogWidthLg);
     // first init
     setAllDialogWidth(window.innerWidth);
   },

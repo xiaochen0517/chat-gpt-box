@@ -2,13 +2,13 @@
 
 import {computed, provide, ref, watch} from "vue";
 
-import {GPTChatOptions} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatOptions} from "@/types/chat/ChatInfoTypes.ts";
 
 
 type Props = {
   activeKey: number;
   tabNames: string[];
-  chatOptions: GPTChatOptions;
+  chatOptions: ChatOptions;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -16,13 +16,7 @@ const props = withDefaults(defineProps<Props>(), {
   tabNames: () => [],
   chatOptions: () => ({
     enabled: false,
-    apiUrl: "",
-    model: "gpt-3.5-turbo",
-    temperature: 0.7,
-    contextMaxMessage: 0,
-    contextMaxTokens: 0,
-    responseMaxTokens: 0,
-  }),
+  } as ChatOptions),
 });
 
 const propsTabNames = computed(() => props.tabNames);

@@ -1,4 +1,4 @@
-import {BaseRequest} from "@/service/request/BaseRequest.ts";
+import {BaseRequest, checkParams} from "@/service/request/BaseRequest.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {RequestOptionsTypes} from "@/types/request/RequestOptionsTypes.ts";
@@ -40,7 +40,7 @@ export class ChatGptRequest implements BaseRequest {
 
   public sendMessage(requestOptions: RequestOptionsTypes, refreshCallbackFunc: () => void): Promise<string> {
     try {
-      this.checkParams(requestOptions, refreshCallbackFunc);
+      checkParams(requestOptions, refreshCallbackFunc);
       this.requestOptions = requestOptions;
       this.refreshCallbackFunc = refreshCallbackFunc;
       this.chatConfig = this.getChatConfig();
@@ -85,15 +85,6 @@ export class ChatGptRequest implements BaseRequest {
       contextMaxTokens: config.contextMaxTokens,
       responseMaxTokens: config.responseMaxTokens,
     };
-  }
-
-  private checkParams(requestOptions: RequestOptionsTypes, refreshCallbackFunc: () => void): void {
-    console.log("message: ", requestOptions);
-    console.log("refreshFunc: ", refreshCallbackFunc);
-    if (!refreshCallbackFunc) throw new Error("refresh callback invalid");
-    if (!requestOptions) throw new Error("request options is null");
-    if (!(requestOptions.tabIndex >= 0)) throw new Error("tab index invalid");
-    if (!requestOptions.message) throw new Error("message invalid");
   }
 
   private requestOpenAI(): Promise<string> {
@@ -173,7 +164,7 @@ export class ChatGptRequest implements BaseRequest {
   private getMessage2Send(): ChatMessage[] {
     // there request options absolutely not null, but typescript compiler not know
     if (!this.requestOptions) throw new Error("request options is null");
-    this.pushUserMessage2ChatTab(this.requestOptions.tabIndex);
+    this.pushUserMessage2ChatTab();
     const chatTabInfo = this.getChatTabInfo(this.requestOptions.tabIndex);
     let messages: ChatMessage[] = this.getMaxContextMessage(chatTabInfo);
     messages = this.filterMessagesWithTokenLimit(messages);
@@ -182,9 +173,9 @@ export class ChatGptRequest implements BaseRequest {
     return messages;
   }
 
-  private pushUserMessage2ChatTab(tabIndex: number) {
+  private pushUserMessage2ChatTab() {
     if (!this.requestOptions) throw new Error("request options is null");
-    chatTabsStore.addUserMessage(this.chatInfo.id, tabIndex, this.requestOptions.message);
+    chatTabsStore.addUserMessage(this.chatInfo.id, this.requestOptions.tabIndex, this.requestOptions.message);
     this.refreshCallbackFunc();
   }
 
