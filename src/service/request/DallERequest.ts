@@ -1,7 +1,7 @@
 import {BaseRequest, checkParams} from "@/service/request/BaseRequest.ts";
 import {RequestOptionsTypes} from "@/types/request/RequestOptionsTypes.ts";
 import {ChatInfoTypes, DallEChatOptions} from "@/types/chat/ChatInfoTypes.ts";
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
 import {DallEChatRequestBody} from "@/types/request/DallERequestTypes.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
@@ -38,29 +38,17 @@ export class DallERequest implements BaseRequest {
       this.addAssistantMessage();
       this.setAssistantMsgContent("Generating...");
       axios.post(
-          `${config.apiUrl}v1/images/generations`,
-          this.getChatRequestBody(config),
-          {
-            headers: this.getChatRequestHeaders(),
-            timeout: 1000 * 60 * 2,
-          })
+        `${config.apiUrl}v1/images/generations`,
+        this.getChatRequestBody(config),
+        {
+          headers: this.getChatRequestHeaders(),
+          timeout: 1000 * 60 * 2,
+        })
         .then((response) => {
-          if (this.stopFlag) {
-            this.stopFlag = false;
-            return;
-          }
-          console.log(response);
-          if (response.status !== 200) {
-            this.setErrorMsgContent("Error: " + response.data);
-            return;
-          }
-          const data = response.data;
-          if (!data || data.data.length < 1) {
-            this.setErrorMsgContent(`Error: \n\`\`\`json\n${data}\n\`\`\`\n`);
-            return;
-          }
+          if (!this.checkResponse(response)) return;
+          const data = response.data.data;
           let content = "";
-          for (const item of data.data) {
+          for (const item of data) {
             content += `Revised prompt: \`${item.revised_prompt}\`\nGenerated image: \n` +
               `<img src="${item.url}" width="${imgWidth}" align="left"/>\n`;
           }
@@ -80,6 +68,24 @@ export class DallERequest implements BaseRequest {
       console.error(error);
       return Promise.reject(error);
     }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private checkResponse(response: AxiosResponse<any, any>): boolean {
+    if (this.stopFlag) {
+      this.stopFlag = false;
+      return false;
+    }
+    if (response.status !== 200) {
+      this.setErrorMsgContent("Error: " + response.data);
+      return false;
+    }
+    const data = response.data;
+    if (!data || data.data.length < 1) {
+      this.setErrorMsgContent(`Error: \n\`\`\`json\n${data}\n\`\`\`\n`);
+      return false;
+    }
+    return true;
   }
 
   private getChatConfig(): DallEChatOptions {
