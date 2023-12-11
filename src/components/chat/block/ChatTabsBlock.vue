@@ -6,9 +6,10 @@ import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/tab/CTabs.vue";
 import CTabPane from "@/components/base/tab/CTabPane.vue";
 import {ElMessageBox} from "element-plus";
-import {ChatInfo, ChatOptions, ChatTabInfo} from "@/types/Store.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
+import {ChatInfoTypes, ChatOptions} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatTabInfoTypes} from "@/types/chat/ChatTabInfoTypes.ts";
 
 /**
  * register shortcut
@@ -46,7 +47,7 @@ whenever(cleanTabChatKey, () => {
 });
 
 type Props = {
-  activeChat: ChatInfo | null,
+  activeChat: ChatInfoTypes | null,
   tabIndex: number
 }
 const props = withDefaults(defineProps<Props>(), {
@@ -54,7 +55,7 @@ const props = withDefaults(defineProps<Props>(), {
   tabIndex: 0,
 });
 
-const propsActiveChat = ref<ChatInfo | null>(props.activeChat);
+const propsActiveChat = ref<ChatInfoTypes | null>(props.activeChat);
 watch(
   () => props.activeChat,
   (value) => {
@@ -109,18 +110,12 @@ const chatTabNameList = computed(() => {
   let chatTabList = chatTabsStore.chatTabs[propsActiveChat.value.id];
   if (!chatTabList) return [];
   return chatTabList
-    .map((item: ChatTabInfo) => item.name);
+    .map((item: ChatTabInfoTypes) => item.name);
 });
 const robotOptions = computed((): ChatOptions => {
   if (!propsActiveChat.value) return {
     enabled: false,
-    apiUrl: "",
-    model: "",
-    temperature: 0,
-    context_max_message: 0,
-    context_max_tokens: 0,
-    response_max_tokens: 0,
-  };
+  } as ChatOptions;
   return propsActiveChat.value.options;
 });
 const removeTabClick = (index: number) => {

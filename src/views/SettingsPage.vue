@@ -5,13 +5,14 @@ import router from "@/router/Router.ts";
 import CListItem from "@/components/base/list/CListItem.vue";
 import ApiKeyDialog from "@/components/setting/dialog/ApiKeyDialog.vue";
 import ApiUrlDialog from "@/components/setting/dialog/ApiUrlDialog.vue";
-import ModelDialog from "@/components/setting/dialog/ModelDialog.vue";
-import TemperatureDialog from "@/components/setting/dialog/TemperatureDialog.vue";
-import ContextMaxMsgsDialog from "@/components/setting/dialog/ContextMaxMsgsDialog.vue";
-import ContextMaxTokensDialog from "@/components/setting/dialog/ContextMaxTokensDialog.vue";
-import ResponseMaxTokensDialog from "@/components/setting/dialog/ResponseMaxTokensDialog.vue";
+import GPTModelDialog from "@/components/setting/dialog/gpt/GPTModelDialog.vue";
+import TemperatureDialog from "@/components/setting/dialog/gpt/TemperatureDialog.vue";
+import ContextMaxMsgsDialog from "@/components/setting/dialog/gpt/ContextMaxMsgsDialog.vue";
+import ContextMaxTokensDialog from "@/components/setting/dialog/gpt/ContextMaxTokensDialog.vue";
+import ResponseMaxTokensDialog from "@/components/setting/dialog/gpt/ResponseMaxTokensDialog.vue";
 import CTopNavBar from "@/components/base/nav/CTopNavBar.vue";
-import {BaseConfig} from "@/types/Store.ts";
+
+import {BaseConfigTypes} from "@/types/chat/BaseConfigTypes.ts";
 
 onMounted(() => {
   console.log("onMounted");
@@ -48,7 +49,7 @@ type ComponentMap = {
 const components: ComponentMap = {
   ApiKeyDialog,
   ApiUrlDialog,
-  ModelDialog,
+  GPTModelDialog,
   TemperatureDialog,
   ContextMaxMsgsDialog,
   ContextMaxTokensDialog,
@@ -58,7 +59,7 @@ const components: ComponentMap = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const currentDialogRefs = ref<any>(null);
 const currentDialog = ref<string | ReturnType<typeof defineComponent>>("");
-const openDialog = (name: string, key: keyof BaseConfig) => {
+const openDialog = (name: string, key: keyof BaseConfigTypes) => {
   if (!components[name]) return;
   currentDialog.value = markRaw(components[name]);
   nextTick(() => {
@@ -67,7 +68,7 @@ const openDialog = (name: string, key: keyof BaseConfig) => {
   });
 };
 
-const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) => {
+const saveConfig = <K extends keyof BaseConfigTypes>(key: K, value: BaseConfigTypes[K]) => {
   configStore.setBaseConfig(key, value);
   if (!currentDialogRefs.value) return;
   currentDialogRefs.value.hide();
@@ -106,7 +107,7 @@ const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) =>
       </div>
       <div class="mt-1 text-lg leading-13">Advanced Settings</div>
       <div class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
-        <CListItem content="Default Model" left-icon="icon-connections" @click="openDialog('ModelDialog', 'model')"/>
+        <CListItem content="Default Model" left-icon="icon-connections" @click="openDialog('GPTModelDialog', 'model')"/>
         <CListItem
             content="Temperature"
             left-icon="icon-hot-for-ux"
@@ -115,17 +116,17 @@ const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) =>
         <CListItem
             content="Context max msgs"
             left-icon="icon-file-text"
-            @click="openDialog('ContextMaxMsgsDialog', 'context_max_message')"
+            @click="openDialog('ContextMaxMsgsDialog', 'contextMaxMessage')"
         />
         <CListItem
             content="Context max tokens"
             left-icon="icon-translate"
-            @click="openDialog('ContextMaxTokensDialog', 'context_max_tokens')"
+            @click="openDialog('ContextMaxTokensDialog', 'contextMaxTokens')"
         />
         <CListItem
             content="Response max tokens"
             left-icon="icon-rollback"
-            @click="openDialog('ResponseMaxTokensDialog', 'response_max_tokens')"
+            @click="openDialog('ResponseMaxTokensDialog', 'responseMaxTokens')"
         />
         <CListItem
             content="KeyMap"

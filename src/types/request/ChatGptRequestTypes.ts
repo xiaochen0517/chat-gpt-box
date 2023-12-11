@@ -1,12 +1,12 @@
-import {ChatMessage} from "@/types/Store.ts";
+import {ChatMessage} from "@/types/chat/ChatTabInfoTypes.ts";
 
 export type ChatGptRequestTypes = {
   apiUrl: string;
   model: string;
   temperature: number;
-  context_max_message: number;
-  context_max_tokens: number;
-  response_max_tokens: number;
+  contextMaxMessage: number;
+  contextMaxTokens: number;
+  responseMaxTokens: number;
 }
 
 export type ChatGptRequestBody = {

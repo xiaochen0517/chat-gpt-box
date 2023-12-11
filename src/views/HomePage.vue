@@ -2,10 +2,11 @@
 import {nextTick, ref} from "vue";
 import SideBarBlock from "@/components/sidebar/SideBarBlock.vue";
 import ChatContentBlock from "@/components/chat/block/ChatContentBlock.vue";
-import {ChatInfo} from "@/types/Store.ts";
+
+import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
 
 const chatContentBlockRefs = ref<InstanceType<typeof ChatContentBlock> | null>(null);
-const changeChatClick = (chatInfo: ChatInfo) => {
+const changeChatClick = (chatInfo: ChatInfoTypes) => {
   nextTick(() => {
     if (!chatContentBlockRefs.value) return;
     chatContentBlockRefs.value.changeChat(chatInfo);

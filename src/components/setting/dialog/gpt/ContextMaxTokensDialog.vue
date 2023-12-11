@@ -3,11 +3,11 @@ import {getCurrentInstance, ref} from "vue";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 
 const showDialog = ref(false);
-const responseMaxTokens = ref(0);
+const contextMaxTokens = ref(2000);
 const show = (value: number | string | null) => {
-  if (typeof value !== "number") return;
-  responseMaxTokens.value = value;
   showDialog.value = true;
+  if (typeof value !== "number") return;
+  contextMaxTokens.value = value;
 };
 const hide = () => {
   showDialog.value = false;
@@ -19,20 +19,23 @@ defineExpose({
 
 const instance = getCurrentInstance();
 const save = () => {
-  instance?.emit("commit", "response_max_tokens", responseMaxTokens.value);
+  instance?.emit("commit", "contextMaxTokens", contextMaxTokens.value);
 };
+const description = "The request for tokens is limited by the set number of request messages. " +
+    "Calculate whether the tokens for the specified number of messages exceed this value. If they do, " +
+    "reduce the number of request messages until it falls below this limit.";
 </script>
 
 <template>
   <CDialog
       v-model:visible="showDialog"
-      title="Response Max Tokens"
-      description="When the value is 0, the number of tokens returned is automatic."
+      title="Context Max Tokens"
+      :description="description"
       @ok="save"
   >
     <el-slider
-        class="px-2"
-        v-model="responseMaxTokens"
+        class="px-1"
+        v-model="contextMaxTokens"
         :min="0"
         :max="4000"
         :step="1"

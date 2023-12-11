@@ -1,6 +1,6 @@
 import AppUtil from "@/utils/AppUtil.ts";
-import {ShortcutConfig} from "@/types/Store.ts";
 import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
+import {ShortcutConfig} from "@/types/chat/BaseConfigTypes.ts";
 
 const DEFAULT_SHORTCUT_WINDOW: ShortcutConfig = {
   focusInput: [KeyMapEnum.KEY_CTRL, KeyMapEnum.KEY_BACKSLASH],
@@ -14,7 +14,7 @@ const DEFAULT_SHORTCUT_WINDOW: ShortcutConfig = {
   switchRobot: [KeyMapEnum.KEY_CTRL, KeyMapEnum.KEY_TAB],
   prevRobot: [KeyMapEnum.KEY_CTRL, KeyMapEnum.KEY_UP],
   nextRobot: [KeyMapEnum.KEY_CTRL, KeyMapEnum.KEY_DOWN],
-}
+};
 
 const DEFAULT_SHORTCUT_MAC: ShortcutConfig = {
   focusInput: [KeyMapEnum.KEY_META, KeyMapEnum.KEY_BACKSLASH],
@@ -28,7 +28,7 @@ const DEFAULT_SHORTCUT_MAC: ShortcutConfig = {
   switchRobot: [KeyMapEnum.KEY_META, KeyMapEnum.KEY_TAB],
   prevRobot: [KeyMapEnum.KEY_META, KeyMapEnum.KEY_UP],
   nextRobot: [KeyMapEnum.KEY_META, KeyMapEnum.KEY_DOWN],
-}
+};
 
 function getShortcutConfig(): ShortcutConfig {
   if (AppUtil.isMac()) {

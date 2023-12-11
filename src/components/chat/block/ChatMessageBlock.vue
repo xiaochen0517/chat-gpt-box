@@ -2,7 +2,7 @@
 import {CheckOutlined, CopyOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons-vue";
 import MarkdownBlock from "@/components/chat/block/MarkdownBlock.vue";
 import {ref, watch} from "vue";
-import {ChatMessage, ChatMessageRole} from "@/types/Store.ts";
+import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfoTypes.ts";
 
 type Props = {
   message: ChatMessage;

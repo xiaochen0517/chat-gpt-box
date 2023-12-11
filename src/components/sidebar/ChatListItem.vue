@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {EllipsisOutlined} from "@ant-design/icons-vue";
-import {ChatInfo} from "@/types/Store.ts";
 import router from "@/router/Router.ts";
 import {ElMessageBox} from "element-plus";
 import {useChatListStore} from "@/store/ChatListStore.ts";
+import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
 
 type Props = {
-  chatInfo: ChatInfo | null,
-  activeChatInfo: ChatInfo | null,
+  chatInfo: ChatInfoTypes | null,
+  activeChatInfo: ChatInfoTypes | null,
   drag: boolean
 }
 
@@ -17,13 +17,13 @@ withDefaults(defineProps<Props>(), {
   drag: false
 });
 
-const editChatClick = (chatInfo: ChatInfo | null) => {
+const editChatClick = (chatInfo: ChatInfoTypes | null) => {
   if (!chatInfo) return;
   router.push({path: `/chat/editor/${chatInfo.id}`});
 };
 
 const chatListStore = useChatListStore();
-const deleteChatClick = (chatInfo: ChatInfo | null) => {
+const deleteChatClick = (chatInfo: ChatInfoTypes | null) => {
   if (!chatInfo) return;
   ElMessageBox.confirm(`Are you sure to delete ${chatInfo.name}?`, "Warning", {
     confirmButtonText: "OK",
