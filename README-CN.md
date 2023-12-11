@@ -6,7 +6,7 @@
     <a href="./README.md">English</a> | 简体中文
 </p>
 <p align="center">
-    <em>跨平台ChatGPT工具箱，支持 GPT-3.5 / GPT-4 API。</em>
+    <em>跨平台ChatGPT工具箱，支持 GPT / DALL-E API。</em>
 </p>
 
 <p align="center">
@@ -33,11 +33,11 @@
 - [x] 快捷键设置
 - [x] 深色模式切换
 - [x] 多模型支持
+- [x] DALL·E 图片生成
 - [ ] 移动端支持
     - [x] 移动端网页
     - [x] Android
     - [ ] iOS
-- [ ] DALL·E 图片生成
 - [ ] TTS 语音合成
 - [ ] Whisper 语音识别
 

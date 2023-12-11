@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-    <em>Cross-platform ChatGPTBox, supporting GPT-3.5 / GPT-4 API.</em>
+    <em>Cross-platform ChatGPTBox, supporting GPT / DALL-E API.</em>
 </p>
 
 <p align="center">
@@ -35,11 +35,11 @@
 - [x] Shortcut key configuration
 - [x] Dark mode toggle
 - [x] Multi-model support
+- [x] DALL·E image generation
 - [ ] Mobile support
     - [x] Mobile web
         - [x] Android
         - [ ] iOS
-- [ ] DALL·E image generation
 - [ ] TTS (Text-to-Speech) synthesis
 - [ ] Whisper speech recognition
 
