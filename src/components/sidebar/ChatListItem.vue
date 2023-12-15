@@ -37,10 +37,7 @@ const deleteChatClick = (chatInfo: ChatInfoTypes | null) => {
 </script>
 
 <template>
-  <div
-      class="flex flex-row items-center relative w-full box-border px-2 py-1 mb-1 rounded-xl hover:bg-neutral-200 active:bg-neutral-300 dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
-      @click.stop="$emit('itemClick', chatInfo)"
-  >
+  <div class="flex flex-row items-center relative w-full box-border px-2 py-1 mb-1 rounded-xl hover:bg-neutral-200 active:bg-neutral-300 dark:hover:bg-neutral-700 dark:active:bg-neutral-600 cursor-pointer">
     <div class="pr-1 flex-1 flex flex-row gap-1 items-center">
       <div class="handle rotate-90">
         <i class="iconfont icon-more" :class="drag?'':'cursor-grab'"/>
@@ -48,6 +45,7 @@ const deleteChatClick = (chatInfo: ChatInfoTypes | null) => {
       <div
           class="flex-1 text-md leading-8 select-none overflow-hidden overflow-ellipsis whitespace-nowrap max-w-[15rem] font-bold"
           :class="{'max-w-[9rem]':chatInfo?.options.enabled,'text-green-500 dark:text-green-400':chatInfo && chatInfo.id === activeChatInfo?.id}"
+          @click.stop="$emit('itemClick', chatInfo)"
       >
         {{ chatInfo?.name }}
       </div>
