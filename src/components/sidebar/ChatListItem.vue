@@ -93,7 +93,3 @@ const deleteChatClick = (chatInfo: ChatInfoTypes | null) => {
     </el-popover>
   </div>
 </template>
-
-<style scoped lang="less">
-
-</style>
