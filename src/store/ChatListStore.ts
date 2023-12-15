@@ -3,7 +3,7 @@ import {ChatListStore} from "@/types/StoreTypes.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {v4 as uuidv4} from "uuid";
 import _ from "lodash";
-import {ChatInfoTypes, ChatOptions, ChatType, GPTChatOptions} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfoTypes, ChatOptions, ChatType, DallEChatOptions, GPTChatOptions} from "@/types/chat/ChatInfoTypes.ts";
 
 export const useChatListStore = defineStore("chatList", {
   state: (): ChatListStore => {
@@ -52,21 +52,28 @@ export const useChatListStore = defineStore("chatList", {
     setChatInfo<K extends keyof ChatInfoTypes>(id: string, key: K, value: ChatInfoTypes[K]) {
       const index = this.getChatInfoIndex(id);
       if (index < 0) return;
-      this.chatList[index][key] = value;
+      const chatInfo = this.chatList[index];
+      chatInfo[key] = value;
+      // If you are modifying the prompt, you need to update the prompt in the chatTabsStore
+      const promptKey = "prompt" as keyof ChatInfoTypes;
+      if (key === promptKey && chatInfo.chatType === ChatType.CHAT_GPT) {
+        useChatTabsStore().setAllTabPromptMessage(id, value as string);
+      }
     },
     setGPTChatOptions<K extends keyof GPTChatOptions>(id: string, key: K, value: GPTChatOptions[K]) {
       const index = this.getChatInfoIndex(id);
       if (index < 0) return;
       const chatInfo = this.chatList[index];
+      // if current chat type is not GPT, return
       if (chatInfo.chatType !== ChatType.CHAT_GPT) return;
       (chatInfo.options as GPTChatOptions)[key] = value;
     },
-    setDallEChatOptions<K extends keyof ChatOptions>(id: string, key: K, value: ChatOptions[K]) {
+    setDallEChatOptions<K extends keyof DallEChatOptions>(id: string, key: K, value: DallEChatOptions[K]) {
       const index = this.getChatInfoIndex(id);
       if (index < 0) return;
       const chatInfo = this.chatList[index];
       if (chatInfo.chatType !== ChatType.DALL_E) return;
-      (chatInfo.options as ChatOptions)[key] = value;
+      (chatInfo.options as DallEChatOptions)[key] = value;
     },
     setChatOptions<K extends keyof ChatOptions>(id: string, key: K, value: ChatOptions[K]) {
       const index = this.getChatInfoIndex(id);
@@ -109,12 +116,12 @@ export const useChatListStore = defineStore("chatList", {
       const chat = this.chatList[index];
       this.chatList.splice(index, 1);
       switch (direction) {
-      case "up":
-        this.chatList.splice(index - size, 0, chat);
-        break;
-      case "down":
-        this.chatList.splice(index + size, 0, chat);
-        break;
+        case "up":
+          this.chatList.splice(index - size, 0, chat);
+          break;
+        case "down":
+          this.chatList.splice(index + size, 0, chat);
+          break;
       }
     },
     getPrevChatInfo(chatInfo: ChatInfoTypes): ChatInfoTypes | null {
