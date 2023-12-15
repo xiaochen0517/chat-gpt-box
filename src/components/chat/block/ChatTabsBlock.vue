@@ -147,13 +147,11 @@ defineExpose({
 <template>
   <div
       ref="scrollContainerRefs"
-      class="overflow-hidden overflow-y-auto box-border scroll-container"
-      :class="robotOptions.enabled?'options-enabled':'options-disabled'"
+      class="scroll-container overflow-hidden overflow-y-auto box-border scroll-container pt-14"
   >
     <CTabs
         v-model:activeKey="activeTabIndex"
         :tabNames="chatTabNameList"
-        :chatOptions="robotOptions"
         @addTabClick="addTab"
         @removeTabClick="removeTabClick"
         @showSlideSideBarClick="$emit('showSlideSideBarClick')"
@@ -167,19 +165,9 @@ defineExpose({
 </template>
 
 <style scoped lang="less">
-.options-enabled {
-@apply pt-32;
-
+.scroll-container {
   &::-webkit-scrollbar-track {
-  @apply mt-32;
-  }
-}
-
-.options-disabled {
-@apply pt-20;
-
-  &::-webkit-scrollbar-track {
-  @apply mt-20;
+  @apply mt-14;
   }
 }
 </style>

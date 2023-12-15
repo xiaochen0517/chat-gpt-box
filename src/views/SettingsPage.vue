@@ -78,7 +78,7 @@ const saveConfig = <K extends keyof BaseConfigTypes>(key: K, value: BaseConfigTy
 <template>
   <div class="w-full h-full bg-neutral-50 dark:bg-neutral-900">
     <CTopNavBar title="Settings" @backClick="jumpToHomePage"/>
-    <div class="px-2 xl:p-0 max-w-2xl m-auto mt-2">
+    <div class="px-2 xl:p-0 max-w-content m-auto mt-2">
       <div class="mt-1 text-lg leading-13">Basic Settings</div>
       <div class="rounded-xl overflow-hidden text-base select-none">
         <CListItem content="Api key" left-icon="icon-lock" @click.stop="openDialog('ApiKeyDialog', 'apiKey')"/>

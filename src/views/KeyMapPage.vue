@@ -37,7 +37,7 @@ function openKeyMapChangeDialog(shortcutConfigKey: ShortcutConfigKey) {
         @backClick="backClick"
         @saveClick="resetKeyMap"
     />
-    <div class="px-2 xl:p-0 max-w-2xl m-auto mt-2">
+    <div class="px-2 xl:p-0 max-w-content m-auto mt-2">
       <div class="mt-1 text-lg leading-13">KeyMap Settings</div>
       <div class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
         <CListItem
