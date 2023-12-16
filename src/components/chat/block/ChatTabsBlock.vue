@@ -8,7 +8,7 @@ import CTabPane from "@/components/base/tab/CTabPane.vue";
 import {ElMessageBox} from "element-plus";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
-import {ChatInfoTypes, ChatOptions} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
 import {ChatTabInfoTypes} from "@/types/chat/ChatTabInfoTypes.ts";
 
 /**
@@ -111,12 +111,6 @@ const chatTabNameList = computed(() => {
   if (!chatTabList) return [];
   return chatTabList
     .map((item: ChatTabInfoTypes) => item.name);
-});
-const robotOptions = computed((): ChatOptions => {
-  if (!propsActiveChat.value) return {
-    enabled: false,
-  } as ChatOptions;
-  return propsActiveChat.value.options;
 });
 const removeTabClick = (index: number) => {
   ElMessageBox.confirm("Are you sure to remove this tab?", "Warning", {
