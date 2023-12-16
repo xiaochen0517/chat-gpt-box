@@ -13,30 +13,44 @@ jobs:
     strategy:
       matrix:
         os: [ windows-latest, ubuntu-latest, macos-latest ]
+        include:
+          - os: ubuntu-latest
+            artifact-name: ubuntu-latest-artifact
+            path: |
+              src-tauri/target/release/bundle/deb/*.deb
+              src-tauri/target/release/bundle/appimage/*.AppImage
+          - os: macos-latest
+            artifact-name: macos-latest-artifact
+            path: |
+              src-tauri/target/release/bundle/dmg/*.dmg
+              src-tauri/target/release/bundle/macos/*.app
+          - os: windows-latest
+            artifact-name: windows-latest-artifact
+            path: |
+              src-tauri/target/release/bundle/msi/*.msi
+              src-tauri/target/release/bundle/exe/*.exe
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 'latest'
           cache: 'yarn'
 
       - name: Install rust stable
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Cache cargo
-        uses: actions/cache@v2
+        uses: Swatinem/rust-cache@v2
+
+      - name: Cache yarn packages
+        uses: actions/cache@v3
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            src-tauri/target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          path: ./node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install webkit2gtk (ubuntu only)
         if: matrix.os == 'ubuntu-latest'
@@ -45,11 +59,10 @@ jobs:
           sudo apt-get install -y webkit2gtk-4.0
 
       - name: Install app dependencies and build it
-        run: yarn && yarn build-tauri
+        run: yarn install && yarn build-tauri
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.os }}
-          path: |
-            src-tauri/target/release/bundle/*
+          name: ${{ matrix.artifact-name }}
+          path: ${{ matrix.path }}

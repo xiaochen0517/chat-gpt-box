@@ -1,6 +1,8 @@
 import {defineStore} from "pinia";
-import {ChatMessage, ChatMessageRole, ChatTabInfo, ChatTabsStore} from "@/types/Store.ts";
+import {ChatTabsStore} from "@/types/StoreTypes.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
+import {ChatMessage, ChatMessageRole, ChatTabInfoTypes} from "@/types/chat/ChatTabInfoTypes.ts";
+import {ChatType} from "@/types/chat/ChatInfoTypes.ts";
 
 export const useChatTabsStore = defineStore("chatTabs", {
   state: (): ChatTabsStore => {
@@ -23,19 +25,19 @@ export const useChatTabsStore = defineStore("chatTabs", {
           },
         ],
       }
-    }
+    };
   },
   actions: {
     initGeneralStatus() {
-      for (let id in this.chatTabs) {
-        if (!this.chatTabs.hasOwnProperty(id)) continue;
-        for (let tabInfo of this.chatTabs[id]) {
+      for (const id in this.chatTabs) {
+        if (!Object.prototype.hasOwnProperty.call(this.chatTabs, id)) continue;
+        for (const tabInfo of this.chatTabs[id]) {
           tabInfo.generating = false;
           tabInfo.request = null;
         }
       }
     },
-    getChatTabInfo(id: string, tabIndex: number): ChatTabInfo | null {
+    getChatTabInfo(id: string, tabIndex: number): ChatTabInfoTypes | null {
       if (!id || !this.chatTabs[id]) return null;
       return this.chatTabs[id][tabIndex];
     },
@@ -47,11 +49,15 @@ export const useChatTabsStore = defineStore("chatTabs", {
       if (!this.chatTabs[id]) this.chatTabs[id] = [];
       const chatInfo = useChatListStore().getChatInfo(id);
       if (!chatInfo) return;
+      const chatMessageList = chatInfo.chatType === ChatType.DALL_E ? [] : [{
+        role: ChatMessageRole.System,
+        content: chatInfo.prompt
+      }];
       this.chatTabs[id].push({
         name: tabName,
         generating: false,
         request: null,
-        chat: [{role: ChatMessageRole.System, content: chatInfo.prompt}],
+        chat: chatMessageList,
       });
     },
     removeChatTabs(id: string) {
@@ -60,8 +66,12 @@ export const useChatTabsStore = defineStore("chatTabs", {
     },
     cleanTabChat(id: string, tabIndex: number) {
       if (!id || !this.chatTabs[id]) return;
-      let chatInfo = useChatListStore().getChatInfo(id);
+      const chatInfo = useChatListStore().getChatInfo(id);
       if (!chatInfo) return;
+      if (chatInfo.chatType === ChatType.DALL_E) {
+        this.chatTabs[id][tabIndex].chat = [];
+        return;
+      }
       this.chatTabs[id][tabIndex].chat = [{role: ChatMessageRole.System, content: chatInfo.prompt}];
     },
     removeChatTab(id: string, tabIndex: number) {
@@ -74,6 +84,16 @@ export const useChatTabsStore = defineStore("chatTabs", {
     updateMessage(id: string, tabIndex: number, messageIndex: number, content: ChatMessage) {
       if (!id || !this.chatTabs[id] || tabIndex < 0 || messageIndex < 0) return;
       this.chatTabs[id][tabIndex].chat[messageIndex] = content;
+    },
+    setAllTabPromptMessage(id: string, prompt: string) {
+      if (!id || !this.chatTabs[id]) return;
+      for (const tabInfo of this.chatTabs[id]) {
+        if (tabInfo.chat.length === 0) {
+          tabInfo.chat.push({role: ChatMessageRole.System, content: prompt});
+          continue;
+        }
+        tabInfo.chat[0].content = prompt;
+      }
     },
     removeChatMessage(id: string, tabIndex: number, messageIndex: number) {
       if (!id || !this.chatTabs[id] || tabIndex < 0 || messageIndex < 0) return;
@@ -89,19 +109,25 @@ export const useChatTabsStore = defineStore("chatTabs", {
     },
     appendAssistantMsgContent(id: string, tabIndex: number, content: string) {
       if (!id || !this.chatTabs[id]) return;
-      let chat = this.chatTabs[id][tabIndex].chat;
+      const chat = this.chatTabs[id][tabIndex].chat;
       if (chat.length === 0) return;
       chat[chat.length - 1].content += content;
     },
+    setAssistantMsgContent(id: string, tabIndex: number, content: string) {
+      if (!id || !this.chatTabs[id]) return;
+      const chat = this.chatTabs[id][tabIndex].chat;
+      if (chat.length === 0) return;
+      chat[chat.length - 1].content = content;
+    },
     setAssistantErrorMsgContent(id: string, tabIndex: number, content: string) {
       if (!id || !this.chatTabs[id]) return;
-      let chat = this.chatTabs[id][tabIndex].chat;
+      const chat = this.chatTabs[id][tabIndex].chat;
       if (chat.length === 0) return;
       chat[chat.length - 1].content = "\n> " + content;
     },
     setGenerating(id: string, tabIndex: number, generating: boolean) {
       if (!id || !this.chatTabs[id]) return;
-      const chatTabInfo: ChatTabInfo = this.chatTabs[id][tabIndex];
+      const chatTabInfo: ChatTabInfoTypes = this.chatTabs[id][tabIndex];
       chatTabInfo.generating = generating;
       if (!generating) {
         chatTabInfo.request = null;
@@ -109,6 +135,6 @@ export const useChatTabsStore = defineStore("chatTabs", {
     },
   },
   persist: {
-    key: 'ChatTabs',
+    key: "ChatTabs",
   },
-})
+});

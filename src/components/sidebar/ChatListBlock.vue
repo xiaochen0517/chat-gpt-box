@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import {computed, getCurrentInstance, onMounted, ref, watch} from "vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
-import {ChatInfo} from "@/types/Store.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useAppStateStore} from "@/store/AppStateStore.ts";
 import draggable from "vuedraggable";
 import ChatListItem from "@/components/sidebar/ChatListItem.vue";
+import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
 
 const appStateStore = useAppStateStore();
 const instance = getCurrentInstance();
-const activeChatInfo = ref<ChatInfo | null>(null);
-const changeActiveChat = (chatInfo: ChatInfo) => {
+const activeChatInfo = ref<ChatInfoTypes | null>(null);
+const changeActiveChat = (chatInfo: ChatInfoTypes) => {
   if (!instance) return;
   activeChatInfo.value = chatInfo;
   instance.emit("changeChatClick", chatInfo);
@@ -73,9 +73,6 @@ defineExpose({
 });
 
 const dragStatus = ref(false);
-watch(dragStatus, (newStatus) => {
-  console.log(newStatus);
-});
 </script>
 
 <template>

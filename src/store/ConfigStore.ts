@@ -1,9 +1,10 @@
 import {defineStore} from "pinia";
-import {BaseConfig, ConfigStore, ShortcutConfig, ShortcutConfigKey, ShortcutStringConfig} from "@/types/Store.ts";
+import {ConfigStore} from "@/types/StoreTypes.ts";
 import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
 import _ from "lodash";
 import {KeyMapUtil} from "@/utils/KeyMapUtil.ts";
 import {DEFAULT_SHORTCUT} from "./defaults/DefaultShortcut.ts";
+import {BaseConfigTypes, ShortcutConfig, ShortcutConfigKey, ShortcutStringConfig} from "@/types/chat/BaseConfigTypes.ts";
 
 export const useConfigStore = defineStore("config", {
   state: (): ConfigStore => {
@@ -16,13 +17,13 @@ export const useConfigStore = defineStore("config", {
         apiUrl: "https://api.openai.com/",
         model: "gpt-3.5-turbo",
         temperature: 0.7,
-        context_max_message: 2,
-        context_max_tokens: 2000,
-        response_max_tokens: 0,
+        contextMaxMessage: 2,
+        contextMaxTokens: 2000,
+        responseMaxTokens: 0,
       },
       shortcut: _.cloneDeep(DEFAULT_SHORTCUT),
       shortcutKeyMapMaxSize: 5,
-    }
+    };
   },
   getters: {
     shortcutStringConfig(state): ShortcutStringConfig {
@@ -33,7 +34,7 @@ export const useConfigStore = defineStore("config", {
     setDarkMode(isDarkMode: boolean) {
       this.isDarkMode = isDarkMode;
     },
-    setBaseConfig<K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) {
+    setBaseConfig<K extends keyof BaseConfigTypes>(key: K, value: BaseConfigTypes[K]) {
       this.baseConfig[key] = value;
     },
     setApiKey(apiKey: string) {
@@ -55,13 +56,13 @@ export const useConfigStore = defineStore("config", {
       this.baseConfig.temperature = temperature;
     },
     setContextMaxMessage(contextMaxMessage: number) {
-      this.baseConfig.context_max_message = contextMaxMessage;
+      this.baseConfig.contextMaxMessage = contextMaxMessage;
     },
     setContextMaxTokens(contextMaxTokens: number) {
-      this.baseConfig.context_max_tokens = contextMaxTokens;
+      this.baseConfig.contextMaxTokens = contextMaxTokens;
     },
     setResponseMaxTokens(responseMaxTokens: number) {
-      this.baseConfig.response_max_tokens = responseMaxTokens;
+      this.baseConfig.responseMaxTokens = responseMaxTokens;
     },
     resetShortcut() {
       this.shortcut = _.cloneDeep(DEFAULT_SHORTCUT);
@@ -71,12 +72,12 @@ export const useConfigStore = defineStore("config", {
     },
     setShortcut(shortcutConfigKey: ShortcutConfigKey, keyMapList: KeyMapEnum[]) {
       if (!keyMapList) return false;
-      let shortcut = _.cloneDeep(this.shortcut);
+      const shortcut = _.cloneDeep(this.shortcut);
       shortcut[shortcutConfigKey] = keyMapList;
       this.setShortcutConfig(shortcut);
     },
   },
   persist: {
-    key: 'Config',
+    key: "Config",
   },
-})
+});

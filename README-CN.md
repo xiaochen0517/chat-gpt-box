@@ -6,7 +6,7 @@
     <a href="./README.md">English</a> | 简体中文
 </p>
 <p align="center">
-    <em>跨平台ChatGPT工具箱，支持 GPT-3.5 / GPT-4 API。</em>
+    <em>跨平台ChatGPT工具箱，支持 GPT & DALL-E API。</em>
 </p>
 
 <p align="center">
@@ -33,11 +33,11 @@
 - [x] 快捷键设置
 - [x] 深色模式切换
 - [x] 多模型支持
+- [x] DALL·E 图片生成
 - [ ] 移动端支持
     - [x] 移动端网页
     - [x] Android
     - [ ] iOS
-- [ ] DALL·E 图片生成
 - [ ] TTS 语音合成
 - [ ] Whisper 语音识别
 
@@ -60,9 +60,14 @@ yarn build
 yarn build-tauri
 ```
 
-> Android版本需要下载 [Android Studio](https://developer.android.com/studio) 安装完成，
-> 运行 `yarn install && yarn build` 将 `web` 版本打包完成后，使用 `npx cap sync` 同步到 `android` 目录，
-> 将项目目录中的 `android` 文件夹作为 `android` 项目打开直接打包即可。
+**Android**
+
+```shell
+# 打包同步到Android目录
+yarn cap-sync
+
+# 使用Android Studio打开android目录，手动打包
+```
 
 ### 安装
 

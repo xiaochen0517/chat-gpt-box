@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-    <em>Cross-platform ChatGPTBox, supporting GPT-3.5 / GPT-4 API.</em>
+    <em>Cross-platform ChatGPTBox, supporting GPT & DALL-E API.</em>
 </p>
 
 <p align="center">
@@ -35,11 +35,11 @@
 - [x] Shortcut key configuration
 - [x] Dark mode toggle
 - [x] Multi-model support
+- [x] DALL·E image generation
 - [ ] Mobile support
     - [x] Mobile web
         - [x] Android
         - [ ] iOS
-- [ ] DALL·E image generation
 - [ ] TTS (Text-to-Speech) synthesis
 - [ ] Whisper speech recognition
 
@@ -49,7 +49,7 @@
 
 Download Release: [GitHub Release](https://github.com/xiaochen0517/chat-gpt-box/releases)
 
-You can download the pre-packaged executable file, or package it yourself.
+You can download the pre-packaged executable file, or build it by yourself.
 
 ```shell
 # Install dependencies
@@ -62,12 +62,14 @@ yarn build
 yarn build-tauri
 ```
 
-> To work on the Android version, you need to download and install
-> [Android Studio](https://developer.android.com/studio).
-> Once installed, run `yarn install && yarn build` to package the web version.
-> After that, use `npx cap sync` to synchronize it to the android directory.
-> You can then directly open the android folder in the project directory as an Android project
-> and proceed to package it.
+**Android**
+
+```shell
+# Package and sync to the Android directory
+yarn cap-sync
+
+# Use Android Studio to open the android directory and pack it manually
+```
 
 ### Install
 

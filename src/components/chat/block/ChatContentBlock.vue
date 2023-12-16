@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {defineAsyncComponent, nextTick, ref} from "vue";
-import {ChatInfo} from "@/types/Store.ts";
 import ChatInputBlock from "@/components/chat/block/ChatInputBlock.vue";
 import SlideSideBarBlock from "@/components/sidebar/SlideSideBarBlock.vue";
 import {useAppStateStore} from "@/store/AppStateStore.ts";
+import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
 
 const ChatTabsBlock = defineAsyncComponent({
   loader: () => import("@/components/chat/block/ChatTabsBlock.vue"),
@@ -32,14 +32,14 @@ const messageRefresh = () => {
 };
 
 const appStateStore = useAppStateStore();
-const activeChatInfo = ref<ChatInfo | null>(null);
+const activeChatInfo = ref<ChatInfoTypes | null>(null);
 /**
  * If the chat displayed in the current app configuration is different from the chat that has been changed,
  * the new content needs to be written in. If there is a sidebar, its close function should be called. Moreover,
  * regardless of whether a new chat has been switched to or not, the content should be scrolled to the bottom.
  * @param chatInfo
  */
-const changeChat = (chatInfo: ChatInfo) => {
+const changeChat = (chatInfo: ChatInfoTypes) => {
   activeChatInfo.value = chatInfo;
   if (appStateStore.currentChatId !== chatInfo.id) {
     appStateStore.currentChatId = chatInfo.id;
@@ -67,7 +67,7 @@ defineExpose({
 
 <template>
   <div class="w-full box-border relative">
-    <div class="h-full w-full px-2 min-w-[12rem] max-w-7xl mx-auto flex flex-col">
+    <div class="h-full w-full px-2 min-w-[12rem] content:max-w-content content:mx-auto flex flex-col">
       <ChatTabsBlock
           class="flex-1"
           ref="chatTabsBlockRefs"

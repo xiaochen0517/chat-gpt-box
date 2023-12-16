@@ -6,9 +6,10 @@ import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/tab/CTabs.vue";
 import CTabPane from "@/components/base/tab/CTabPane.vue";
 import {ElMessageBox} from "element-plus";
-import {ChatInfo, ChatOptions, ChatTabInfo} from "@/types/Store.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
+import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatTabInfoTypes} from "@/types/chat/ChatTabInfoTypes.ts";
 
 /**
  * register shortcut
@@ -46,7 +47,7 @@ whenever(cleanTabChatKey, () => {
 });
 
 type Props = {
-  activeChat: ChatInfo | null,
+  activeChat: ChatInfoTypes | null,
   tabIndex: number
 }
 const props = withDefaults(defineProps<Props>(), {
@@ -54,7 +55,7 @@ const props = withDefaults(defineProps<Props>(), {
   tabIndex: 0,
 });
 
-const propsActiveChat = ref<ChatInfo | null>(props.activeChat);
+const propsActiveChat = ref<ChatInfoTypes | null>(props.activeChat);
 watch(
   () => props.activeChat,
   (value) => {
@@ -109,19 +110,7 @@ const chatTabNameList = computed(() => {
   let chatTabList = chatTabsStore.chatTabs[propsActiveChat.value.id];
   if (!chatTabList) return [];
   return chatTabList
-    .map((item: ChatTabInfo) => item.name);
-});
-const robotOptions = computed((): ChatOptions => {
-  if (!propsActiveChat.value) return {
-    enabled: false,
-    apiUrl: "",
-    model: "",
-    temperature: 0,
-    context_max_message: 0,
-    context_max_tokens: 0,
-    response_max_tokens: 0,
-  };
-  return propsActiveChat.value.options;
+    .map((item: ChatTabInfoTypes) => item.name);
 });
 const removeTabClick = (index: number) => {
   ElMessageBox.confirm("Are you sure to remove this tab?", "Warning", {
@@ -152,13 +141,11 @@ defineExpose({
 <template>
   <div
       ref="scrollContainerRefs"
-      class="overflow-hidden overflow-y-auto box-border scroll-container"
-      :class="robotOptions.enabled?'options-enabled':'options-disabled'"
+      class="scroll-container overflow-hidden overflow-y-auto box-border scroll-container pt-14"
   >
     <CTabs
         v-model:activeKey="activeTabIndex"
         :tabNames="chatTabNameList"
-        :chatOptions="robotOptions"
         @addTabClick="addTab"
         @removeTabClick="removeTabClick"
         @showSlideSideBarClick="$emit('showSlideSideBarClick')"
@@ -172,19 +159,9 @@ defineExpose({
 </template>
 
 <style scoped lang="less">
-.options-enabled {
-@apply pt-32;
-
+.scroll-container {
   &::-webkit-scrollbar-track {
-  @apply mt-32;
-  }
-}
-
-.options-disabled {
-@apply pt-20;
-
-  &::-webkit-scrollbar-track {
-  @apply mt-20;
+  @apply mt-14;
   }
 }
 </style>

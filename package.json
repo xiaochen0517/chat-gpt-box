@@ -1,7 +1,7 @@
 {
   "name": "chat-gpt-box",
   "private": true,
-  "version": "0.5.0",
+  "version": "0.6.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
@@ -10,7 +10,8 @@
     "tauri": "tauri dev",
     "build-tauri": "tauri build",
     "cap-sync": "vite build && cap sync",
-    "eslint": "eslint --ext .js,.vue src"
+    "eslint": "eslint --ext .js,.vue src",
+    "tsc": "vue-tsc --noEmit"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",

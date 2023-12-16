@@ -2,11 +2,11 @@
 import {computed, ref, watch} from "vue";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 import {useMagicKeys} from "@vueuse/core";
-import {ShortcutConfigKey} from "@/types/Store.ts";
 import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
 import {KeyMapUtil} from "@/utils/KeyMapUtil.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import TheKeyMapCode from "@/components/base/list/TheKeyMapCode.vue";
+import {ShortcutConfigKey} from "@/types/chat/BaseConfigTypes.ts";
 
 const showDialog = ref(false);
 

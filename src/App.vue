@@ -8,7 +8,7 @@ import {v4 as uuidv4} from "uuid";
 import {appWindow, PhysicalPosition, PhysicalSize} from "@tauri-apps/api/window";
 import {exit} from "@tauri-apps/api/process";
 import AppUtil from "@/utils/AppUtil.ts";
-import {WindowState} from "@/types/Store.ts";
+import {WindowState} from "@/types/StoreTypes.ts";
 import {StoreDataMigration} from "@/service/config/StoreDataMigration.ts";
 
 const configStore = useConfigStore();
@@ -134,6 +134,7 @@ body,
 html {
 @apply p-0 m-0 h-screen w-full;
   font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
 }
 
 #app {

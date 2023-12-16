@@ -3,10 +3,10 @@ import {getCurrentInstance, ref} from "vue";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 
 const showDialog = ref(false);
-const responseMaxTokens = ref(0);
+const temperature = ref(0.7);
 const show = (value: number | string | null) => {
   if (typeof value !== "number") return;
-  responseMaxTokens.value = value;
+  temperature.value = value;
   showDialog.value = true;
 };
 const hide = () => {
@@ -19,25 +19,27 @@ defineExpose({
 
 const instance = getCurrentInstance();
 const save = () => {
-  instance?.emit("commit", "response_max_tokens", responseMaxTokens.value);
+  instance?.emit("saveOption", "temperature", temperature.value);
 };
+
+const description = "The lower this value, the more rigorous the output will be; " +
+    "the higher the value, the more random the output will be. " +
+    "Too low or too high can both affect the quality of what's generated, generally maintaining it at 0.7 is sufficient.";
 </script>
 
 <template>
   <CDialog
       v-model:visible="showDialog"
-      title="Response Max Tokens"
-      description="When the value is 0, the number of tokens returned is automatic."
+      title="Temperature"
+      :description="description"
       @ok="save"
   >
     <el-slider
-        class="px-2"
-        v-model="responseMaxTokens"
+        v-model="temperature"
         :min="0"
-        :max="4000"
-        :step="1"
+        :max="1"
+        :step="0.1"
         show-input
-        size="small"
     />
   </CDialog>
 </template>

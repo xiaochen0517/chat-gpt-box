@@ -3,7 +3,7 @@ export interface Model {
   value: string;
 }
 
-export const ModelList: Model[] = [
+export const GPTModelList: Model[] = [
   {
     label: "gpt-3.5-turbo",
     value: "gpt-3.5-turbo"
@@ -43,5 +43,16 @@ export const ModelList: Model[] = [
   {
     label: "gpt-4-1106-preview",
     value: "gpt-4-1106-preview"
+  }
+];
+
+export const DALLEModelList: Model[] = [
+  {
+    label: "dall-e-2",
+    value: "dall-e-2"
+  },
+  {
+    label: "dall-e-3",
+    value: "dall-e-3"
   }
 ];

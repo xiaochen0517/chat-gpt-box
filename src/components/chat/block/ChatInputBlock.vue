@@ -3,11 +3,12 @@ import {computed, defineAsyncComponent, getCurrentInstance, onMounted, ref, watc
 import {useMagicKeys, whenever} from "@vueuse/core";
 import {ElMessage} from "element-plus";
 import {createRequest} from "@/utils/RequestUtil.ts";
-import {ChatInfo, ChatTabInfo} from "@/types/Store.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import AppUtil from "@/utils/AppUtil.ts";
+import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatTabInfoTypes} from "@/types/chat/ChatTabInfoTypes.ts";
 
 const SendOutlined = defineAsyncComponent(() => import("@ant-design/icons-vue/SendOutlined"));
 
@@ -37,7 +38,7 @@ const instance = getCurrentInstance();
 const chatInputContent = ref("");
 
 const chatListStore = useChatListStore();
-const chatInfo = ref<ChatInfo | null>(null);
+const chatInfo = ref<ChatInfoTypes | null>(null);
 watch(() => props.chatId,
   (newChatId) => {
     chatInfo.value = chatListStore.getChatInfo(newChatId ?? "");
@@ -46,10 +47,10 @@ watch(() => props.chatId,
 );
 
 const chatTabsStore = useChatTabsStore();
-const tabInfo = computed<ChatTabInfo>(() => {
-  if (!chatInfo.value) return {generating: false} as ChatTabInfo;
+const tabInfo = computed<ChatTabInfoTypes>(() => {
+  if (!chatInfo.value) return {generating: false} as ChatTabInfoTypes;
   let chatTabList = chatTabsStore.chatTabs[chatInfo.value.id];
-  if (!chatTabList) return {generating: false} as ChatTabInfo;
+  if (!chatTabList) return {generating: false} as ChatTabInfoTypes;
   return chatTabList[props.tabIndex];
 });
 const submitContent = () => {
