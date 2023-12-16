@@ -49,23 +49,15 @@ const deleteChatClick = (chatInfo: ChatInfoTypes | null) => {
       >
         {{ chatInfo?.name }}
       </div>
-      <el-tooltip
-          v-if="chatInfo?.options.enabled"
-          :content="chatInfo.options.model.toUpperCase()"
-          placement="right"
-          :hide-after="0"
-          :enterable="false"
+      <div
+          class="w-24 overflow-hidden overflow-ellipsis whitespace-nowrap border border-neutral-300 dark:border-neutral-700 rounded px-1 bg-yellow-400 dark:bg-amber-600 text-xs leading-5"
+          @click.stop="editChatClick(chatInfo)"
       >
-        <div
-            class="w-24 overflow-hidden overflow-ellipsis whitespace-nowrap border border-neutral-300 dark:border-neutral-700 rounded px-1 bg-yellow-400 dark:bg-amber-600 text-xs leading-5"
-            @click.stop="editChatClick(chatInfo)"
-        >
-          <i class="iconfont icon-settings font-normal"/>
-          {{ chatInfo.options.model.toUpperCase() }}
-        </div>
-      </el-tooltip>
+        <i class="iconfont icon-settings font-normal"/>
+        {{ chatInfo.options.model.toUpperCase() }}
+      </div>
     </div>
-    <el-popover overlayClassName="robot-editor-popover" placement="bottom" trigger="click">
+    <el-popover overlayClassName="robot-editor-popover" placement="bottom" trigger="hover">
       <template #default>
         <div class="p-2 m-0">
           <div
@@ -84,7 +76,7 @@ const deleteChatClick = (chatInfo: ChatInfoTypes | null) => {
       </template>
       <template #reference>
         <div
-            class="robot-control-button flex justify-center items-center hover:bg-neutral-300 dark:hover:bg-neutral-700 w-6 h-6 rounded-md"
+            class="robot-control-button flex justify-center items-center hover:bg-neutral-300 dark:hover:bg-neutral-600 w-6 h-6 rounded-md"
             @click.stop=""
         >
           <ellipsis-outlined/>
