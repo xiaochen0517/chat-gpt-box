@@ -28,7 +28,7 @@ jobs:
             artifact-name: windows-latest-artifact
             path: |
               src-tauri/target/release/bundle/msi/*.msi
-              src-tauri/target/release/bundle/exe/*.exe
+              src-tauri/target/release/bundle/nsis/*.exe
 
     steps:
       - name: Checkout
