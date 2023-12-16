@@ -161,23 +161,23 @@ defineExpose({
         <CListItem
             content="Image count"
             left-icon="icon-pictures"
-            @click="openOptionsDialog('ImageCountDialog', 'temperature')"
+            @click="openOptionsDialog('ImageCountDialog', 'imageCount')"
         />
         <CListItem
             content="Image size"
             left-icon="icon-arrawsalt"
-            @click="openOptionsDialog('ImageSizeDialog', 'contextMaxMessage')"
+            @click="openOptionsDialog('ImageSizeDialog', 'imageSize')"
         />
         <CListItem
             content="Image style"
             left-icon="icon-expand"
-            @click="openOptionsDialog('ImageStyleDialog', 'contextMaxTokens')"
+            @click="openOptionsDialog('ImageStyleDialog', 'imageStyle')"
         />
         <CListItem
             content="Image quality"
             left-icon="icon-scenes"
             :bottom-border="false"
-            @click="openOptionsDialog('ImageQualityDialog', 'responseMaxTokens')"
+            @click="openOptionsDialog('ImageQualityDialog', 'imageQuality')"
         />
       </div>
     </div>
