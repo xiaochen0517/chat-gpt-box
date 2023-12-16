@@ -1,7 +1,7 @@
 import {BaseRequest, checkParams} from "@/service/request/BaseRequest.ts";
 import {RequestOptionsTypes} from "@/types/request/RequestOptionsTypes.ts";
 import {ChatInfoTypes, DallEChatOptions} from "@/types/chat/ChatInfoTypes.ts";
-import axios, {AxiosResponse} from "axios";
+import axios, {AxiosError, AxiosResponse} from "axios";
 import {DallEChatRequestBody} from "@/types/request/DallERequestTypes.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
@@ -33,41 +33,34 @@ export class DallERequest implements BaseRequest {
       this.requestOptions = requestOptions;
       this.refreshCallbackFunc = refreshCallbackFunc;
       this.setGenerating(true);
+      this.prepareMessage();
       const config = this.getChatConfig();
-      this.pushUserMessage2ChatTab();
-      this.addAssistantMessage();
-      this.setAssistantMsgContent("Generating...");
+      const chatRequestBody = this.getChatRequestBody(config);
+      console.log("chatRequestBody: ", chatRequestBody);
       axios.post(
         `${config.apiUrl}v1/images/generations`,
-        this.getChatRequestBody(config),
+        chatRequestBody,
         {
           headers: this.getChatRequestHeaders(),
           timeout: 1000 * 60 * 2,
         })
         .then((response) => {
-          if (!this.checkResponse(response)) return;
-          const data = response.data.data;
-          let content = "";
-          for (const item of data) {
-            content += `Revised prompt: \`${item.revised_prompt}\`\nGenerated image: \n` +
-              `<img src="${item.url}" width="${imgWidth}" align="left"/>\n`;
-          }
-          this.setAssistantMsgContent(content);
-          this.setGenerating(false);
+          this.handleResponse(response);
         })
         .catch((error) => {
-          if (this.stopFlag) {
-            this.stopFlag = false;
-            return;
-          }
-          console.log(error);
-          this.setErrorMsgContent("Error: " + error);
+          this.handleErrorResponse(error);
         });
       return Promise.resolve("done");
     } catch (error) {
       console.error(error);
       return Promise.reject(error);
     }
+  }
+
+  private prepareMessage(): void {
+    this.pushUserMessage2ChatTab();
+    this.addAssistantMessage();
+    this.setAssistantMsgContent("Generating...");
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -109,6 +102,32 @@ export class DallERequest implements BaseRequest {
       "Content-Type": "application/json",
       "Authorization": "Bearer " + configStore.baseConfig.apiKey,
     };
+  }
+
+  private handleResponse(response: AxiosResponse): void {
+    if (!this.checkResponse(response)) return;
+    console.log("response: ", response);
+    const data = response.data.data;
+    let content = "";
+    for (const item of data) {
+      content += `Revised prompt: \`${item.revised_prompt??"None revised"}\`\n\nGenerated image: \n\n` +
+        `<img src="${item.url}" width="${imgWidth}"/>\n\n`;
+    }
+    this.setAssistantMsgContent(content);
+    this.setGenerating(false);
+  }
+
+  private handleErrorResponse(error: AxiosError): void {
+    if (this.stopFlag) {
+      this.stopFlag = false;
+      return;
+    }
+    console.error(error);
+    let errorContent = `Error message: \`${error.message}\`\n\n`;
+    if (error.response) {
+      errorContent += `Error response: \n\`\`\`json\n${JSON.stringify(error.response.data)}\n\`\`\`\n`;
+    }
+    this.setErrorMsgContent(errorContent);
   }
 
   cancel(): void {

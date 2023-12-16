@@ -8,7 +8,7 @@ import CTabPane from "@/components/base/tab/CTabPane.vue";
 import {ElMessageBox} from "element-plus";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
-import {ChatInfoTypes, ChatOptions} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
 import {ChatTabInfoTypes} from "@/types/chat/ChatTabInfoTypes.ts";
 
 /**
@@ -112,12 +112,6 @@ const chatTabNameList = computed(() => {
   return chatTabList
     .map((item: ChatTabInfoTypes) => item.name);
 });
-const robotOptions = computed((): ChatOptions => {
-  if (!propsActiveChat.value) return {
-    enabled: false,
-  } as ChatOptions;
-  return propsActiveChat.value.options;
-});
 const removeTabClick = (index: number) => {
   ElMessageBox.confirm("Are you sure to remove this tab?", "Warning", {
     confirmButtonText: "OK",
@@ -147,13 +141,11 @@ defineExpose({
 <template>
   <div
       ref="scrollContainerRefs"
-      class="overflow-hidden overflow-y-auto box-border scroll-container"
-      :class="robotOptions.enabled?'options-enabled':'options-disabled'"
+      class="scroll-container overflow-hidden overflow-y-auto box-border scroll-container pt-14"
   >
     <CTabs
         v-model:activeKey="activeTabIndex"
         :tabNames="chatTabNameList"
-        :chatOptions="robotOptions"
         @addTabClick="addTab"
         @removeTabClick="removeTabClick"
         @showSlideSideBarClick="$emit('showSlideSideBarClick')"
@@ -167,19 +159,9 @@ defineExpose({
 </template>
 
 <style scoped lang="less">
-.options-enabled {
-@apply pt-32;
-
+.scroll-container {
   &::-webkit-scrollbar-track {
-  @apply mt-32;
-  }
-}
-
-.options-disabled {
-@apply pt-20;
-
-  &::-webkit-scrollbar-track {
-  @apply mt-20;
+  @apply mt-14;
   }
 }
 </style>

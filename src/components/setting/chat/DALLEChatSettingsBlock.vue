@@ -13,7 +13,7 @@ import ImageStyleDialog from "@/components/setting/dialog/dalle/ImageStyleDialog
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {useRoute} from "vue-router";
 import {ElMessage} from "element-plus";
-import {ChatInfoTypes, ChatType, DallEChatOptions, GPTChatOptions} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfoTypes, ChatType, DallEChatOptions} from "@/types/chat/ChatInfoTypes.ts";
 
 
 const chatListStore = useChatListStore();
@@ -95,23 +95,23 @@ const openBaseDialog = (name: string, key: keyof ChatInfoTypes) => {
     currentDialogRefs.value.show(chatInfo.value[key]);
   });
 };
-const openOptionsDialog = (name: string, key: keyof GPTChatOptions) => {
+const openOptionsDialog = (name: string, key: keyof DallEChatOptions) => {
   if (!components[name]) return;
   currentDialog.value = markRaw(components[name]);
   nextTick(() => {
     if (!currentDialogRefs.value) return;
     if (!chatInfo.value) return;
-    currentDialogRefs.value.show((defaultDallEChatInfo.value.options as GPTChatOptions)[key]);
+    currentDialogRefs.value.show((defaultDallEChatInfo.value.options as DallEChatOptions)[key]);
   });
 };
 
-const saveChatOptions = <K extends keyof GPTChatOptions>(key: K, value: GPTChatOptions[K]) => {
+const saveChatOptions = <K extends keyof DallEChatOptions>(key: K, value: DallEChatOptions[K]) => {
   if (!chatId.value) return;
   if (!currentDialogRefs.value) return;
   if (props.isAddChat) {
-    (defaultDallEChatInfo.value.options as GPTChatOptions)[key] = value;
+    (defaultDallEChatInfo.value.options as DallEChatOptions)[key] = value;
   } else {
-    chatListStore.setGPTChatOptions(chatId.value, key, value);
+    chatListStore.setDallEChatOptions(chatId.value, key, value);
   }
   currentDialogRefs.value.hide();
 };
@@ -144,7 +144,7 @@ defineExpose({
 
 <template>
   <div>
-    <div class="px-2 xl:p-0 max-w-2xl m-auto mt-2">
+    <div class="px-2 xl:p-0 max-w-content m-auto mt-2">
       <div class="mt-1 text-lg leading-13">Basic Settings</div>
       <div class="rounded-xl overflow-hidden text-base select-none">
         <CListItem
@@ -153,27 +153,31 @@ defineExpose({
             @click.stop="openBaseDialog('ChatNameDialog', 'name')"
         />
         <CListItem content="Api url" left-icon="icon-link1" @click.stop="openOptionsDialog('ApiUrlDialog', 'apiUrl')"/>
-        <CListItem content="Model" left-icon="icon-connections" @click="openOptionsDialog('DALLEModelDialog', 'model')"/>
+        <CListItem
+            content="Model"
+            left-icon="icon-connections"
+            @click="openOptionsDialog('DALLEModelDialog', 'model')"
+        />
         <CListItem
             content="Image count"
             left-icon="icon-pictures"
-            @click="openOptionsDialog('ImageCountDialog', 'temperature')"
+            @click="openOptionsDialog('ImageCountDialog', 'imageCount')"
         />
         <CListItem
             content="Image size"
             left-icon="icon-arrawsalt"
-            @click="openOptionsDialog('ImageSizeDialog', 'contextMaxMessage')"
+            @click="openOptionsDialog('ImageSizeDialog', 'imageSize')"
         />
         <CListItem
             content="Image style"
             left-icon="icon-expand"
-            @click="openOptionsDialog('ImageStyleDialog', 'contextMaxTokens')"
+            @click="openOptionsDialog('ImageStyleDialog', 'imageStyle')"
         />
         <CListItem
             content="Image quality"
             left-icon="icon-scenes"
             :bottom-border="false"
-            @click="openOptionsDialog('ImageQualityDialog', 'responseMaxTokens')"
+            @click="openOptionsDialog('ImageQualityDialog', 'imageQuality')"
         />
       </div>
     </div>
@@ -182,7 +186,7 @@ defineExpose({
         :is="currentDialog"
         v-if="currentDialog"
         :chat-info="chatInfo"
-        @commit="saveChatOptions"
+        @saveOption="saveChatOptions"
         @save="saveChatInfo"
     />
   </div>

@@ -18,7 +18,7 @@ export interface BaseRequest {
 }
 
 export const checkParams = (requestOptions: RequestOptionsTypes, refreshCallbackFunc: () => void): void => {
-  console.log(requestOptions, refreshCallbackFunc);
+  console.log("request options", requestOptions);
   if (!refreshCallbackFunc) throw new Error("refresh callback invalid");
   if (!requestOptions) throw new Error("request options is null");
   if (!(requestOptions.tabIndex >= 0)) throw new Error("tab index invalid");

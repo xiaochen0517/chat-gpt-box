@@ -19,7 +19,7 @@ defineExpose({
 
 const instance = getCurrentInstance();
 const save = () => {
-  instance?.emit("commit", "responseMaxTokens", responseMaxTokens.value);
+  instance?.emit("saveOption", "responseMaxTokens", responseMaxTokens.value);
 };
 </script>
 

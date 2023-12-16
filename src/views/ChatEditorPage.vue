@@ -72,7 +72,7 @@ const jumpToHomePage = () => {
         @backClick="jumpToHomePage"
         @saveClick="addChat"
     />
-    <div class="px-2 xl:p-0 max-w-2xl m-auto mt-2">
+    <div class="px-2 xl:p-0 max-w-content m-auto mt-2">
       <div
           class="relative flex flex-row gap-2 p-2 rounded-xl overflow-hidden text-base text-center select-none dark:bg-neutral-800"
           :class="{'opacity-40': !isAddChat}"

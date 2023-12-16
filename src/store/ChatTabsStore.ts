@@ -85,6 +85,16 @@ export const useChatTabsStore = defineStore("chatTabs", {
       if (!id || !this.chatTabs[id] || tabIndex < 0 || messageIndex < 0) return;
       this.chatTabs[id][tabIndex].chat[messageIndex] = content;
     },
+    setAllTabPromptMessage(id: string, prompt: string) {
+      if (!id || !this.chatTabs[id]) return;
+      for (const tabInfo of this.chatTabs[id]) {
+        if (tabInfo.chat.length === 0) {
+          tabInfo.chat.push({role: ChatMessageRole.System, content: prompt});
+          continue;
+        }
+        tabInfo.chat[0].content = prompt;
+      }
+    },
     removeChatMessage(id: string, tabIndex: number, messageIndex: number) {
       if (!id || !this.chatTabs[id] || tabIndex < 0 || messageIndex < 0) return;
       this.chatTabs[id][tabIndex].chat.splice(messageIndex, 1);

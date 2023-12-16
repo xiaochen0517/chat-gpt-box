@@ -33,7 +33,7 @@ const save = () => {
     ElMessage.error("Model can not be empty!");
     return;
   }
-  instance?.emit("commit", "model", model.value);
+  instance?.emit("saveOption", "model", model.value);
 };
 </script>
 

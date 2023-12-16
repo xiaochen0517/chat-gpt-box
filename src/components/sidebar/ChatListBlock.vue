@@ -73,9 +73,6 @@ defineExpose({
 });
 
 const dragStatus = ref(false);
-watch(dragStatus, (newStatus) => {
-  console.log(newStatus);
-});
 </script>
 
 <template>
