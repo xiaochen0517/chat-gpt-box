@@ -22,7 +22,7 @@ jobs:
           - os: macos-latest
             artifact-name: macos-latest-artifact
             path: |
-              src-tauri/target/release/bundle/macos/*.dmg
+              src-tauri/target/release/bundle/dmg/*.dmg
               src-tauri/target/release/bundle/macos/*.app
           - os: windows-latest
             artifact-name: windows-latest-artifact
