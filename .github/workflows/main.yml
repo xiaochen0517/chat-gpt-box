@@ -46,6 +46,12 @@ jobs:
       - name: Cache cargo
         uses: Swatinem/rust-cache@v2
 
+      - name: Cache yarn packages
+        uses: actions/cache@v3
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
       - name: Install webkit2gtk (ubuntu only)
         if: matrix.os == 'ubuntu-latest'
         run: |
@@ -54,12 +60,6 @@ jobs:
 
       - name: Install app dependencies and build it
         run: yarn install && yarn build-tauri
-
-      - name: Cache yarn packages
-        uses: actions/cache@v3
-        with:
-          path: ./node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
