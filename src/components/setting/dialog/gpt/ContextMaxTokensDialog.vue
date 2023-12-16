@@ -19,7 +19,7 @@ defineExpose({
 
 const instance = getCurrentInstance();
 const save = () => {
-  instance?.emit("commit", "contextMaxTokens", contextMaxTokens.value);
+  instance?.emit("saveOption", "contextMaxTokens", contextMaxTokens.value);
 };
 const description = "The request for tokens is limited by the set number of request messages. " +
     "Calculate whether the tokens for the specified number of messages exceed this value. If they do, " +

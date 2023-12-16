@@ -186,7 +186,7 @@ defineExpose({
         :is="currentDialog"
         v-if="currentDialog"
         :chat-info="chatInfo"
-        @commit="saveChatOptions"
+        @saveOption="saveChatOptions"
         @save="saveChatInfo"
     />
   </div>

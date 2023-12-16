@@ -74,7 +74,7 @@ const save = () => {
     ElMessage.error("Image size it cannot be empty!");
     return;
   }
-  instance?.emit("save", "imageSize", imageSize.value);
+  instance?.emit("saveOption", "imageSize", imageSize.value);
 };
 const description = "This parameter is ignored when the model is dall-e-3 because the dall-4-3 model can only generate one image. " +
     "When the model is dall-e-2, this parameter indicates the number of images generated.";

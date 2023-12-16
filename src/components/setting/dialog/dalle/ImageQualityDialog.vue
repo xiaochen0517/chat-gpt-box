@@ -39,7 +39,7 @@ const save = () => {
     ElMessage.error("Image quality must not be empty!");
     return;
   }
-  instance?.emit("save", "imageQuality", imageQuality.value);
+  instance?.emit("saveOption", "imageQuality", imageQuality.value);
 };
 const description = "This parameter is ignored when the model is dall-e-2 because the dall-4-2 model can only support standard quality. " +
     "When the model is dall-e-3, this parameter indicates the quality of images generated.";

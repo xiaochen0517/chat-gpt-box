@@ -19,7 +19,7 @@ defineExpose({
 
 const instance = getCurrentInstance();
 const save = () => {
-  instance?.emit("commit", "temperature", temperature.value);
+  instance?.emit("saveOption", "temperature", temperature.value);
 };
 
 const description = "The lower this value, the more rigorous the output will be; " +

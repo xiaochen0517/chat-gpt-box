@@ -24,7 +24,7 @@ const save = () => {
     ElMessage.error("Image count must be between 1 and 10!");
     return;
   }
-  instance?.emit("save", "imageCount", imageCount.value);
+  instance?.emit("saveOption", "imageCount", imageCount.value);
 };
 const description = "This parameter is ignored when the model is dall-e-3 because the dall-4-3 model can only generate one image. " +
     "When the model is dall-e-2, this parameter indicates the number of images generated.";
