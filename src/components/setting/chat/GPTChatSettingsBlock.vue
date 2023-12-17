@@ -2,7 +2,6 @@
 import {computed, defineComponent, markRaw, nextTick, onMounted, Ref, ref, watch} from "vue";
 import router from "@/router/Router.ts";
 import CListItem from "@/components/base/list/CListItem.vue";
-import ApiKeyDialog from "@/components/setting/dialog/ApiKeyDialog.vue";
 import TemperatureDialog from "@/components/setting/dialog/gpt/TemperatureDialog.vue";
 import ResponseMaxTokensDialog from "@/components/setting/dialog/gpt/ResponseMaxTokensDialog.vue";
 import ContextMaxMsgsDialog from "@/components/setting/dialog/gpt/ContextMaxMsgsDialog.vue";
@@ -85,7 +84,6 @@ type ComponentMap = {
 };
 
 const components: ComponentMap = {
-  ApiKeyDialog,
   ApiUrlDialog,
   GPTModelDialog,
   TemperatureDialog,

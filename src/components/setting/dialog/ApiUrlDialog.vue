@@ -31,7 +31,7 @@ const save = () => {
     ElMessage.error("Api url can not be empty!");
     return;
   }
-  instance?.emit("commit", "apiUrl", apiUrl.value);
+  instance?.emit("saveOption", "apiUrl", apiUrl.value);
 };
 </script>
 
