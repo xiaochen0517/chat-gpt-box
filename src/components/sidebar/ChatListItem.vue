@@ -54,7 +54,7 @@ const deleteChatClick = (chatInfo: ChatInfoTypes | null) => {
           @click.stop="editChatClick(chatInfo)"
       >
         <i class="iconfont icon-settings font-normal"/>
-        {{ chatInfo.options.model.toUpperCase() }}
+        {{ chatInfo?.options.model.toUpperCase() }}
       </div>
     </div>
     <el-popover overlayClassName="robot-editor-popover" placement="bottom" trigger="hover">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, getCurrentInstance, onMounted, ref, watch} from "vue";
+import {computed, getCurrentInstance, onMounted, ref} from "vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
