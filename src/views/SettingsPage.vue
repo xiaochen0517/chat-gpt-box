@@ -140,7 +140,7 @@ const saveConfig = <K extends keyof BaseConfigTypes>(key: K, value: BaseConfigTy
         ref="currentDialogRefs"
         :is="currentDialog"
         v-if="currentDialog"
-        @commit="saveConfig"
+        @saveOption="saveConfig"
     />
   </div>
 </template>
