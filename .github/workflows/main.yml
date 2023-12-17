@@ -46,7 +46,7 @@ jobs:
       - name: Cache cargo
         uses: Swatinem/rust-cache@v2
         with:
-          workspace: src-tauri -> target
+          workspaces: src-tauri -> target
 
       - name: Cache yarn packages
         uses: actions/cache@v3
