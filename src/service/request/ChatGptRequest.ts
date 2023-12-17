@@ -1,12 +1,12 @@
 import {BaseRequest, checkParams} from "@/service/request/BaseRequest.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
-import {RequestOptionsTypes} from "@/types/request/RequestOptionsTypes.ts";
-import {ChatGptRequestBody, ChatGptRequestTypes} from "@/types/request/ChatGptRequestTypes.ts";
+import {RequestOptions} from "@/types/request/RequestOptions.ts";
+import {ChatGptRequestBody, ChatGptRequest} from "@/types/request/ChatGptRequest.ts";
 import {encoding_for_model, Tiktoken, TiktokenModel} from "tiktoken";
-import {ChatInfoTypes, GPTChatOptions} from "@/types/chat/ChatInfoTypes.ts";
-import {ChatMessage, ChatMessageRole, ChatTabInfoTypes} from "@/types/chat/ChatTabInfoTypes.ts";
-import {BaseConfigTypes} from "@/types/chat/BaseConfigTypes.ts";
+import {ChatInfo, GPTChatOptions} from "@/types/chat/ChatInfo.ts";
+import {ChatMessage, ChatMessageRole, ChatTabInfo} from "@/types/chat/ChatTabInfo.ts";
+import {BaseConfig} from "@/types/chat/BaseConfig.ts";
 
 const CHAT_GPT_API_SUFFIX: string = "v1/chat/completions";
 const HTTP_REQ_TYPE: string = "POST";
@@ -19,26 +19,26 @@ const DATA_DONE_FLAG: string = "[DONE]";
 
 export class ChatGptRequest implements BaseRequest {
 
-  chatInfo: ChatInfoTypes;
+  chatInfo: ChatInfo;
 
   refreshCallbackFunc: () => void = () => {
   };
 
-  requestOptions: RequestOptionsTypes | null = null;
+  requestOptions: RequestOptions | null = null;
 
   stopFlag: boolean = false;
 
-  chatConfig: ChatGptRequestTypes | null = null;
+  chatConfig: ChatGptRequest | null = null;
 
   abortController: AbortController | null = null;
 
   reader: ReadableStreamDefaultReader | null = null;
 
-  constructor(chatInfo: ChatInfoTypes) {
+  constructor(chatInfo: ChatInfo) {
     this.chatInfo = chatInfo;
   }
 
-  public sendMessage(requestOptions: RequestOptionsTypes, refreshCallbackFunc: () => void): Promise<string> {
+  public sendMessage(requestOptions: RequestOptions, refreshCallbackFunc: () => void): Promise<string> {
     try {
       checkParams(requestOptions, refreshCallbackFunc);
       this.requestOptions = requestOptions;
@@ -75,8 +75,8 @@ export class ChatGptRequest implements BaseRequest {
     });
   }
 
-  private getChatConfig(): ChatGptRequestTypes {
-    const config: GPTChatOptions | BaseConfigTypes = this.chatInfo.options.enabled ? this.chatInfo.options as GPTChatOptions : configStore.baseConfig;
+  private getChatConfig(): ChatGptRequest {
+    const config: GPTChatOptions | BaseConfig = this.chatInfo.options.enabled ? this.chatInfo.options as GPTChatOptions : configStore.baseConfig;
     return {
       apiUrl: config.apiUrl,
       model: config.model,
@@ -179,13 +179,13 @@ export class ChatGptRequest implements BaseRequest {
     this.refreshCallbackFunc();
   }
 
-  private getChatTabInfo(tabIndex: number): ChatTabInfoTypes {
+  private getChatTabInfo(tabIndex: number): ChatTabInfo {
     const chatTabInfo = chatTabsStore.getChatTabInfo(this.chatInfo.id, tabIndex);
     if (!chatTabInfo) throw new Error("chat tab info is null");
     return chatTabInfo;
   }
 
-  private getMaxContextMessage(chatTabInfo: ChatTabInfoTypes): ChatMessage[] {
+  private getMaxContextMessage(chatTabInfo: ChatTabInfo): ChatMessage[] {
     if (!this.chatConfig) throw new Error("chat config is null");
     const tabChatLength = chatTabInfo.chat.length;
     if (tabChatLength === 0) return [];

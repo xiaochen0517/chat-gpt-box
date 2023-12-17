@@ -1,6 +1,6 @@
 import AppUtil from "@/utils/AppUtil.ts";
 import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
-import {ShortcutConfig} from "@/types/chat/BaseConfigTypes.ts";
+import {ShortcutConfig} from "@/types/chat/BaseConfig.ts";
 
 const DEFAULT_SHORTCUT_WINDOW: ShortcutConfig = {
   focusInput: [KeyMapEnum.KEY_CTRL, KeyMapEnum.KEY_BACKSLASH],

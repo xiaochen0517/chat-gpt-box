@@ -13,7 +13,7 @@ import ImageStyleDialog from "@/components/setting/dialog/dalle/ImageStyleDialog
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {useRoute} from "vue-router";
 import {ElMessage} from "element-plus";
-import {ChatInfoTypes, ChatType, DallEChatOptions} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfo, ChatType, DallEChatOptions} from "@/types/chat/ChatInfo.ts";
 
 
 const chatListStore = useChatListStore();
@@ -38,7 +38,7 @@ const chatId: Ref<string | null> = computed(() => {
 /**
  * If chatId is "add", then we should use default chat info.
  */
-const defaultDallEChatInfo = ref<ChatInfoTypes>({
+const defaultDallEChatInfo = ref<ChatInfo>({
   id: "default",
   name: "Default Chat",
   prompt: "",
@@ -86,7 +86,7 @@ const components: ComponentMap = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const currentDialogRefs = ref<any>(null);
 const currentDialog = ref<string | ReturnType<typeof defineComponent>>("");
-const openBaseDialog = (name: string, key: keyof ChatInfoTypes) => {
+const openBaseDialog = (name: string, key: keyof ChatInfo) => {
   if (!components[name]) return;
   currentDialog.value = markRaw(components[name]);
   nextTick(() => {
@@ -116,7 +116,7 @@ const saveChatOptions = <K extends keyof DallEChatOptions>(key: K, value: DallEC
   currentDialogRefs.value.hide();
 };
 
-const saveChatInfo = <K extends keyof ChatInfoTypes>(key: K, value: ChatInfoTypes[K]) => {
+const saveChatInfo = <K extends keyof ChatInfo>(key: K, value: ChatInfo[K]) => {
   if (!chatId.value) return;
   if (!currentDialogRefs.value) return;
   if (props.isAddChat) {

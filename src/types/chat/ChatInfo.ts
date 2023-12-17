@@ -1,4 +1,4 @@
-export type ChatInfoTypes = {
+export type ChatInfo = {
   id: string;
   name: string;
   prompt: string;
@@ -9,6 +9,7 @@ export type ChatInfoTypes = {
 export enum ChatType {
   CHAT_GPT = "chat_gpt",
   DALL_E = "dall_e",
+  GEMINI = "gemini",
 }
 
 export type ChatOptions = GPTChatOptions | DallEChatOptions;

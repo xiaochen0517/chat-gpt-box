@@ -1,6 +1,6 @@
 import {BaseRequest, checkParams} from "@/service/request/BaseRequest.ts";
-import {RequestOptionsTypes} from "@/types/request/RequestOptionsTypes.ts";
-import {ChatInfoTypes, DallEChatOptions} from "@/types/chat/ChatInfoTypes.ts";
+import {RequestOptions} from "@/types/request/RequestOptions.ts";
+import {ChatInfo, DallEChatOptions} from "@/types/chat/ChatInfo.ts";
 import axios, {AxiosError, AxiosResponse} from "axios";
 import {DallEChatRequestBody} from "@/types/request/DallERequestTypes.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
@@ -14,20 +14,20 @@ const imgWidth = AppUtil.isMobile() ? "90%" : "400px";
 
 export class DallERequest implements BaseRequest {
 
-  chatInfo: ChatInfoTypes;
+  chatInfo: ChatInfo;
 
   refreshCallbackFunc: () => void = () => {
   };
 
-  requestOptions: RequestOptionsTypes | null = null;
+  requestOptions: RequestOptions | null = null;
 
   stopFlag: boolean = false;
 
-  constructor(chatInfo: ChatInfoTypes) {
+  constructor(chatInfo: ChatInfo) {
     this.chatInfo = chatInfo;
   }
 
-  sendMessage(requestOptions: RequestOptionsTypes, refreshCallbackFunc: () => void): Promise<string> {
+  sendMessage(requestOptions: RequestOptions, refreshCallbackFunc: () => void): Promise<string> {
     try {
       checkParams(requestOptions, refreshCallbackFunc);
       this.requestOptions = requestOptions;

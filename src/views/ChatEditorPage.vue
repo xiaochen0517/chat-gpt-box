@@ -4,7 +4,7 @@ import CTopNavBar from "@/components/base/nav/CTopNavBar.vue";
 import router from "@/router/Router.ts";
 import {useRoute} from "vue-router";
 import {ElMessage} from "element-plus";
-import {ChatType} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatType} from "@/types/chat/ChatInfo.ts";
 import GPTChatSettingsBlock from "@/components/setting/chat/GPTChatSettingsBlock.vue";
 import DALLEChatSettingsBlock from "@/components/setting/chat/DALLEChatSettingsBlock.vue";
 import {useChatListStore} from "@/store/ChatListStore.ts";

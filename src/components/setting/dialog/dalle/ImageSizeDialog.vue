@@ -2,7 +2,7 @@
 import {getCurrentInstance, onMounted, ref, watch} from "vue";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 import {ElMessage} from "element-plus";
-import {ChatInfoTypes, DallEChatOptions} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfo, DallEChatOptions} from "@/types/chat/ChatInfo.ts";
 
 type ImageSizeListType = {
   label: string;
@@ -38,7 +38,7 @@ const DALLE3ImageSizeList: ImageSizeListType[] = [
 ];
 
 type Props = {
-  chatInfo: ChatInfoTypes | null,
+  chatInfo: ChatInfo | null,
 }
 const props = withDefaults(defineProps<Props>(), {
   chatInfo: null,

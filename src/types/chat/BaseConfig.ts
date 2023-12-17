@@ -1,6 +1,6 @@
 import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
 
-export type BaseConfigTypes = {
+export type BaseConfig = {
   apiKey: string;
   enterSend: boolean;
   ctrlEnterSend: boolean;

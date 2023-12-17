@@ -4,7 +4,7 @@ import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
 import _ from "lodash";
 import {KeyMapUtil} from "@/utils/KeyMapUtil.ts";
 import {DEFAULT_SHORTCUT} from "./defaults/DefaultShortcut.ts";
-import {BaseConfigTypes, ShortcutConfig, ShortcutConfigKey, ShortcutStringConfig} from "@/types/chat/BaseConfigTypes.ts";
+import {BaseConfig, ShortcutConfig, ShortcutConfigKey, ShortcutStringConfig} from "@/types/chat/BaseConfig.ts";
 
 export const useConfigStore = defineStore("config", {
   state: (): ConfigStore => {
@@ -34,7 +34,7 @@ export const useConfigStore = defineStore("config", {
     setDarkMode(isDarkMode: boolean) {
       this.isDarkMode = isDarkMode;
     },
-    setBaseConfig<K extends keyof BaseConfigTypes>(key: K, value: BaseConfigTypes[K]) {
+    setBaseConfig<K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) {
       this.baseConfig[key] = value;
     },
     setApiKey(apiKey: string) {

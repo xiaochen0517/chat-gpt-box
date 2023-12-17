@@ -1,10 +1,10 @@
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {ChatGptRequest} from "@/service/request/ChatGptRequest.ts";
 import {DallERequest} from "@/service/request/DallERequest.ts";
-import {ChatInfoTypes, ChatType} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfo, ChatType} from "@/types/chat/ChatInfo.ts";
 
 const chatListStore = useChatListStore();
-export const createRequest = (chatInfo: ChatInfoTypes) => {
+export const createRequest = (chatInfo: ChatInfo) => {
   switch (chatInfo.chatType) {
     case ChatType.CHAT_GPT:
       return new ChatGptRequest(chatInfo);

@@ -3,7 +3,7 @@ import {ChatListStore} from "@/types/StoreTypes.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {v4 as uuidv4} from "uuid";
 import _ from "lodash";
-import {ChatInfoTypes, ChatOptions, ChatType, DallEChatOptions, GPTChatOptions} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfo, ChatOptions, ChatType, DallEChatOptions, GPTChatOptions} from "@/types/chat/ChatInfo.ts";
 
 export const useChatListStore = defineStore("chatList", {
   state: (): ChatListStore => {
@@ -43,19 +43,19 @@ export const useChatListStore = defineStore("chatList", {
     };
   },
   actions: {
-    setChatList(chatList: ChatInfoTypes[]) {
+    setChatList(chatList: ChatInfo[]) {
       this.chatList = chatList;
     },
-    getChatInfo(id: string): ChatInfoTypes | null {
-      return _.cloneDeep(this.chatList.find((chat: ChatInfoTypes): boolean => chat.id === id) ?? null);
+    getChatInfo(id: string): ChatInfo | null {
+      return _.cloneDeep(this.chatList.find((chat: ChatInfo): boolean => chat.id === id) ?? null);
     },
-    setChatInfo<K extends keyof ChatInfoTypes>(id: string, key: K, value: ChatInfoTypes[K]) {
+    setChatInfo<K extends keyof ChatInfo>(id: string, key: K, value: ChatInfo[K]) {
       const index = this.getChatInfoIndex(id);
       if (index < 0) return;
       const chatInfo = this.chatList[index];
       chatInfo[key] = value;
       // If you are modifying the prompt, you need to update the prompt in the chatTabsStore
-      const promptKey = "prompt" as keyof ChatInfoTypes;
+      const promptKey = "prompt" as keyof ChatInfo;
       if (key === promptKey && chatInfo.chatType === ChatType.CHAT_GPT) {
         useChatTabsStore().setAllTabPromptMessage(id, value as string);
       }
@@ -80,7 +80,7 @@ export const useChatListStore = defineStore("chatList", {
       if (index < 0) return;
       this.chatList[index].options[key] = value;
     },
-    addChat(chatInfo: ChatInfoTypes) {
+    addChat(chatInfo: ChatInfo) {
       chatInfo.id = uuidv4();
       this.chatList.push(chatInfo);
       useChatTabsStore().addDefaultChatTab(chatInfo.id);
@@ -91,16 +91,16 @@ export const useChatListStore = defineStore("chatList", {
       this.chatList.splice(index, 1);
       useChatTabsStore().removeChatTabs(id);
     },
-    getChatInfoIndex(chatInfo: ChatInfoTypes | string): number {
+    getChatInfoIndex(chatInfo: ChatInfo | string): number {
       const chatInfoId: string = typeof chatInfo !== "string" ? chatInfo.id : chatInfo;
-      return this.chatList.findIndex((chat: ChatInfoTypes): boolean => chat.id === chatInfoId);
+      return this.chatList.findIndex((chat: ChatInfo): boolean => chat.id === chatInfoId);
     },
     removeChat(id: string) {
       const index = this.getChatInfoIndex(id);
       if (index < 0) return;
       this.chatList.splice(index, 1);
     },
-    updateChat(id: string, newChatInfo: ChatInfoTypes) {
+    updateChat(id: string, newChatInfo: ChatInfo) {
       const index = this.getChatInfoIndex(id);
       if (index < 0) return;
       this.chatList[index] = newChatInfo;
@@ -124,17 +124,17 @@ export const useChatListStore = defineStore("chatList", {
           break;
       }
     },
-    getPrevChatInfo(chatInfo: ChatInfoTypes): ChatInfoTypes | null {
+    getPrevChatInfo(chatInfo: ChatInfo): ChatInfo | null {
       const index = this.getChatInfoIndex(chatInfo);
       if (index <= 0) return null;
       return this.chatList[index - 1];
     },
-    getNextChatInfo(chatInfo: ChatInfoTypes): ChatInfoTypes | null {
+    getNextChatInfo(chatInfo: ChatInfo): ChatInfo | null {
       const index = this.getChatInfoIndex(chatInfo);
       if (index < 0 || index >= this.chatList.length - 1) return null;
       return this.chatList[index + 1];
     },
-    getSwitchChatInfo(chatInfo: ChatInfoTypes): ChatInfoTypes {
+    getSwitchChatInfo(chatInfo: ChatInfo): ChatInfo {
       const index = this.getChatInfoIndex(chatInfo);
       if (index < 0 || index >= this.chatList.length - 1) return this.chatList[0];
       return this.chatList[index + 1];

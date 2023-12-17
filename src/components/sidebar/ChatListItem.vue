@@ -3,27 +3,38 @@ import {EllipsisOutlined} from "@ant-design/icons-vue";
 import router from "@/router/Router.ts";
 import {ElMessageBox} from "element-plus";
 import {useChatListStore} from "@/store/ChatListStore.ts";
-import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfo} from "@/types/chat/ChatInfo.ts";
+import {computed} from "vue";
+import {useConfigStore} from "@/store/ConfigStore.ts";
 
 type Props = {
-  chatInfo: ChatInfoTypes | null,
-  activeChatInfo: ChatInfoTypes | null,
+  chatInfo: ChatInfo | null,
+  activeChatInfo: ChatInfo | null,
   drag: boolean
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   chatInfo: null,
   activeChatInfo: null,
   drag: false
 });
 
-const editChatClick = (chatInfo: ChatInfoTypes | null) => {
+const configStore = useConfigStore();
+const chatModel: string | null = computed(() => {
+  if (!props.chatInfo) return null;
+  if (props.chatInfo.options.enabled) {
+    return props.chatInfo.options.model;
+  }
+  return configStore.baseConfig.model;
+});
+
+const editChatClick = (chatInfo: ChatInfo | null) => {
   if (!chatInfo) return;
   router.push({path: `/chat/editor/${chatInfo.id}`});
 };
 
 const chatListStore = useChatListStore();
-const deleteChatClick = (chatInfo: ChatInfoTypes | null) => {
+const deleteChatClick = (chatInfo: ChatInfo | null) => {
   if (!chatInfo) return;
   ElMessageBox.confirm(`Are you sure to delete ${chatInfo.name}?`, "Warning", {
     confirmButtonText: "OK",
@@ -50,11 +61,12 @@ const deleteChatClick = (chatInfo: ChatInfoTypes | null) => {
         {{ chatInfo?.name }}
       </div>
       <div
+          v-if="chatModel"
           class="w-24 overflow-hidden overflow-ellipsis whitespace-nowrap border border-neutral-300 dark:border-neutral-700 rounded px-1 bg-yellow-400 dark:bg-amber-600 text-xs leading-5"
           @click.stop="editChatClick(chatInfo)"
       >
         <i class="iconfont icon-settings font-normal"/>
-        {{ chatInfo.options.model.toUpperCase() }}
+        {{ chatModel?.toUpperCase() }}
       </div>
     </div>
     <el-popover overlayClassName="robot-editor-popover" placement="bottom" trigger="hover">

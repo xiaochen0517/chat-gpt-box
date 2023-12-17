@@ -2,7 +2,7 @@ import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {ArrayUtil} from "@/utils/ArrayUtil.ts";
 import _ from "lodash";
-import {ShortcutConfig, ShortcutConfigKey, ShortcutStringConfig} from "@/types/chat/BaseConfigTypes.ts";
+import {ShortcutConfig, ShortcutConfigKey, ShortcutStringConfig} from "@/types/chat/BaseConfig.ts";
 
 export class KeyMapUtil {
 

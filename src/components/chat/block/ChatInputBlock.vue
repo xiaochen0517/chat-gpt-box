@@ -7,8 +7,8 @@ import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import AppUtil from "@/utils/AppUtil.ts";
-import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
-import {ChatTabInfoTypes} from "@/types/chat/ChatTabInfoTypes.ts";
+import {ChatInfo} from "@/types/chat/ChatInfo.ts";
+import {ChatTabInfo} from "@/types/chat/ChatTabInfo.ts";
 
 const SendOutlined = defineAsyncComponent(() => import("@ant-design/icons-vue/SendOutlined"));
 
@@ -38,7 +38,7 @@ const instance = getCurrentInstance();
 const chatInputContent = ref("");
 
 const chatListStore = useChatListStore();
-const chatInfo = ref<ChatInfoTypes | null>(null);
+const chatInfo = ref<ChatInfo | null>(null);
 watch(() => props.chatId,
   (newChatId) => {
     chatInfo.value = chatListStore.getChatInfo(newChatId ?? "");
@@ -47,10 +47,10 @@ watch(() => props.chatId,
 );
 
 const chatTabsStore = useChatTabsStore();
-const tabInfo = computed<ChatTabInfoTypes>(() => {
-  if (!chatInfo.value) return {generating: false} as ChatTabInfoTypes;
+const tabInfo = computed<ChatTabInfo>(() => {
+  if (!chatInfo.value) return {generating: false} as ChatTabInfo;
   let chatTabList = chatTabsStore.chatTabs[chatInfo.value.id];
-  if (!chatTabList) return {generating: false} as ChatTabInfoTypes;
+  if (!chatTabList) return {generating: false} as ChatTabInfo;
   return chatTabList[props.tabIndex];
 });
 const submitContent = () => {

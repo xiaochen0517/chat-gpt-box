@@ -1,20 +1,20 @@
-import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
-import {ChatTabInfoTypes} from "@/types/chat/ChatTabInfoTypes.ts";
-import {BaseConfigTypes, ShortcutConfig} from "@/types/chat/BaseConfigTypes.ts";
+import {ChatInfo} from "@/types/chat/ChatInfo.ts";
+import {ChatTabInfo} from "@/types/chat/ChatTabInfo.ts";
+import {BaseConfig, ShortcutConfig} from "@/types/chat/BaseConfig.ts";
 
 export type ChatListStore = {
-  chatList: ChatInfoTypes[];
+  chatList: ChatInfo[];
 }
 
 export type ChatTabsStore = {
   chatTabs: {
-    [key: string]: ChatTabInfoTypes[];
+    [key: string]: ChatTabInfo[];
   };
 }
 
 export type ConfigStore = {
   isDarkMode: boolean;
-  baseConfig: BaseConfigTypes;
+  baseConfig: BaseConfig;
   shortcut: ShortcutConfig;
   shortcutKeyMapMaxSize: number;
 }

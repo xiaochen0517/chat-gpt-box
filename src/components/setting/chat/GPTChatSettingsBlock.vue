@@ -14,7 +14,7 @@ import ChatPromptDialog from "@/components/setting/dialog/gpt/ChatPromptDialog.v
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {useRoute} from "vue-router";
 import {ElMessage} from "element-plus";
-import {ChatInfoTypes, ChatType, GPTChatOptions} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfo, ChatType, GPTChatOptions} from "@/types/chat/ChatInfo.ts";
 
 
 const chatListStore = useChatListStore();
@@ -48,7 +48,7 @@ watch(configEnabled, (value) => {
 /**
  * If chatId is "add", then we should use addChatInfo.
  */
-const defaultGptChatInfo = ref<ChatInfoTypes>({
+const defaultGptChatInfo = ref<ChatInfo>({
   id: "default",
   name: "Default Chat",
   prompt: "You are a helpful assistant.",
@@ -99,7 +99,7 @@ const components: ComponentMap = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const currentDialogRefs = ref<any>(null);
 const currentDialog = ref<string | ReturnType<typeof defineComponent>>("");
-const openBaseDialog = (name: string, key: keyof ChatInfoTypes) => {
+const openBaseDialog = (name: string, key: keyof ChatInfo) => {
   if (!components[name]) return;
   currentDialog.value = markRaw(components[name]);
   nextTick(() => {
@@ -129,7 +129,7 @@ const saveChatOptions = <K extends keyof GPTChatOptions>(key: K, value: GPTChatO
   currentDialogRefs.value.hide();
 };
 
-const saveChatInfo = <K extends keyof ChatInfoTypes>(key: K, value: ChatInfoTypes[K]) => {
+const saveChatInfo = <K extends keyof ChatInfo>(key: K, value: ChatInfo[K]) => {
   if (!chatId.value) return;
   if (!currentDialogRefs.value) return;
   if (props.isAddChat) {
