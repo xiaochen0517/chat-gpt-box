@@ -1,6 +1,6 @@
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import {ChatTabInfo} from "@/types/chat/ChatTabInfo.ts";
-import {BaseConfig, ShortcutConfig} from "@/types/chat/BaseConfig.ts";
+import {BaseConfig, DefaultChatConfig, ShortcutConfig} from "@/types/chat/BaseConfig.ts";
 
 export type ChatListStore = {
   chatList: ChatInfo[];
@@ -15,6 +15,7 @@ export type ChatTabsStore = {
 export type ConfigStore = {
   isDarkMode: boolean;
   baseConfig: BaseConfig;
+  defaultChatConfig: DefaultChatConfig;
   shortcut: ShortcutConfig;
   shortcutKeyMapMaxSize: number;
 }

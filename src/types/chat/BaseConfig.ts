@@ -1,15 +1,49 @@
 import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
 
 export type BaseConfig = {
-  apiKey: string;
   enterSend: boolean;
   ctrlEnterSend: boolean;
+}
+export type DefaultChatConfig = {
+  openAi: OpenAiConfig;
+  google: GoogleConfig;
+}
+export type OpenAiConfig = {
+  base: OpenAiBaseConfig;
+  chatGpt: OpenAiChatGptConfig;
+  dallE: OpenAiDallEConfig;
+}
+export type OpenAiBaseConfig = {
+  apiKey: string;
+}
+export type OpenAiChatGptConfig = {
   apiUrl: string;
   model: string;
   temperature: number;
   contextMaxMessage: number;
   contextMaxTokens: number;
   responseMaxTokens: number;
+}
+export type OpenAiDallEConfig = {
+  apiUrl: string;
+  model: string;
+  imageCount: number;
+  imageSize: string;
+  imageStyle?: string;
+  imageQuality?: string;
+}
+export type GoogleConfig = {
+  base: GoogleBaseConfig;
+  gemini: GoogleGeminiConfig;
+}
+export type GoogleBaseConfig = {
+  apiKey: string;
+}
+export type GoogleGeminiConfig = {
+  maxOutputTokens: number;
+  temperature: number;
+  topP: number;
+  topK: number;
 }
 export type ShortcutConfig = {
   focusInput: KeyMapEnum[];
