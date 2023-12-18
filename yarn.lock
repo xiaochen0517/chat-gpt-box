@@ -832,6 +832,11 @@
   resolved "https://registry.npmjs.org/@floating-ui/utils/-/utils-0.1.6.tgz"
   integrity sha512-OfX7E2oUDYxtBvsuS4e/jSn4Q9Qb6DzgeYtsAdkPZ47znpoNsMgZw0+tVijiv3uGNR6dgNlty6r9rzIzHjtd/A==
 
+"@google/generative-ai@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@google/generative-ai/-/generative-ai-0.1.2.tgz#0681b20f25799286fdefcc2791cdb8c50bbf5924"
+  integrity sha512-54easvKJpqnsW48LcplF/8bnLKvXeYe34rfMMdgqMVZEQmLOLEKZvbif4mFmyVwoMg1/6MPLwD703RLuSJKLJw==
+
 "@humanwhocodes/config-array@^0.11.13":
   version "0.11.13"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.13.tgz#075dc9684f40a531d9b26b0822153c1e832ee297"
