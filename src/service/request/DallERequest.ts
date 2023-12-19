@@ -1,5 +1,4 @@
-import {BaseRequest, checkParams} from "@/service/request/BaseRequest.ts";
-import {RequestOptions} from "@/types/request/RequestOptions.ts";
+import {BaseRequest, getErrorMessage} from "@/service/request/BaseRequest.ts";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import axios, {AxiosError, AxiosResponse} from "axios";
 import {DallEChatRequestBody} from "@/types/request/DallERequestTypes.ts";
@@ -19,36 +18,37 @@ export class DallERequest implements BaseRequest {
 
   chatConfig: OpenAiDallEConfig;
 
+  tabIndex: number;
+
   refreshCallbackFunc: () => void = () => {
   };
 
-  requestOptions: RequestOptions | null = null;
-
   stopFlag: boolean = false;
 
-  constructor(chatInfo: ChatInfo) {
+  constructor(chatInfo: ChatInfo, tabIndex: number, refreshCallbackFunc: () => void | null) {
     this.chatInfo = chatInfo;
     this.chatConfig = chatInfo.options as OpenAiDallEConfig;
+    this.tabIndex = tabIndex;
+    if (refreshCallbackFunc) this.refreshCallbackFunc = refreshCallbackFunc;
   }
 
-  sendMessage(requestOptions: RequestOptions, refreshCallbackFunc: () => void): Promise<string> {
+  sendMessage(message: string): Promise<string> {
+    this.stopFlag = false;
+    this.setGenerating(true);
     try {
-      checkParams(requestOptions, refreshCallbackFunc);
-      this.requestOptions = requestOptions;
-      this.refreshCallbackFunc = refreshCallbackFunc;
-      this.setGenerating(true);
-      this.prepareMessage();
-      return this.sendRequest();
+      this.prepareMessage(message);
+      return this.sendRequest(message);
     } catch (error) {
-      console.error(error);
+      const message = getErrorMessage(error);
+      this.setErrorMsgContent(message);
       return Promise.reject(error);
     }
   }
 
-  private sendRequest(): Promise<string> {
+  private sendRequest(message: string): Promise<string> {
     axios.post(
       `${this.chatConfig.apiUrl}v1/images/generations`,
-      this.getChatRequestBody(),
+      this.getChatRequestBody(message),
       {
         headers: this.getChatRequestHeaders(),
         timeout: 1000 * 60 * 2,
@@ -58,8 +58,8 @@ export class DallERequest implements BaseRequest {
     return Promise.resolve("done");
   }
 
-  private prepareMessage(): void {
-    this.pushUserMessage2ChatTab();
+  private prepareMessage(message: string): void {
+    this.pushUserMessage2ChatTab(message);
     this.addAssistantMessage();
     this.setAssistantMsgContent("Generating...");
   }
@@ -82,10 +82,9 @@ export class DallERequest implements BaseRequest {
     return true;
   }
 
-  private getChatRequestBody(): DallEChatRequestBody {
-    if (!this.requestOptions || !this.requestOptions.message) throw new Error("request options is null");
+  private getChatRequestBody(message: string): DallEChatRequestBody {
     return {
-      prompt: this.requestOptions.message,
+      prompt: message,
       model: this.chatConfig.model,
       n: this.chatConfig.model === "dall-e-3" ? 1 : this.chatConfig.imageCount,
       quality: this.chatConfig.model === "dall-e-3" ? this.chatConfig.imageQuality : undefined,
@@ -131,33 +130,28 @@ export class DallERequest implements BaseRequest {
     this.stopFlag = true;
   }
 
-  private pushUserMessage2ChatTab() {
-    if (!this.requestOptions) throw new Error("request options is null");
-    chatTabsStore.addUserMessage(this.chatInfo.id, this.requestOptions.tabIndex, this.requestOptions.message);
+  private pushUserMessage2ChatTab(message: string) {
+    chatTabsStore.addUserMessage(this.chatInfo.id, this.tabIndex, message);
     this.refreshCallbackFunc();
   }
 
   private addAssistantMessage() {
-    if (!this.requestOptions) throw new Error("request options is null");
-    chatTabsStore.addAssistantMessage(this.chatInfo.id, this.requestOptions.tabIndex);
+    chatTabsStore.addAssistantMessage(this.chatInfo.id, this.tabIndex);
     this.refreshCallbackFunc();
   }
 
   private setAssistantMsgContent(content: string) {
-    if (!this.requestOptions) throw new Error("request options is null");
-    chatTabsStore.setAssistantMsgContent(this.chatInfo.id, this.requestOptions.tabIndex, content);
+    chatTabsStore.setAssistantMsgContent(this.chatInfo.id, this.tabIndex, content);
     this.refreshCallbackFunc();
   }
 
   private setErrorMsgContent(errorMsg: string) {
-    if (!this.requestOptions) throw new Error("request options is null");
-    chatTabsStore.setAssistantErrorMsgContent(this.chatInfo.id, this.requestOptions.tabIndex, errorMsg);
+    chatTabsStore.setAssistantErrorMsgContent(this.chatInfo.id, this.tabIndex, errorMsg);
     this.setGenerating(false);
   }
 
   private setGenerating(generating: boolean) {
-    if (!this.requestOptions) throw new Error("request options is null");
-    chatTabsStore.setGenerating(this.chatInfo.id, this.requestOptions.tabIndex, generating);
+    chatTabsStore.setGenerating(this.chatInfo.id, this.tabIndex, generating);
   }
 
 }

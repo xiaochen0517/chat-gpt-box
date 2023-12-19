@@ -43,8 +43,10 @@ export type GoogleGeminiConfig = {
   model: string;
   maxOutputTokens: number;
   temperature: number;
-  topP: number;
-  topK: number;
+  topP?: number;
+  topK?: number;
+  contextMaxTokens: number;
+  contextMaxMessage: number;
 }
 export type ShortcutConfig = {
   focusInput: KeyMapEnum[];

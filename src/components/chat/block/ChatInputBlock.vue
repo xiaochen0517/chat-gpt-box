@@ -60,15 +60,16 @@ const submitContent = () => {
     return;
   }
   if (chatInputContent.value.length <= 0 || /^\s*$/.test(chatInputContent.value)) return;
-  if (!props.chatId) return;
-  tabInfo.value.request = createRequest(chatInfo.value);
-  tabInfo.value.request.sendMessage({
-    tabIndex: props.tabIndex,
-    message: chatInputContent.value.trim(),
-  }, () => {
-    instance.emit("refresh", chatInputContent.value);
-  });
+  if (!tabInfo.value.request) {
+    tabInfo.value.request = createRequest(chatInfo.value, props.tabIndex, messageRefresh);
+  }
+  tabInfo.value.request.sendMessage(chatInputContent.value.trim());
   chatInputContent.value = "";
+};
+
+const messageRefresh = () => {
+  if (!instance) return;
+  instance.emit("refresh", chatInputContent.value);
 };
 
 const enterSend = computed(() => configStore.baseConfig.enterSend);

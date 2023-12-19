@@ -80,7 +80,6 @@ const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) =>
     <div class="px-2 xl:p-0 max-w-content m-auto mt-2">
       <div class="mt-1 text-lg leading-13">Basic Settings</div>
       <div class="rounded-xl overflow-hidden text-base select-none">
-        <CListItem content="Api key" left-icon="icon-lock" @click.stop="openDialog('ApiKeyDialog', 'apiKey')"/>
         <CListItem
             content="Enter Line break"
             left-icon="icon-enter"
@@ -95,7 +94,6 @@ const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) =>
             switch-enabled
             v-model:switch-value="ctrlEnterSend"
         />
-        <CListItem content="Api url" left-icon="icon-link1" @click.stop="openDialog('ApiUrlDialog', 'apiUrl')"/>
         <CListItem
             content="Dark Mode"
             :left-icon="isDarkMode?'icon-night-mode':'icon-daytime-mode'"
@@ -106,27 +104,27 @@ const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) =>
       </div>
       <div class="mt-1 text-lg leading-13">Advanced Settings</div>
       <div class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
-        <CListItem content="Default Model" left-icon="icon-connections" @click="openDialog('GPTModelDialog', 'model')"/>
-        <CListItem
-            content="Temperature"
-            left-icon="icon-hot-for-ux"
-            @click="openDialog('TemperatureDialog', 'temperature')"
-        />
-        <CListItem
-            content="Context max msgs"
-            left-icon="icon-file-text"
-            @click="openDialog('ContextMaxMsgsDialog', 'contextMaxMessage')"
-        />
-        <CListItem
-            content="Context max tokens"
-            left-icon="icon-translate"
-            @click="openDialog('ContextMaxTokensDialog', 'contextMaxTokens')"
-        />
-        <CListItem
-            content="Response max tokens"
-            left-icon="icon-rollback"
-            @click="openDialog('ResponseMaxTokensDialog', 'responseMaxTokens')"
-        />
+        <!--        <CListItem content="Default Model" left-icon="icon-connections" @click="openDialog('GPTModelDialog', 'model')"/>-->
+        <!--        <CListItem-->
+        <!--            content="Temperature"-->
+        <!--            left-icon="icon-hot-for-ux"-->
+        <!--            @click="openDialog('TemperatureDialog', 'temperature')"-->
+        <!--        />-->
+        <!--        <CListItem-->
+        <!--            content="Context max msgs"-->
+        <!--            left-icon="icon-file-text"-->
+        <!--            @click="openDialog('ContextMaxMsgsDialog', 'contextMaxMessage')"-->
+        <!--        />-->
+        <!--        <CListItem-->
+        <!--            content="Context max tokens"-->
+        <!--            left-icon="icon-translate"-->
+        <!--            @click="openDialog('ContextMaxTokensDialog', 'contextMaxTokens')"-->
+        <!--        />-->
+        <!--        <CListItem-->
+        <!--            content="Response max tokens"-->
+        <!--            left-icon="icon-rollback"-->
+        <!--            @click="openDialog('ResponseMaxTokensDialog', 'responseMaxTokens')"-->
+        <!--        />-->
         <CListItem
             content="KeyMap"
             left-icon="icon-gold"

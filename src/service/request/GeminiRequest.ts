@@ -1,53 +1,73 @@
-import {BaseRequest} from "@/service/request/BaseRequest.ts";
+import {BaseRequest, getErrorMessage} from "@/service/request/BaseRequest.ts";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
-import {RequestOptions} from "@/types/request/RequestOptions.ts";
-import {GoogleGenerativeAI} from "@google/generative-ai";
+import {
+  ChatSession,
+  GenerationConfig,
+  GenerativeModel,
+  GoogleGenerativeAI,
+  StartChatParams
+} from "@google/generative-ai";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {GoogleGeminiConfig} from "@/types/chat/BaseConfig.ts";
+import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
+import {ChatMessage} from "@/types/chat/ChatTabInfo.ts";
 
 // global store
 const configStore = useConfigStore();
+const chatTabsStore = useChatTabsStore();
 
-class GeminiRequest implements BaseRequest {
+export class GeminiRequest implements BaseRequest {
 
   chatInfo: ChatInfo;
 
-  refreshCallbackFunc: () => void;
+  chatConfig: GoogleGeminiConfig;
 
-  requestOptions: RequestOptions | null;
+  tabIndex: number;
 
-  stopFlag: boolean;
+  refreshCallbackFunc = () => {
+  };
 
-  constructor(chatInfo: ChatInfo) {
+  stopFlag: boolean = false;
+
+  constructor(chatInfo: ChatInfo, tabIndex: number, refreshCallbackFunc: () => void | null) {
     this.chatInfo = chatInfo;
+    this.chatConfig = chatInfo.options as GoogleGeminiConfig;
+    this.tabIndex = tabIndex;
+    if (refreshCallbackFunc) this.refreshCallbackFunc = refreshCallbackFunc;
   }
 
-  async sendMessage(requestOptions: RequestOptions, refreshCallbackFunc: () => void): Promise<string> {
-    const genAI = new GoogleGenerativeAI(this.getApiKey());
-    const config: GeminiRequestOption = this.getChatConfig();
-    const model = genAI.getGenerativeModel({model: config.model});
-    const chat = model.startChat({
-      history: [
-        {
-          role: "user",
-          parts: "Hello, I have 2 dogs in my house.",
-        },
-        {
-          role: "model",
-          parts: "Great to meet you. What would you like to know?",
-        },
-      ],
-      generationConfig: {
-        maxOutputTokens: 100,
-      },
-    });
+  sendMessage(message: string): Promise<string> {
+    this.stopFlag = false;
+    this.setGenerating(true);
+    try {
+      this.pushUserMessage2ChatTab(message);
+      this.addAssistantMessage();
+      this.geminiSendMessage(message).then(() => {
+      });
+      return Promise.resolve("done");
+    } catch (error) {
+      const message = getErrorMessage(error);
+      this.setErrorMsgContent(message);
+      return Promise.reject(error);
+    }
+  }
 
-    const msg = "How many paws are in my house?";
-    const result = await chat.sendMessage(msg);
-    const response = await result.response;
-    const text = response.text();
-    console.log(text);
-    return Promise.resolve("done");
+  private async geminiSendMessage(message: string): Promise<void> {
+    const genAI: GoogleGenerativeAI = new GoogleGenerativeAI(this.getApiKey());
+    const model: GenerativeModel = genAI.getGenerativeModel({model: this.chatConfig.model});
+    const startChatParams = await this.getStartChatParams(model);
+    const chat: ChatSession = model.startChat(startChatParams);
+    const result = await chat.sendMessageStream(message);
+    for await (const chunk of result.stream) {
+      if (this.stopFlag) {
+        this.stopFlag = false;
+        this.setErrorMsgContent("User Canceled.");
+        break;
+      }
+      const chunkText = chunk.text();
+      this.appendAssistantMsgContent(chunkText);
+    }
+    return Promise.resolve();
   }
 
   private getApiKey(): string {
@@ -58,11 +78,76 @@ class GeminiRequest implements BaseRequest {
     return apiKey;
   }
 
-  private getChatConfig(): GoogleGeminiConfig {
-    return this.chatInfo.options;
+  private async getStartChatParams(model: GenerativeModel): Promise<StartChatParams> {
+    const generationConfig: GenerationConfig = this.getGenerationConfig();
+    const chatTabInfo = chatTabsStore.getChatTabInfo(this.chatInfo.id, this.tabIndex);
+    if (!chatTabInfo) {
+      throw new Error("chatTabInfo is null");
+    }
+    if (chatTabInfo.chat.length <= 3) {
+      return {
+        history: [{
+          role: "user",
+          parts: this.chatInfo.prompt,
+        }],
+        generationConfig: generationConfig
+      };
+    }
+    const chatMessageList = chatTabInfo.chat.slice(1, chatTabInfo.chat.length - 2);
+    const sendMessages: ChatMessage[] = [];
+    let sendMessagesTokenCount = 0;
+    for (let index = chatMessageList.length - 1; index >= 0; index--) {
+      const chatMessage = chatMessageList[index];
+      sendMessagesTokenCount += (await model.countTokens(chatMessage.content)).totalTokens;
+      if (sendMessagesTokenCount > this.chatConfig.contextMaxTokens
+        || sendMessages.length >= this.chatConfig.contextMaxMessage) {
+        break;
+      }
+      sendMessages.unshift(chatMessage);
+    }
+    return {
+      history: sendMessages.map((chatMessage) => {
+        return {
+          role: chatMessage.role === "assistant" ? "model" : "user",
+          parts: chatMessage.content,
+        };
+      }),
+      generationConfig: generationConfig
+    };
+  }
+
+  private getGenerationConfig(): GenerationConfig {
+    return {
+      maxOutputTokens: this.chatConfig.maxOutputTokens,
+      temperature: this.chatConfig.temperature,
+    };
   }
 
   cancel(): void {
     this.stopFlag = true;
+  }
+
+  private addAssistantMessage() {
+    chatTabsStore.addAssistantMessage(this.chatInfo.id, this.tabIndex);
+    this.refreshCallbackFunc();
+  }
+
+  private pushUserMessage2ChatTab(message: string) {
+    chatTabsStore.addUserMessage(this.chatInfo.id, this.tabIndex, message);
+    this.refreshCallbackFunc();
+  }
+
+  private appendAssistantMsgContent(content: string) {
+    chatTabsStore.appendAssistantMsgContent(this.chatInfo.id, this.tabIndex, content);
+    this.refreshCallbackFunc();
+  }
+
+  private setErrorMsgContent(errorMsg: string) {
+    chatTabsStore.setAssistantErrorMsgContent(this.chatInfo.id, this.tabIndex, errorMsg);
+    this.setGenerating(false);
+  }
+
+  private setGenerating(generating: boolean) {
+    chatTabsStore.setGenerating(this.chatInfo.id, this.tabIndex, generating);
   }
 }
