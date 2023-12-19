@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, defineComponent, markRaw, nextTick, onMounted, Ref, ref, watch} from "vue";
+import {computed, defineComponent, markRaw, nextTick, onMounted, Ref, ref} from "vue";
 import router from "@/router/Router.ts";
 import CListItem from "@/components/base/list/CListItem.vue";
 import ApiKeyDialog from "@/components/setting/dialog/ApiKeyDialog.vue";
@@ -14,7 +14,8 @@ import ChatPromptDialog from "@/components/setting/dialog/gpt/ChatPromptDialog.v
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {useRoute} from "vue-router";
 import {ElMessage} from "element-plus";
-import {ChatInfo, ChatType, GPTChatOptions} from "@/types/chat/ChatInfo.ts";
+import {ChatInfo, ChatType} from "@/types/chat/ChatInfo.ts";
+import {OpenAiChatGptConfig} from "@/types/chat/BaseConfig.ts";
 
 
 const chatListStore = useChatListStore();
@@ -36,15 +37,7 @@ const chatId: Ref<string | null> = computed(() => {
   }
   return chatId;
 });
-const configEnabled = ref(false);
-watch(configEnabled, (value) => {
-  if (!chatId.value) return;
-  if (chatId.value === "add") {
-    defaultGptChatInfo.value.options.enabled = value;
-    return;
-  }
-  chatListStore.setChatOptions(chatId.value, "enabled", value);
-});
+
 /**
  * If chatId is "add", then we should use addChatInfo.
  */
@@ -54,14 +47,13 @@ const defaultGptChatInfo = ref<ChatInfo>({
   prompt: "You are a helpful assistant.",
   chatType: ChatType.CHAT_GPT,
   options: {
-    enabled: false,
     apiUrl: "https://api.openai.com/",
     model: "gpt-3.5-turbo",
     temperature: 0.7,
     contextMaxMessage: 1,
     contextMaxTokens: 2048,
     responseMaxTokens: 0
-  } as GPTChatOptions
+  } as OpenAiChatGptConfig
 });
 const chatInfo = computed(() => {
   if (!chatId.value || chatId.value === "add") {
@@ -76,8 +68,6 @@ onMounted(() => {
     router.push({path: "/"});
     return;
   }
-  const chatInfo = chatListStore.getChatInfo(chatId.value);
-  configEnabled.value = chatInfo?.options.enabled ?? false;
 });
 
 type ComponentMap = {
@@ -108,21 +98,21 @@ const openBaseDialog = (name: string, key: keyof ChatInfo) => {
     currentDialogRefs.value.show(chatInfo.value[key]);
   });
 };
-const openOptionsDialog = (name: string, key: keyof GPTChatOptions) => {
+const openOptionsDialog = (name: string, key: keyof OpenAiChatGptConfig) => {
   if (!components[name]) return;
   currentDialog.value = markRaw(components[name]);
   nextTick(() => {
     if (!currentDialogRefs.value) return;
     if (!chatInfo.value) return;
-    currentDialogRefs.value.show((defaultGptChatInfo.value.options as GPTChatOptions)[key]);
+    currentDialogRefs.value.show((defaultGptChatInfo.value.options as OpenAiChatGptConfig)[key]);
   });
 };
 
-const saveChatOptions = <K extends keyof GPTChatOptions>(key: K, value: GPTChatOptions[K]) => {
+const saveChatOptions = <K extends keyof OpenAiChatGptConfig>(key: K, value: OpenAiChatGptConfig[K]) => {
   if (!chatId.value) return;
   if (!currentDialogRefs.value) return;
   if (props.isAddChat) {
-    (defaultGptChatInfo.value.options as GPTChatOptions)[key] = value;
+    (defaultGptChatInfo.value.options as OpenAiChatGptConfig)[key] = value;
   } else {
     chatListStore.setGPTChatOptions(chatId.value, key, value);
   }
@@ -170,19 +160,9 @@ defineExpose({
             left-icon="icon-product-list"
             @click.stop="openBaseDialog('ChatPromptDialog', 'prompt')"
         />
-        <CListItem
-            content="Advanced Settings"
-            left-icon="icon-settings"
-            switch-enabled
-            v-model:switch-value="configEnabled"
-            :bottom-border="false"
-        />
       </div>
-      <div v-if="configEnabled" class="mt-1 text-lg leading-13">Advanced Settings</div>
-      <div
-          v-if="configEnabled"
-          class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800"
-      >
+      <div class="mt-1 text-lg leading-13">Advanced Settings</div>
+      <div class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
         <CListItem content="Api url" left-icon="icon-link1" @click.stop="openOptionsDialog('ApiUrlDialog', 'apiUrl')"/>
         <CListItem content="Model" left-icon="icon-connections" @click="openOptionsDialog('GPTModelDialog', 'model')"/>
         <CListItem

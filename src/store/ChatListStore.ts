@@ -3,7 +3,8 @@ import {ChatListStore} from "@/types/StoreTypes.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {v4 as uuidv4} from "uuid";
 import _ from "lodash";
-import {ChatInfo, ChatOptions, ChatType, DallEChatOptions, GPTChatOptions} from "@/types/chat/ChatInfo.ts";
+import {ChatInfo, ChatOptions, ChatType} from "@/types/chat/ChatInfo.ts";
+import {OpenAiChatGptConfig, OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
 
 export const useChatListStore = defineStore("chatList", {
   state: (): ChatListStore => {
@@ -15,7 +16,6 @@ export const useChatListStore = defineStore("chatList", {
           prompt: "You are a helpful assistant.",
           chatType: ChatType.CHAT_GPT,
           options: {
-            enabled: false,
             apiUrl: "https://api.openai.com/",
             model: "gpt-3.5-turbo",
             temperature: 0.7,
@@ -30,7 +30,6 @@ export const useChatListStore = defineStore("chatList", {
           prompt: "You are a helpful assistant. Please ask me anything.",
           chatType: ChatType.CHAT_GPT,
           options: {
-            enabled: true,
             apiUrl: "https://api.openai.com/",
             model: "gpt-4-1106-preview",
             temperature: 0.7,
@@ -60,20 +59,20 @@ export const useChatListStore = defineStore("chatList", {
         useChatTabsStore().setAllTabPromptMessage(id, value as string);
       }
     },
-    setGPTChatOptions<K extends keyof GPTChatOptions>(id: string, key: K, value: GPTChatOptions[K]) {
+    setGPTChatOptions<K extends keyof OpenAiChatGptConfig>(id: string, key: K, value: OpenAiChatGptConfig[K]) {
       const index = this.getChatInfoIndex(id);
       if (index < 0) return;
       const chatInfo = this.chatList[index];
       // if current chat type is not GPT, return
       if (chatInfo.chatType !== ChatType.CHAT_GPT) return;
-      (chatInfo.options as GPTChatOptions)[key] = value;
+      (chatInfo.options as OpenAiChatGptConfig)[key] = value;
     },
-    setDallEChatOptions<K extends keyof DallEChatOptions>(id: string, key: K, value: DallEChatOptions[K]) {
+    setDallEChatOptions<K extends keyof OpenAiDallEConfig>(id: string, key: K, value: OpenAiDallEConfig[K]) {
       const index = this.getChatInfoIndex(id);
       if (index < 0) return;
       const chatInfo = this.chatList[index];
       if (chatInfo.chatType !== ChatType.DALL_E) return;
-      (chatInfo.options as DallEChatOptions)[key] = value;
+      (chatInfo.options as OpenAiDallEConfig)[key] = value;
     },
     setChatOptions<K extends keyof ChatOptions>(id: string, key: K, value: ChatOptions[K]) {
       const index = this.getChatInfoIndex(id);
@@ -94,35 +93,6 @@ export const useChatListStore = defineStore("chatList", {
     getChatInfoIndex(chatInfo: ChatInfo | string): number {
       const chatInfoId: string = typeof chatInfo !== "string" ? chatInfo.id : chatInfo;
       return this.chatList.findIndex((chat: ChatInfo): boolean => chat.id === chatInfoId);
-    },
-    removeChat(id: string) {
-      const index = this.getChatInfoIndex(id);
-      if (index < 0) return;
-      this.chatList.splice(index, 1);
-    },
-    updateChat(id: string, newChatInfo: ChatInfo) {
-      const index = this.getChatInfoIndex(id);
-      if (index < 0) return;
-      this.chatList[index] = newChatInfo;
-    },
-    setChatName(id: string, name: string) {
-      const index = this.getChatInfoIndex(id);
-      if (index < 0) return;
-      this.chatList[index].name = name;
-    },
-    moveChat(direction: "up" | "down", id: string, size: number) {
-      const index = this.getChatInfoIndex(id);
-      if (index < 0) return;
-      const chat = this.chatList[index];
-      this.chatList.splice(index, 1);
-      switch (direction) {
-        case "up":
-          this.chatList.splice(index - size, 0, chat);
-          break;
-        case "down":
-          this.chatList.splice(index + size, 0, chat);
-          break;
-      }
     },
     getPrevChatInfo(chatInfo: ChatInfo): ChatInfo | null {
       const index = this.getChatInfoIndex(chatInfo);

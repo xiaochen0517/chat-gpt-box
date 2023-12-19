@@ -3,9 +3,9 @@ import {EllipsisOutlined} from "@ant-design/icons-vue";
 import router from "@/router/Router.ts";
 import {ElMessageBox} from "element-plus";
 import {useChatListStore} from "@/store/ChatListStore.ts";
-import {ChatInfo} from "@/types/chat/ChatInfo.ts";
-import {computed} from "vue";
-import {useConfigStore} from "@/store/ConfigStore.ts";
+import {ChatInfo, ChatType} from "@/types/chat/ChatInfo.ts";
+import {onMounted, ref} from "vue";
+import {GoogleGeminiConfig, OpenAiChatGptConfig, OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
 
 type Props = {
   chatInfo: ChatInfo | null,
@@ -18,14 +18,23 @@ const props = withDefaults(defineProps<Props>(), {
   activeChatInfo: null,
   drag: false
 });
-
-const configStore = useConfigStore();
-const chatModel: string | null = computed(() => {
-  if (!props.chatInfo) return null;
-  if (props.chatInfo.options.enabled) {
-    return props.chatInfo.options.model;
+const modelName = ref("");
+onMounted(() => {
+  if (!props.chatInfo) {
+    modelName.value = "NONE";
+    return;
   }
-  return configStore.baseConfig.model;
+  switch (props.chatInfo.chatType) {
+    case ChatType.CHAT_GPT:
+      modelName.value = (props.chatInfo.options as OpenAiChatGptConfig).model;
+      break;
+    case ChatType.DALL_E:
+      modelName.value = (props.chatInfo.options as OpenAiDallEConfig).model;
+      break;
+    case ChatType.GEMINI:
+      modelName.value = (props.chatInfo.options as GoogleGeminiConfig).model;
+      break;
+  }
 });
 
 const editChatClick = (chatInfo: ChatInfo | null) => {
@@ -54,19 +63,18 @@ const deleteChatClick = (chatInfo: ChatInfo | null) => {
         <i class="iconfont icon-more" :class="drag?'':'cursor-grab'"/>
       </div>
       <div
-          class="flex-1 text-md leading-8 select-none overflow-hidden overflow-ellipsis whitespace-nowrap max-w-[15rem] font-bold"
-          :class="{'max-w-[9rem]':chatInfo?.options.enabled,'text-green-500 dark:text-green-400':chatInfo && chatInfo.id === activeChatInfo?.id}"
+          class="flex-1 text-md leading-8 select-none overflow-hidden overflow-ellipsis whitespace-nowrap font-bold max-w-[9rem]"
+          :class="{'text-green-500 dark:text-green-400':chatInfo && chatInfo.id === activeChatInfo?.id}"
           @click.stop="$emit('itemClick', chatInfo)"
       >
         {{ chatInfo?.name }}
       </div>
       <div
-          v-if="chatModel"
           class="w-24 overflow-hidden overflow-ellipsis whitespace-nowrap border border-neutral-300 dark:border-neutral-700 rounded px-1 bg-yellow-400 dark:bg-amber-600 text-xs leading-5"
           @click.stop="editChatClick(chatInfo)"
       >
         <i class="iconfont icon-settings font-normal"/>
-        {{ chatModel?.toUpperCase() }}
+        {{ modelName.toUpperCase() }}
       </div>
     </div>
     <el-popover overlayClassName="robot-editor-popover" placement="bottom" trigger="hover">

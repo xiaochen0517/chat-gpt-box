@@ -13,7 +13,8 @@ import ImageStyleDialog from "@/components/setting/dialog/dalle/ImageStyleDialog
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {useRoute} from "vue-router";
 import {ElMessage} from "element-plus";
-import {ChatInfo, ChatType, DallEChatOptions} from "@/types/chat/ChatInfo.ts";
+import {ChatInfo, ChatType} from "@/types/chat/ChatInfo.ts";
+import {OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
 
 
 const chatListStore = useChatListStore();
@@ -44,14 +45,13 @@ const defaultDallEChatInfo = ref<ChatInfo>({
   prompt: "",
   chatType: ChatType.DALL_E,
   options: {
-    enabled: true,
     apiUrl: "https://api.openai.com/",
     model: "dall-e-3",
     imageCount: 1,
     imageSize: "1024x1024",
     imageStyle: "vivid",
     imageQuality: "standard",
-  } as DallEChatOptions
+  } as OpenAiDallEConfig
 });
 const chatInfo = computed(() => {
   if (!chatId.value || chatId.value === "add") {
@@ -95,21 +95,21 @@ const openBaseDialog = (name: string, key: keyof ChatInfo) => {
     currentDialogRefs.value.show(chatInfo.value[key]);
   });
 };
-const openOptionsDialog = (name: string, key: keyof DallEChatOptions) => {
+const openOptionsDialog = (name: string, key: keyof OpenAiDallEConfig) => {
   if (!components[name]) return;
   currentDialog.value = markRaw(components[name]);
   nextTick(() => {
     if (!currentDialogRefs.value) return;
     if (!chatInfo.value) return;
-    currentDialogRefs.value.show((defaultDallEChatInfo.value.options as DallEChatOptions)[key]);
+    currentDialogRefs.value.show((defaultDallEChatInfo.value.options as OpenAiDallEConfig)[key]);
   });
 };
 
-const saveChatOptions = <K extends keyof DallEChatOptions>(key: K, value: DallEChatOptions[K]) => {
+const saveChatOptions = <K extends keyof OpenAiDallEConfig>(key: K, value: OpenAiDallEConfig[K]) => {
   if (!chatId.value) return;
   if (!currentDialogRefs.value) return;
   if (props.isAddChat) {
-    (defaultDallEChatInfo.value.options as DallEChatOptions)[key] = value;
+    (defaultDallEChatInfo.value.options as OpenAiDallEConfig)[key] = value;
   } else {
     chatListStore.setDallEChatOptions(chatId.value, key, value);
   }
