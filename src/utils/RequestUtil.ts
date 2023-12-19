@@ -10,6 +10,8 @@ export const createRequest = (chatInfo: ChatInfo) => {
       return new ChatGptRequest(chatInfo);
     case ChatType.DALL_E:
       return new DallERequest(chatInfo);
+    case ChatType.GEMINI:
+      return new DallERequest(chatInfo);
     default:
       chatListStore.setChatInfo(chatInfo.id, "chatType", ChatType.CHAT_GPT);
       return new ChatGptRequest(chatInfo);

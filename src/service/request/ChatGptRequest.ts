@@ -2,11 +2,11 @@ import {BaseRequest, checkParams} from "@/service/request/BaseRequest.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {RequestOptions} from "@/types/request/RequestOptions.ts";
-import {ChatGptRequestBody, ChatGptRequest} from "@/types/request/ChatGptRequest.ts";
+import {ChatGptRequestBody} from "@/types/request/ChatGptRequest.ts";
 import {encoding_for_model, Tiktoken, TiktokenModel} from "tiktoken";
-import {ChatInfo, GPTChatOptions} from "@/types/chat/ChatInfo.ts";
+import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import {ChatMessage, ChatMessageRole, ChatTabInfo} from "@/types/chat/ChatTabInfo.ts";
-import {BaseConfig} from "@/types/chat/BaseConfig.ts";
+import {OpenAiChatGptConfig} from "@/types/chat/BaseConfig.ts";
 
 const CHAT_GPT_API_SUFFIX: string = "v1/chat/completions";
 const HTTP_REQ_TYPE: string = "POST";
@@ -21,6 +21,8 @@ export class ChatGptRequest implements BaseRequest {
 
   chatInfo: ChatInfo;
 
+  chatConfig: OpenAiChatGptConfig;
+
   refreshCallbackFunc: () => void = () => {
   };
 
@@ -28,14 +30,13 @@ export class ChatGptRequest implements BaseRequest {
 
   stopFlag: boolean = false;
 
-  chatConfig: ChatGptRequest | null = null;
-
   abortController: AbortController | null = null;
 
   reader: ReadableStreamDefaultReader | null = null;
 
   constructor(chatInfo: ChatInfo) {
     this.chatInfo = chatInfo;
+    this.chatConfig = chatInfo.options as OpenAiChatGptConfig;
   }
 
   public sendMessage(requestOptions: RequestOptions, refreshCallbackFunc: () => void): Promise<string> {
@@ -43,7 +44,6 @@ export class ChatGptRequest implements BaseRequest {
       checkParams(requestOptions, refreshCallbackFunc);
       this.requestOptions = requestOptions;
       this.refreshCallbackFunc = refreshCallbackFunc;
-      this.chatConfig = this.getChatConfig();
       return this.requestOpenAI();
     } catch (error) {
       if (error instanceof Error) {
@@ -75,46 +75,38 @@ export class ChatGptRequest implements BaseRequest {
     });
   }
 
-  private getChatConfig(): ChatGptRequest {
-    const config: GPTChatOptions | BaseConfig = this.chatInfo.options.enabled ? this.chatInfo.options as GPTChatOptions : configStore.baseConfig;
-    return {
-      apiUrl: config.apiUrl,
-      model: config.model,
-      temperature: config.temperature,
-      contextMaxMessage: config.contextMaxMessage,
-      contextMaxTokens: config.contextMaxTokens,
-      responseMaxTokens: config.responseMaxTokens,
-    };
-  }
-
   private requestOpenAI(): Promise<string> {
     this.abortController = new AbortController();
-    const url: string = this.chatConfig?.apiUrl + CHAT_GPT_API_SUFFIX;
-    const request: RequestInit = this.generateRequest();
     this.setGenerating(true);
-    return this.sendFetch(url, request);
+    return this.sendFetch();
   }
 
-  private sendFetch(url: string, request: RequestInit): Promise<string> {
+  private sendFetch(): Promise<string> {
     this.addAssistantMessage();
-    fetch(url, request)
-      .then(async (data: Response) => {
-        if (!await this.checkFetchResponse(data)) return;
-        try {
-          if (!data.body) return;
-          this.reader = data.body.getReader();
-          await this.readResponse(await this.reader.read());
-        } catch (error) {
-          console.error(error);
-          const errMsg = error instanceof Error ? error.message : String(error);
-          this.setErrorMsgContent(errMsg);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        this.setErrorMsgContent(error.message);
-      });
+    fetch(
+      this.chatConfig.apiUrl + CHAT_GPT_API_SUFFIX,
+      this.generateRequest())
+      .then(this.handleFetchResponse)
+      .catch(this.handleFetchError);
     return Promise.resolve("");
+  }
+
+  private handleFetchError(error: Error): void {
+    console.error(error);
+    this.setErrorMsgContent(error.message);
+  }
+
+  private async handleFetchResponse(data: Response): Promise<void> {
+    if (!await this.checkFetchResponse(data)) return;
+    try {
+      if (!data.body) throw new Error("response body is null");
+      this.reader = data.body.getReader();
+      await this.readResponse(await this.reader.read());
+    } catch (error) {
+      console.error(error);
+      const errMsg = error instanceof Error ? error.message : String(error);
+      this.setErrorMsgContent(errMsg);
+    }
   }
 
   private async checkFetchResponse(data: Response): Promise<boolean> {
@@ -125,10 +117,6 @@ export class ChatGptRequest implements BaseRequest {
         errMsg += `; message: \n\`\`\`json\n${dataText}\n\`\`\``;
       }
       this.setErrorMsgContent(errMsg);
-      return false;
-    }
-    if (!data.body) {
-      this.setErrorMsgContent("response body is null");
       return false;
     }
     return true;
@@ -146,12 +134,11 @@ export class ChatGptRequest implements BaseRequest {
   private generateRequestHeader(): HeadersInit {
     return {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + configStore.baseConfig.apiKey,
+      "Authorization": "Bearer " + configStore.defaultChatConfig.openAi.base.apiKey,
     };
   }
 
   private generateRequestBody(): ChatGptRequestBody {
-    if (!this.chatConfig) throw new Error("chat config is null");
     return {
       messages: this.getMessage2Send(),
       model: this.chatConfig.model,
@@ -186,12 +173,11 @@ export class ChatGptRequest implements BaseRequest {
   }
 
   private getMaxContextMessage(chatTabInfo: ChatTabInfo): ChatMessage[] {
-    if (!this.chatConfig) throw new Error("chat config is null");
     const tabChatLength = chatTabInfo.chat.length;
     if (tabChatLength === 0) return [];
     const messages: ChatMessage[] = [];
-    // contextMaxMessage plus 1, because the last message is user new message
-    let maxContextMinCount = tabChatLength - (this.chatConfig.contextMaxMessage + 1);
+    // contextMaxMessage plus 2, because the last message is user new message
+    let maxContextMinCount = tabChatLength - (this.chatConfig.contextMaxMessage + 2);
     if (maxContextMinCount < 0) maxContextMinCount = 0;
     for (let i = tabChatLength - 1; i >= maxContextMinCount; i--) {
       const chatMessage = chatTabInfo.chat[i];
@@ -202,7 +188,6 @@ export class ChatGptRequest implements BaseRequest {
   }
 
   private filterMessagesWithTokenLimit(messages: ChatMessage[]): ChatMessage[] {
-    if (!this.chatConfig) throw new Error("chat config is null");
     // check context messages token size
     const tokenEncoder = encoding_for_model(this.chatConfig.model as TiktokenModel);
     while (this.getMessagesTokenSize(messages, tokenEncoder) > this.chatConfig.contextMaxTokens) {
@@ -226,6 +211,7 @@ export class ChatGptRequest implements BaseRequest {
     this.refreshCallbackFunc();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async readResponse(result: ReadableStreamReadResult<any>) {
     if (result.done || this.stopFlag) {
       console.log("读取完成");
@@ -249,7 +235,6 @@ export class ChatGptRequest implements BaseRequest {
         }
       }
     }
-
     if (!this.reader) {
       this.setGenerating(false);
       return;
@@ -257,6 +242,7 @@ export class ChatGptRequest implements BaseRequest {
     await this.readResponse(await this.reader.read());
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private parsePieceData(data: string): any | null {
     // skip empty data
     if (data.length === 0) {
@@ -268,14 +254,19 @@ export class ChatGptRequest implements BaseRequest {
       this.setGenerating(false);
       return null;
     }
+    const resultData = this.parseResultData(data);
+    // check error
+    if (resultData.error) {
+      throw new Error(resultData.error.message);
+    }
+    return resultData;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private parseResultData(data: string): any | null {
     try {
       // parse json data
-      const resultData = JSON.parse(data);
-      // check error
-      if (resultData.error) {
-        throw new Error(resultData.error.message);
-      }
-      return resultData;
+      return JSON.parse(data);
     } catch (error) {
       throw new Error(`parse json data error: ${error}\nparse data: ${data}`);
     }

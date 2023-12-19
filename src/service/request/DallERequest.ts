@@ -1,11 +1,12 @@
 import {BaseRequest, checkParams} from "@/service/request/BaseRequest.ts";
 import {RequestOptions} from "@/types/request/RequestOptions.ts";
-import {ChatInfo, DallEChatOptions} from "@/types/chat/ChatInfo.ts";
+import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import axios, {AxiosError, AxiosResponse} from "axios";
 import {DallEChatRequestBody} from "@/types/request/DallERequestTypes.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import AppUtil from "@/utils/AppUtil.ts";
+import {OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
 
 // global store
 const configStore = useConfigStore();
@@ -16,6 +17,8 @@ export class DallERequest implements BaseRequest {
 
   chatInfo: ChatInfo;
 
+  chatConfig: OpenAiDallEConfig;
+
   refreshCallbackFunc: () => void = () => {
   };
 
@@ -25,6 +28,7 @@ export class DallERequest implements BaseRequest {
 
   constructor(chatInfo: ChatInfo) {
     this.chatInfo = chatInfo;
+    this.chatConfig = chatInfo.options as OpenAiDallEConfig;
   }
 
   sendMessage(requestOptions: RequestOptions, refreshCallbackFunc: () => void): Promise<string> {
@@ -34,27 +38,24 @@ export class DallERequest implements BaseRequest {
       this.refreshCallbackFunc = refreshCallbackFunc;
       this.setGenerating(true);
       this.prepareMessage();
-      const config = this.getChatConfig();
-      const chatRequestBody = this.getChatRequestBody(config);
-      console.log("chatRequestBody: ", chatRequestBody);
-      axios.post(
-        `${config.apiUrl}v1/images/generations`,
-        chatRequestBody,
-        {
-          headers: this.getChatRequestHeaders(),
-          timeout: 1000 * 60 * 2,
-        })
-        .then((response) => {
-          this.handleResponse(response);
-        })
-        .catch((error) => {
-          this.handleErrorResponse(error);
-        });
-      return Promise.resolve("done");
+      return this.sendRequest();
     } catch (error) {
       console.error(error);
       return Promise.reject(error);
     }
+  }
+
+  private sendRequest(): Promise<string> {
+    axios.post(
+      `${this.chatConfig.apiUrl}v1/images/generations`,
+      this.getChatRequestBody(),
+      {
+        headers: this.getChatRequestHeaders(),
+        timeout: 1000 * 60 * 2,
+      })
+      .then(this.handleResponse)
+      .catch(this.handleErrorResponse);
+    return Promise.resolve("done");
   }
 
   private prepareMessage(): void {
@@ -81,26 +82,22 @@ export class DallERequest implements BaseRequest {
     return true;
   }
 
-  private getChatConfig(): DallEChatOptions {
-    return this.chatInfo.options as DallEChatOptions;
-  }
-
-  private getChatRequestBody(config: DallEChatOptions): DallEChatRequestBody {
+  private getChatRequestBody(): DallEChatRequestBody {
     if (!this.requestOptions || !this.requestOptions.message) throw new Error("request options is null");
     return {
       prompt: this.requestOptions.message,
-      model: config.model,
-      n: config.model === "dall-e-3" ? 1 : config.imageCount,
-      quality: config.model === "dall-e-3" ? config.imageQuality : undefined,
-      size: config.imageSize,
-      style: config.model === "dall-e-3" ? config.imageStyle : undefined,
+      model: this.chatConfig.model,
+      n: this.chatConfig.model === "dall-e-3" ? 1 : this.chatConfig.imageCount,
+      quality: this.chatConfig.model === "dall-e-3" ? this.chatConfig.imageQuality : undefined,
+      size: this.chatConfig.imageSize,
+      style: this.chatConfig.model === "dall-e-3" ? this.chatConfig.imageStyle : undefined,
     };
   }
 
   private getChatRequestHeaders(): Record<string, string> {
     return {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + configStore.baseConfig.apiKey,
+      "Authorization": "Bearer " + configStore.defaultChatConfig.openAi.base.apiKey,
     };
   }
 
@@ -110,7 +107,7 @@ export class DallERequest implements BaseRequest {
     const data = response.data.data;
     let content = "";
     for (const item of data) {
-      content += `Revised prompt: \`${item.revised_prompt??"None revised"}\`\n\nGenerated image: \n\n` +
+      content += `Revised prompt: \`${item.revised_prompt ?? "None revised"}\`\n\nGenerated image: \n\n` +
         `<img src="${item.url}" width="${imgWidth}"/>\n\n`;
     }
     this.setAssistantMsgContent(content);

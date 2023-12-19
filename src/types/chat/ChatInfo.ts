@@ -1,3 +1,5 @@
+import {GoogleGeminiConfig, OpenAiChatGptConfig, OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
+
 export type ChatInfo = {
   id: string;
   name: string;
@@ -12,24 +14,4 @@ export enum ChatType {
   GEMINI = "gemini",
 }
 
-export type ChatOptions = GPTChatOptions | DallEChatOptions;
-
-export type GPTChatOptions = {
-  enabled: boolean;
-  apiUrl: string;
-  model: string;
-  temperature: number;
-  contextMaxMessage: number;
-  contextMaxTokens: number;
-  responseMaxTokens: number;
-}
-
-export type DallEChatOptions = {
-  enabled: boolean;
-  apiUrl: string;
-  model: string;
-  imageCount: number;
-  imageSize: string;
-  imageStyle?: string;
-  imageQuality?: string;
-}
+export type ChatOptions = OpenAiChatGptConfig | OpenAiDallEConfig | GoogleGeminiConfig;
