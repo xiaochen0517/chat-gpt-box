@@ -48,7 +48,7 @@ const dialogWidthLg = inject("dialogWidthLg");
   >
     <div class="bg-neutral-100 dark:bg-neutral-800">
       <div v-if="title && title.length !== 0" slot="title">
-        <div class="text-base leading-10 text-center">{{ title }}</div>
+        <div class="text-lg leading-12 text-center">{{ title }}</div>
         <div v-if="description && description.length !== 0" class="px-4 pb-1">
           <i class="iconfont icon-info-circle text-neutral-500 dark:text-neutral-400"></i>
           {{ description }}

@@ -12,6 +12,10 @@ import ContextMaxTokensDialog from "@/components/setting/dialog/gpt/ContextMaxTo
 import ResponseMaxTokensDialog from "@/components/setting/dialog/gpt/ResponseMaxTokensDialog.vue";
 import CTopNavBar from "@/components/base/nav/CTopNavBar.vue";
 import {BaseConfig} from "@/types/chat/BaseConfig.ts";
+import CAnimationTabs from "@/components/base/tab/CAnimationTabs.vue";
+import GptDefaultSettings from "@/components/setting/chat/GptDefaultSettings.vue";
+import DallEDefaultSettings from "@/components/setting/chat/DallEDefaultSettings.vue";
+import GeminiDefaultSettings from "@/components/setting/chat/GeminiDefaultSettings.vue";
 
 onMounted(() => {
   console.log("onMounted");
@@ -72,6 +76,12 @@ const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) =>
   if (!currentDialogRefs.value) return;
   currentDialogRefs.value.hide();
 };
+
+const activeTabName = ref("");
+const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
+const tabChangeHandle = (tabName: string) => {
+  console.log(tabName);
+};
 </script>
 
 <template>
@@ -101,9 +111,21 @@ const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) =>
             v-model:switch-value="isDarkMode"
             :bottom-border="false"
         />
+        <CListItem
+            content="KeyMap"
+            left-icon="icon-gold"
+            :bottom-border="false"
+            @click="jumpToKeyMapSettingPage"
+        />
       </div>
-      <div class="mt-1 text-lg leading-13">Advanced Settings</div>
-      <div class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
+      <div class="mt-1 text-lg leading-13">Chat Default Settings</div>
+      <CAnimationTabs v-model:active-name="activeTabName" :tab-names="tabNames" @change="tabChangeHandle"/>
+      <div class="pt-4 overflow-hidden">
+        <Transition name="slip" mode="out-in">
+          <GptDefaultSettings v-if="activeTabName === 'GPT'"/>
+          <DallEDefaultSettings v-else-if="activeTabName === 'DALL-E'"/>
+          <GeminiDefaultSettings v-else-if="activeTabName === 'Gemini'"/>
+        </Transition>
         <!--        <CListItem content="Default Model" left-icon="icon-connections" @click="openDialog('GPTModelDialog', 'model')"/>-->
         <!--        <CListItem-->
         <!--            content="Temperature"-->
@@ -124,13 +146,6 @@ const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) =>
         <!--            content="Response max tokens"-->
         <!--            left-icon="icon-rollback"-->
         <!--            @click="openDialog('ResponseMaxTokensDialog', 'responseMaxTokens')"-->
-        <!--        />-->
-        <CListItem
-            content="KeyMap"
-            left-icon="icon-gold"
-            :bottom-border="false"
-            @click="jumpToKeyMapSettingPage"
-        />
       </div>
     </div>
     <Component
@@ -141,3 +156,19 @@ const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) =>
     />
   </div>
 </template>
+
+<style lang="less" scoped>
+.slip-enter-active, .slip-leave-active {
+  transition: transform 0.2s ease-in-out;
+}
+
+.slip-enter-from, .slip-leave-to {
+  transform: translateX(50%);
+  opacity: 0;
+}
+
+.slip-enter-to, .slip-leave-from {
+  transform: translateX(0);
+  opacity: 1;
+}
+</style>
