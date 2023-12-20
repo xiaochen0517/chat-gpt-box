@@ -19,7 +19,7 @@ export const useChatListStore = defineStore("chatList", {
             apiUrl: "https://api.openai.com/",
             model: "gpt-3.5-turbo",
             temperature: 0.7,
-            contextMaxMessage: 1,
+            contextMaxMessage: 2,
             contextMaxTokens: 2048,
             responseMaxTokens: 0
           },
@@ -33,7 +33,7 @@ export const useChatListStore = defineStore("chatList", {
             apiUrl: "https://api.openai.com/",
             model: "gpt-4-1106-preview",
             temperature: 0.7,
-            contextMaxMessage: 1,
+            contextMaxMessage: 2,
             contextMaxTokens: 2048,
             responseMaxTokens: 0
           },

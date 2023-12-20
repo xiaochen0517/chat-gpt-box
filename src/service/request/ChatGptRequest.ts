@@ -4,7 +4,7 @@ import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {ChatGptRequestBody} from "@/types/request/ChatGptRequest.ts";
 import {encoding_for_model, Tiktoken, TiktokenModel} from "tiktoken";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
-import {ChatMessage, ChatMessageRole, ChatTabInfo} from "@/types/chat/ChatTabInfo.ts";
+import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
 import {OpenAiChatGptConfig} from "@/types/chat/BaseConfig.ts";
 
 const CHAT_GPT_API_SUFFIX: string = "v1/chat/completions";
@@ -87,9 +87,9 @@ export class ChatGptRequest implements BaseRequest {
     this.setErrorMsgContent(error.message);
   }
 
-  private async handleFetchResponse(data: Response): Promise<void> {
-    if (!await this.checkFetchResponse(data)) return;
+  private handleFetchResponse = async (data: Response): Promise<void> => {
     try {
+      if (!await this.checkFetchResponse(data)) return;
       if (!data.body) throw new Error("response body is null");
       this.reader = data.body.getReader();
       await this.readResponse(await this.reader.read());
@@ -98,9 +98,9 @@ export class ChatGptRequest implements BaseRequest {
       const errMsg = error instanceof Error ? error.message : String(error);
       this.setErrorMsgContent(errMsg);
     }
-  }
+  };
 
-  private async checkFetchResponse(data: Response): Promise<boolean> {
+  private checkFetchResponse = async (data: Response): Promise<boolean> => {
     if (!data.ok || data.status !== 200) {
       let errMsg = `request failure status：${data.status}`;
       if (data.body) {
@@ -111,7 +111,7 @@ export class ChatGptRequest implements BaseRequest {
       return false;
     }
     return true;
-  }
+  };
 
   private generateRequest(): RequestInit {
     return {
@@ -140,33 +140,20 @@ export class ChatGptRequest implements BaseRequest {
   }
 
   private getMessage2Send(): ChatMessage[] {
-    const chatTabInfo = this.getChatTabInfo(this.tabIndex);
-    let messages: ChatMessage[] = this.getMaxContextMessage(chatTabInfo);
+    let messages: ChatMessage[] = this.getMaxContextMessage();
     messages = this.filterMessagesWithTokenLimit(messages);
     messages.unshift({role: ChatMessageRole.System, content: this.chatInfo.prompt});
     console.log("send messages: ", messages);
     return messages;
   }
 
-  private getChatTabInfo(tabIndex: number): ChatTabInfo {
-    const chatTabInfo = chatTabsStore.getChatTabInfo(this.chatInfo.id, tabIndex);
-    if (!chatTabInfo) throw new Error("chat tab info is null");
-    return chatTabInfo;
-  }
-
-  private getMaxContextMessage(chatTabInfo: ChatTabInfo): ChatMessage[] {
-    const tabChatLength = chatTabInfo.chat.length;
-    if (tabChatLength === 0) return [];
-    const messages: ChatMessage[] = [];
-    // contextMaxMessage plus 2, because the last message is user new message
-    let maxContextMinCount = tabChatLength - (this.chatConfig.contextMaxMessage + 2);
-    if (maxContextMinCount < 0) maxContextMinCount = 0;
-    for (let i = tabChatLength - 1; i >= maxContextMinCount; i--) {
-      const chatMessage = chatTabInfo.chat[i];
-      if (chatMessage.role === "system") continue;
-      messages.unshift(chatMessage);
-    }
-    return messages;
+  private getMaxContextMessage(): ChatMessage[] {
+    const chatTabInfo = chatTabsStore.getChatTabInfo(this.chatInfo.id, this.tabIndex);
+    if (!chatTabInfo || chatTabInfo.chat.length === 0) return [];
+    const messages: ChatMessage[] = chatTabInfo.chat.slice(1, chatTabInfo.chat.length - 1);
+    // 获取最大指定数量的上下文消息
+    if (messages.length <= this.chatConfig.contextMaxMessage) return messages;
+    return messages.slice(messages.length - this.chatConfig.contextMaxMessage - 1, messages.length);
   }
 
   private filterMessagesWithTokenLimit(messages: ChatMessage[]): ChatMessage[] {
@@ -188,7 +175,7 @@ export class ChatGptRequest implements BaseRequest {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private async readResponse(result: ReadableStreamReadResult<any>) {
+  private readResponse = async (result: ReadableStreamReadResult<any>): Promise<void> => {
     if (result.done || this.stopFlag) {
       console.log("读取完成");
       this.setGenerating(false);
@@ -216,7 +203,7 @@ export class ChatGptRequest implements BaseRequest {
       return;
     }
     await this.readResponse(await this.reader.read());
-  }
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private parsePieceData(data: string): any | null {
