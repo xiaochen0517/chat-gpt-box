@@ -39,6 +39,9 @@ const openModelDialog = () => {
         }
         if (!settingsDialogRefs.value) return;
         configStore.defaultChatConfig.openAi.dallE.model = value;
+        if (configStore.defaultChatConfig.openAi.dallE.imageSize !== "1024x1024") {
+          configStore.defaultChatConfig.openAi.dallE.imageSize = "1024x1024";
+        }
         settingsDialogRefs.value.hide();
       });
 };
@@ -77,6 +80,38 @@ const openImageSizeDialog = () => {
 };
 const getImageSizeList = (): SelectOptionItem[] => {
   return configStore.defaultChatConfig.openAi.dallE.model === "dall-e-3" ? DALLE3ImageSizeList : DALLE2ImageSizeList;
+};
+const openImageStyleDialog = () => {
+  if (!settingsDialogRefs.value) return;
+  DallESettingsDialogUtil.showImageStyleDialog(
+      settingsDialogRefs.value,
+      configStore.defaultChatConfig.openAi.dallE.imageStyle ?? "vivid")
+      .then((value: string | number) => {
+        value = String(value);
+        if (!value || value === "") {
+          ElMessage.warning("Image style can not be empty");
+          return;
+        }
+        if (!settingsDialogRefs.value) return;
+        configStore.defaultChatConfig.openAi.dallE.imageStyle = value;
+        settingsDialogRefs.value.hide();
+      });
+};
+const openImageQualityDialog = () => {
+  if (!settingsDialogRefs.value) return;
+  DallESettingsDialogUtil.showImageQualityDialog(
+      settingsDialogRefs.value,
+      configStore.defaultChatConfig.openAi.dallE.imageQuality ?? "standard")
+      .then((value: string | number) => {
+        value = String(value);
+        if (!value || value === "") {
+          ElMessage.warning("Image quality can not be empty and must be between 1 and 100");
+          return;
+        }
+        if (!settingsDialogRefs.value) return;
+        configStore.defaultChatConfig.openAi.dallE.imageQuality = value;
+        settingsDialogRefs.value.hide();
+      });
 };
 </script>
 

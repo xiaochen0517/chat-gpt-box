@@ -52,7 +52,7 @@ export class DallESettingsDialogUtil extends BaseSettingsDialogUtil {
     });
   }
   
-  static showImageQualityDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: number) {
+  static showImageQualityDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string) {
     const description = "This parameter just works when the model is dall-e-3. " +
       "When the model is dall-e-2, this parameter is ignored.";
     return dialogRefs.show({
