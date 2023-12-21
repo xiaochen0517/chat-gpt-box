@@ -1,9 +1,6 @@
-export interface Model {
-  label: string;
-  value: string;
-}
+import {SelectOptionItem} from "@/types/base/CSettingDialog.ts";
 
-export const GPTModelList: Model[] = [
+export const ChatGptModelList: SelectOptionItem[] = [
   {
     label: "gpt-3.5-turbo",
     value: "gpt-3.5-turbo"
@@ -46,13 +43,3 @@ export const GPTModelList: Model[] = [
   }
 ];
 
-export const DALLEModelList: Model[] = [
-  {
-    label: "dall-e-2",
-    value: "dall-e-2"
-  },
-  {
-    label: "dall-e-3",
-    value: "dall-e-3"
-  }
-];
