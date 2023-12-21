@@ -2,7 +2,8 @@
 import {getCurrentInstance, ref} from "vue";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 import {ElMessage} from "element-plus";
-import {DALLEModelList} from "@/utils/GPTModelList.ts";
+
+import {DallEModelList} from "@/models/DallEModelList.ts";
 
 const showDialog = ref(false);
 const show = (value: number | string | null) => {
@@ -34,7 +35,7 @@ const save = () => {
   <CDialog v-model:visible="showDialog" title="Default Model" @ok="save">
     <el-select v-model="model" placeholder="Please select a model" width="100%">
       <el-option
-          v-for="item in DALLEModelList"
+          v-for="item in DallEModelList"
           :key="item.value"
           :label="item.label"
           :value="item.value"

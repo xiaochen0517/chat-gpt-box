@@ -109,12 +109,17 @@ const tabChangeHandle = (tabName: string) => {
 
 <style lang="less" scoped>
 .slip-enter-active, .slip-leave-active {
-  transition: transform 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
-.slip-enter-from, .slip-leave-to {
-  transform: translateX(50%);
-  opacity: 0;
+.slip-leave-to {
+  transform: translateX(-100%);
+  opacity: .2;
+}
+
+.slip-enter-from {
+  transform: translateX(100%);
+  opacity: .2;
 }
 
 .slip-enter-to, .slip-leave-from {
