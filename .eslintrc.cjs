@@ -37,9 +37,9 @@ module.exports = {
       2,
       {
         "SwitchCase": 1,
-        "MemberExpression": 2,
+        "MemberExpression": 1,
         "CallExpression": {
-          "arguments": 2
+          "arguments": 1
         },
       }
     ],
