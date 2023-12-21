@@ -1,15 +1,8 @@
 <script setup lang="ts">
-import {defineComponent, markRaw, nextTick, onMounted, ref, watch} from "vue";
+import {defineComponent, onMounted, ref, watch} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import router from "@/router/Router.ts";
 import CListItem from "@/components/base/list/CListItem.vue";
-import ApiKeyDialog from "@/components/setting/dialog/ApiKeyDialog.vue";
-import ApiUrlDialog from "@/components/setting/dialog/ApiUrlDialog.vue";
-import GPTModelDialog from "@/components/setting/dialog/gpt/GPTModelDialog.vue";
-import TemperatureDialog from "@/components/setting/dialog/gpt/TemperatureDialog.vue";
-import ContextMaxMsgsDialog from "@/components/setting/dialog/gpt/ContextMaxMsgsDialog.vue";
-import ContextMaxTokensDialog from "@/components/setting/dialog/gpt/ContextMaxTokensDialog.vue";
-import ResponseMaxTokensDialog from "@/components/setting/dialog/gpt/ResponseMaxTokensDialog.vue";
 import CTopNavBar from "@/components/base/nav/CTopNavBar.vue";
 import {BaseConfig} from "@/types/chat/BaseConfig.ts";
 import CAnimationTabs from "@/components/base/tab/CAnimationTabs.vue";
@@ -45,31 +38,9 @@ watch(enterSend, (value) => {
   configStore.setEnterSend(value);
 });
 
-type ComponentMap = {
-  [key: string]: ReturnType<typeof defineComponent>;
-};
-
-const components: ComponentMap = {
-  ApiKeyDialog,
-  ApiUrlDialog,
-  GPTModelDialog,
-  TemperatureDialog,
-  ContextMaxMsgsDialog,
-  ContextMaxTokensDialog,
-  ResponseMaxTokensDialog,
-};
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const currentDialogRefs = ref<any>(null);
 const currentDialog = ref<string | ReturnType<typeof defineComponent>>("");
-const openDialog = (name: string, key: keyof BaseConfig) => {
-  if (!components[name]) return;
-  currentDialog.value = markRaw(components[name]);
-  nextTick(() => {
-    if (!currentDialogRefs.value) return;
-    currentDialogRefs.value.show(configStore.baseConfig[key]);
-  });
-};
 
 const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) => {
   configStore.setBaseConfig(key, value);
@@ -109,7 +80,6 @@ const tabChangeHandle = (tabName: string) => {
             :left-icon="isDarkMode?'icon-night-mode':'icon-daytime-mode'"
             switch-enabled
             v-model:switch-value="isDarkMode"
-            :bottom-border="false"
         />
         <CListItem
             content="KeyMap"
@@ -126,26 +96,6 @@ const tabChangeHandle = (tabName: string) => {
           <DallEDefaultSettings v-else-if="activeTabName === 'DALL-E'"/>
           <GeminiDefaultSettings v-else-if="activeTabName === 'Gemini'"/>
         </Transition>
-        <!--        <CListItem content="Default Model" left-icon="icon-connections" @click="openDialog('GPTModelDialog', 'model')"/>-->
-        <!--        <CListItem-->
-        <!--            content="Temperature"-->
-        <!--            left-icon="icon-hot-for-ux"-->
-        <!--            @click="openDialog('TemperatureDialog', 'temperature')"-->
-        <!--        />-->
-        <!--        <CListItem-->
-        <!--            content="Context max msgs"-->
-        <!--            left-icon="icon-file-text"-->
-        <!--            @click="openDialog('ContextMaxMsgsDialog', 'contextMaxMessage')"-->
-        <!--        />-->
-        <!--        <CListItem-->
-        <!--            content="Context max tokens"-->
-        <!--            left-icon="icon-translate"-->
-        <!--            @click="openDialog('ContextMaxTokensDialog', 'contextMaxTokens')"-->
-        <!--        />-->
-        <!--        <CListItem-->
-        <!--            content="Response max tokens"-->
-        <!--            left-icon="icon-rollback"-->
-        <!--            @click="openDialog('ResponseMaxTokensDialog', 'responseMaxTokens')"-->
       </div>
     </div>
     <Component

@@ -14,11 +14,12 @@ export default class AppUtil {
    */
   public static checkPlatform(): Platform {
     const platform = Capacitor.getPlatform();
-    if (platform === 'ios') {
+    if (platform === "ios") {
       return Platform.iOS;
-    } else if (platform === 'android') {
+    } else if (platform === "android") {
       return Platform.Android;
     }
+    // eslint-disable-next-line
     if (!(window as any).__TAURI__) {
       return Platform.Web;
     }
@@ -47,6 +48,6 @@ export default class AppUtil {
   }
 
   public static isMac(): boolean {
-    return navigator.userAgent.indexOf('Mac') >= 0;
+    return navigator.userAgent.indexOf("Mac") >= 0;
   }
 }

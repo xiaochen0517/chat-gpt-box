@@ -3,19 +3,27 @@ import CDialog from "@/components/base/dialog/CDialog.vue";
 import {getCurrentInstance, ref} from "vue";
 
 type DialogType = "input" | "slider";
+type SliderOptions = {
+  min: number;
+  max: number;
+  step: number;
+  showInput: boolean;
+  size: "small" | "medium";
+};
 type ShowOption = {
   type: DialogType;
   title: string;
   description?: string;
   placeholder?: string;
   content?: string;
+  sliderOptions?: SliderOptions;
 };
 const type = ref("input");
 const title = ref("");
 const description = ref("");
 const placeholder = ref("");
 const content = ref("");
-const sliderOptions = ref({
+const sliderOptions = ref<SliderOptions>({
   min: 0,
   max: 20,
   step: 1,
@@ -24,9 +32,9 @@ const sliderOptions = ref({
 });
 
 const showDialog = ref(false);
-let resolveFunc: (value: string | PromiseLike<string>) => void | null = null;
+let resolveFunc: ((value: string | PromiseLike<string>) => void) | null = null;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-let rejectFunc: (reason?: any) => void | null = null;
+let rejectFunc: ((reason?: any) => void) | null = null;
 const show = (option: ShowOption): Promise<string> => {
   type.value = option.type;
   title.value = option.title;
@@ -56,10 +64,9 @@ const ok = () => {
   resolveFunc(content.value);
 };
 const cancel = () => {
-  if (!instance) return;
+  if (!instance || !rejectFunc) return;
   showDialog.value = false;
   instance.emit("cancel");
-  if (!rejectFunc) return;
   rejectFunc();
 };
 </script>
@@ -70,7 +77,7 @@ const cancel = () => {
       :title="title"
       :description="description"
       @cancel="cancel"
-      @ok="ok($event)"
+      @ok="ok()"
   >
     <div class="px-2 w-full">
       <el-input v-if="type === 'input'" v-model="content" :placeholder="placeholder"/>
