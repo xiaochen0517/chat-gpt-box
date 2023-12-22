@@ -14,7 +14,7 @@ const chatListStore = useChatListStore();
 const settingsDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
 
 type Props = {
-  noDefault: boolean,
+  noDefault?: boolean,
   chatId: string | null,
 }
 const props = withDefaults(defineProps<Props>(), {
@@ -30,13 +30,13 @@ const currentChatGptConfig = ref<OpenAiChatGptConfig>({
   responseMaxTokens: 0,
 });
 onMounted(() => {
-  if (!props.chatId) {
+  if (!props.chatId || props.chatId === "add") {
     currentChatGptConfig.value = _.cloneDeep(configStore.defaultChatConfig.openAi.chatGpt);
     return;
   }
   currentChatGptConfig.value = _.cloneDeep(chatListStore.getChatInfo(props.chatId)?.options as OpenAiChatGptConfig);
 });
-const getConfig = () => {
+const getConfig = (): OpenAiChatGptConfig => {
   if (props.noDefault) {
     return currentChatGptConfig.value;
   }

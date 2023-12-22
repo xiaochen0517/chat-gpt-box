@@ -14,7 +14,7 @@ const chatListStore = useChatListStore();
 const settingsDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
 
 type Props = {
-  noDefault: boolean,
+  noDefault?: boolean,
   chatId: string | null,
 }
 const props = withDefaults(defineProps<Props>(), {

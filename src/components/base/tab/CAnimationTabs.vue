@@ -4,7 +4,7 @@ import {computed, getCurrentInstance, onMounted, ref} from "vue";
 type Props = {
   activeName: string,
   tabNames: string[],
-  disabled: boolean,
+  disabled?: boolean,
 }
 
 const props = withDefaults(defineProps<Props>(), {

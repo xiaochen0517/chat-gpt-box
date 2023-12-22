@@ -4,7 +4,7 @@ import CTopNavBar from "@/components/base/nav/CTopNavBar.vue";
 import router from "@/router/Router.ts";
 import {useRoute} from "vue-router";
 import {ElMessage} from "element-plus";
-import {ChatInfo, ChatType} from "@/types/chat/ChatInfo.ts";
+import {ChatInfo, ChatOptions, ChatType} from "@/types/chat/ChatInfo.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import CAnimationTabs from "@/components/base/tab/CAnimationTabs.vue";
 import DallESettingsList from "@/components/setting/chat/DallESettingsList.vue";
@@ -13,7 +13,7 @@ import GeminiSettingsList from "@/components/setting/chat/GeminiSettingsList.vue
 import CListItem from "@/components/base/list/CListItem.vue";
 import {ChatBaseSettingsDialogUtil} from "@/utils/settings/ChatBaseSettingsDialogUtil.ts";
 import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
-import {OpenAiChatGptConfig} from "@/types/chat/BaseConfig.ts";
+import {GoogleGeminiConfig, OpenAiChatGptConfig, OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
 
 const route = useRoute();
 const chatId: Ref<string | null> = ref(null);
@@ -36,6 +36,7 @@ const chatListStore = useChatListStore();
 const showMoreSettings = ref(false);
 onMounted(() => {
   chatId.value = getChatId();
+  showMoreSettings.value = true;
   checkChatId();
   isAddChat.value = chatId.value === "add";
   if (isAddChat.value) return;
@@ -48,7 +49,6 @@ onMounted(() => {
     return;
   }
   chatInfo.value = currentChatInfo;
-  showMoreSettings.value = true;
 });
 const checkChatId = (): boolean => {
   if (!chatId.value) {
@@ -92,9 +92,9 @@ const openChatNameDialog = () => {
         value = String(value);
         if (isAddChat.value) {
           chatInfo.value.name = value;
-          return;
+        } else {
+          chatListStore.setChatInfo(chatId.value ?? "", "name", value);
         }
-        chatListStore.setChatInfo(chatId.value ?? "", "name", value);
         settingsDialogRefs.value.hide();
       });
 };
@@ -106,14 +106,44 @@ const openChatPromptDialog = () => {
         value = String(value);
         if (isAddChat.value) {
           chatInfo.value.prompt = value;
-          return;
+        } else {
+          chatListStore.setChatInfo(chatId.value ?? "", "prompt", value);
         }
-        chatListStore.setChatInfo(chatId.value ?? "", "prompt", value);
         settingsDialogRefs.value.hide();
       });
 };
 
 const addChat = () => {
+  if (!checkChatId()) return;
+  if (!chatInfo.value.name || chatInfo.value.name === "") {
+    ElMessage.warning("Please enter the chat name");
+    return;
+  }
+  if (chatInfo.value.chatType !== ChatType.DALL_E && (!chatInfo.value.prompt || chatInfo.value.prompt === "")) {
+    ElMessage.warning("Please enter the chat prompt");
+    return;
+  }
+  let chatOptions = getChatOptionsFromSettingsList();
+  if (!chatOptions) {
+    ElMessage.warning("Please check the chat settings");
+    return;
+  }
+  chatInfo.value.options = chatOptions;
+  chatListStore.addChat(chatInfo.value);
+  jumpToHomePage();
+};
+const chatGptSettingsListRefs = ref<InstanceType<typeof ChatGptSettingsList> | null>(null);
+const dallESettingsListRefs = ref<InstanceType<typeof DallESettingsList> | null>(null);
+const geminiSettingsListRefs = ref<InstanceType<typeof GeminiSettingsList> | null>(null);
+const getChatOptionsFromSettingsList = (): ChatOptions | null => {
+  if (activeTabName.value === "GPT") {
+    return chatGptSettingsListRefs.value?.getConfig() as OpenAiChatGptConfig;
+  } else if (activeTabName.value === "DALL-E") {
+    return dallESettingsListRefs.value?.getConfig() as OpenAiDallEConfig;
+  } else if (activeTabName.value === "Gemini") {
+    return geminiSettingsListRefs.value?.getConfig() as GoogleGeminiConfig;
+  }
+  return null;
 };
 </script>
 
@@ -130,14 +160,39 @@ const addChat = () => {
       <div class="mt-1 text-lg leading-13">Chat Settings</div>
       <div class="mb-4 rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
         <CListItem content="Chat name" left-icon="iconfont icon-discount" @click="openChatNameDialog"/>
-        <CListItem content="Chat prompt" left-icon="iconfont icon-product-checked" :bottom-border="false" @click="openChatPromptDialog"/>
+        <CListItem
+            content="Chat prompt"
+            left-icon="iconfont icon-product-checked"
+            :bottom-border="false"
+            @click="openChatPromptDialog"
+        />
       </div>
-      <CAnimationTabs v-model:active-name="activeTabName" :tab-names="tabNames" @change="tabChangeHandle" :disabled="!isAddChat"/>
+      <CAnimationTabs
+          v-model:active-name="activeTabName"
+          :tab-names="tabNames"
+          @change="tabChangeHandle"
+          :disabled="!isAddChat"
+      />
       <div v-if="showMoreSettings" class="pt-4 overflow-hidden">
         <Transition name="slip" mode="out-in">
-          <ChatGptSettingsList v-if="activeTabName === 'GPT'" :chat-id="chatId" no-default/>
-          <DallESettingsList v-else-if="activeTabName === 'DALL-E'" :chat-id="chatId" no-default/>
-          <GeminiSettingsList v-else-if="activeTabName === 'Gemini'" :chat-id="chatId" no-default/>
+          <ChatGptSettingsList
+              v-if="activeTabName === 'GPT'"
+              ref="chatGptSettingsListRefs"
+              :chat-id="chatId"
+              no-default
+          />
+          <DallESettingsList
+              v-else-if="activeTabName === 'DALL-E'"
+              ref="dallESettingsListRefs"
+              :chat-id="chatId"
+              no-default
+          />
+          <GeminiSettingsList
+              v-else-if="activeTabName === 'Gemini'"
+              ref="geminiSettingsListRefs"
+              :chat-id="chatId"
+              no-default
+          />
         </Transition>
       </div>
     </div>
