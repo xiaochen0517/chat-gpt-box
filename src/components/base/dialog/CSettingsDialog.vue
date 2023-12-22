@@ -6,7 +6,7 @@ import {ShowOption} from "@/types/base/CSettingDialog.ts";
 const dialogOptions = ref<ShowOption>({
   type: "input",
   title: "None",
-  content: ""
+  content: "",
 });
 const defaultOption: ShowOption = {
   type: "input",
@@ -14,13 +14,12 @@ const defaultOption: ShowOption = {
   description: "",
   placeholder: "",
   content: "",
-  sliderOptions: {
+  inputOptions: {
+    type: "text",
     min: 0,
-    max: 20,
-    step: 1,
-    showInput: true,
-    size: "small"
-  }
+    max: 0,
+    size: "small",
+  },
 };
 
 const showDialog = ref(false);
@@ -30,7 +29,7 @@ let rejectFunc: ((reason?: any) => void) | null = null;
 const show = (option: ShowOption): Promise<string | number> => {
   dialogOptions.value = {
     ...defaultOption,
-    ...option
+    ...option,
   };
   showDialog.value = true;
   return new Promise<string | number>((resolve, reject) => {
@@ -43,7 +42,7 @@ const hide = () => {
 };
 defineExpose({
   show,
-  hide
+  hide,
 });
 
 const instance = getCurrentInstance();
@@ -73,6 +72,9 @@ const cancel = () => {
       <el-input
           v-if="dialogOptions.type === 'input'"
           v-model="dialogOptions.content"
+          :type="dialogOptions.inputOptions?.type??'text'"
+          :min="dialogOptions.inputOptions?.min"
+          :max="dialogOptions.inputOptions?.max"
           :placeholder="dialogOptions.placeholder"
       />
       <el-slider

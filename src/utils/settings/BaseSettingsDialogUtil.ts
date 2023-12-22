@@ -23,6 +23,24 @@ export class BaseSettingsDialogUtil {
     });
   }
 
+  static showTemperatureDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: number) {
+    const description = "The lower this value, the more rigorous the output will be; " +
+      "the higher the value, the more random the output will be.";
+    return dialogRefs.show({
+      type: "slider",
+      title: "Temperature",
+      description: description,
+      content: value,
+      sliderOptions: {
+        min: 0,
+        max: 1,
+        step: 0.1,
+        showInput: true,
+        size: "small"
+      }
+    });
+  }
+
   static showContextMaxMessagesDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: number) {
     const description = "If the number of tokens in a message exceeds the maximum number of tokens configured for the current request, " +
       "the number of messages sent will be appropriately reduced until it conforms to the limit set by the maximum tokens configuration.";

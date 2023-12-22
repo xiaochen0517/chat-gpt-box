@@ -5,7 +5,6 @@ import {ref} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {ElMessage} from "element-plus";
 import {GeminiSettingsDialogUtil} from "@/utils/settings/GeminiSettingsDialogUtil.ts";
-import {ChatGptSettingsDialogUtil} from "@/utils/settings/ChatGptSettingsDialogUtil.ts";
 
 const configStore = useConfigStore();
 const settingsDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
@@ -25,10 +24,41 @@ const openModelDialog = () => {
         settingsDialogRefs.value.hide();
       });
 };
-
+const openMaxOutputTokensDialog = () => {
+  if (!settingsDialogRefs.value) return;
+  GeminiSettingsDialogUtil.showMaxOutputTokensDialog(
+      settingsDialogRefs.value,
+      configStore.defaultChatConfig.google.gemini.maxOutputTokens)
+      .then((value: string | number) => {
+        value = Number(value);
+        if (!value || value < 0) {
+          ElMessage.warning("Max output tokens can not be empty or less than 0");
+          return;
+        }
+        if (!settingsDialogRefs.value) return;
+        configStore.defaultChatConfig.google.gemini.maxOutputTokens = value;
+        settingsDialogRefs.value.hide();
+      });
+};
+const openTemperatureDialog = () => {
+  if (!settingsDialogRefs.value) return;
+  GeminiSettingsDialogUtil.showTemperatureDialog(
+      settingsDialogRefs.value,
+      configStore.defaultChatConfig.google.gemini.temperature)
+      .then((value: string | number) => {
+        value = Number(value);
+        if (!value || value < 0 || value > 1) {
+          ElMessage.warning("Temperature can not be empty or less than 0 or greater than 1");
+          return;
+        }
+        if (!settingsDialogRefs.value) return;
+        configStore.defaultChatConfig.google.gemini.temperature = value;
+        settingsDialogRefs.value.hide();
+      });
+};
 const openContextMaxMsgsDialog = () => {
   if (!settingsDialogRefs.value) return;
-  ChatGptSettingsDialogUtil.showContextMaxMessagesDialog(
+  GeminiSettingsDialogUtil.showContextMaxMessagesDialog(
       settingsDialogRefs.value,
       configStore.defaultChatConfig.google.gemini.contextMaxMessage)
       .then((value: string | number) => {
@@ -44,7 +74,7 @@ const openContextMaxMsgsDialog = () => {
 };
 const openContextMaxTokensDialog = () => {
   if (!settingsDialogRefs.value) return;
-  ChatGptSettingsDialogUtil.showContextMaxTokensDialog(
+  GeminiSettingsDialogUtil.showContextMaxTokensDialog(
       settingsDialogRefs.value,
       configStore.defaultChatConfig.google.gemini.contextMaxTokens)
       .then((value: string | number) => {
@@ -58,6 +88,38 @@ const openContextMaxTokensDialog = () => {
         settingsDialogRefs.value.hide();
       });
 };
+const openTopKDialog = () => {
+  if (!settingsDialogRefs.value) return;
+  GeminiSettingsDialogUtil.showTopKDialog(
+      settingsDialogRefs.value,
+      configStore.defaultChatConfig.google.gemini.topK ?? 1)
+      .then((value: string | number) => {
+        value = Number(value);
+        if (!value || value < 0) {
+          ElMessage.warning("Top K can not be empty or less than 0");
+          return;
+        }
+        if (!settingsDialogRefs.value) return;
+        configStore.defaultChatConfig.google.gemini.topK = value;
+        settingsDialogRefs.value.hide();
+      });
+};
+const openTopPDialog = () => {
+  if (!settingsDialogRefs.value) return;
+  GeminiSettingsDialogUtil.showTopPDialog(
+      settingsDialogRefs.value,
+      configStore.defaultChatConfig.google.gemini.topP ?? 1)
+      .then((value: string | number) => {
+        value = Number(value);
+        if (!value || value < 0 || value > 1) {
+          ElMessage.warning("Top P can not be empty or less than 0 or greater than 1");
+          return;
+        }
+        if (!settingsDialogRefs.value) return;
+        configStore.defaultChatConfig.google.gemini.topP = value;
+        settingsDialogRefs.value.hide();
+      });
+};
 </script>
 
 <template>
@@ -65,8 +127,8 @@ const openContextMaxTokensDialog = () => {
     <CListItem content="Default model" left-icon="icon-connections" @click="openModelDialog"/>
     <CListItem content="Max output tokens" left-icon="icon-hot-for-ux" @click="openMaxOutputTokensDialog"/>
     <CListItem content="Temperature" left-icon="icon-file-text" @click="openTemperatureDialog"/>
-    <CListItem content="Top P" left-icon="icon-translate" @click="openTopPDialog"/>
     <CListItem content="Top K" left-icon="icon-translate" @click="openTopKDialog"/>
+    <CListItem content="Top P" left-icon="icon-translate" @click="openTopPDialog"/>
     <CListItem content="Context max messages" left-icon="icon-file-text" @click="openContextMaxMsgsDialog"/>
     <CListItem
         content="Context max tokens"

@@ -1,4 +1,10 @@
 export type DialogType = "input" | "slider" | "select";
+export type InputOptions = {
+  type: "text" | "number";
+  min: number;
+  max: number;
+  size: "small" | "medium";
+};
 export type SliderOptions = {
   min: number;
   max: number;
@@ -19,6 +25,7 @@ export type ShowOption = {
   description?: string;
   placeholder?: string;
   content: string | number;
+  inputOptions?: InputOptions;
   sliderOptions?: SliderOptions;
   selectOptions?: SelectOptions;
 };
