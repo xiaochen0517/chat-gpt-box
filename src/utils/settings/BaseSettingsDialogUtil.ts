@@ -2,6 +2,15 @@ import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
 import {SelectOptionItem} from "@/types/base/CSettingDialog.ts";
 
 export class BaseSettingsDialogUtil {
+
+  static showApiKeyDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string) {
+    return dialogRefs.show({
+      type: "input",
+      title: "Api key",
+      placeholder: "Please input api key.",
+      content: value
+    });
+  }
   
   static showApiDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string) {
     return dialogRefs.show({

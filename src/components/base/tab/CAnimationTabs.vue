@@ -13,11 +13,14 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
 });
 
+const instance = getCurrentInstance();
 const activeTab = ref<string>("NONE");
 onMounted(() => {
   if (props.tabNames.length === 0) return;
   if (!props.activeName) {
     activeTab.value = props.tabNames[0];
+    if (!instance) return;
+    instance.emit("update:activeName", activeTab.value);
     return;
   }
   activeTab.value = props.activeName;
@@ -28,7 +31,6 @@ const slipStyle = computed(() => {
     transform: `translateX(calc(100% * ${props.tabNames.indexOf(activeTab.value)}))`,
   };
 });
-const instance = getCurrentInstance();
 const changeTab = (tabName: string) => {
   if (props.disabled) return;
   activeTab.value = tabName;

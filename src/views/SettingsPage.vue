@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import {defineComponent, onMounted, ref, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import router from "@/router/Router.ts";
 import CListItem from "@/components/base/list/CListItem.vue";
 import CTopNavBar from "@/components/base/nav/CTopNavBar.vue";
-import {BaseConfig} from "@/types/chat/BaseConfig.ts";
 import CAnimationTabs from "@/components/base/tab/CAnimationTabs.vue";
 import ChatGptSettingsList from "@/components/setting/chat/ChatGptSettingsList.vue";
 import DallESettingsList from "@/components/setting/chat/DallESettingsList.vue";
 import GeminiSettingsList from "@/components/setting/chat/GeminiSettingsList.vue";
+import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
+import {BaseSettingsDialogUtil} from "@/utils/settings/BaseSettingsDialogUtil.ts";
+import {ElMessage} from "element-plus";
 
 onMounted(() => {
   console.log("onMounted");
@@ -38,14 +40,30 @@ watch(enterSend, (value) => {
   configStore.setEnterSend(value);
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const currentDialogRefs = ref<any>(null);
-const currentDialog = ref<string | ReturnType<typeof defineComponent>>("");
-
-const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) => {
-  configStore.setBaseConfig(key, value);
+const currentDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
+const openOpenaiKeyDialog = () => {
   if (!currentDialogRefs.value) return;
-  currentDialogRefs.value.hide();
+  BaseSettingsDialogUtil.showApiKeyDialog(currentDialogRefs.value, configStore.defaultChatConfig.openAi.base.apiKey)
+      .then((value: string | number) => {
+        value = String(value);
+        if (!value || value.length === 0) {
+          ElMessage.warning("Please enter the OpenAI API Key");
+          return;
+        }
+        configStore.defaultChatConfig.openAi.base.apiKey = value;
+      });
+};
+const openGoogleKeyDialog = () => {
+  if (!currentDialogRefs.value) return;
+  BaseSettingsDialogUtil.showApiKeyDialog(currentDialogRefs.value, configStore.defaultChatConfig.google.base.apiKey)
+      .then((value: string | number) => {
+        value = String(value);
+        if (!value || value.length === 0) {
+          ElMessage.warning("Please enter the Google API Key");
+          return;
+        }
+        configStore.defaultChatConfig.google.base.apiKey = value;
+      });
 };
 
 const activeTabName = ref("");
@@ -79,6 +97,16 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
             v-model:switch-value="isDarkMode"
         />
         <CListItem
+            content="Openai API Key"
+            left-icon="icon-gold"
+            @click="openOpenaiKeyDialog"
+        />
+        <CListItem
+            content="Google API Key"
+            left-icon="icon-gold"
+            @click="openGoogleKeyDialog"
+        />
+        <CListItem
             content="KeyMap"
             left-icon="icon-gold"
             :bottom-border="false"
@@ -95,12 +123,7 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
         </Transition>
       </div>
     </div>
-    <Component
-        ref="currentDialogRefs"
-        :is="currentDialog"
-        v-if="currentDialog"
-        @commit="saveConfig"
-    />
+    <CSettingsDialog ref="currentDialogRefs"/>
   </div>
 </template>
 
