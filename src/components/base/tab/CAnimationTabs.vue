@@ -4,17 +4,23 @@ import {computed, getCurrentInstance, onMounted, ref} from "vue";
 type Props = {
   activeName: string,
   tabNames: string[],
+  disabled: boolean,
 }
 
 const props = withDefaults(defineProps<Props>(), {
   activeName: "NONE",
   tabNames: () => [],
+  disabled: false,
 });
 
 const activeTab = ref<string>("NONE");
 onMounted(() => {
   if (props.tabNames.length === 0) return;
-  changeTab(props.tabNames[0]);
+  if (!props.activeName) {
+    activeTab.value = props.tabNames[0];
+    return;
+  }
+  activeTab.value = props.activeName;
 });
 const slipStyle = computed(() => {
   return {
@@ -24,6 +30,7 @@ const slipStyle = computed(() => {
 });
 const instance = getCurrentInstance();
 const changeTab = (tabName: string) => {
+  if (props.disabled) return;
   activeTab.value = tabName;
   if (!instance) return;
   instance.emit("update:activeName", tabName);
@@ -32,7 +39,7 @@ const changeTab = (tabName: string) => {
 </script>
 
 <template>
-  <div class="w-full relative">
+  <div class="w-full relative" :class="{'opacity-40':disabled}">
     <div class="z-10 absolute left-0 top-0 bottom-0 p-1 transition-all ease-in-out duration-500" :style="slipStyle">
       <div class="w-full h-full rounded-lg bg-neutral-100 dark:bg-neutral-700"/>
     </div>

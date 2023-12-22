@@ -1,18 +1,66 @@
 <script setup lang="ts">
 import CListItem from "@/components/base/list/CListItem.vue";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
 import {ChatGptSettingsDialogUtil} from "@/utils/settings/ChatGptSettingsDialogUtil.ts";
-import {useConfigStore} from "@/store/ConfigStore.ts";
 import {ElMessage} from "element-plus";
+import {OpenAiChatGptConfig} from "@/types/chat/BaseConfig.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
+import {useChatListStore} from "@/store/ChatListStore.ts";
+import _ from "lodash";
 
 const configStore = useConfigStore();
+const chatListStore = useChatListStore();
 const settingsDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
+
+type Props = {
+  noDefault: boolean,
+  chatId: string | null,
+}
+const props = withDefaults(defineProps<Props>(), {
+  noDefault: false,
+  chatId: null,
+});
+const currentChatGptConfig = ref<OpenAiChatGptConfig>({
+  apiUrl: "",
+  model: "gpt-3.5-turbo",
+  temperature: 0.7,
+  contextMaxMessage: 2,
+  contextMaxTokens: 2048,
+  responseMaxTokens: 0,
+});
+onMounted(() => {
+  if (!props.chatId) {
+    currentChatGptConfig.value = _.cloneDeep(configStore.defaultChatConfig.openAi.chatGpt);
+    return;
+  }
+  currentChatGptConfig.value = _.cloneDeep(chatListStore.getChatInfo(props.chatId)?.options as OpenAiChatGptConfig);
+});
+const getConfig = () => {
+  if (props.noDefault) {
+    return currentChatGptConfig.value;
+  }
+  return configStore.defaultChatConfig.openAi.chatGpt;
+};
+defineExpose({
+  getConfig,
+});
+const setConfig = <K extends keyof OpenAiChatGptConfig>(key: K, value: OpenAiChatGptConfig[K]) => {
+  if (props.noDefault) {
+    if (props.chatId) {
+      chatListStore.setGPTChatOptions(props.chatId, key, value);
+    }
+    currentChatGptConfig.value[key] = value;
+  } else {
+    configStore.defaultChatConfig.openAi.chatGpt[key] = value;
+  }
+};
+
 const openApiUrlDialog = () => {
   if (!settingsDialogRefs.value) return;
   ChatGptSettingsDialogUtil.showApiDialog(
       settingsDialogRefs.value,
-      configStore.defaultChatConfig.openAi.chatGpt.apiUrl)
+      getConfig().apiUrl)
       .then((value: string | number) => {
         value = String(value);
         if (!value || value === "") {
@@ -20,7 +68,7 @@ const openApiUrlDialog = () => {
           return;
         }
         if (!settingsDialogRefs.value) return;
-        configStore.defaultChatConfig.openAi.chatGpt.apiUrl = value;
+        setConfig("apiUrl", value);
         settingsDialogRefs.value.hide();
       });
 };
@@ -28,7 +76,7 @@ const openModelDialog = () => {
   if (!settingsDialogRefs.value) return;
   ChatGptSettingsDialogUtil.showChatGptModelDialog(
       settingsDialogRefs.value,
-      configStore.defaultChatConfig.openAi.chatGpt.model)
+      getConfig().model)
       .then((value: string | number) => {
         value = String(value);
         if (!value || value === "") {
@@ -36,7 +84,7 @@ const openModelDialog = () => {
           return;
         }
         if (!settingsDialogRefs.value) return;
-        configStore.defaultChatConfig.openAi.chatGpt.model = value;
+        setConfig("model", value);
         settingsDialogRefs.value.hide();
       });
 };
@@ -44,7 +92,7 @@ const openTemperatureDialog = () => {
   if (!settingsDialogRefs.value) return;
   ChatGptSettingsDialogUtil.showTemperatureDialog(
       settingsDialogRefs.value,
-      configStore.defaultChatConfig.openAi.chatGpt.temperature)
+      getConfig().temperature)
       .then((value: string | number) => {
         value = Number(value);
         if (!value || value < 0) {
@@ -52,7 +100,7 @@ const openTemperatureDialog = () => {
           return;
         }
         if (!settingsDialogRefs.value) return;
-        configStore.defaultChatConfig.openAi.chatGpt.temperature = value;
+        setConfig("temperature", value);
         settingsDialogRefs.value.hide();
       });
 };
@@ -60,7 +108,7 @@ const openContextMaxMsgsDialog = () => {
   if (!settingsDialogRefs.value) return;
   ChatGptSettingsDialogUtil.showContextMaxMessagesDialog(
       settingsDialogRefs.value,
-      configStore.defaultChatConfig.openAi.chatGpt.contextMaxMessage)
+      getConfig().contextMaxMessage)
       .then((value: string | number) => {
         value = Number(value);
         if (!value || value < 0) {
@@ -68,7 +116,7 @@ const openContextMaxMsgsDialog = () => {
           return;
         }
         if (!settingsDialogRefs.value) return;
-        configStore.defaultChatConfig.openAi.chatGpt.contextMaxMessage = value;
+        setConfig("contextMaxMessage", value);
         settingsDialogRefs.value.hide();
       });
 };
@@ -76,7 +124,7 @@ const openContextMaxTokensDialog = () => {
   if (!settingsDialogRefs.value) return;
   ChatGptSettingsDialogUtil.showContextMaxTokensDialog(
       settingsDialogRefs.value,
-      configStore.defaultChatConfig.openAi.chatGpt.contextMaxTokens)
+      getConfig().contextMaxTokens)
       .then((value: string | number) => {
         value = Number(value);
         if (!value || value < 0) {
@@ -84,7 +132,7 @@ const openContextMaxTokensDialog = () => {
           return;
         }
         if (!settingsDialogRefs.value) return;
-        configStore.defaultChatConfig.openAi.chatGpt.contextMaxTokens = value;
+        setConfig("contextMaxTokens", value);
         settingsDialogRefs.value.hide();
       });
 };
@@ -92,7 +140,7 @@ const openResponseMaxTokensDialog = () => {
   if (!settingsDialogRefs.value) return;
   ChatGptSettingsDialogUtil.showResponseMaxTokensDialog(
       settingsDialogRefs.value,
-      configStore.defaultChatConfig.openAi.chatGpt.responseMaxTokens)
+      getConfig().responseMaxTokens)
       .then((value: string | number) => {
         value = Number(value);
         if (!value || value < 0) {
@@ -100,7 +148,7 @@ const openResponseMaxTokensDialog = () => {
           return;
         }
         if (!settingsDialogRefs.value) return;
-        configStore.defaultChatConfig.openAi.chatGpt.responseMaxTokens = value;
+        setConfig("responseMaxTokens", value);
         settingsDialogRefs.value.hide();
       });
 };

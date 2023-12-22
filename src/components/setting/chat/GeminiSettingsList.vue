@@ -1,18 +1,67 @@
 <script setup lang="ts">
 import CListItem from "@/components/base/list/CListItem.vue";
 import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {ElMessage} from "element-plus";
 import {GeminiSettingsDialogUtil} from "@/utils/settings/GeminiSettingsDialogUtil.ts";
+import {GoogleGeminiConfig} from "@/types/chat/BaseConfig.ts";
+import {useChatListStore} from "@/store/ChatListStore.ts";
+import _ from "lodash";
 
 const configStore = useConfigStore();
+const chatListStore = useChatListStore();
 const settingsDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
+
+type Props = {
+  noDefault: boolean,
+  chatId: string | null,
+}
+const props = withDefaults(defineProps<Props>(), {
+  noDefault: false,
+  chatId: null,
+});
+const currentChatGptConfig = ref<GoogleGeminiConfig>({
+  model: "",
+  maxOutputTokens: 0,
+  temperature: 0,
+  topK: 0,
+  topP: 0,
+  contextMaxMessage: 0,
+  contextMaxTokens: 0,
+});
+onMounted(() => {
+  if (!props.chatId) {
+    currentChatGptConfig.value = _.cloneDeep(configStore.defaultChatConfig.google.gemini);
+    return;
+  }
+  currentChatGptConfig.value = _.cloneDeep(chatListStore.getChatInfo(props.chatId)?.options as GoogleGeminiConfig);
+});
+const getConfig = (): GoogleGeminiConfig => {
+  if (props.noDefault) {
+    return currentChatGptConfig.value;
+  }
+  return configStore.defaultChatConfig.google.gemini;
+};
+defineExpose({
+  getConfig,
+});
+const setConfig = <K extends keyof GoogleGeminiConfig>(key: K, value: GoogleGeminiConfig[K]) => {
+  if (props.noDefault) {
+    if (props.chatId) {
+      chatListStore.setGeminiChatOptions(props.chatId, key, value);
+    }
+    currentChatGptConfig.value[key] = value;
+  } else {
+    configStore.defaultChatConfig.google.gemini[key] = value;
+  }
+};
+
 const openModelDialog = () => {
   if (!settingsDialogRefs.value) return;
   GeminiSettingsDialogUtil.showGeminiModelDialog(
       settingsDialogRefs.value,
-      configStore.defaultChatConfig.google.gemini.model)
+      getConfig().model)
       .then((value: string | number) => {
         value = String(value);
         if (!value || value === "") {
@@ -20,7 +69,7 @@ const openModelDialog = () => {
           return;
         }
         if (!settingsDialogRefs.value) return;
-        configStore.defaultChatConfig.google.gemini.model = value;
+        setConfig("model", value);
         settingsDialogRefs.value.hide();
       });
 };
@@ -28,7 +77,7 @@ const openMaxOutputTokensDialog = () => {
   if (!settingsDialogRefs.value) return;
   GeminiSettingsDialogUtil.showMaxOutputTokensDialog(
       settingsDialogRefs.value,
-      configStore.defaultChatConfig.google.gemini.maxOutputTokens)
+      getConfig().maxOutputTokens)
       .then((value: string | number) => {
         value = Number(value);
         if (!value || value < 0) {
@@ -36,7 +85,7 @@ const openMaxOutputTokensDialog = () => {
           return;
         }
         if (!settingsDialogRefs.value) return;
-        configStore.defaultChatConfig.google.gemini.maxOutputTokens = value;
+        setConfig("maxOutputTokens", value);
         settingsDialogRefs.value.hide();
       });
 };
@@ -44,7 +93,7 @@ const openTemperatureDialog = () => {
   if (!settingsDialogRefs.value) return;
   GeminiSettingsDialogUtil.showTemperatureDialog(
       settingsDialogRefs.value,
-      configStore.defaultChatConfig.google.gemini.temperature)
+      getConfig().temperature)
       .then((value: string | number) => {
         value = Number(value);
         if (!value || value < 0 || value > 1) {
@@ -52,7 +101,7 @@ const openTemperatureDialog = () => {
           return;
         }
         if (!settingsDialogRefs.value) return;
-        configStore.defaultChatConfig.google.gemini.temperature = value;
+        setConfig("temperature", value);
         settingsDialogRefs.value.hide();
       });
 };
@@ -60,7 +109,7 @@ const openContextMaxMsgsDialog = () => {
   if (!settingsDialogRefs.value) return;
   GeminiSettingsDialogUtil.showContextMaxMessagesDialog(
       settingsDialogRefs.value,
-      configStore.defaultChatConfig.google.gemini.contextMaxMessage)
+      getConfig().contextMaxMessage)
       .then((value: string | number) => {
         value = Number(value);
         if (!value || value < 0) {
@@ -68,7 +117,7 @@ const openContextMaxMsgsDialog = () => {
           return;
         }
         if (!settingsDialogRefs.value) return;
-        configStore.defaultChatConfig.google.gemini.contextMaxMessage = value;
+        setConfig("contextMaxMessage", value);
         settingsDialogRefs.value.hide();
       });
 };
@@ -76,7 +125,7 @@ const openContextMaxTokensDialog = () => {
   if (!settingsDialogRefs.value) return;
   GeminiSettingsDialogUtil.showContextMaxTokensDialog(
       settingsDialogRefs.value,
-      configStore.defaultChatConfig.google.gemini.contextMaxTokens)
+      getConfig().contextMaxTokens)
       .then((value: string | number) => {
         value = Number(value);
         if (!value || value < 0) {
@@ -84,7 +133,7 @@ const openContextMaxTokensDialog = () => {
           return;
         }
         if (!settingsDialogRefs.value) return;
-        configStore.defaultChatConfig.google.gemini.contextMaxTokens = value;
+        setConfig("contextMaxTokens", value);
         settingsDialogRefs.value.hide();
       });
 };
@@ -92,7 +141,7 @@ const openTopKDialog = () => {
   if (!settingsDialogRefs.value) return;
   GeminiSettingsDialogUtil.showTopKDialog(
       settingsDialogRefs.value,
-      configStore.defaultChatConfig.google.gemini.topK ?? 1)
+      getConfig().topK ?? 1)
       .then((value: string | number) => {
         value = Number(value);
         if (!value || value < 0) {
@@ -100,7 +149,7 @@ const openTopKDialog = () => {
           return;
         }
         if (!settingsDialogRefs.value) return;
-        configStore.defaultChatConfig.google.gemini.topK = value;
+        setConfig("topK", value);
         settingsDialogRefs.value.hide();
       });
 };
@@ -108,7 +157,7 @@ const openTopPDialog = () => {
   if (!settingsDialogRefs.value) return;
   GeminiSettingsDialogUtil.showTopPDialog(
       settingsDialogRefs.value,
-      configStore.defaultChatConfig.google.gemini.topP ?? 1)
+      getConfig().topP ?? 1)
       .then((value: string | number) => {
         value = Number(value);
         if (!value || value < 0 || value > 1) {
@@ -116,7 +165,7 @@ const openTopPDialog = () => {
           return;
         }
         if (!settingsDialogRefs.value) return;
-        configStore.defaultChatConfig.google.gemini.topP = value;
+        setConfig("topP", value);
         settingsDialogRefs.value.hide();
       });
 };

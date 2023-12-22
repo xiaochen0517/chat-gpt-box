@@ -4,7 +4,7 @@ import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {v4 as uuidv4} from "uuid";
 import _ from "lodash";
 import {ChatInfo, ChatOptions, ChatType} from "@/types/chat/ChatInfo.ts";
-import {OpenAiChatGptConfig, OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
+import {GoogleGeminiConfig, OpenAiChatGptConfig, OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
 
 export const useChatListStore = defineStore("chatList", {
   state: (): ChatListStore => {
@@ -73,6 +73,13 @@ export const useChatListStore = defineStore("chatList", {
       const chatInfo = this.chatList[index];
       if (chatInfo.chatType !== ChatType.DALL_E) return;
       (chatInfo.options as OpenAiDallEConfig)[key] = value;
+    },
+    setGeminiChatOptions<K extends keyof GoogleGeminiConfig>(id: string, key: K, value: GoogleGeminiConfig[K]) {
+      const index = this.getChatInfoIndex(id);
+      if (index < 0) return;
+      const chatInfo = this.chatList[index];
+      if (chatInfo.chatType !== ChatType.GEMINI) return;
+      (chatInfo.options as GoogleGeminiConfig)[key] = value;
     },
     setChatOptions<K extends keyof ChatOptions>(id: string, key: K, value: ChatOptions[K]) {
       const index = this.getChatInfoIndex(id);

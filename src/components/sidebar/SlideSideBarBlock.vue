@@ -7,7 +7,6 @@ import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 
 const instance = getCurrentInstance();
 const changeChatClick = (chatInfo: ChatInfo) => {
-  console.log("changeChatClick");
   if (!instance) return;
   instance.emit("changeChatClick", chatInfo);
 };

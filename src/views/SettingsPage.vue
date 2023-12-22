@@ -6,9 +6,9 @@ import CListItem from "@/components/base/list/CListItem.vue";
 import CTopNavBar from "@/components/base/nav/CTopNavBar.vue";
 import {BaseConfig} from "@/types/chat/BaseConfig.ts";
 import CAnimationTabs from "@/components/base/tab/CAnimationTabs.vue";
-import GptDefaultSettings from "@/components/setting/chat/GptDefaultSettings.vue";
-import DallEDefaultSettings from "@/components/setting/chat/DallEDefaultSettings.vue";
-import GeminiDefaultSettings from "@/components/setting/chat/GeminiDefaultSettings.vue";
+import ChatGptSettingsList from "@/components/setting/chat/ChatGptSettingsList.vue";
+import DallESettingsList from "@/components/setting/chat/DallESettingsList.vue";
+import GeminiSettingsList from "@/components/setting/chat/GeminiSettingsList.vue";
 
 onMounted(() => {
   console.log("onMounted");
@@ -50,9 +50,6 @@ const saveConfig = <K extends keyof BaseConfig>(key: K, value: BaseConfig[K]) =>
 
 const activeTabName = ref("");
 const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
-const tabChangeHandle = (tabName: string) => {
-  console.log(tabName);
-};
 </script>
 
 <template>
@@ -89,12 +86,12 @@ const tabChangeHandle = (tabName: string) => {
         />
       </div>
       <div class="mt-1 text-lg leading-13">Chat Default Settings</div>
-      <CAnimationTabs v-model:active-name="activeTabName" :tab-names="tabNames" @change="tabChangeHandle"/>
+      <CAnimationTabs v-model:active-name="activeTabName" :tab-names="tabNames"/>
       <div class="pt-4 overflow-hidden">
         <Transition name="slip" mode="out-in">
-          <GptDefaultSettings v-if="activeTabName === 'GPT'"/>
-          <DallEDefaultSettings v-else-if="activeTabName === 'DALL-E'"/>
-          <GeminiDefaultSettings v-else-if="activeTabName === 'Gemini'"/>
+          <ChatGptSettingsList v-if="activeTabName === 'GPT'"/>
+          <DallESettingsList v-else-if="activeTabName === 'DALL-E'"/>
+          <GeminiSettingsList v-else-if="activeTabName === 'Gemini'"/>
         </Transition>
       </div>
     </div>

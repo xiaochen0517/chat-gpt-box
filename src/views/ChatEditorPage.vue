@@ -1,65 +1,117 @@
 <script setup lang="ts">
-import {computed, onMounted, Ref, ref} from "vue";
+import {onMounted, Ref, ref} from "vue";
 import CTopNavBar from "@/components/base/nav/CTopNavBar.vue";
 import router from "@/router/Router.ts";
 import {useRoute} from "vue-router";
 import {ElMessage} from "element-plus";
-import {ChatType} from "@/types/chat/ChatInfo.ts";
-import GPTChatSettingsBlock from "@/components/setting/chat/GPTChatSettingsBlock.vue";
-import DALLEChatSettingsBlock from "@/components/setting/chat/DALLEChatSettingsBlock.vue";
+import {ChatInfo, ChatType} from "@/types/chat/ChatInfo.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
-
+import CAnimationTabs from "@/components/base/tab/CAnimationTabs.vue";
+import DallESettingsList from "@/components/setting/chat/DallESettingsList.vue";
+import ChatGptSettingsList from "@/components/setting/chat/ChatGptSettingsList.vue";
+import GeminiSettingsList from "@/components/setting/chat/GeminiSettingsList.vue";
+import CListItem from "@/components/base/list/CListItem.vue";
+import {ChatBaseSettingsDialogUtil} from "@/utils/settings/ChatBaseSettingsDialogUtil.ts";
+import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
+import {OpenAiChatGptConfig} from "@/types/chat/BaseConfig.ts";
 
 const route = useRoute();
-const chatId: Ref<string | null> = computed(() => {
+const chatId: Ref<string | null> = ref(null);
+const isAddChat = ref(false);
+const chatInfo = ref<ChatInfo>({
+  id: "",
+  name: "",
+  prompt: "",
+  chatType: ChatType.CHAT_GPT,
+  options: {
+    apiUrl: "",
+    model: "davinci-instruct-beta",
+    temperature: 0.9,
+    contextMaxMessage: 2,
+    contextMaxTokens: 2048,
+    responseMaxTokens: 0,
+  } as OpenAiChatGptConfig,
+});
+const chatListStore = useChatListStore();
+const showMoreSettings = ref(false);
+onMounted(() => {
+  chatId.value = getChatId();
+  checkChatId();
+  isAddChat.value = chatId.value === "add";
+  if (isAddChat.value) return;
+  const currentChatInfo = chatListStore.getChatInfo(chatId.value ?? "");
+  if (!currentChatInfo) {
+    if (!isAddChat.value) {
+      ElMessage.warning("Chat not found");
+      jumpToHomePage();
+    }
+    return;
+  }
+  chatInfo.value = currentChatInfo;
+  showMoreSettings.value = true;
+});
+const checkChatId = (): boolean => {
+  if (!chatId.value) {
+    ElMessage.warning("Please select a chat first");
+    jumpToHomePage();
+    return false;
+  }
+  return true;
+};
+const getChatId = (): string | null => {
   let chatId = route.params.chatId;
   if (!chatId) return null;
   if (Array.isArray(chatId)) {
     return chatId[0];
   }
   return chatId;
-});
-const isAddChat = ref(false);
-const chatType = ref(ChatType.CHAT_GPT);
-const chatListStore = useChatListStore();
-onMounted(() => {
-  if (!chatId.value) {
-    ElMessage.warning("Please select a chat first");
-    jumpToHomePage();
-    return;
-  }
-  isAddChat.value = chatId.value === "add";
-  if (isAddChat.value === false) {
-    const chatInfo = chatListStore.getChatInfo(chatId.value);
-    if (!chatInfo) {
-      ElMessage.warning("Get chat info failed");
-      jumpToHomePage();
-      return;
-    }
-    chatType.value = chatInfo.chatType;
-  }
-});
+};
 
-const GPTChatSettingsBlockRefs = ref<typeof GPTChatSettingsBlock | null>(null);
-const DALLEChatSettingsBlockRefs = ref<typeof DALLEChatSettingsBlock | null>(null);
-const addChat = () => {
-  if (chatType.value === ChatType.CHAT_GPT) {
-    if (!GPTChatSettingsBlockRefs.value) {
-      ElMessage.error("GPTChatSettingsBlockRefs is null!");
-      return;
-    }
-    GPTChatSettingsBlockRefs.value.addChat();
-  } else {
-    if (!DALLEChatSettingsBlockRefs.value) {
-      ElMessage.error("DALLEChatSettingsBlockRefs is null!");
-      return;
-    }
-    DALLEChatSettingsBlockRefs.value.addChat();
+const tabChangeHandle = (name: string) => {
+  if (name === "GPT") {
+    chatInfo.value.chatType = ChatType.CHAT_GPT;
+  } else if (name === "DALL-E") {
+    chatInfo.value.chatType = ChatType.DALL_E;
+  } else if (name === "Gemini") {
+    chatInfo.value.chatType = ChatType.GEMINI;
   }
 };
 
 const jumpToHomePage = () => {
   router.push({path: "/"});
+};
+
+const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
+const activeTabName = ref("GPT");
+const settingsDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
+const openChatNameDialog = () => {
+  if (!settingsDialogRefs.value) return;
+  ChatBaseSettingsDialogUtil.showChatNameDialog(settingsDialogRefs.value, chatInfo.value.name)
+      .then((value: string | number) => {
+        value = String(value);
+        if (isAddChat.value) {
+          chatInfo.value.name = value;
+          return;
+        }
+        chatListStore.setChatInfo(chatId.value ?? "", "name", value);
+        settingsDialogRefs.value.hide();
+      });
+};
+const openChatPromptDialog = () => {
+  if (!settingsDialogRefs.value) return;
+  ChatBaseSettingsDialogUtil.showChatPromptDialog(settingsDialogRefs.value, chatInfo.value.prompt)
+      .then((value: string | number) => {
+        value = String(value);
+        if (isAddChat.value) {
+          chatInfo.value.prompt = value;
+          return;
+        }
+        chatListStore.setChatInfo(chatId.value ?? "", "prompt", value);
+        settingsDialogRefs.value.hide();
+      });
+};
+
+const addChat = () => {
 };
 </script>
 
@@ -73,39 +125,21 @@ const jumpToHomePage = () => {
         @saveClick="addChat"
     />
     <div class="px-2 xl:p-0 max-w-content m-auto mt-2">
-      <div
-          class="relative flex flex-row gap-2 p-2 rounded-xl overflow-hidden text-base text-center select-none dark:bg-neutral-800"
-          :class="{'opacity-40': !isAddChat}"
-      >
-        <div
-            class="tab-background absolute top-2 bottom-2 left-2 w-[calc(50%-0.5rem)] rounded-md shadow-md"
-            :class="isAddChat? 'dark:bg-neutral-700':'dark:bg-neutral-700 opacity-40'"
-            :style="{transform: chatType === ChatType.CHAT_GPT ? 'translateX(0)' : 'translateX(100%)'}"
-        />
-        <div
-            class="flex-1 px-2 rounded-md text-base leading-8 cursor-pointer z-10"
-            :class="{'cursor-not-allowed': !isAddChat}"
-            @click.stop="isAddChat && (chatType = ChatType.CHAT_GPT)"
-        >
-          GPT Chat
-        </div>
-        <div
-            class="flex-1 px-2 rounded-md text-base leading-8 cursor-pointer z-10"
-            :class="{'cursor-not-allowed': !isAddChat}"
-            @click.stop="isAddChat && (chatType = ChatType.DALL_E)"
-        >
-          DALL-E
-        </div>
+      <div class="mt-1 text-lg leading-13">Chat Settings</div>
+      <div class="mb-4 rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
+        <CListItem content="Chat name" left-icon="iconfont icon-discount" @click="openChatNameDialog"/>
+        <CListItem content="Chat prompt" left-icon="iconfont icon-product-checked" :bottom-border="false" @click="openChatPromptDialog"/>
+      </div>
+      <CAnimationTabs v-model:active-name="activeTabName" :tab-names="tabNames" @change="tabChangeHandle" :disabled="!isAddChat"/>
+      <div v-if="showMoreSettings" class="pt-4 overflow-hidden">
+        <Transition name="slip" mode="out-in">
+          <ChatGptSettingsList v-if="activeTabName === 'GPT'" :chat-id="chatId" no-default/>
+          <DallESettingsList v-else-if="activeTabName === 'DALL-E'" :chat-id="chatId" no-default/>
+          <GeminiSettingsList v-else-if="activeTabName === 'Gemini'" :chat-id="chatId" no-default/>
+        </Transition>
       </div>
     </div>
-    <Transition name="fade" mode="out-in">
-      <GPTChatSettingsBlock
-          ref="GPTChatSettingsBlockRefs"
-          v-if="chatType === ChatType.CHAT_GPT"
-          :is-add-chat="isAddChat"
-      />
-      <DALLEChatSettingsBlock ref="DALLEChatSettingsBlockRefs" v-else :is-add-chat="isAddChat"/>
-    </Transition>
+    <CSettingsDialog ref="settingsDialogRefs"/>
   </div>
 </template>
 
