@@ -88,6 +88,7 @@ const openChatNameDialog = () => {
   if (!settingsDialogRefs.value) return;
   ChatBaseSettingsDialogUtil.showChatNameDialog(settingsDialogRefs.value, chatInfo.value.name)
       .then((value: string | number) => {
+        if (!settingsDialogRefs.value) return;
         value = String(value);
         if (isAddChat.value) {
           chatInfo.value.name = value;
@@ -101,6 +102,7 @@ const openChatPromptDialog = () => {
   if (!settingsDialogRefs.value) return;
   ChatBaseSettingsDialogUtil.showChatPromptDialog(settingsDialogRefs.value, chatInfo.value.prompt)
       .then((value: string | number) => {
+        if (!settingsDialogRefs.value) return;
         value = String(value);
         if (isAddChat.value) {
           chatInfo.value.prompt = value;
