@@ -51,6 +51,7 @@ const openOpenaiKeyDialog = () => {
           return;
         }
         configStore.defaultChatConfig.openAi.base.apiKey = value;
+        currentDialogRefs.value?.hide();
       });
 };
 const openGoogleKeyDialog = () => {
@@ -63,6 +64,7 @@ const openGoogleKeyDialog = () => {
           return;
         }
         configStore.defaultChatConfig.google.base.apiKey = value;
+        currentDialogRefs.value?.hide();
       });
 };
 
