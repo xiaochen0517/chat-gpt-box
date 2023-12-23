@@ -46,9 +46,9 @@ const changeTab = (tabName: string) => {
 <template>
   <div class="w-full relative" :class="{'opacity-40':disabled}">
     <div class="z-10 absolute left-0 top-0 bottom-0 p-1 transition-all ease-in-out duration-500" :style="slipStyle">
-      <div class="w-full h-full rounded-lg bg-neutral-100 dark:bg-neutral-700"/>
+      <div class="w-full h-full rounded-lg bg-neutral-200 dark:bg-neutral-700"/>
     </div>
-    <ul class="relative flex flex-row gap-1 p-1 list-none rounded-lg dark:bg-neutral-800">
+    <ul class="relative flex flex-row gap-1 p-1 list-none rounded-lg bg-neutral-100 dark:bg-neutral-800">
       <li v-for="(item) in tabNames" :key="item" class="z-30 flex-auto text-center">
         <a
             class="z-20 flex items-center justify-center w-full px-0 py-1 mb-0 transition-all ease-in-out cursor-pointer"

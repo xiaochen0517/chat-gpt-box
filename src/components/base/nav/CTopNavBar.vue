@@ -25,20 +25,20 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div class="w-full flex flex-row items-center select-none rounded-b-2xl bg-neutral-100 dark:bg-neutral-800">
+  <div class="mx-2 py-3 flex flex-row items-center select-none rounded-b-xl bg-neutral-100 dark:bg-neutral-800">
     <div
-        class="w-10 h-10 ml-4 rounded-xl flex justify-center cursor-pointer bg-neutral-200 dark:bg-neutral-700 hover:dark:bg-neutral-600"
+        class="w-8 h-8 ml-4 rounded-xl flex justify-center cursor-pointer bg-neutral-200 dark:bg-neutral-700 hover:dark:bg-neutral-600"
         @click.stop="$emit('backClick')"
     >
-      <i class="iconfont icon-left-arrow text-xl leading-10"/>
+      <i class="iconfont icon-left-arrow text-base leading-8"/>
     </div>
-    <div class="ml-4 text-xl leading-16">{{ props.title }}</div>
+    <div class="ml-4 text-lg">{{ props.title }}</div>
     <div v-if="saveButton" class="ml-auto">
       <div
-          class="w-20 h-10 mr-4 rounded-xl flex justify-center items-center cursor-pointer bg-neutral-200 hover:bg-neutral-300 active:bg-neutral-400 dark:bg-neutral-700 hover:dark:bg-neutral-600 active:dark:bg-neutral-500"
+          class="w-14 mr-4 rounded-xl flex justify-center items-center cursor-pointer bg-neutral-200 hover:bg-neutral-300 active:bg-neutral-400 dark:bg-neutral-700 hover:dark:bg-neutral-600 active:dark:bg-neutral-500"
           @click="$emit('saveClick')"
       >
-        <div class="text-md leading-10">{{ props.saveButtonText }}</div>
+        <div class="text-md leading-8">{{ props.saveButtonText }}</div>
       </div>
     </div>
   </div>

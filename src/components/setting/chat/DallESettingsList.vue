@@ -165,7 +165,7 @@ const openImageQualityDialog = () => {
 <template>
   <div class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
     <CListItem content="Api url" left-icon="icon-discount" @click="openApiUrlDialog"/>
-    <CListItem content="Default model" left-icon="icon-connections" @click="openModelDialog"/>
+    <CListItem content="Model" left-icon="icon-connections" @click="openModelDialog"/>
     <CListItem content="Image count" left-icon="icon-hot-for-ux" @click="openImageCountDialog"/>
     <CListItem content="Image size" left-icon="icon-file-text" @click="openImageSizeDialog"/>
     <CListItem content="Image style" left-icon="icon-translate" @click="openImageStyleDialog"/>

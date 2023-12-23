@@ -191,7 +191,7 @@ const openTopPDialog = () => {
 <template>
   <div class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
     <CListItem content="Api url" left-icon="icon-connections" @click="openApiUrlDialog"/>
-    <CListItem content="Default model" left-icon="icon-connections" @click="openModelDialog"/>
+    <CListItem content="Model" left-icon="icon-connections" @click="openModelDialog"/>
     <CListItem content="Max output tokens" left-icon="icon-hot-for-ux" @click="openMaxOutputTokensDialog"/>
     <CListItem content="Temperature" left-icon="icon-file-text" @click="openTemperatureDialog"/>
     <CListItem content="Top K" left-icon="icon-translate" @click="openTopKDialog"/>

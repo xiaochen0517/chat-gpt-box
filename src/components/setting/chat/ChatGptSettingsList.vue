@@ -157,7 +157,7 @@ const openResponseMaxTokensDialog = () => {
 <template>
   <div class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
     <CListItem content="Api url" left-icon="icon-discount" @click="openApiUrlDialog"/>
-    <CListItem content="Default Model" left-icon="icon-connections" @click="openModelDialog"/>
+    <CListItem content="Model" left-icon="icon-connections" @click="openModelDialog"/>
     <CListItem content="Temperature" left-icon="icon-hot-for-ux" @click="openTemperatureDialog"/>
     <CListItem content="Context max messages" left-icon="icon-file-text" @click="openContextMaxMsgsDialog"/>
     <CListItem content="Context max tokens" left-icon="icon-translate" @click="openContextMaxTokensDialog"/>
