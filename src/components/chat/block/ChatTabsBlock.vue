@@ -8,8 +8,8 @@ import CTabPane from "@/components/base/tab/CTabPane.vue";
 import {ElMessageBox} from "element-plus";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
-import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
-import {ChatTabInfoTypes} from "@/types/chat/ChatTabInfoTypes.ts";
+import {ChatInfo} from "@/types/chat/ChatInfo.ts";
+import {ChatTabInfo} from "@/types/chat/ChatTabInfo.ts";
 
 /**
  * register shortcut
@@ -47,7 +47,7 @@ whenever(cleanTabChatKey, () => {
 });
 
 type Props = {
-  activeChat: ChatInfoTypes | null,
+  activeChat: ChatInfo | null,
   tabIndex: number
 }
 const props = withDefaults(defineProps<Props>(), {
@@ -55,7 +55,7 @@ const props = withDefaults(defineProps<Props>(), {
   tabIndex: 0,
 });
 
-const propsActiveChat = ref<ChatInfoTypes | null>(props.activeChat);
+const propsActiveChat = ref<ChatInfo | null>(props.activeChat);
 watch(
   () => props.activeChat,
   (value) => {
@@ -110,7 +110,7 @@ const chatTabNameList = computed(() => {
   let chatTabList = chatTabsStore.chatTabs[propsActiveChat.value.id];
   if (!chatTabList) return [];
   return chatTabList
-    .map((item: ChatTabInfoTypes) => item.name);
+    .map((item: ChatTabInfo) => item.name);
 });
 const removeTabClick = (index: number) => {
   ElMessageBox.confirm("Are you sure to remove this tab?", "Warning", {

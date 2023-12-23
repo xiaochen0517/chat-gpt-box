@@ -2,7 +2,8 @@
 import {getCurrentInstance, onMounted, ref, watch} from "vue";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 import {ElMessage} from "element-plus";
-import {ChatInfoTypes, DallEChatOptions} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfo} from "@/types/chat/ChatInfo.ts";
+import {OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
 
 type ImageSizeListType = {
   label: string;
@@ -38,7 +39,7 @@ const DALLE3ImageSizeList: ImageSizeListType[] = [
 ];
 
 type Props = {
-  chatInfo: ChatInfoTypes | null,
+  chatInfo: ChatInfo | null,
 }
 const props = withDefaults(defineProps<Props>(), {
   chatInfo: null,
@@ -46,11 +47,11 @@ const props = withDefaults(defineProps<Props>(), {
 const imageSizeList = ref<ImageSizeListType[]>([]);
 onMounted(() => {
   if (!props.chatInfo) return;
-  imageSizeList.value = (props.chatInfo.options as DallEChatOptions).model === "dall-e-3" ? DALLE3ImageSizeList : DALLE2ImageSizeList;
+  imageSizeList.value = (props.chatInfo.options as OpenAiDallEConfig).model === "dall-e-3" ? DALLE3ImageSizeList : DALLE2ImageSizeList;
 });
 watch(() => props.chatInfo, (newValue) => {
   if (!newValue) return;
-  imageSizeList.value = (newValue.options as DallEChatOptions).model === "dall-e-3" ? DALLE3ImageSizeList : DALLE2ImageSizeList;
+  imageSizeList.value = (newValue.options as OpenAiDallEConfig).model === "dall-e-3" ? DALLE3ImageSizeList : DALLE2ImageSizeList;
 });
 
 const showDialog = ref(false);

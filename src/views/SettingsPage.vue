@@ -1,18 +1,16 @@
 <script setup lang="ts">
-import {defineComponent, markRaw, nextTick, onMounted, ref, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import router from "@/router/Router.ts";
 import CListItem from "@/components/base/list/CListItem.vue";
-import ApiKeyDialog from "@/components/setting/dialog/ApiKeyDialog.vue";
-import ApiUrlDialog from "@/components/setting/dialog/ApiUrlDialog.vue";
-import GPTModelDialog from "@/components/setting/dialog/gpt/GPTModelDialog.vue";
-import TemperatureDialog from "@/components/setting/dialog/gpt/TemperatureDialog.vue";
-import ContextMaxMsgsDialog from "@/components/setting/dialog/gpt/ContextMaxMsgsDialog.vue";
-import ContextMaxTokensDialog from "@/components/setting/dialog/gpt/ContextMaxTokensDialog.vue";
-import ResponseMaxTokensDialog from "@/components/setting/dialog/gpt/ResponseMaxTokensDialog.vue";
 import CTopNavBar from "@/components/base/nav/CTopNavBar.vue";
-
-import {BaseConfigTypes} from "@/types/chat/BaseConfigTypes.ts";
+import CAnimationTabs from "@/components/base/tab/CAnimationTabs.vue";
+import ChatGptSettingsList from "@/components/setting/chat/ChatGptSettingsList.vue";
+import DallESettingsList from "@/components/setting/chat/DallESettingsList.vue";
+import GeminiSettingsList from "@/components/setting/chat/GeminiSettingsList.vue";
+import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
+import {BaseSettingsDialogUtil} from "@/utils/settings/BaseSettingsDialogUtil.ts";
+import {ElMessage} from "element-plus";
 
 onMounted(() => {
   console.log("onMounted");
@@ -42,46 +40,44 @@ watch(enterSend, (value) => {
   configStore.setEnterSend(value);
 });
 
-type ComponentMap = {
-  [key: string]: ReturnType<typeof defineComponent>;
-};
-
-const components: ComponentMap = {
-  ApiKeyDialog,
-  ApiUrlDialog,
-  GPTModelDialog,
-  TemperatureDialog,
-  ContextMaxMsgsDialog,
-  ContextMaxTokensDialog,
-  ResponseMaxTokensDialog,
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const currentDialogRefs = ref<any>(null);
-const currentDialog = ref<string | ReturnType<typeof defineComponent>>("");
-const openDialog = (name: string, key: keyof BaseConfigTypes) => {
-  if (!components[name]) return;
-  currentDialog.value = markRaw(components[name]);
-  nextTick(() => {
-    if (!currentDialogRefs.value) return;
-    currentDialogRefs.value.show(configStore.baseConfig[key]);
-  });
-};
-
-const saveConfig = <K extends keyof BaseConfigTypes>(key: K, value: BaseConfigTypes[K]) => {
-  configStore.setBaseConfig(key, value);
+const currentDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
+const openOpenaiKeyDialog = () => {
   if (!currentDialogRefs.value) return;
-  currentDialogRefs.value.hide();
+  BaseSettingsDialogUtil.showApiKeyDialog(currentDialogRefs.value, configStore.defaultChatConfig.openAi.base.apiKey)
+      .then((value: string | number) => {
+        value = String(value);
+        if (!value || value.length === 0) {
+          ElMessage.warning("Please enter the OpenAI API Key");
+          return;
+        }
+        configStore.defaultChatConfig.openAi.base.apiKey = value;
+        currentDialogRefs.value?.hide();
+      });
 };
+const openGoogleKeyDialog = () => {
+  if (!currentDialogRefs.value) return;
+  BaseSettingsDialogUtil.showApiKeyDialog(currentDialogRefs.value, configStore.defaultChatConfig.google.base.apiKey)
+      .then((value: string | number) => {
+        value = String(value);
+        if (!value || value.length === 0) {
+          ElMessage.warning("Please enter the Google API Key");
+          return;
+        }
+        configStore.defaultChatConfig.google.base.apiKey = value;
+        currentDialogRefs.value?.hide();
+      });
+};
+
+const activeTabName = ref("");
+const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
 </script>
 
 <template>
-  <div class="w-full h-full bg-neutral-50 dark:bg-neutral-900">
+  <div class="w-full h-screen  bg-neutral-50 dark:bg-neutral-900 overflow-y-auto">
     <CTopNavBar title="Settings" @backClick="jumpToHomePage"/>
-    <div class="px-2 xl:p-0 max-w-content m-auto mt-2">
+    <div class="px-2 xl:p-0 max-w-content m-auto pt-2 pb-6">
       <div class="mt-1 text-lg leading-13">Basic Settings</div>
       <div class="rounded-xl overflow-hidden text-base select-none">
-        <CListItem content="Api key" left-icon="icon-lock" @click.stop="openDialog('ApiKeyDialog', 'apiKey')"/>
         <CListItem
             content="Enter Line break"
             left-icon="icon-enter"
@@ -96,37 +92,21 @@ const saveConfig = <K extends keyof BaseConfigTypes>(key: K, value: BaseConfigTy
             switch-enabled
             v-model:switch-value="ctrlEnterSend"
         />
-        <CListItem content="Api url" left-icon="icon-link1" @click.stop="openDialog('ApiUrlDialog', 'apiUrl')"/>
         <CListItem
             content="Dark Mode"
             :left-icon="isDarkMode?'icon-night-mode':'icon-daytime-mode'"
             switch-enabled
             v-model:switch-value="isDarkMode"
-            :bottom-border="false"
-        />
-      </div>
-      <div class="mt-1 text-lg leading-13">Advanced Settings</div>
-      <div class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
-        <CListItem content="Default Model" left-icon="icon-connections" @click="openDialog('GPTModelDialog', 'model')"/>
-        <CListItem
-            content="Temperature"
-            left-icon="icon-hot-for-ux"
-            @click="openDialog('TemperatureDialog', 'temperature')"
         />
         <CListItem
-            content="Context max msgs"
-            left-icon="icon-file-text"
-            @click="openDialog('ContextMaxMsgsDialog', 'contextMaxMessage')"
+            content="Openai API Key"
+            left-icon="icon-gold"
+            @click="openOpenaiKeyDialog"
         />
         <CListItem
-            content="Context max tokens"
-            left-icon="icon-translate"
-            @click="openDialog('ContextMaxTokensDialog', 'contextMaxTokens')"
-        />
-        <CListItem
-            content="Response max tokens"
-            left-icon="icon-rollback"
-            @click="openDialog('ResponseMaxTokensDialog', 'responseMaxTokens')"
+            content="Google API Key"
+            left-icon="icon-gold"
+            @click="openGoogleKeyDialog"
         />
         <CListItem
             content="KeyMap"
@@ -135,12 +115,37 @@ const saveConfig = <K extends keyof BaseConfigTypes>(key: K, value: BaseConfigTy
             @click="jumpToKeyMapSettingPage"
         />
       </div>
+      <div class="mt-1 text-lg leading-13">Chat Default Settings</div>
+      <CAnimationTabs v-model:active-name="activeTabName" :tab-names="tabNames"/>
+      <div class="pt-4 overflow-hidden">
+        <Transition name="slip" mode="out-in">
+          <ChatGptSettingsList v-if="activeTabName === 'GPT'"/>
+          <DallESettingsList v-else-if="activeTabName === 'DALL-E'"/>
+          <GeminiSettingsList v-else-if="activeTabName === 'Gemini'"/>
+        </Transition>
+      </div>
     </div>
-    <Component
-        ref="currentDialogRefs"
-        :is="currentDialog"
-        v-if="currentDialog"
-        @saveOption="saveConfig"
-    />
+    <CSettingsDialog ref="currentDialogRefs"/>
   </div>
 </template>
+
+<style lang="less" scoped>
+.slip-enter-active, .slip-leave-active {
+  transition: all 0.2s ease-in-out;
+}
+
+.slip-leave-to {
+  transform: translateX(-100%);
+  opacity: .2;
+}
+
+.slip-enter-from {
+  transform: translateX(100%);
+  opacity: .2;
+}
+
+.slip-enter-to, .slip-leave-from {
+  transform: translateX(0);
+  opacity: 1;
+}
+</style>

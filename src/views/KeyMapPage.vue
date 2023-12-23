@@ -6,7 +6,7 @@ import {useConfigStore} from "@/store/ConfigStore.ts";
 import KeyMapChangeDialog from "@/components/setting/dialog/KeyMapChangeDialog.vue";
 import {computed, ref} from "vue";
 
-import {ShortcutConfigKey} from "@/types/chat/BaseConfigTypes.ts";
+import {ShortcutConfigKey} from "@/types/chat/BaseConfig.ts";
 
 const configStore = useConfigStore();
 

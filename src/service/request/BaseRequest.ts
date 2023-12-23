@@ -1,26 +1,40 @@
-import {RequestOptionsTypes} from "@/types/request/RequestOptionsTypes.ts";
-import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfo, ChatOptions} from "@/types/chat/ChatInfo.ts";
 
 export interface BaseRequest {
 
-  chatInfo: ChatInfoTypes;
+  chatInfo: ChatInfo;
+
+  chatConfig: ChatOptions;
+
+  tabIndex: number;
 
   refreshCallbackFunc: () => void;
 
-  requestOptions: RequestOptionsTypes | null;
-
   stopFlag: boolean;
 
-  sendMessage(requestOptions: RequestOptionsTypes, refreshCallbackFunc: () => void): Promise<string>;
+  sendMessage(message: string): Promise<string>;
 
   cancel(): void;
 
 }
 
-export const checkParams = (requestOptions: RequestOptionsTypes, refreshCallbackFunc: () => void): void => {
-  console.log("request options", requestOptions);
-  if (!refreshCallbackFunc) throw new Error("refresh callback invalid");
-  if (!requestOptions) throw new Error("request options is null");
-  if (!(requestOptions.tabIndex >= 0)) throw new Error("tab index invalid");
-  if (!requestOptions.message) throw new Error("message invalid");
-};
+export function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    console.error(error.message);
+    return error.message;
+  }
+  console.error(error);
+  return String(error);
+}
+
+export async function checkFetchResponse(data: Response): Promise<string | null> {
+  if (!data.ok || data.status !== 200) {
+    let errMsg = `request failure status：${data.status}`;
+    if (data.body) {
+      const dataText = await data.text();
+      errMsg += `; message: \n\`\`\`json\n${dataText}\n\`\`\``;
+    }
+    return errMsg;
+  }
+  return null;
+}

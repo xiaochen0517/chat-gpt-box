@@ -1,6 +1,6 @@
-import {ChatMessage} from "@/types/chat/ChatTabInfoTypes.ts";
+import {ChatMessage} from "@/types/chat/ChatTabInfo.ts";
 
-export type ChatGptRequestTypes = {
+export type ChatGptRequest = {
   apiUrl: string;
   model: string;
   temperature: number;

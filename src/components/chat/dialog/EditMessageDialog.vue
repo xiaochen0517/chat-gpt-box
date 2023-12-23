@@ -4,7 +4,7 @@ import _ from "lodash";
 import {ElForm, ElInput, ElMessage} from "element-plus";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import CDialog from "@/components/base/dialog/CDialog.vue";
-import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfoTypes.ts";
+import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
 
 const dialogVisible = ref(false);
 

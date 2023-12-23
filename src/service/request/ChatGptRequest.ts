@@ -1,12 +1,11 @@
-import {BaseRequest, checkParams} from "@/service/request/BaseRequest.ts";
+import {BaseRequest, getErrorMessage} from "@/service/request/BaseRequest.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
-import {RequestOptionsTypes} from "@/types/request/RequestOptionsTypes.ts";
-import {ChatGptRequestBody, ChatGptRequestTypes} from "@/types/request/ChatGptRequestTypes.ts";
+import {ChatGptRequestBody} from "@/types/request/ChatGptRequest.ts";
 import {encoding_for_model, Tiktoken, TiktokenModel} from "tiktoken";
-import {ChatInfoTypes, GPTChatOptions} from "@/types/chat/ChatInfoTypes.ts";
-import {ChatMessage, ChatMessageRole, ChatTabInfoTypes} from "@/types/chat/ChatTabInfoTypes.ts";
-import {BaseConfigTypes} from "@/types/chat/BaseConfigTypes.ts";
+import {ChatInfo} from "@/types/chat/ChatInfo.ts";
+import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
+import {OpenAiChatGptConfig} from "@/types/chat/BaseConfig.ts";
 
 const CHAT_GPT_API_SUFFIX: string = "v1/chat/completions";
 const HTTP_REQ_TYPE: string = "POST";
@@ -19,40 +18,39 @@ const DATA_DONE_FLAG: string = "[DONE]";
 
 export class ChatGptRequest implements BaseRequest {
 
-  chatInfo: ChatInfoTypes;
+  chatInfo: ChatInfo;
+
+  chatConfig: OpenAiChatGptConfig;
+
+  tabIndex: number;
 
   refreshCallbackFunc: () => void = () => {
   };
 
-  requestOptions: RequestOptionsTypes | null = null;
-
   stopFlag: boolean = false;
-
-  chatConfig: ChatGptRequestTypes | null = null;
 
   abortController: AbortController | null = null;
 
   reader: ReadableStreamDefaultReader | null = null;
 
-  constructor(chatInfo: ChatInfoTypes) {
+  constructor(chatInfo: ChatInfo, tabIndex: number, refreshCallbackFunc: () => void | null) {
     this.chatInfo = chatInfo;
+    this.chatConfig = chatInfo.options as OpenAiChatGptConfig;
+    this.tabIndex = tabIndex;
+    if (refreshCallbackFunc) this.refreshCallbackFunc = refreshCallbackFunc;
   }
 
-  public sendMessage(requestOptions: RequestOptionsTypes, refreshCallbackFunc: () => void): Promise<string> {
+  public sendMessage(message: string): Promise<string> {
+    this.abortController = new AbortController();
+    this.stopFlag = false;
+    this.setGenerating(true);
     try {
-      checkParams(requestOptions, refreshCallbackFunc);
-      this.requestOptions = requestOptions;
-      this.refreshCallbackFunc = refreshCallbackFunc;
-      this.chatConfig = this.getChatConfig();
-      return this.requestOpenAI();
+      this.pushUserMessage2ChatTab(message);
+      this.addAssistantMessage();
+      return this.sendFetch();
     } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-        this.setErrorMsgContent(error.message);
-        return Promise.reject(error.message);
-      }
-      console.error(error);
-      this.setErrorMsgContent(String(error));
+      const message = getErrorMessage(error);
+      this.setErrorMsgContent(message);
       return Promise.reject(error);
     }
   }
@@ -75,49 +73,34 @@ export class ChatGptRequest implements BaseRequest {
     });
   }
 
-  private getChatConfig(): ChatGptRequestTypes {
-    const config: GPTChatOptions | BaseConfigTypes = this.chatInfo.options.enabled ? this.chatInfo.options as GPTChatOptions : configStore.baseConfig;
-    return {
-      apiUrl: config.apiUrl,
-      model: config.model,
-      temperature: config.temperature,
-      contextMaxMessage: config.contextMaxMessage,
-      contextMaxTokens: config.contextMaxTokens,
-      responseMaxTokens: config.responseMaxTokens,
-    };
-  }
-
-  private requestOpenAI(): Promise<string> {
-    this.abortController = new AbortController();
-    const url: string = this.chatConfig?.apiUrl + CHAT_GPT_API_SUFFIX;
-    const request: RequestInit = this.generateRequest();
-    this.setGenerating(true);
-    return this.sendFetch(url, request);
-  }
-
-  private sendFetch(url: string, request: RequestInit): Promise<string> {
-    this.addAssistantMessage();
-    fetch(url, request)
-      .then(async (data: Response) => {
-        if (!await this.checkFetchResponse(data)) return;
-        try {
-          if (!data.body) return;
-          this.reader = data.body.getReader();
-          await this.readResponse(await this.reader.read());
-        } catch (error) {
-          console.error(error);
-          const errMsg = error instanceof Error ? error.message : String(error);
-          this.setErrorMsgContent(errMsg);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        this.setErrorMsgContent(error.message);
-      });
+  private sendFetch(): Promise<string> {
+    fetch(
+      this.chatConfig.apiUrl + CHAT_GPT_API_SUFFIX,
+      this.generateRequest())
+      .then(this.handleFetchResponse)
+      .catch(this.handleFetchError);
     return Promise.resolve("");
   }
 
-  private async checkFetchResponse(data: Response): Promise<boolean> {
+  private handleFetchError(error: Error): void {
+    console.error(error);
+    this.setErrorMsgContent(error.message);
+  }
+
+  private handleFetchResponse = async (data: Response): Promise<void> => {
+    try {
+      if (!await this.checkFetchResponse(data)) return;
+      if (!data.body) throw new Error("response body is null");
+      this.reader = data.body.getReader();
+      await this.readResponse(await this.reader.read());
+    } catch (error) {
+      console.error(error);
+      const errMsg = error instanceof Error ? error.message : String(error);
+      this.setErrorMsgContent(errMsg);
+    }
+  };
+
+  private checkFetchResponse = async (data: Response): Promise<boolean> => {
     if (!data.ok || data.status !== 200) {
       let errMsg = `request failure status：${data.status}`;
       if (data.body) {
@@ -127,12 +110,8 @@ export class ChatGptRequest implements BaseRequest {
       this.setErrorMsgContent(errMsg);
       return false;
     }
-    if (!data.body) {
-      this.setErrorMsgContent("response body is null");
-      return false;
-    }
     return true;
-  }
+  };
 
   private generateRequest(): RequestInit {
     return {
@@ -146,12 +125,11 @@ export class ChatGptRequest implements BaseRequest {
   private generateRequestHeader(): HeadersInit {
     return {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + configStore.baseConfig.apiKey,
+      "Authorization": "Bearer " + configStore.defaultChatConfig.openAi.base.apiKey,
     };
   }
 
   private generateRequestBody(): ChatGptRequestBody {
-    if (!this.chatConfig) throw new Error("chat config is null");
     return {
       messages: this.getMessage2Send(),
       model: this.chatConfig.model,
@@ -162,47 +140,23 @@ export class ChatGptRequest implements BaseRequest {
   }
 
   private getMessage2Send(): ChatMessage[] {
-    // there request options absolutely not null, but typescript compiler not know
-    if (!this.requestOptions) throw new Error("request options is null");
-    this.pushUserMessage2ChatTab();
-    const chatTabInfo = this.getChatTabInfo(this.requestOptions.tabIndex);
-    let messages: ChatMessage[] = this.getMaxContextMessage(chatTabInfo);
+    let messages: ChatMessage[] = this.getMaxContextMessage();
     messages = this.filterMessagesWithTokenLimit(messages);
     messages.unshift({role: ChatMessageRole.System, content: this.chatInfo.prompt});
     console.log("send messages: ", messages);
     return messages;
   }
 
-  private pushUserMessage2ChatTab() {
-    if (!this.requestOptions) throw new Error("request options is null");
-    chatTabsStore.addUserMessage(this.chatInfo.id, this.requestOptions.tabIndex, this.requestOptions.message);
-    this.refreshCallbackFunc();
-  }
-
-  private getChatTabInfo(tabIndex: number): ChatTabInfoTypes {
-    const chatTabInfo = chatTabsStore.getChatTabInfo(this.chatInfo.id, tabIndex);
-    if (!chatTabInfo) throw new Error("chat tab info is null");
-    return chatTabInfo;
-  }
-
-  private getMaxContextMessage(chatTabInfo: ChatTabInfoTypes): ChatMessage[] {
-    if (!this.chatConfig) throw new Error("chat config is null");
-    const tabChatLength = chatTabInfo.chat.length;
-    if (tabChatLength === 0) return [];
-    const messages: ChatMessage[] = [];
-    // contextMaxMessage plus 1, because the last message is user new message
-    let maxContextMinCount = tabChatLength - (this.chatConfig.contextMaxMessage + 1);
-    if (maxContextMinCount < 0) maxContextMinCount = 0;
-    for (let i = tabChatLength - 1; i >= maxContextMinCount; i--) {
-      const chatMessage = chatTabInfo.chat[i];
-      if (chatMessage.role === "system") continue;
-      messages.unshift(chatMessage);
-    }
-    return messages;
+  private getMaxContextMessage(): ChatMessage[] {
+    const chatTabInfo = chatTabsStore.getChatTabInfo(this.chatInfo.id, this.tabIndex);
+    if (!chatTabInfo || chatTabInfo.chat.length === 0) return [];
+    const messages: ChatMessage[] = chatTabInfo.chat.slice(1, chatTabInfo.chat.length - 1);
+    // 获取最大指定数量的上下文消息
+    if (messages.length <= this.chatConfig.contextMaxMessage) return messages;
+    return messages.slice(messages.length - this.chatConfig.contextMaxMessage - 1, messages.length);
   }
 
   private filterMessagesWithTokenLimit(messages: ChatMessage[]): ChatMessage[] {
-    if (!this.chatConfig) throw new Error("chat config is null");
     // check context messages token size
     const tokenEncoder = encoding_for_model(this.chatConfig.model as TiktokenModel);
     while (this.getMessagesTokenSize(messages, tokenEncoder) > this.chatConfig.contextMaxTokens) {
@@ -220,13 +174,8 @@ export class ChatGptRequest implements BaseRequest {
     return messagesTokenSize;
   }
 
-  private addAssistantMessage() {
-    if (!this.requestOptions) throw new Error("request options is null");
-    chatTabsStore.addAssistantMessage(this.chatInfo.id, this.requestOptions.tabIndex);
-    this.refreshCallbackFunc();
-  }
-
-  private async readResponse(result: ReadableStreamReadResult<any>) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private readResponse = async (result: ReadableStreamReadResult<any>): Promise<void> => {
     if (result.done || this.stopFlag) {
       console.log("读取完成");
       this.setGenerating(false);
@@ -249,14 +198,14 @@ export class ChatGptRequest implements BaseRequest {
         }
       }
     }
-
     if (!this.reader) {
       this.setGenerating(false);
       return;
     }
     await this.readResponse(await this.reader.read());
-  }
+  };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private parsePieceData(data: string): any | null {
     // skip empty data
     if (data.length === 0) {
@@ -268,34 +217,46 @@ export class ChatGptRequest implements BaseRequest {
       this.setGenerating(false);
       return null;
     }
+    const resultData = this.parseResultData(data);
+    // check error
+    if (resultData.error) {
+      throw new Error(resultData.error.message);
+    }
+    return resultData;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private parseResultData(data: string): any | null {
     try {
       // parse json data
-      const resultData = JSON.parse(data);
-      // check error
-      if (resultData.error) {
-        throw new Error(resultData.error.message);
-      }
-      return resultData;
+      return JSON.parse(data);
     } catch (error) {
       throw new Error(`parse json data error: ${error}\nparse data: ${data}`);
     }
   }
 
+  private addAssistantMessage() {
+    chatTabsStore.addAssistantMessage(this.chatInfo.id, this.tabIndex);
+    this.refreshCallbackFunc();
+  }
+
+  private pushUserMessage2ChatTab(message: string) {
+    chatTabsStore.addUserMessage(this.chatInfo.id, this.tabIndex, message);
+    this.refreshCallbackFunc();
+  }
+
   private appendAssistantMsgContent(content: string) {
-    if (!this.requestOptions) throw new Error("request options is null");
-    chatTabsStore.appendAssistantMsgContent(this.chatInfo.id, this.requestOptions.tabIndex, content);
+    chatTabsStore.appendAssistantMsgContent(this.chatInfo.id, this.tabIndex, content);
     this.refreshCallbackFunc();
   }
 
   private setErrorMsgContent(errorMsg: string) {
-    if (!this.requestOptions) throw new Error("request options is null");
-    chatTabsStore.setAssistantErrorMsgContent(this.chatInfo.id, this.requestOptions.tabIndex, errorMsg);
+    chatTabsStore.setAssistantErrorMsgContent(this.chatInfo.id, this.tabIndex, errorMsg);
     this.setGenerating(false);
   }
 
   private setGenerating(generating: boolean) {
-    if (!this.requestOptions) throw new Error("request options is null");
-    chatTabsStore.setGenerating(this.chatInfo.id, this.requestOptions.tabIndex, generating);
+    chatTabsStore.setGenerating(this.chatInfo.id, this.tabIndex, generating);
   }
 
 }

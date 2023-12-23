@@ -20,7 +20,7 @@ const configStore = useConfigStore();
 
 const apiKey = ref("");
 onMounted(() => {
-  apiKey.value = configStore.baseConfig.apiKey;
+  apiKey.value = configStore.defaultChatConfig.openAi.base.apiKey;
 });
 
 const instance = getCurrentInstance();

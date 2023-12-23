@@ -3,7 +3,8 @@ import {ChatListStore} from "@/types/StoreTypes.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {v4 as uuidv4} from "uuid";
 import _ from "lodash";
-import {ChatInfoTypes, ChatOptions, ChatType, DallEChatOptions, GPTChatOptions} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfo, ChatOptions, ChatType} from "@/types/chat/ChatInfo.ts";
+import {GoogleGeminiConfig, OpenAiChatGptConfig, OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
 
 export const useChatListStore = defineStore("chatList", {
   state: (): ChatListStore => {
@@ -15,11 +16,10 @@ export const useChatListStore = defineStore("chatList", {
           prompt: "You are a helpful assistant.",
           chatType: ChatType.CHAT_GPT,
           options: {
-            enabled: false,
             apiUrl: "https://api.openai.com/",
             model: "gpt-3.5-turbo",
             temperature: 0.7,
-            contextMaxMessage: 1,
+            contextMaxMessage: 2,
             contextMaxTokens: 2048,
             responseMaxTokens: 0
           },
@@ -30,11 +30,10 @@ export const useChatListStore = defineStore("chatList", {
           prompt: "You are a helpful assistant. Please ask me anything.",
           chatType: ChatType.CHAT_GPT,
           options: {
-            enabled: true,
             apiUrl: "https://api.openai.com/",
             model: "gpt-4-1106-preview",
             temperature: 0.7,
-            contextMaxMessage: 1,
+            contextMaxMessage: 2,
             contextMaxTokens: 2048,
             responseMaxTokens: 0
           },
@@ -43,44 +42,51 @@ export const useChatListStore = defineStore("chatList", {
     };
   },
   actions: {
-    setChatList(chatList: ChatInfoTypes[]) {
+    setChatList(chatList: ChatInfo[]) {
       this.chatList = chatList;
     },
-    getChatInfo(id: string): ChatInfoTypes | null {
-      return _.cloneDeep(this.chatList.find((chat: ChatInfoTypes): boolean => chat.id === id) ?? null);
+    getChatInfo(id: string): ChatInfo | null {
+      return _.cloneDeep(this.chatList.find((chat: ChatInfo): boolean => chat.id === id) ?? null);
     },
-    setChatInfo<K extends keyof ChatInfoTypes>(id: string, key: K, value: ChatInfoTypes[K]) {
+    setChatInfo<K extends keyof ChatInfo>(id: string, key: K, value: ChatInfo[K]) {
       const index = this.getChatInfoIndex(id);
       if (index < 0) return;
       const chatInfo = this.chatList[index];
       chatInfo[key] = value;
       // If you are modifying the prompt, you need to update the prompt in the chatTabsStore
-      const promptKey = "prompt" as keyof ChatInfoTypes;
+      const promptKey = "prompt" as keyof ChatInfo;
       if (key === promptKey && chatInfo.chatType === ChatType.CHAT_GPT) {
         useChatTabsStore().setAllTabPromptMessage(id, value as string);
       }
     },
-    setGPTChatOptions<K extends keyof GPTChatOptions>(id: string, key: K, value: GPTChatOptions[K]) {
+    setGPTChatOptions<K extends keyof OpenAiChatGptConfig>(id: string, key: K, value: OpenAiChatGptConfig[K]) {
       const index = this.getChatInfoIndex(id);
       if (index < 0) return;
       const chatInfo = this.chatList[index];
       // if current chat type is not GPT, return
       if (chatInfo.chatType !== ChatType.CHAT_GPT) return;
-      (chatInfo.options as GPTChatOptions)[key] = value;
+      (chatInfo.options as OpenAiChatGptConfig)[key] = value;
     },
-    setDallEChatOptions<K extends keyof DallEChatOptions>(id: string, key: K, value: DallEChatOptions[K]) {
+    setDallEChatOptions<K extends keyof OpenAiDallEConfig>(id: string, key: K, value: OpenAiDallEConfig[K]) {
       const index = this.getChatInfoIndex(id);
       if (index < 0) return;
       const chatInfo = this.chatList[index];
       if (chatInfo.chatType !== ChatType.DALL_E) return;
-      (chatInfo.options as DallEChatOptions)[key] = value;
+      (chatInfo.options as OpenAiDallEConfig)[key] = value;
+    },
+    setGeminiChatOptions<K extends keyof GoogleGeminiConfig>(id: string, key: K, value: GoogleGeminiConfig[K]) {
+      const index = this.getChatInfoIndex(id);
+      if (index < 0) return;
+      const chatInfo = this.chatList[index];
+      if (chatInfo.chatType !== ChatType.GEMINI) return;
+      (chatInfo.options as GoogleGeminiConfig)[key] = value;
     },
     setChatOptions<K extends keyof ChatOptions>(id: string, key: K, value: ChatOptions[K]) {
       const index = this.getChatInfoIndex(id);
       if (index < 0) return;
       this.chatList[index].options[key] = value;
     },
-    addChat(chatInfo: ChatInfoTypes) {
+    addChat(chatInfo: ChatInfo) {
       chatInfo.id = uuidv4();
       this.chatList.push(chatInfo);
       useChatTabsStore().addDefaultChatTab(chatInfo.id);
@@ -91,50 +97,21 @@ export const useChatListStore = defineStore("chatList", {
       this.chatList.splice(index, 1);
       useChatTabsStore().removeChatTabs(id);
     },
-    getChatInfoIndex(chatInfo: ChatInfoTypes | string): number {
+    getChatInfoIndex(chatInfo: ChatInfo | string): number {
       const chatInfoId: string = typeof chatInfo !== "string" ? chatInfo.id : chatInfo;
-      return this.chatList.findIndex((chat: ChatInfoTypes): boolean => chat.id === chatInfoId);
+      return this.chatList.findIndex((chat: ChatInfo): boolean => chat.id === chatInfoId);
     },
-    removeChat(id: string) {
-      const index = this.getChatInfoIndex(id);
-      if (index < 0) return;
-      this.chatList.splice(index, 1);
-    },
-    updateChat(id: string, newChatInfo: ChatInfoTypes) {
-      const index = this.getChatInfoIndex(id);
-      if (index < 0) return;
-      this.chatList[index] = newChatInfo;
-    },
-    setChatName(id: string, name: string) {
-      const index = this.getChatInfoIndex(id);
-      if (index < 0) return;
-      this.chatList[index].name = name;
-    },
-    moveChat(direction: "up" | "down", id: string, size: number) {
-      const index = this.getChatInfoIndex(id);
-      if (index < 0) return;
-      const chat = this.chatList[index];
-      this.chatList.splice(index, 1);
-      switch (direction) {
-        case "up":
-          this.chatList.splice(index - size, 0, chat);
-          break;
-        case "down":
-          this.chatList.splice(index + size, 0, chat);
-          break;
-      }
-    },
-    getPrevChatInfo(chatInfo: ChatInfoTypes): ChatInfoTypes | null {
+    getPrevChatInfo(chatInfo: ChatInfo): ChatInfo | null {
       const index = this.getChatInfoIndex(chatInfo);
       if (index <= 0) return null;
       return this.chatList[index - 1];
     },
-    getNextChatInfo(chatInfo: ChatInfoTypes): ChatInfoTypes | null {
+    getNextChatInfo(chatInfo: ChatInfo): ChatInfo | null {
       const index = this.getChatInfoIndex(chatInfo);
       if (index < 0 || index >= this.chatList.length - 1) return null;
       return this.chatList[index + 1];
     },
-    getSwitchChatInfo(chatInfo: ChatInfoTypes): ChatInfoTypes {
+    getSwitchChatInfo(chatInfo: ChatInfo): ChatInfo {
       const index = this.getChatInfoIndex(chatInfo);
       if (index < 0 || index >= this.chatList.length - 1) return this.chatList[0];
       return this.chatList[index + 1];

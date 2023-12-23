@@ -3,13 +3,13 @@ import {computed, ref, watch} from "vue";
 import ChatMessageBlock from "./ChatMessageBlock.vue";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import EditMessageDialog from "../dialog/EditMessageDialog.vue";
-import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
-import {ChatMessage} from "@/types/chat/ChatTabInfoTypes.ts";
+import {ChatInfo} from "@/types/chat/ChatInfo.ts";
+import {ChatMessage} from "@/types/chat/ChatTabInfo.ts";
 
 const chatTabsStore = useChatTabsStore();
 
 type Props = {
-  chatInfo: ChatInfoTypes | null,
+  chatInfo: ChatInfo | null,
   tabIndex: number
 }
 const props = withDefaults(defineProps<Props>(), {
@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
   tabIndex: 0,
 });
 
-const propsChatInfo = ref<ChatInfoTypes | null>(props.chatInfo);
+const propsChatInfo = ref<ChatInfo | null>(props.chatInfo);
 watch(
   () => props.chatInfo,
   (value) => {

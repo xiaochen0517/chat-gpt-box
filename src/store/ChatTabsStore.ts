@@ -1,8 +1,8 @@
 import {defineStore} from "pinia";
 import {ChatTabsStore} from "@/types/StoreTypes.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
-import {ChatMessage, ChatMessageRole, ChatTabInfoTypes} from "@/types/chat/ChatTabInfoTypes.ts";
-import {ChatType} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatMessage, ChatMessageRole, ChatTabInfo} from "@/types/chat/ChatTabInfo.ts";
+import {ChatType} from "@/types/chat/ChatInfo.ts";
 
 export const useChatTabsStore = defineStore("chatTabs", {
   state: (): ChatTabsStore => {
@@ -37,7 +37,7 @@ export const useChatTabsStore = defineStore("chatTabs", {
         }
       }
     },
-    getChatTabInfo(id: string, tabIndex: number): ChatTabInfoTypes | null {
+    getChatTabInfo(id: string, tabIndex: number): ChatTabInfo | null {
       if (!id || !this.chatTabs[id]) return null;
       return this.chatTabs[id][tabIndex];
     },
@@ -127,7 +127,7 @@ export const useChatTabsStore = defineStore("chatTabs", {
     },
     setGenerating(id: string, tabIndex: number, generating: boolean) {
       if (!id || !this.chatTabs[id]) return;
-      const chatTabInfo: ChatTabInfoTypes = this.chatTabs[id][tabIndex];
+      const chatTabInfo: ChatTabInfo = this.chatTabs[id][tabIndex];
       chatTabInfo.generating = generating;
       if (!generating) {
         chatTabInfo.request = null;

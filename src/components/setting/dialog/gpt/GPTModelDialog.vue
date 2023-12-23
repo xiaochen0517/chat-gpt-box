@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {getCurrentInstance, onMounted, ref} from "vue";
-import {useConfigStore} from "@/store/ConfigStore.ts";
+import {getCurrentInstance, ref} from "vue";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 import {ElMessage} from "element-plus";
-import {GPTModelList} from "@/utils/GPTModelList.ts";
+import {ChatGptModelList} from "@/models/ChatGptModelList.ts";
 
 const showDialog = ref(false);
+const model = ref("");
 const show = (value: number | string | null) => {
   showDialog.value = true;
   if (typeof value !== "string") return;
@@ -18,14 +18,6 @@ defineExpose({
   show,
   hide
 });
-
-const configStore = useConfigStore();
-
-const model = ref("");
-onMounted(() => {
-  model.value = configStore.baseConfig.model;
-});
-
 
 const instance = getCurrentInstance();
 const save = () => {
@@ -41,7 +33,7 @@ const save = () => {
   <CDialog v-model:visible="showDialog" title="Default Model" @ok="save">
     <el-select v-model="model" placeholder="Please select a model" width="100%">
       <el-option
-          v-for="item in GPTModelList"
+          v-for="item in ChatGptModelList"
           :key="item.value"
           :label="item.label"
           :value="item.value"

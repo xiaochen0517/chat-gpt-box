@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {getCurrentInstance, onMounted, ref} from "vue";
-import {useConfigStore} from "@/store/ConfigStore.ts";
+import {getCurrentInstance, ref} from "vue";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 import {ElMessage} from "element-plus";
 
 const showDialog = ref(false);
+const apiUrl = ref("");
 const show = (value: number | string | null) => {
   showDialog.value = true;
   if (typeof value !== "string") return;
@@ -16,13 +16,6 @@ const hide = () => {
 defineExpose({
   show,
   hide
-});
-
-const configStore = useConfigStore();
-
-const apiUrl = ref("");
-onMounted(() => {
-  apiUrl.value = configStore.baseConfig.apiUrl;
 });
 
 const instance = getCurrentInstance();

@@ -3,27 +3,47 @@ import {EllipsisOutlined} from "@ant-design/icons-vue";
 import router from "@/router/Router.ts";
 import {ElMessageBox} from "element-plus";
 import {useChatListStore} from "@/store/ChatListStore.ts";
-import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfo, ChatType} from "@/types/chat/ChatInfo.ts";
+import {onMounted, ref} from "vue";
+import {GoogleGeminiConfig, OpenAiChatGptConfig, OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
 
 type Props = {
-  chatInfo: ChatInfoTypes | null,
-  activeChatInfo: ChatInfoTypes | null,
+  chatInfo: ChatInfo | null,
+  activeChatInfo: ChatInfo | null,
   drag: boolean
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   chatInfo: null,
   activeChatInfo: null,
   drag: false
 });
+const modelName = ref("");
+onMounted(() => {
+  if (!props.chatInfo) {
+    modelName.value = "NONE";
+    return;
+  }
+  switch (props.chatInfo.chatType) {
+    case ChatType.CHAT_GPT:
+      modelName.value = (props.chatInfo.options as OpenAiChatGptConfig).model;
+      break;
+    case ChatType.DALL_E:
+      modelName.value = (props.chatInfo.options as OpenAiDallEConfig).model;
+      break;
+    case ChatType.GEMINI:
+      modelName.value = (props.chatInfo.options as GoogleGeminiConfig).model;
+      break;
+  }
+});
 
-const editChatClick = (chatInfo: ChatInfoTypes | null) => {
+const editChatClick = (chatInfo: ChatInfo | null) => {
   if (!chatInfo) return;
   router.push({path: `/chat/editor/${chatInfo.id}`});
 };
 
 const chatListStore = useChatListStore();
-const deleteChatClick = (chatInfo: ChatInfoTypes | null) => {
+const deleteChatClick = (chatInfo: ChatInfo | null) => {
   if (!chatInfo) return;
   ElMessageBox.confirm(`Are you sure to delete ${chatInfo.name}?`, "Warning", {
     confirmButtonText: "OK",
@@ -43,8 +63,8 @@ const deleteChatClick = (chatInfo: ChatInfoTypes | null) => {
         <i class="iconfont icon-more" :class="drag?'':'cursor-grab'"/>
       </div>
       <div
-          class="flex-1 text-md leading-8 select-none overflow-hidden overflow-ellipsis whitespace-nowrap max-w-[15rem] font-bold"
-          :class="{'max-w-[9rem]':chatInfo?.options.enabled,'text-green-500 dark:text-green-400':chatInfo && chatInfo.id === activeChatInfo?.id}"
+          class="flex-1 text-md leading-8 select-none overflow-hidden overflow-ellipsis whitespace-nowrap font-bold max-w-[9rem]"
+          :class="{'text-green-500 dark:text-green-400':chatInfo && chatInfo.id === activeChatInfo?.id}"
           @click.stop="$emit('itemClick', chatInfo)"
       >
         {{ chatInfo?.name }}
@@ -54,7 +74,7 @@ const deleteChatClick = (chatInfo: ChatInfoTypes | null) => {
           @click.stop="editChatClick(chatInfo)"
       >
         <i class="iconfont icon-settings font-normal"/>
-        {{ chatInfo?.options.model.toUpperCase() }}
+        {{ chatInfo.options.model.toUpperCase() }}
       </div>
     </div>
     <el-popover overlayClassName="robot-editor-popover" placement="bottom" trigger="hover">
