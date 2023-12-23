@@ -31,3 +31,22 @@ textarea:focus {
 .el-select {
   width: 100%;
 }
+
+.slip-enter-active, .slip-leave-active {
+  transition: all 0.2s ease-in-out;
+}
+
+.slip-leave-to {
+  transform: translateX(-100%);
+  opacity: .2;
+}
+
+.slip-enter-from {
+  transform: translateX(100%);
+  opacity: .2;
+}
+
+.slip-enter-to, .slip-leave-from {
+  transform: translateX(0);
+  opacity: 1;
+}

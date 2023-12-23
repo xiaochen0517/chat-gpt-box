@@ -128,24 +128,3 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
     <CSettingsDialog ref="currentDialogRefs"/>
   </div>
 </template>
-
-<style lang="less" scoped>
-.slip-enter-active, .slip-leave-active {
-  transition: all 0.2s ease-in-out;
-}
-
-.slip-leave-to {
-  transform: translateX(-100%);
-  opacity: .2;
-}
-
-.slip-enter-from {
-  transform: translateX(100%);
-  opacity: .2;
-}
-
-.slip-enter-to, .slip-leave-from {
-  transform: translateX(0);
-  opacity: 1;
-}
-</style>
