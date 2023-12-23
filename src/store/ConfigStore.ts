@@ -23,7 +23,7 @@ export const useConfigStore = defineStore("config", {
             apiUrl: "https://api.openai.com/",
             model: "gpt-3.5-turbo",
             temperature: 0.7,
-            contextMaxMessage: 2,
+            contextMaxMessage: 5,
             contextMaxTokens: 2048,
             responseMaxTokens: 0,
           },
