@@ -29,11 +29,11 @@ function openKeyMapChangeDialog(shortcutConfigKey: ShortcutConfigKey) {
 </script>
 
 <template>
-  <div>
+  <div class="w-full h-screen bg-neutral-50 dark:bg-neutral-900 overflow-y-auto">
     <CTopNavBar
         title="Key Map"
         saveButton
-        saveButtonText="reset"
+        saveButtonText="Reset"
         @backClick="backClick"
         @saveClick="resetKeyMap"
     />
