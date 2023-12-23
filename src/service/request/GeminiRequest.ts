@@ -42,7 +42,8 @@ export class GeminiRequest implements BaseRequest {
     try {
       this.pushUserMessage2ChatTab(message);
       this.addAssistantMessage();
-      this.geminiSendMessage(message).then(() => {
+      const apiKey = this.getApiKey();
+      this.geminiSendMessage(message, apiKey).then(() => {
       });
       return Promise.resolve("done");
     } catch (error) {
@@ -52,8 +53,8 @@ export class GeminiRequest implements BaseRequest {
     }
   }
 
-  private async geminiSendMessage(message: string): Promise<void> {
-    const genAI: GoogleGenerativeAI = new GoogleGenerativeAI(this.getApiKey());
+  private async geminiSendMessage(message: string, apiKey: string): Promise<void> {
+    const genAI: GoogleGenerativeAI = new GoogleGenerativeAI(apiKey);
     const model: GenerativeModel = genAI.getGenerativeModel({model: this.chatConfig.model});
     const startChatParams = await this.getStartChatParams(model);
     const chat: ChatSession = model.startChat(startChatParams);
@@ -67,6 +68,7 @@ export class GeminiRequest implements BaseRequest {
       const chunkText = chunk.text();
       this.appendAssistantMsgContent(chunkText);
     }
+    this.setGenerating(false);
     return Promise.resolve();
   }
 

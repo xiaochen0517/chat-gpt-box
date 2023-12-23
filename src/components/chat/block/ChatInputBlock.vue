@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, defineAsyncComponent, getCurrentInstance, onMounted, ref, watch} from "vue";
+import {computed, defineAsyncComponent, getCurrentInstance, nextTick, onMounted, ref, watch} from "vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import {ElMessage} from "element-plus";
 import {createRequest} from "@/utils/RequestUtil.ts";
@@ -68,8 +68,12 @@ const submitContent = () => {
 };
 
 const messageRefresh = () => {
-  if (!instance) return;
-  instance.emit("refresh", chatInputContent.value);
+  setTimeout(() => {
+    nextTick(() => {
+      if (!instance) return;
+      instance.emit("refresh", chatInputContent.value);
+    });
+  }, 100);
 };
 
 const enterSend = computed(() => configStore.baseConfig.enterSend);

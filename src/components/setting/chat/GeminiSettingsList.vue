@@ -31,7 +31,7 @@ const currentChatGptConfig = ref<GoogleGeminiConfig>({
   contextMaxTokens: 0,
 });
 onMounted(() => {
-  if (!props.chatId) {
+  if (!props.chatId || props.chatId === "add") {
     currentChatGptConfig.value = _.cloneDeep(configStore.defaultChatConfig.google.gemini);
     return;
   }
