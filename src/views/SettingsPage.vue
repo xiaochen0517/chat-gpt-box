@@ -73,9 +73,9 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
 </script>
 
 <template>
-  <div class="w-full h-full bg-neutral-50 dark:bg-neutral-900">
+  <div class="w-full h-screen  bg-neutral-50 dark:bg-neutral-900 overflow-y-auto">
     <CTopNavBar title="Settings" @backClick="jumpToHomePage"/>
-    <div class="px-2 xl:p-0 max-w-content m-auto mt-2">
+    <div class="px-2 xl:p-0 max-w-content m-auto pt-2 pb-6">
       <div class="mt-1 text-lg leading-13">Basic Settings</div>
       <div class="rounded-xl overflow-hidden text-base select-none">
         <CListItem

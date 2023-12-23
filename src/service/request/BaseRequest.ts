@@ -26,3 +26,15 @@ export function getErrorMessage(error: unknown): string {
   console.error(error);
   return String(error);
 }
+
+export async function checkFetchResponse(data: Response): Promise<string | null> {
+  if (!data.ok || data.status !== 200) {
+    let errMsg = `request failure status：${data.status}`;
+    if (data.body) {
+      const dataText = await data.text();
+      errMsg += `; message: \n\`\`\`json\n${dataText}\n\`\`\``;
+    }
+    return errMsg;
+  }
+  return null;
+}

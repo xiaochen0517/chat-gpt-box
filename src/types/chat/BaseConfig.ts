@@ -40,6 +40,7 @@ export type GoogleBaseConfig = {
   apiKey: string;
 }
 export type GoogleGeminiConfig = {
+  apiUrl: string;
   model: string;
   maxOutputTokens: number;
   temperature: number;

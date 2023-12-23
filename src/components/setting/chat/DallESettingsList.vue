@@ -31,7 +31,7 @@ const currentDallEConfig = ref<OpenAiDallEConfig>({
   imageQuality: "standard",
 });
 onMounted(() => {
-  if (!props.chatId) {
+  if (!props.chatId || props.chatId === "add") {
     currentDallEConfig.value = _.cloneDeep(configStore.defaultChatConfig.openAi.dallE);
     return;
   }
@@ -99,7 +99,7 @@ const openImageCountDialog = () => {
       getConfig().imageCount)
       .then((value: string | number) => {
         value = Number(value);
-        if (!value || value <= 0 || value > 4) {
+        if (value <= 0 || value > 4) {
           ElMessage.warning("Image count can not be empty and must be between 1 and 4");
           return;
         }

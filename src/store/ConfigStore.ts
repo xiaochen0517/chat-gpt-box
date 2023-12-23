@@ -24,7 +24,7 @@ export const useConfigStore = defineStore("config", {
             model: "gpt-3.5-turbo",
             temperature: 0.7,
             contextMaxMessage: 2,
-            contextMaxTokens: 2000,
+            contextMaxTokens: 2048,
             responseMaxTokens: 0,
           },
           dallE: {
@@ -41,11 +41,12 @@ export const useConfigStore = defineStore("config", {
             apiKey: "",
           },
           gemini: {
+            apiUrl: "https://generativelanguage.googleapis.com/",
             model: "gemini-pro",
-            maxOutputTokens: 200,
-            temperature: 0.9,
-            contextMaxTokens: 2000,
-            contextMaxMessage: 2,
+            maxOutputTokens: 0,
+            temperature: 0.7,
+            contextMaxTokens: 2048,
+            contextMaxMessage: 5,
           }
         }
       },

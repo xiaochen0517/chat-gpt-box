@@ -1,20 +1,17 @@
-import {BaseRequest, getErrorMessage} from "@/service/request/BaseRequest.ts";
+import {BaseRequest, checkFetchResponse, getErrorMessage} from "@/service/request/BaseRequest.ts";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
-import {
-  ChatSession,
-  GenerationConfig,
-  GenerativeModel,
-  GoogleGenerativeAI,
-  StartChatParams
-} from "@google/generative-ai";
+import {GenerativeModel, GoogleGenerativeAI} from "@google/generative-ai";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {GoogleGeminiConfig} from "@/types/chat/BaseConfig.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {ChatMessage} from "@/types/chat/ChatTabInfo.ts";
+import {GeminiRequestParams, GenerationConfig} from "@/types/request/GeminiRequest.ts";
 
 // global store
 const configStore = useConfigStore();
 const chatTabsStore = useChatTabsStore();
+
+const decoder: TextDecoder = new TextDecoder("utf-8");
 
 export class GeminiRequest implements BaseRequest {
 
@@ -29,6 +26,8 @@ export class GeminiRequest implements BaseRequest {
 
   stopFlag: boolean = false;
 
+  reader: ReadableStreamDefaultReader | null = null;
+
   constructor(chatInfo: ChatInfo, tabIndex: number, refreshCallbackFunc: () => void | null) {
     this.chatInfo = chatInfo;
     this.chatConfig = chatInfo.options as GoogleGeminiConfig;
@@ -42,8 +41,7 @@ export class GeminiRequest implements BaseRequest {
     try {
       this.pushUserMessage2ChatTab(message);
       this.addAssistantMessage();
-      const apiKey = this.getApiKey();
-      this.geminiSendMessage(message, apiKey).then(() => {
+      this.sendFetch().then(() => {
       });
       return Promise.resolve("done");
     } catch (error) {
@@ -53,23 +51,13 @@ export class GeminiRequest implements BaseRequest {
     }
   }
 
-  private async geminiSendMessage(message: string, apiKey: string): Promise<void> {
-    const genAI: GoogleGenerativeAI = new GoogleGenerativeAI(apiKey);
-    const model: GenerativeModel = genAI.getGenerativeModel({model: this.chatConfig.model});
-    const startChatParams = await this.getStartChatParams(model);
-    const chat: ChatSession = model.startChat(startChatParams);
-    const result = await chat.sendMessageStream(message);
-    for await (const chunk of result.stream) {
-      if (this.stopFlag) {
-        this.stopFlag = false;
-        this.setErrorMsgContent("User Canceled.");
-        break;
-      }
-      const chunkText = chunk.text();
-      this.appendAssistantMsgContent(chunkText);
-    }
-    this.setGenerating(false);
-    return Promise.resolve();
+  private async sendFetch() {
+    const apiKey = this.getApiKey();
+    fetch(
+      `${this.chatConfig.apiUrl}v1beta/models/${this.chatConfig.model}:streamGenerateContent?key=${apiKey}`,
+      await this.generateRequest(apiKey))
+      .then(this.handleFetchResponse)
+      .catch(this.handleFetchError);
   }
 
   private getApiKey(): string {
@@ -80,7 +68,86 @@ export class GeminiRequest implements BaseRequest {
     return apiKey;
   }
 
-  private async getStartChatParams(model: GenerativeModel): Promise<StartChatParams> {
+  private async generateRequest(apiKey: string): Promise<RequestInit> {
+    const genAI: GoogleGenerativeAI = new GoogleGenerativeAI(apiKey);
+    const model: GenerativeModel = genAI.getGenerativeModel({model: this.chatConfig.model});
+    const startChatParams = await this.getStartChatParams(model);
+    return {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(startChatParams),
+    };
+  }
+
+  private handleFetchResponse = async (data: Response): Promise<void> => {
+    try {
+      console.log(data);
+      const errorMessage = await checkFetchResponse(data);
+      if (errorMessage) {
+        this.setErrorMsgContent(errorMessage);
+        return;
+      }
+      if (!data.body) throw new Error("response body is null");
+      this.reader = data.body.getReader();
+      await this.readResponse(await this.reader.read());
+      this.setGenerating(false);
+    } catch (error) {
+      const message = getErrorMessage(error);
+      this.setErrorMsgContent(message);
+    }
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private readResponse = async (result: ReadableStreamReadResult<any>): Promise<void> => {
+    if (result.done || this.stopFlag) {
+      console.log("读取完成");
+      return;
+    }
+    if (!this.reader) {
+      return;
+    }
+    // This is a Uint8Array type byte array that needs to be decoded.
+    // It is possible that a single data packet contains multiple independent blocks, which are split using "data:".
+    let resultDecoded = decoder.decode(result.value).trim();
+    if (resultDecoded.startsWith("[") || resultDecoded.startsWith("]") || resultDecoded.startsWith(",")) {
+      // remove "[", "]" and "," from the beginning of the string
+      resultDecoded = resultDecoded.substring(1).trim();
+    }
+    if (resultDecoded.endsWith("]")) {
+      // remove "]" from the end of the string
+      resultDecoded = resultDecoded.substring(0, resultDecoded.length - 1).trim();
+    }
+    if (!resultDecoded || resultDecoded.length === 0) {
+      await this.readResponse(await this.reader.read());
+      return;
+    }
+    try {
+      // parse json data
+      const resultObject = JSON.parse(resultDecoded);
+      console.log("result obj", resultObject);
+      const candidates = resultObject.candidates;
+      const content = candidates[0].content;
+      const parts = content.parts;
+      const text = parts[0].text;
+      // check content
+      if (text) {
+        this.appendAssistantMsgContent(text);
+      }
+    } catch (error) {
+      console.error("parse result json object error", error);
+      console.error("error result", resultDecoded);
+    }
+    await this.readResponse(await this.reader.read());
+  };
+
+  private handleFetchError = (error: Error): void => {
+    console.error(error);
+    this.setErrorMsgContent(error.message);
+  };
+
+  private async getStartChatParams(model: GenerativeModel): Promise<GeminiRequestParams> {
     const generationConfig: GenerationConfig = this.getGenerationConfig();
     const chatTabInfo = chatTabsStore.getChatTabInfo(this.chatInfo.id, this.tabIndex);
     if (!chatTabInfo) {
@@ -88,39 +155,39 @@ export class GeminiRequest implements BaseRequest {
     }
     if (chatTabInfo.chat.length <= 3) {
       return {
-        history: [{
+        contents: [{
           role: "user",
-          parts: this.chatInfo.prompt,
+          parts: [{text: this.chatInfo.prompt}],
         }],
-        generationConfig: generationConfig
+        generationConfig: generationConfig,
       };
     }
-    const chatMessageList = chatTabInfo.chat.slice(1, chatTabInfo.chat.length - 2);
+    const chatMessageList = chatTabInfo.chat.slice(1, chatTabInfo.chat.length - 1);
     const sendMessages: ChatMessage[] = [];
     let sendMessagesTokenCount = 0;
     for (let index = chatMessageList.length - 1; index >= 0; index--) {
       const chatMessage = chatMessageList[index];
       sendMessagesTokenCount += (await model.countTokens(chatMessage.content)).totalTokens;
       if (sendMessagesTokenCount > this.chatConfig.contextMaxTokens
-        || sendMessages.length >= this.chatConfig.contextMaxMessage) {
+        || sendMessages.length >= this.chatConfig.contextMaxMessage + 1) {
         break;
       }
       sendMessages.unshift(chatMessage);
     }
     return {
-      history: sendMessages.map((chatMessage) => {
+      contents: sendMessages.map((chatMessage) => {
         return {
           role: chatMessage.role === "assistant" ? "model" : "user",
-          parts: chatMessage.content,
+          parts: [{text: chatMessage.content}],
         };
       }),
-      generationConfig: generationConfig
+      generationConfig: generationConfig,
     };
   }
 
   private getGenerationConfig(): GenerationConfig {
     return {
-      maxOutputTokens: this.chatConfig.maxOutputTokens,
+      maxOutputTokens: this.chatConfig.maxOutputTokens > 0 ? this.chatConfig.maxOutputTokens : undefined,
       temperature: this.chatConfig.temperature,
     };
   }

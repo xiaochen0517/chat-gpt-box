@@ -22,6 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
   chatId: null,
 });
 const currentChatGptConfig = ref<GoogleGeminiConfig>({
+  apiUrl: "",
   model: "",
   maxOutputTokens: 0,
   temperature: 0,
@@ -57,6 +58,22 @@ const setConfig = <K extends keyof GoogleGeminiConfig>(key: K, value: GoogleGemi
   }
 };
 
+const openApiUrlDialog = () => {
+  if (!settingsDialogRefs.value) return;
+  GeminiSettingsDialogUtil.showApiDialog(
+      settingsDialogRefs.value,
+      getConfig().apiUrl)
+      .then((value: string | number) => {
+        value = String(value);
+        if (!value || value === "") {
+          ElMessage.warning("API URL can not be empty");
+          return;
+        }
+        if (!settingsDialogRefs.value) return;
+        setConfig("apiUrl", value);
+        settingsDialogRefs.value.hide();
+      });
+};
 const openModelDialog = () => {
   if (!settingsDialogRefs.value) return;
   GeminiSettingsDialogUtil.showGeminiModelDialog(
@@ -80,7 +97,7 @@ const openMaxOutputTokensDialog = () => {
       getConfig().maxOutputTokens)
       .then((value: string | number) => {
         value = Number(value);
-        if (!value || value < 0) {
+        if (value < 0) {
           ElMessage.warning("Max output tokens can not be empty or less than 0");
           return;
         }
@@ -96,7 +113,7 @@ const openTemperatureDialog = () => {
       getConfig().temperature)
       .then((value: string | number) => {
         value = Number(value);
-        if (!value || value < 0 || value > 1) {
+        if (value < 0 || value > 1) {
           ElMessage.warning("Temperature can not be empty or less than 0 or greater than 1");
           return;
         }
@@ -112,7 +129,7 @@ const openContextMaxMsgsDialog = () => {
       getConfig().contextMaxMessage)
       .then((value: string | number) => {
         value = Number(value);
-        if (!value || value < 0) {
+        if (value < 0) {
           ElMessage.warning("Context max message can not be empty or less than 0");
           return;
         }
@@ -128,7 +145,7 @@ const openContextMaxTokensDialog = () => {
       getConfig().contextMaxTokens)
       .then((value: string | number) => {
         value = Number(value);
-        if (!value || value < 0) {
+        if (value < 0) {
           ElMessage.warning("Context max tokens can not be empty or less than 0");
           return;
         }
@@ -144,7 +161,7 @@ const openTopKDialog = () => {
       getConfig().topK ?? 1)
       .then((value: string | number) => {
         value = Number(value);
-        if (!value || value < 0) {
+        if (value < 0) {
           ElMessage.warning("Top K can not be empty or less than 0");
           return;
         }
@@ -160,7 +177,7 @@ const openTopPDialog = () => {
       getConfig().topP ?? 1)
       .then((value: string | number) => {
         value = Number(value);
-        if (!value || value < 0 || value > 1) {
+        if (value < 0 || value > 1) {
           ElMessage.warning("Top P can not be empty or less than 0 or greater than 1");
           return;
         }
@@ -173,6 +190,7 @@ const openTopPDialog = () => {
 
 <template>
   <div class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
+    <CListItem content="Api url" left-icon="icon-connections" @click="openApiUrlDialog"/>
     <CListItem content="Default model" left-icon="icon-connections" @click="openModelDialog"/>
     <CListItem content="Max output tokens" left-icon="icon-hot-for-ux" @click="openMaxOutputTokensDialog"/>
     <CListItem content="Temperature" left-icon="icon-file-text" @click="openTemperatureDialog"/>

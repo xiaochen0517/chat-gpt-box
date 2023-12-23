@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, getCurrentInstance, onMounted, ref} from "vue";
+import {computed, getCurrentInstance, onMounted, ref, watch} from "vue";
 
 type Props = {
   activeName: string,
@@ -24,6 +24,9 @@ onMounted(() => {
     return;
   }
   activeTab.value = props.activeName;
+});
+watch(() => props.activeName, (newVal) => {
+  activeTab.value = newVal;
 });
 const slipStyle = computed(() => {
   return {

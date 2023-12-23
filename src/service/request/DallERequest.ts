@@ -100,7 +100,7 @@ export class DallERequest implements BaseRequest {
     };
   }
 
-  private handleResponse(response: AxiosResponse): void {
+  private handleResponse = (response: AxiosResponse): void => {
     if (!this.checkResponse(response)) return;
     console.log("response: ", response);
     const data = response.data.data;
@@ -111,9 +111,9 @@ export class DallERequest implements BaseRequest {
     }
     this.setAssistantMsgContent(content);
     this.setGenerating(false);
-  }
+  };
 
-  private handleErrorResponse(error: AxiosError): void {
+  private handleErrorResponse = (error: AxiosError): void => {
     if (this.stopFlag) {
       this.stopFlag = false;
       return;
@@ -124,7 +124,7 @@ export class DallERequest implements BaseRequest {
       errorContent += `Error response: \n\`\`\`json\n${JSON.stringify(error.response.data)}\n\`\`\`\n`;
     }
     this.setErrorMsgContent(errorContent);
-  }
+  };
 
   cancel(): void {
     this.stopFlag = true;

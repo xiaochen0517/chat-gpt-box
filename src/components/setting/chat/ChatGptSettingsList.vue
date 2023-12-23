@@ -95,7 +95,7 @@ const openTemperatureDialog = () => {
       getConfig().temperature)
       .then((value: string | number) => {
         value = Number(value);
-        if (!value || value < 0) {
+        if (value < 0) {
           ElMessage.warning("Temperature can not be empty or less than 0");
           return;
         }
@@ -111,7 +111,7 @@ const openContextMaxMsgsDialog = () => {
       getConfig().contextMaxMessage)
       .then((value: string | number) => {
         value = Number(value);
-        if (!value || value < 0) {
+        if (value < 0) {
           ElMessage.warning("Context max message can not be empty or less than 0");
           return;
         }
@@ -127,7 +127,7 @@ const openContextMaxTokensDialog = () => {
       getConfig().contextMaxTokens)
       .then((value: string | number) => {
         value = Number(value);
-        if (!value || value < 0) {
+        if (value < 0) {
           ElMessage.warning("Context max tokens can not be empty or less than 0");
           return;
         }
@@ -143,7 +143,7 @@ const openResponseMaxTokensDialog = () => {
       getConfig().responseMaxTokens)
       .then((value: string | number) => {
         value = Number(value);
-        if (!value || value < 0) {
+        if (value < 0) {
           ElMessage.warning("Response max tokens can not be empty or less than 0");
           return;
         }

@@ -49,7 +49,17 @@ onMounted(() => {
     return;
   }
   chatInfo.value = currentChatInfo;
+  changeChatType(chatInfo.value.chatType);
 });
+const changeChatType = (chatType: ChatType) => {
+  if (chatType === ChatType.CHAT_GPT) {
+    activeTabName.value = "GPT";
+  } else if (chatType === ChatType.DALL_E) {
+    activeTabName.value = "DALL-E";
+  } else if (chatType === ChatType.GEMINI) {
+    activeTabName.value = "Gemini";
+  }
+};
 const checkChatId = (): boolean => {
   if (!chatId.value) {
     ElMessage.warning("Please select a chat first");
@@ -148,7 +158,7 @@ const getChatOptionsFromSettingsList = (): ChatOptions | null => {
 </script>
 
 <template>
-  <div class="w-full h-full bg-neutral-50 dark:bg-neutral-900">
+  <div class="w-full h-screen bg-neutral-50 dark:bg-neutral-900 overflow-y-auto">
     <CTopNavBar
         title="Chat Editor"
         :save-button="isAddChat"
@@ -156,11 +166,17 @@ const getChatOptionsFromSettingsList = (): ChatOptions | null => {
         @backClick="jumpToHomePage"
         @saveClick="addChat"
     />
-    <div class="px-2 xl:p-0 max-w-content m-auto mt-2">
+    <div class="px-2 xl:p-0 max-w-content m-auto pt-2 pb-6">
       <div class="mt-1 text-lg leading-13">Chat Settings</div>
       <div class="mb-4 rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
-        <CListItem content="Chat name" left-icon="iconfont icon-discount" @click="openChatNameDialog"/>
         <CListItem
+            content="Chat name"
+            left-icon="iconfont icon-discount"
+            @click="openChatNameDialog"
+            :bottom-border="activeTabName !== 'DALL-E'"
+        />
+        <CListItem
+            v-if="activeTabName !== 'DALL-E'"
             content="Chat prompt"
             left-icon="iconfont icon-product-checked"
             :bottom-border="false"
