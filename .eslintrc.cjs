@@ -37,6 +37,10 @@ module.exports = {
       2,
       {
         "SwitchCase": 1,
+        "MemberExpression": "off",
+        "CallExpression": {
+          "arguments": "off"
+        },
       }
     ],
     "vue/html-indent": [

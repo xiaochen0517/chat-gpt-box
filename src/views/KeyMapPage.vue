@@ -6,7 +6,7 @@ import {useConfigStore} from "@/store/ConfigStore.ts";
 import KeyMapChangeDialog from "@/components/setting/dialog/KeyMapChangeDialog.vue";
 import {computed, ref} from "vue";
 
-import {ShortcutConfigKey} from "@/types/chat/BaseConfigTypes.ts";
+import {ShortcutConfigKey} from "@/types/chat/BaseConfig.ts";
 
 const configStore = useConfigStore();
 
@@ -29,11 +29,11 @@ function openKeyMapChangeDialog(shortcutConfigKey: ShortcutConfigKey) {
 </script>
 
 <template>
-  <div>
+  <div class="w-full h-screen bg-neutral-50 dark:bg-neutral-900 overflow-y-auto">
     <CTopNavBar
         title="Key Map"
         saveButton
-        saveButtonText="reset"
+        saveButtonText="Reset"
         @backClick="backClick"
         @saveClick="resetKeyMap"
     />

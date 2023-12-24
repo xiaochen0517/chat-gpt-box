@@ -52,7 +52,7 @@ const closeInactiveClass = ref("hover:bg-neutral-400 dark:hover:bg-neutral-600")
                 :class="propsActiveKey === index ? closeActiveClass: closeInactiveClass"
                 @click.stop="$emit('removeTabClick', index)"
             >
-              <i class="iconfont icon-close text-xs leading-3 font-bold"/>
+              <i class="iconfont icon-close text-sm leading-3 font-bold"/>
             </div>
           </div>
           <div

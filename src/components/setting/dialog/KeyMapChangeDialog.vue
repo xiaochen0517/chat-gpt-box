@@ -6,7 +6,7 @@ import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
 import {KeyMapUtil} from "@/utils/KeyMapUtil.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import TheKeyMapCode from "@/components/base/list/TheKeyMapCode.vue";
-import {ShortcutConfigKey} from "@/types/chat/BaseConfigTypes.ts";
+import {ShortcutConfigKey} from "@/types/chat/BaseConfig.ts";
 
 const showDialog = ref(false);
 

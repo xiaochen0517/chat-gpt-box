@@ -6,12 +6,12 @@ import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useAppStateStore} from "@/store/AppStateStore.ts";
 import draggable from "vuedraggable";
 import ChatListItem from "@/components/sidebar/ChatListItem.vue";
-import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 
 const appStateStore = useAppStateStore();
 const instance = getCurrentInstance();
-const activeChatInfo = ref<ChatInfoTypes | null>(null);
-const changeActiveChat = (chatInfo: ChatInfoTypes) => {
+const activeChatInfo = ref<ChatInfo | null>(null);
+const changeActiveChat = (chatInfo: ChatInfo) => {
   if (!instance) return;
   activeChatInfo.value = chatInfo;
   instance.emit("changeChatClick", chatInfo);

@@ -1,6 +1,6 @@
 import {BaseRequest} from "@/service/request/BaseRequest.ts";
 
-export type ChatTabInfoTypes = {
+export type ChatTabInfo = {
   name: string;
   generating: boolean;
   request: BaseRequest | null;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, defineAsyncComponent, getCurrentInstance, onMounted, ref, watch} from "vue";
+import {computed, defineAsyncComponent, getCurrentInstance, nextTick, onMounted, ref, watch} from "vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import {ElMessage} from "element-plus";
 import {createRequest} from "@/utils/RequestUtil.ts";
@@ -7,8 +7,8 @@ import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import AppUtil from "@/utils/AppUtil.ts";
-import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
-import {ChatTabInfoTypes} from "@/types/chat/ChatTabInfoTypes.ts";
+import {ChatInfo} from "@/types/chat/ChatInfo.ts";
+import {ChatTabInfo} from "@/types/chat/ChatTabInfo.ts";
 
 const SendOutlined = defineAsyncComponent(() => import("@ant-design/icons-vue/SendOutlined"));
 
@@ -38,7 +38,7 @@ const instance = getCurrentInstance();
 const chatInputContent = ref("");
 
 const chatListStore = useChatListStore();
-const chatInfo = ref<ChatInfoTypes | null>(null);
+const chatInfo = ref<ChatInfo | null>(null);
 watch(() => props.chatId,
   (newChatId) => {
     chatInfo.value = chatListStore.getChatInfo(newChatId ?? "");
@@ -47,10 +47,10 @@ watch(() => props.chatId,
 );
 
 const chatTabsStore = useChatTabsStore();
-const tabInfo = computed<ChatTabInfoTypes>(() => {
-  if (!chatInfo.value) return {generating: false} as ChatTabInfoTypes;
+const tabInfo = computed<ChatTabInfo>(() => {
+  if (!chatInfo.value) return {generating: false} as ChatTabInfo;
   let chatTabList = chatTabsStore.chatTabs[chatInfo.value.id];
-  if (!chatTabList) return {generating: false} as ChatTabInfoTypes;
+  if (!chatTabList) return {generating: false} as ChatTabInfo;
   return chatTabList[props.tabIndex];
 });
 const submitContent = () => {
@@ -60,15 +60,20 @@ const submitContent = () => {
     return;
   }
   if (chatInputContent.value.length <= 0 || /^\s*$/.test(chatInputContent.value)) return;
-  if (!props.chatId) return;
-  tabInfo.value.request = createRequest(chatInfo.value);
-  tabInfo.value.request.sendMessage({
-    tabIndex: props.tabIndex,
-    message: chatInputContent.value.trim(),
-  }, () => {
-    instance.emit("refresh", chatInputContent.value);
-  });
+  if (!tabInfo.value.request) {
+    tabInfo.value.request = createRequest(chatInfo.value, props.tabIndex, messageRefresh);
+  }
+  tabInfo.value.request.sendMessage(chatInputContent.value.trim());
   chatInputContent.value = "";
+};
+
+const messageRefresh = () => {
+  setTimeout(() => {
+    nextTick(() => {
+      if (!instance) return;
+      instance.emit("refresh", chatInputContent.value);
+    });
+  }, 100);
 };
 
 const enterSend = computed(() => configStore.baseConfig.enterSend);

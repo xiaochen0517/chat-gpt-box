@@ -3,10 +3,10 @@ import {getCurrentInstance, ref} from "vue";
 import ChatListBlock from "./ChatListBlock.vue";
 import MenuListBlock from "./MenuListBlock.vue";
 
-import {ChatInfoTypes} from "@/types/chat/ChatInfoTypes.ts";
+import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 
 const instance = getCurrentInstance();
-const changeChatClick = (chatInfo: ChatInfoTypes) => {
+const changeChatClick = (chatInfo: ChatInfo) => {
   if (!instance) return;
   instance.emit("changeChatClick", chatInfo);
 };
