@@ -1,17 +1,4 @@
 <script setup lang="ts">
-import {useMagicKeys, whenever} from "@vueuse/core";
-import {getCurrentInstance} from "vue";
-
-const keys = useMagicKeys();
-const instance = getCurrentInstance();
-whenever(keys["escape"], () => {
-  instance?.emit("backClick");
-});
-whenever(keys["enter"], () => {
-  if (!props.saveButton) return;
-  instance?.emit("saveClick");
-});
-
 type Props = {
   title: string,
   saveButton?: boolean,
