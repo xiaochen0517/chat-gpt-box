@@ -1,6 +1,15 @@
 <script setup lang="ts">
-
 import {getCurrentInstance, inject, ref, watch} from "vue";
+import {useMagicKeys, whenever} from "@vueuse/core";
+
+const keys = useMagicKeys();
+const instance = getCurrentInstance();
+whenever(keys["escape"], () => {
+  cancelDialog();
+});
+whenever(keys["enter"], () => {
+  instance?.emit("ok");
+});
 
 type Props = {
   visible: boolean,
@@ -16,7 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
   cancelText: "CANCEL",
   okText: "OK",
   description: "",
-  size: "default"
+  size: "default",
 });
 
 const showDialog = ref(false);
@@ -28,7 +37,6 @@ watch(showDialog, (value) => {
   instance.emit("update:visible", value);
 });
 
-const instance = getCurrentInstance();
 const cancelDialog = () => {
   if (!instance) return;
   showDialog.value = false;
@@ -75,7 +83,3 @@ const dialogWidthLg = inject("dialogWidthLg");
     </div>
   </el-dialog>
 </template>
-
-<style scoped lang="less">
-
-</style>

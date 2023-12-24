@@ -88,7 +88,7 @@ const tabChangeHandle = (name: string) => {
 };
 
 const jumpToHomePage = () => {
-  router.push({path: "/"});
+  router.back();
 };
 
 const tabNames = ref(["GPT", "DALL-E", "Gemini"]);

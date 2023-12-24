@@ -20,7 +20,7 @@ onMounted(() => {
 });
 
 const jumpToHomePage = () => {
-  router.push({path: "/"});
+  router.back();
 };
 
 const jumpToKeyMapSettingPage = () => {
