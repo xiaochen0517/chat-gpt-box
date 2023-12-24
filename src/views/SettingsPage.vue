@@ -87,7 +87,7 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
         />
         <CListItem
             content="Enable Ctrl+Enter"
-            left-icon="icon-a-sorting2"
+            left-icon="icon-retweet"
             tooltip="Use ctrl+enter to replace shift+enter."
             switch-enabled
             v-model:switch-value="ctrlEnterSend"
@@ -100,12 +100,12 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
         />
         <CListItem
             content="Openai API Key"
-            left-icon="icon-gold"
+            left-icon="icon-key"
             @click="openOpenaiKeyDialog"
         />
         <CListItem
             content="Google API Key"
-            left-icon="icon-gold"
+            left-icon="icon-key"
             @click="openGoogleKeyDialog"
         />
         <CListItem

@@ -171,14 +171,14 @@ const getChatOptionsFromSettingsList = (): ChatOptions | null => {
       <div class="mb-4 rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
         <CListItem
             content="Chat name"
-            left-icon="iconfont icon-discount"
+            left-icon="iconfont icon-coupon"
             @click="openChatNameDialog"
             :bottom-border="activeTabName !== 'DALL-E'"
         />
         <CListItem
             v-if="activeTabName !== 'DALL-E'"
             content="Chat prompt"
-            left-icon="iconfont icon-product-checked"
+            left-icon="iconfont icon-message-comments"
             :bottom-border="false"
             @click="openChatPromptDialog"
         />

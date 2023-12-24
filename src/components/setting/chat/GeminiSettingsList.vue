@@ -190,16 +190,16 @@ const openTopPDialog = () => {
 
 <template>
   <div class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
-    <CListItem content="Api url" left-icon="icon-connections" @click="openApiUrlDialog"/>
-    <CListItem content="Model" left-icon="icon-connections" @click="openModelDialog"/>
-    <CListItem content="Max output tokens" left-icon="icon-hot-for-ux" @click="openMaxOutputTokensDialog"/>
-    <CListItem content="Temperature" left-icon="icon-file-text" @click="openTemperatureDialog"/>
-    <CListItem content="Top K" left-icon="icon-translate" @click="openTopKDialog"/>
-    <CListItem content="Top P" left-icon="icon-translate" @click="openTopPDialog"/>
+    <CListItem content="Api url" left-icon="icon-link1" @click="openApiUrlDialog"/>
+    <CListItem content="Model" left-icon="icon-rocket" @click="openModelDialog"/>
+    <CListItem content="Max output tokens" left-icon="icon-catalog-download" @click="openMaxOutputTokensDialog"/>
+    <CListItem content="Temperature" left-icon="icon-hot-for-ux" @click="openTemperatureDialog"/>
+    <CListItem content="Top K" left-icon="icon-boxplot" @click="openTopKDialog"/>
+    <CListItem content="Top P" left-icon="icon-sliders" @click="openTopPDialog"/>
     <CListItem content="Context max messages" left-icon="icon-file-text" @click="openContextMaxMsgsDialog"/>
     <CListItem
         content="Context max tokens"
-        left-icon="icon-translate"
+        left-icon="icon-build"
         @click="openContextMaxTokensDialog"
         :bottom-border="false"
     />
