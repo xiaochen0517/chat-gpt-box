@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {ref} from "vue";
-import {useConfigStore} from "@/store/ConfigStore.ts";
 import router from "@/router/Router.ts";
 import CListItem from "@/components/base/list/CListItem.vue";
 import CTopNavBar from "@/components/base/nav/CTopNavBar.vue";
@@ -12,6 +11,11 @@ import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
 import {BaseSettingsDialogUtil} from "@/utils/settings/BaseSettingsDialogUtil.ts";
 import {ElMessage} from "element-plus";
 import {storeToRefs} from "pinia";
+import {AppStateStore, ChatListStore, ChatTabsStore, ConfigStore} from "@/types/StoreTypes.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
+import {useAppStateStore} from "@/store/AppStateStore.ts";
+import {useChatListStore} from "@/store/ChatListStore.ts";
+import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 
 const jumpToHomePage = () => {
   router.back();
@@ -50,6 +54,97 @@ const openGoogleKeyDialog = () => {
         configStore.defaultChatConfig.google.base.apiKey = value;
         currentDialogRefs.value?.hide();
       });
+};
+const chatTabsStore = useChatTabsStore();
+const chatListStore = useChatListStore();
+const appStateStore = useAppStateStore();
+type ExportOrImportConfigType = {
+  appState: AppStateStore,
+  chatList: ChatListStore,
+  chatTabs: ChatTabsStore,
+  config: ConfigStore,
+  version: number,
+}
+const importConfig = () => {
+  openFileSelector().then((importConfig) => {
+    if (importConfig.version !== Number(import.meta.env.VITE_STORE_VERSION)) {
+      ElMessage.warning("This config file version is not supported. " +
+          `Current version is ${import.meta.env.VITE_STORE_VERSION}, but the config file version is ${importConfig.version}`);
+      return;
+    }
+    appStateStore.$patch(importConfig.appState);
+    chatListStore.$patch(importConfig.chatList);
+    chatTabsStore.$patch(importConfig.chatTabs);
+    configStore.$patch(importConfig.config);
+    localStorage.setItem("version", String(importConfig.version));
+    ElMessage.success("Import config success");
+  }).catch((e) => {
+    ElMessage.error(e.message);
+  });
+};
+const openFileSelector = (): Promise<ExportOrImportConfigType> => {
+  return new Promise<ExportOrImportConfigType>((resolve, reject) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json";
+    input.onchange = () => {
+      if (!input.files) {
+        reject(new Error("No file selected"));
+        return;
+      }
+      const file = input.files[0];
+      if (!file) {
+        reject(new Error("No file selected"));
+        return;
+      }
+      readerFile(file).then((fileContentStr) => {
+        const importConfig: ExportOrImportConfigType = JSON.parse(fileContentStr);
+        resolve(importConfig);
+      }).catch((e) => {
+        reject(e);
+      });
+    };
+    input.click();
+  });
+};
+const readerFile = (file: File): Promise<string> => {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result;
+      if (!result) {
+        reject(new Error("This config file is not supported"));
+        return;
+      }
+      const fileContentStr = result.toString();
+      if (!fileContentStr || fileContentStr.length === 0) {
+        reject(new Error("File content is empty"));
+        return;
+      }
+      resolve(fileContentStr);
+    };
+    reader.readAsText(file);
+  });
+};
+const exportConfig = () => {
+  const version = Number(localStorage.getItem("version"));
+  const exportConfig: ExportOrImportConfigType = {
+    appState: appStateStore.$state,
+    chatList: chatListStore.$state,
+    chatTabs: chatTabsStore.$state,
+    config: configStore.$state,
+    version,
+  };
+  const exportConfigString = JSON.stringify(exportConfig, null, 2);
+  startDownLoad("config.json", exportConfigString);
+};
+const startDownLoad = (fileName: string, content: string) => {
+  const blob = new Blob([content], {type: "text/plain;charset=utf-8"});
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  a.click();
 };
 
 const activeTabName = ref("");
@@ -98,7 +193,9 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
         />
         <CListItem content="Openai API Key" left-icon="icon-key" @click="openOpenaiKeyDialog"/>
         <CListItem content="Google API Key" left-icon="icon-key" @click="openGoogleKeyDialog"/>
-        <CListItem content="KeyMap" left-icon="icon-gold" :bottom-border="false" @click="jumpToKeyMapSettingPage"/>
+        <CListItem content="KeyMap" left-icon="icon-gold" @click="jumpToKeyMapSettingPage"/>
+        <CListItem content="Import config" left-icon="icon-Import" @click="importConfig"/>
+        <CListItem content="Export config" left-icon="icon-export" :bottom-border="false" @click="exportConfig"/>
       </div>
       <div class="mt-1 text-lg leading-13">Chat Default Settings</div>
       <CAnimationTabs v-model:active-name="activeTabName" :tab-names="tabNames"/>
