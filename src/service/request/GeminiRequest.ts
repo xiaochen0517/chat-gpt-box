@@ -214,6 +214,7 @@ export class GeminiRequest implements BaseRequest {
 
   private setErrorMsgContent(errorMsg: string) {
     chatTabsStore.setAssistantErrorMsgContent(this.chatInfo.id, this.tabIndex, errorMsg);
+    this.refreshCallbackFunc();
     this.setGenerating(false);
   }
 
