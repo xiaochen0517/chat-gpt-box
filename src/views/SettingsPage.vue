@@ -17,6 +17,7 @@ onMounted(() => {
   isDarkMode.value = configStore.isDarkMode;
   enterSend.value = configStore.baseConfig.enterSend;
   ctrlEnterSend.value = configStore.baseConfig.ctrlEnterSend;
+  bubbleMessage.value = configStore.baseConfig.bubbleMessage;
 });
 
 const jumpToHomePage = () => {
@@ -32,12 +33,19 @@ const configStore = useConfigStore();
 const isDarkMode = ref(false);
 const enterSend = ref(false);
 const ctrlEnterSend = ref(false);
+const bubbleMessage = ref(false);
 
 watch(isDarkMode, (value) => {
-  configStore.setDarkMode(value);
+  configStore.isDarkMode = value;
 });
 watch(enterSend, (value) => {
-  configStore.setEnterSend(value);
+  configStore.baseConfig.enterSend = value;
+});
+watch(ctrlEnterSend, (value) => {
+  configStore.baseConfig.ctrlEnterSend = value;
+});
+watch(bubbleMessage, (value) => {
+  configStore.baseConfig.bubbleMessage = value;
 });
 
 const currentDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
@@ -91,6 +99,13 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
             tooltip="Use ctrl+enter to replace shift+enter."
             switch-enabled
             v-model:switch-value="ctrlEnterSend"
+        />
+        <CListItem
+            content="Enable bubble message"
+            left-icon="icon-message"
+            tooltip="Message will be displayed in a bubble."
+            switch-enabled
+            v-model:switch-value="bubbleMessage"
         />
         <CListItem
             content="Dark Mode"

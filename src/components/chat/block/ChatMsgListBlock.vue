@@ -2,11 +2,16 @@
 import {computed, ref, watch} from "vue";
 import ChatMessageBlock from "./ChatMessageBlock.vue";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
 import EditMessageDialog from "../dialog/EditMessageDialog.vue";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import {ChatMessage} from "@/types/chat/ChatTabInfo.ts";
+import ChatBubbleMessageBlock from "@/components/chat/block/ChatBubbleMessageBlock.vue";
 
 const chatTabsStore = useChatTabsStore();
+const configStore = useConfigStore();
+
+const bubbleMessage = computed(() => configStore.baseConfig.bubbleMessage);
 
 type Props = {
   chatInfo: ChatInfo | null,
@@ -49,16 +54,30 @@ const getGenerating = (index: number) => {
 
 <template>
   <div>
-    <ChatMessageBlock
-        v-for="(chatMessage, index) in chatTabInfo?.chat"
-        :key="index"
-        :index="index"
-        :message="chatMessage"
-        :generating="getGenerating(index as number)"
-        :options="propsChatInfo?.options"
-        @delete="deleteMessage"
-        @edit="editMessage"
-    />
+    <div v-if="!bubbleMessage">
+      <ChatMessageBlock
+          v-for="(chatMessage, index) in chatTabInfo?.chat"
+          :key="index"
+          :index="index"
+          :message="chatMessage"
+          :generating="getGenerating(index as number)"
+          :options="propsChatInfo?.options"
+          @delete="deleteMessage"
+          @edit="editMessage"
+      />
+    </div>
+    <div v-else>
+      <ChatBubbleMessageBlock
+          v-for="(chatMessage, index) in chatTabInfo?.chat"
+          :key="index"
+          :index="index"
+          :message="chatMessage"
+          :generating="getGenerating(index as number)"
+          :options="propsChatInfo?.options"
+          @delete="deleteMessage"
+          @edit="editMessage"
+      />
+    </div>
     <EditMessageDialog ref="editMessageDialogRefs"/>
   </div>
 </template>

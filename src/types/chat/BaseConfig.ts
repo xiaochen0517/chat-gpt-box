@@ -3,6 +3,7 @@ import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
 export type BaseConfig = {
   enterSend: boolean;
   ctrlEnterSend: boolean;
+  bubbleMessage: boolean;
 }
 export type DefaultChatConfig = {
   openAi: OpenAiConfig;
