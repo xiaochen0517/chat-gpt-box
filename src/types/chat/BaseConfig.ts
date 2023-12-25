@@ -4,6 +4,7 @@ export type BaseConfig = {
   enterSend: boolean;
   ctrlEnterSend: boolean;
   bubbleMessage: boolean;
+  forceScrollToBottom: boolean;
 }
 export type DefaultChatConfig = {
   openAi: OpenAiConfig;

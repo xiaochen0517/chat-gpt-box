@@ -4,6 +4,7 @@ import {AppStateStore, WindowState} from "@/types/StoreTypes.ts";
 export const useAppStateStore = defineStore("appState", {
   state: (): AppStateStore => {
     return {
+      lockScrollDown: false,
       currentChatId: null,
       currentTabIndex: 0,
       windowState: WindowState.Normal,

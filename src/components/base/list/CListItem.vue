@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, getCurrentInstance, ref, watch} from "vue";
+import {computed, getCurrentInstance, onMounted, ref, watch} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import TheKeyMapCode from "@/components/base/list/TheKeyMapCode.vue";
 
@@ -28,6 +28,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 const instance = getCurrentInstance();
 const switchValue = ref(false);
+onMounted(() => {
+  switchValue.value = props.switchValue;
+});
 watch(() => props.switchValue, (value) => {
   switchValue.value = value;
 });

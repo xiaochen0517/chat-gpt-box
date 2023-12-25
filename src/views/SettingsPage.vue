@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref, watch} from "vue";
+import {ref} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import router from "@/router/Router.ts";
 import CListItem from "@/components/base/list/CListItem.vue";
@@ -11,14 +11,7 @@ import GeminiSettingsList from "@/components/setting/chat/GeminiSettingsList.vue
 import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
 import {BaseSettingsDialogUtil} from "@/utils/settings/BaseSettingsDialogUtil.ts";
 import {ElMessage} from "element-plus";
-
-onMounted(() => {
-  console.log("onMounted");
-  isDarkMode.value = configStore.isDarkMode;
-  enterSend.value = configStore.baseConfig.enterSend;
-  ctrlEnterSend.value = configStore.baseConfig.ctrlEnterSend;
-  bubbleMessage.value = configStore.baseConfig.bubbleMessage;
-});
+import {storeToRefs} from "pinia";
 
 const jumpToHomePage = () => {
   router.back();
@@ -29,24 +22,7 @@ const jumpToKeyMapSettingPage = () => {
 };
 
 const configStore = useConfigStore();
-
-const isDarkMode = ref(false);
-const enterSend = ref(false);
-const ctrlEnterSend = ref(false);
-const bubbleMessage = ref(false);
-
-watch(isDarkMode, (value) => {
-  configStore.isDarkMode = value;
-});
-watch(enterSend, (value) => {
-  configStore.baseConfig.enterSend = value;
-});
-watch(ctrlEnterSend, (value) => {
-  configStore.baseConfig.ctrlEnterSend = value;
-});
-watch(bubbleMessage, (value) => {
-  configStore.baseConfig.bubbleMessage = value;
-});
+const {isDarkMode, baseConfig} = storeToRefs(configStore);
 
 const currentDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
 const openOpenaiKeyDialog = () => {
@@ -91,21 +67,28 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
             left-icon="icon-enter"
             tooltip="After enabling, press Enter to start a new line, and Shift+Enter to send the message."
             switch-enabled
-            v-model:switch-value="enterSend"
+            v-model:switch-value="baseConfig.enterSend"
         />
         <CListItem
             content="Enable Ctrl+Enter"
             left-icon="icon-retweet"
             tooltip="Use ctrl+enter to replace shift+enter."
             switch-enabled
-            v-model:switch-value="ctrlEnterSend"
+            v-model:switch-value="baseConfig.ctrlEnterSend"
         />
         <CListItem
             content="Enable bubble message"
             left-icon="icon-message"
             tooltip="Message will be displayed in a bubble."
             switch-enabled
-            v-model:switch-value="bubbleMessage"
+            v-model:switch-value="baseConfig.bubbleMessage"
+        />
+        <CListItem
+            content="Force scroll to bottom"
+            left-icon="icon-down-arrow"
+            tooltip="Force scroll to bottom when new message is received."
+            switch-enabled
+            v-model:switch-value="baseConfig.forceScrollToBottom"
         />
         <CListItem
             content="Dark Mode"
@@ -113,22 +96,9 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
             switch-enabled
             v-model:switch-value="isDarkMode"
         />
-        <CListItem
-            content="Openai API Key"
-            left-icon="icon-key"
-            @click="openOpenaiKeyDialog"
-        />
-        <CListItem
-            content="Google API Key"
-            left-icon="icon-key"
-            @click="openGoogleKeyDialog"
-        />
-        <CListItem
-            content="KeyMap"
-            left-icon="icon-gold"
-            :bottom-border="false"
-            @click="jumpToKeyMapSettingPage"
-        />
+        <CListItem content="Openai API Key" left-icon="icon-key" @click="openOpenaiKeyDialog"/>
+        <CListItem content="Google API Key" left-icon="icon-key" @click="openGoogleKeyDialog"/>
+        <CListItem content="KeyMap" left-icon="icon-gold" :bottom-border="false" @click="jumpToKeyMapSettingPage"/>
       </div>
       <div class="mt-1 text-lg leading-13">Chat Default Settings</div>
       <CAnimationTabs v-model:active-name="activeTabName" :tab-names="tabNames"/>
