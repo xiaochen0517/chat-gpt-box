@@ -141,7 +141,7 @@ defineExpose({
 <template>
   <div
       ref="scrollContainerRefs"
-      class="scroll-container overflow-hidden overflow-y-auto box-border scroll-container pt-14"
+      class="scroll-container overflow-hidden overflow-y-auto box-border pt-14"
   >
     <CTabs
         v-model:activeKey="activeTabIndex"
