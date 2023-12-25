@@ -34,6 +34,7 @@
 - [x] 深色模式切换
 - [x] 多模型支持
 - [x] DALL·E 图片生成
+- [x] Google Gemini
 - [ ] 移动端支持
     - [x] 移动端网页
     - [x] Android

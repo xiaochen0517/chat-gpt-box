@@ -36,6 +36,7 @@
 - [x] Dark mode toggle
 - [x] Multi-model support
 - [x] DALL·E image generation
+- [x] Google Gemini
 - [ ] Mobile support
     - [x] Mobile web
         - [x] Android
