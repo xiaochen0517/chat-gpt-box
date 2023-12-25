@@ -13,6 +13,7 @@ export const useConfigStore = defineStore("config", {
       baseConfig: {
         enterSend: true,
         ctrlEnterSend: false,
+        bubbleMessage: false,
       },
       defaultChatConfig: {
         openAi: {
