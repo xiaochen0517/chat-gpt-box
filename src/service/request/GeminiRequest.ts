@@ -4,7 +4,7 @@ import {GenerativeModel, GoogleGenerativeAI} from "@google/generative-ai";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {GoogleGeminiConfig} from "@/types/chat/BaseConfig.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
-import {ChatMessage} from "@/types/chat/ChatTabInfo.ts";
+import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
 import {GeminiRequestParams, GenerationConfig} from "@/types/request/GeminiRequest.ts";
 
 // global store
@@ -41,7 +41,8 @@ export class GeminiRequest implements BaseRequest {
     try {
       this.pushUserMessage2ChatTab(message);
       this.addAssistantMessage();
-      this.sendFetch().then(() => {
+      const apiKey = this.getApiKey();
+      this.sendFetch(apiKey).then(() => {
       });
       return Promise.resolve("done");
     } catch (error) {
@@ -51,8 +52,7 @@ export class GeminiRequest implements BaseRequest {
     }
   }
 
-  private async sendFetch() {
-    const apiKey = this.getApiKey();
+  private async sendFetch(apiKey: string) {
     fetch(
       `${this.chatConfig.apiUrl}v1beta/models/${this.chatConfig.model}:streamGenerateContent?key=${apiKey}`,
       await this.generateRequest(apiKey))
@@ -69,21 +69,27 @@ export class GeminiRequest implements BaseRequest {
   }
 
   private async generateRequest(apiKey: string): Promise<RequestInit> {
-    const genAI: GoogleGenerativeAI = new GoogleGenerativeAI(apiKey);
-    const model: GenerativeModel = genAI.getGenerativeModel({model: this.chatConfig.model});
-    const startChatParams = await this.getStartChatParams(model);
-    return {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(startChatParams),
-    };
+    try{
+      const genAI: GoogleGenerativeAI = new GoogleGenerativeAI(apiKey);
+      const model: GenerativeModel = genAI.getGenerativeModel({model: this.chatConfig.model});
+      const startChatParams = await this.getStartChatParams(model);
+      console.log("request message", startChatParams);
+      return {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(startChatParams),
+      };
+    } catch (error) {
+      const message = getErrorMessage(error);
+      this.setErrorMsgContent(message);
+      return Promise.reject(error);
+    }
   }
 
   private handleFetchResponse = async (data: Response): Promise<void> => {
     try {
-      console.log(data);
       const errorMessage = await checkFetchResponse(data);
       if (errorMessage) {
         this.setErrorMsgContent(errorMessage);
@@ -126,7 +132,6 @@ export class GeminiRequest implements BaseRequest {
     try {
       // parse json data
       const resultObject = JSON.parse(resultDecoded);
-      console.log("result obj", resultObject);
       const candidates = resultObject.candidates;
       const content = candidates[0].content;
       const parts = content.parts;
@@ -153,16 +158,10 @@ export class GeminiRequest implements BaseRequest {
     if (!chatTabInfo) {
       throw new Error("chatTabInfo is null");
     }
-    if (chatTabInfo.chat.length <= 3) {
-      return {
-        contents: [{
-          role: "user",
-          parts: [{text: this.chatInfo.prompt}],
-        }],
-        generationConfig: generationConfig,
-      };
+    if (chatTabInfo.chat.length <= 2) {
+      throw new Error("chatTabInfo less or equal than 2");
     }
-    const chatMessageList = chatTabInfo.chat.slice(1, chatTabInfo.chat.length - 1);
+    const chatMessageList: ChatMessage[] = chatTabInfo.chat.slice(1, chatTabInfo.chat.length - 1);
     const sendMessages: ChatMessage[] = [];
     let sendMessagesTokenCount = 0;
     for (let index = chatMessageList.length - 1; index >= 0; index--) {
@@ -174,6 +173,8 @@ export class GeminiRequest implements BaseRequest {
       }
       sendMessages.unshift(chatMessage);
     }
+    sendMessages.unshift({role: ChatMessageRole.Assistant, content: "ok."});
+    sendMessages.unshift(chatTabInfo.chat[0]);
     return {
       contents: sendMessages.map((chatMessage) => {
         return {
