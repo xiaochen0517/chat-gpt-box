@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import {getCurrentInstance, inject, ref, watch} from "vue";
+import {getCurrentInstance, inject, onMounted, ref, watch} from "vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
+import i18n from "@/i18n/i18n.ts";
+
+const {t} = i18n.global;
 
 const keys = useMagicKeys();
 const instance = getCurrentInstance();
@@ -14,18 +17,26 @@ whenever(keys["enter"], () => {
 type Props = {
   visible: boolean,
   title: string,
-  cancelText?: string,
-  okText?: string,
+  cancelText?: string | null,
+  okText?: string | null,
   description?: string
   size?: "default" | "large"
 }
 const props = withDefaults(defineProps<Props>(), {
   visible: false,
   title: "",
-  cancelText: "CANCEL",
-  okText: "OK",
+  cancelText: null,
+  okText: null,
   description: "",
   size: "default",
+});
+
+const propsCancelText = ref("CANCEL");
+const propsOkText = ref("OK");
+
+onMounted(() => {
+  propsCancelText.value = !props.cancelText ? t("dialog.cancel") : props.cancelText;
+  propsOkText.value = !props.okText ? t("dialog.confirm") : props.okText;
 });
 
 const showDialog = ref(false);
@@ -70,14 +81,14 @@ const dialogWidthLg = inject("dialogWidthLg");
             class="flex-1 cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 hover:dark:bg-neutral-700 active:dark:bg-neutral-600"
             @click.stop="cancelDialog"
         >
-          {{ cancelText }}
+          {{ propsCancelText }}
         </div>
         <div class="border-l border-neutral-100 dark:border-neutral-700 box-border"></div>
         <div
             class="flex-1 cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 hover:dark:bg-neutral-700 active:dark:bg-neutral-600"
             @click.stop="$emit('ok')"
         >
-          {{ okText }}
+          {{ propsOkText }}
         </div>
       </div>
     </div>

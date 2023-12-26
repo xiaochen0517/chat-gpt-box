@@ -1,84 +1,107 @@
 import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
 import {SelectOptionItem} from "@/types/base/CSettingDialog.ts";
+import {LanguageList} from "@/models/LanguageList.ts";
+import i18n from "@/i18n/i18n.ts";
 
+const {t} = i18n.global;
 export class BaseSettingsDialogUtil {
+
+  static showLanguageDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string) {
+    return dialogRefs.show({
+      type: "select",
+      title: "Language",
+      content: value,
+      selectOptions: {
+        list: LanguageList,
+      },
+    });
+  }
 
   static showApiKeyDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string) {
     return dialogRefs.show({
       type: "input",
-      title: "Api key",
+      title: t("settings.basic.apiKey.title"),
       placeholder: "Please input api key.",
-      content: value
+      content: value,
     });
   }
-  
+
   static showApiDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string) {
     return dialogRefs.show({
       type: "input",
-      title: "Api url",
-      placeholder: "Please input api url.",
-      content: value
+      title: t("settings.apiUrl.title"),
+      placeholder: t("settings.apiUrl.placeholder"),
+      content: value,
     });
   }
-  
+
   static showModelDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, list: SelectOptionItem[], value: string) {
     return dialogRefs.show({
       type: "select",
-      title: "Model",
+      title: t("settings.model.title"),
       content: value,
       selectOptions: {
         list: list,
-      }
+      },
     });
   }
 
   static showTemperatureDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: number) {
-    const description = "The lower this value, the more rigorous the output will be; " +
-      "the higher the value, the more random the output will be.";
     return dialogRefs.show({
       type: "slider",
-      title: "Temperature",
-      description: description,
+      title: t("settings.temperature.title"),
+      description: t("settings.temperature.description"),
       content: value,
       sliderOptions: {
         min: 0,
         max: 1,
         step: 0.1,
         showInput: true,
-        size: "small"
-      }
+        size: "small",
+      },
     });
   }
 
   static showContextMaxMessagesDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: number) {
-    const description = "If the number of tokens in a message exceeds the maximum number of tokens configured for the current request, " +
-      "the number of messages sent will be appropriately reduced until it conforms to the limit set by the maximum tokens configuration.";
     return dialogRefs.show({
       type: "slider",
-      title: "Context max messages",
-      description: description,
+      title: t("settings.contextMaxMessages.title"),
+      description: t("settings.contextMaxMessages.description"),
       content: value,
       sliderOptions: {
         min: 0,
         max: 20,
         step: 1,
         showInput: true,
-        size: "small"
-      }
+        size: "small",
+      },
     });
   }
 
   static showContextMaxTokensDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: number) {
-    const description = "The request for tokens is limited by the set number of request messages. " +
-      "Calculate whether the tokens for the specified number of messages exceed this value. If they do, " +
-      "reduce the number of request messages until it falls below this limit.";
     return dialogRefs.show({
       type: "slider",
-      title: "Context max tokens",
-      description: description,
+      title: t("settings.contextMaxTokens.title"),
+      description: t("settings.contextMaxTokens.description"),
       content: value,
       sliderOptions: {
         min: 1,
+        max: 4096,
+        step: 1,
+        showInput: true,
+        size: "small",
+      },
+    });
+  }
+
+  static showResponseMaxTokensDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: number) {
+    return dialogRefs.show({
+      type: "slider",
+      title: t("settings.responseMaxTokens.title"),
+      description: t("settings.responseMaxTokens.description"),
+      content: value,
+      sliderOptions: {
+        min: 0,
         max: 4096,
         step: 1,
         showInput: true,

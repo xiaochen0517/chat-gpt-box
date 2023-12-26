@@ -31,4 +31,13 @@ export default class StrUtil {
   public static hasNotEmpty(...str: string[]): boolean {
     return !this.hasEmpty(...str);
   }
+
+  /**
+   * @description 检查字符串是否与任意一个字符串相等
+   * @param str string 需要比较的字符串
+   * @param strs string[] 需要比较的字符串
+   */
+  public static equalsAny(str: string, ...strs: string[]): boolean {
+    return strs.some((s: string): boolean => s === str);
+  }
 }
