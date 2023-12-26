@@ -59,7 +59,7 @@ const deleteChatClick = (chatInfo: ChatInfo | null) => {
 <template>
   <div class="flex flex-row items-center relative w-full box-border px-2 py-1 mb-1 rounded-xl hover:bg-neutral-200 active:bg-neutral-300 dark:hover:bg-neutral-700 dark:active:bg-neutral-600 cursor-pointer">
     <div class="pr-1 flex-1 flex flex-row gap-1 items-center">
-      <div class="handle rotate-90">
+      <div class="handle rotate-90" title="Drag to sort">
         <i class="iconfont icon-more" :class="drag?'':'cursor-grab'"/>
       </div>
       <div

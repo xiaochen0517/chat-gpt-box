@@ -46,18 +46,20 @@ const lockScrollDownClick = () => {
         <div class="absolute left-2 top-2 bg-neutral-100 dark:bg-neutral-800">
           <div
               class="block content:hidden px-2 py-1.5 ml-2 mr-1 box-border rounded-lg cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-700  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
+              title="Show slide side bar"
               @click.stop="$emit('showSlideSideBarClick')"
           >
             <i class="iconfont icon-category text-md leading-3 font-bold mx-1"/>
           </div>
         </div>
-        <div class="flex flex-row gap-1 ml-11" :class="{'mr-10':!forceScrollToBottom}">
+        <div class="flex flex-row gap-1 ml-11 mr-10" :class="{'mr-21':!forceScrollToBottom}">
           <div
               v-for="(item, index) in propsTabNames"
               :key="index"
-              @click="$emit('update:activeKey', index)"
               class="px-2 py-1.5 box-border rounded-lg cursor-pointer border select-none flex flex-row items-center whitespace-nowrap"
               :class="propsActiveKey === index ? activeClass: inactiveClass"
+              :title="item"
+              @click="$emit('update:activeKey', index)"
           >
             {{ item }}
             <div
@@ -70,15 +72,25 @@ const lockScrollDownClick = () => {
           </div>
           <div
               class="px-2 py-1.5 mr-1 box-border rounded-lg cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-700  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
+              title="Add tab"
               @click="$emit('addTabClick')"
           >
             <i class="iconfont icon-add text-md leading-3 font-bold mx-1"/>
           </div>
         </div>
-        <div v-if="!forceScrollToBottom" class="absolute right-2 top-2 bg-neutral-100 dark:bg-neutral-800">
+        <div class="absolute right-2 top-2 bg-neutral-100 dark:bg-neutral-800 flex flex-row gap-1">
           <div
-              class="block content:hidden px-2 py-1.5 ml-1 mr-2 box-border rounded-lg cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-700  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
+              class="block content:hidden px-2 py-1.5 ml-1 box-border rounded-lg cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-700  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
+              title="Export chat info"
+              @click.stop="$emit('exportChatClick')"
+          >
+            <i class="iconfont icon-upload1 text-md leading-3 font-bold mx-1"/>
+          </div>
+          <div
+              v-if="!forceScrollToBottom"
+              class="block content:hidden px-2 py-1.5 mr-2 box-border rounded-lg cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-700  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
               :class="{'text-green-500 dark:text-green-400': lockScrollDown}"
+              title="Lock scroll down"
               @click.stop="lockScrollDownClick"
           >
             <i class="iconfont icon-down1 text-md leading-3 font-bold mx-1"/>

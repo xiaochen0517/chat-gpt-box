@@ -190,8 +190,9 @@ const stopResizing = () => {
           @keydown="handleKeydown"
       />
       <div
-          @click.stop="submitContent"
           class="w-10 h-10 rounded-md absolute right-3 top-1/2 transform -translate-y-1/2 flex justify-center items-center ml-2 text-sm cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 dark:hover:bg-neutral-700 dark:active:bg-neutral-800 border-2 border-neutral-200 hover:border-neutral-300 active:border-neutral-400 dark:border-neutral-600"
+          title="Send message"
+          @click.stop="submitContent"
       >
         <i class="iconfont icon-stop-fill text-xl" v-if="tabInfo.generating"/>
         <send-outlined v-else/>
