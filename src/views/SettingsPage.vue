@@ -16,6 +16,7 @@ import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useAppStateStore} from "@/store/AppStateStore.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
+import {FileUtil} from "@/utils/FileUtil.ts";
 
 const jumpToHomePage = () => {
   router.back();
@@ -136,15 +137,7 @@ const exportConfig = () => {
     version,
   };
   const exportConfigString = JSON.stringify(exportConfig, null, 2);
-  startDownLoad("config.json", exportConfigString);
-};
-const startDownLoad = (fileName: string, content: string) => {
-  const blob = new Blob([content], {type: "text/plain;charset=utf-8"});
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = fileName;
-  a.click();
+  FileUtil.startDownLoad("config.json", exportConfigString);
 };
 
 const activeTabName = ref("");

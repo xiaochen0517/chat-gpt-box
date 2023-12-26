@@ -5,12 +5,13 @@ import AddTabDialog from "../dialog/AddTabDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/tab/CTabs.vue";
 import CTabPane from "@/components/base/tab/CTabPane.vue";
-import {ElMessageBox} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {useAppStateStore} from "@/store/AppStateStore.ts";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
-import {ChatTabInfo} from "@/types/chat/ChatTabInfo.ts";
+import {ChatMessage, ChatTabInfo} from "@/types/chat/ChatTabInfo.ts";
+import {FileUtil} from "@/utils/FileUtil.ts";
 
 /**
  * register shortcut
@@ -83,13 +84,11 @@ watch(
 const confirmRemoveTab = (targetKey: number) => {
   removeTab(targetKey);
 };
-
 const addTab = () => {
   if (!addTabDialogRefs.value) return;
   let tabsSize = chatTabNameList.value.length;
   addTabDialogRefs.value.show(tabsSize + 1);
 };
-
 const removeTab = (targetKey: number) => {
   if (!propsActiveChat.value) return;
   // if the tab to be removed is the active tab, switch to the previous tab
@@ -105,7 +104,6 @@ const removeTab = (targetKey: number) => {
   // remove tab
   chatTabsStore.removeChatTab(propsActiveChat.value.id, targetKey);
 };
-
 const chatTabNameList = computed(() => {
   if (!propsActiveChat.value) return [];
   let chatTabList = chatTabsStore.chatTabs[propsActiveChat.value.id];
@@ -124,6 +122,21 @@ const removeTabClick = (index: number) => {
   });
 };
 
+const exportChatInfo = () => {
+  if (!propsActiveChat.value) return;
+  const chatTabInfo = chatTabsStore.getChatTabInfo(propsActiveChat.value.id, activeTabIndex.value);
+  if (!chatTabInfo) {
+    ElMessage.warning("No chat history");
+    return;
+  }
+  let chatInfoMarkdown = `# Chat Name: ${propsActiveChat.value.name}\n\n`;
+  chatInfoMarkdown += `## Chat Tab: ${chatTabInfo.name}\n\n`;
+  chatTabInfo.chat.forEach((item: ChatMessage) => {
+    chatInfoMarkdown += `### ${item.role}:\n\n`;
+    chatInfoMarkdown += `${item.content}\n\n`;
+  });
+  FileUtil.startDownLoad(`${propsActiveChat.value.name}_export.md`, chatInfoMarkdown);
+};
 const getTabIndex = () => {
   return activeTabIndex.value;
 };
@@ -181,6 +194,7 @@ const scrollHandle = (event: UIEvent) => {
           @addTabClick="addTab"
           @removeTabClick="removeTabClick"
           @showSlideSideBarClick="$emit('showSlideSideBarClick')"
+          @exportChatClick="exportChatInfo"
           @lockScrollDownClick="scrollToBottom"
       >
         <CTabPane v-for="(_number, index) in chatTabNameList.length" :key="index">
