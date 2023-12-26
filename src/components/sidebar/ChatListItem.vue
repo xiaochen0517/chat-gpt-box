@@ -16,7 +16,7 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   chatInfo: null,
   activeChatInfo: null,
-  drag: false
+  drag: false,
 });
 const modelName = ref("");
 onMounted(() => {
@@ -48,7 +48,7 @@ const deleteChatClick = (chatInfo: ChatInfo | null) => {
   ElMessageBox.confirm(`Are you sure to delete ${chatInfo.name}?`, "Warning", {
     confirmButtonText: "OK",
     cancelButtonText: "Cancel",
-    type: "warning"
+    type: "warning",
   }).then(() => {
     chatListStore.deleteChat(chatInfo.id);
   }).catch(() => {
@@ -84,13 +84,13 @@ const deleteChatClick = (chatInfo: ChatInfo | null) => {
               class="cursor-pointer rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-700 leading-6 box-border py-1 px-2 mb-1"
               @click.stop="editChatClick(chatInfo)"
           >
-            Edit Chat
+            {{ $t("chat.editChat.title") }}
           </div>
           <div
               class="cursor-pointer rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-700 leading-6 box-border py-1 px-2"
               @click.stop="deleteChatClick(chatInfo)"
           >
-            Delete Chat
+            {{ $t("chat.deleteChat.title") }}
           </div>
         </div>
       </template>

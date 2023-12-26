@@ -186,7 +186,7 @@ const stopResizing = () => {
           ref="chatInputTextAreaRefs"
           class="flex-1 w-full h-full m-0 py-2 pl-2 pr-14 block rounded-md bg-neutral-100 box-border border-2 border-neutral-300 focus:border-neutral-400 dark:bg-neutral-800 dark:border-neutral-600 dark:focus:border-neutral-400 resize-none"
           v-model="chatInputContent"
-          placeholder="Please input message"
+          :placeholder="$t('chat.input.placeholder')"
           @keydown="handleKeydown"
       />
       <div

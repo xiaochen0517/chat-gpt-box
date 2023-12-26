@@ -11,6 +11,7 @@ export const useConfigStore = defineStore("config", {
     return {
       isDarkMode: true,
       baseConfig: {
+        language: "zh-CN",
         enterSend: true,
         ctrlEnterSend: false,
         bubbleMessage: true,

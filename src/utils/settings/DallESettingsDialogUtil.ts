@@ -2,7 +2,9 @@ import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
 import {BaseSettingsDialogUtil} from "@/utils/settings/BaseSettingsDialogUtil.ts";
 import {DallEModelList, ImageQualityList, ImageStyleList} from "@/models/DallEModelList.ts";
 import {SelectOptionItem} from "@/types/base/CSettingDialog.ts";
+import i18n from "@/i18n/i18n.ts";
 
+const {t} = i18n.global;
 export class DallESettingsDialogUtil extends BaseSettingsDialogUtil {
   
   static showDallEModelDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string) {
@@ -10,12 +12,10 @@ export class DallESettingsDialogUtil extends BaseSettingsDialogUtil {
   }
   
   static showImageCountDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: number) {
-    const description = "This parameter is ignored when the model is dall-e-3 because the dall-4-3 model can only generate one image. " +
-      "When the model is dall-e-2, this parameter indicates the number of images generated.";
     return dialogRefs.show({
       type: "slider",
-      title: "Image count",
-      description: description,
+      title: t("settings.dalle.imageCount.title"),
+      description: t("settings.dalle.imageCount.description"),
       content: value,
       sliderOptions: {
         min: 1,
@@ -30,7 +30,7 @@ export class DallESettingsDialogUtil extends BaseSettingsDialogUtil {
   static showImageSizeDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, list: SelectOptionItem[], value: string) {
     return dialogRefs.show({
       type: "select",
-      title: "Image size",
+      title: t("settings.dalle.imageSize.title"),
       content: value,
       selectOptions: {
         list: list,
@@ -39,12 +39,10 @@ export class DallESettingsDialogUtil extends BaseSettingsDialogUtil {
   }
   
   static showImageStyleDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string) {
-    const description = "This parameter just works when the model is dall-e-3. " +
-      "When the model is dall-e-2, this parameter is ignored.";
     return dialogRefs.show({
       type: "select",
-      title: "Image style",
-      description: description,
+      title: t("settings.dalle.imageStyle.title"),
+      description: t("settings.dalle.imageStyle.description"),
       content: value,
       selectOptions: {
         list: ImageStyleList,
@@ -53,12 +51,10 @@ export class DallESettingsDialogUtil extends BaseSettingsDialogUtil {
   }
   
   static showImageQualityDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string) {
-    const description = "This parameter just works when the model is dall-e-3. " +
-      "When the model is dall-e-2, this parameter is ignored.";
     return dialogRefs.show({
       type: "select",
-      title: "Image quality",
-      description: description,
+      title: t("settings.dalle.imageQuality.title"),
+      description: t("settings.dalle.imageQuality.description"),
       content: value,
       selectOptions: {
         list: ImageQualityList,

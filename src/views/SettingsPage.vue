@@ -17,6 +17,7 @@ import {useAppStateStore} from "@/store/AppStateStore.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {FileUtil} from "@/utils/FileUtil.ts";
+import i18n from "@/i18n/i18n.ts";
 
 const jumpToHomePage = () => {
   router.back();
@@ -30,6 +31,20 @@ const configStore = useConfigStore();
 const {isDarkMode, baseConfig} = storeToRefs(configStore);
 
 const currentDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
+const openLanguageDialog = () => {
+  if (!currentDialogRefs.value) return;
+  BaseSettingsDialogUtil.showLanguageDialog(currentDialogRefs.value, configStore.baseConfig.language)
+      .then((value: string | number) => {
+        value = String(value);
+        if (!value || value.length === 0) {
+          ElMessage.warning("Please enter the language");
+          return;
+        }
+        configStore.baseConfig.language = value;
+        currentDialogRefs.value?.hide();
+        i18n.global.locale = value as "zh-CN" | "en";
+      });
+};
 const openOpenaiKeyDialog = () => {
   if (!currentDialogRefs.value) return;
   BaseSettingsDialogUtil.showApiKeyDialog(currentDialogRefs.value, configStore.defaultChatConfig.openAi.base.apiKey)
@@ -146,51 +161,73 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
 
 <template>
   <div class="w-full h-screen  bg-neutral-50 dark:bg-neutral-900 overflow-y-auto">
-    <CTopNavBar title="Settings" @backClick="jumpToHomePage"/>
+    <CTopNavBar :title="$t('settings.pageTitle')" @backClick="jumpToHomePage"/>
     <div class="px-2 xl:p-0 max-w-content m-auto pt-2 pb-6">
-      <div class="mt-1 text-lg leading-13">Basic Settings</div>
+      <div class="mt-1 text-lg leading-13">{{ $t("settings.basicSettings") }}</div>
       <div class="rounded-xl overflow-hidden text-base select-none">
         <CListItem
-            content="Enter Line break"
+            :content="$t('settings.basic.language.title')"
+            left-icon="icon-translate1"
+            @click="openLanguageDialog"
+        />
+        <CListItem
+            :content="$t('settings.basic.enterLineBreak.title')"
             left-icon="icon-enter"
-            tooltip="After enabling, press Enter to start a new line, and Shift+Enter to send the message."
+            :tooltip="$t('settings.basic.enterLineBreak.description')"
             switch-enabled
             v-model:switch-value="baseConfig.enterSend"
         />
         <CListItem
-            content="Enable Ctrl+Enter"
+            :content="$t('settings.basic.enableCtrlEnter.title')"
             left-icon="icon-retweet"
-            tooltip="Use ctrl+enter to replace shift+enter."
+            :tooltip="$t('settings.basic.enableCtrlEnter.description')"
             switch-enabled
             v-model:switch-value="baseConfig.ctrlEnterSend"
         />
         <CListItem
-            content="Enable bubble message"
+            :content="$t('settings.basic.enableBubbleMessage.title')"
             left-icon="icon-message"
-            tooltip="Message will be displayed in a bubble."
+            :tooltip="$t('settings.basic.enableBubbleMessage.description')"
             switch-enabled
             v-model:switch-value="baseConfig.bubbleMessage"
         />
         <CListItem
-            content="Force scroll to bottom"
+            :content="$t('settings.basic.forceScrollToBottom.title')"
             left-icon="icon-down-arrow"
-            tooltip="Force scroll to bottom when new message is received."
+            :tooltip="$t('settings.basic.forceScrollToBottom.description')"
             switch-enabled
             v-model:switch-value="baseConfig.forceScrollToBottom"
         />
         <CListItem
-            content="Dark Mode"
+            :content="$t('settings.basic.darkMode.title')"
             :left-icon="isDarkMode?'icon-night-mode':'icon-daytime-mode'"
             switch-enabled
             v-model:switch-value="isDarkMode"
         />
-        <CListItem content="Openai API Key" left-icon="icon-key" @click="openOpenaiKeyDialog"/>
-        <CListItem content="Google API Key" left-icon="icon-key" @click="openGoogleKeyDialog"/>
-        <CListItem content="KeyMap" left-icon="icon-gold" @click="jumpToKeyMapSettingPage"/>
-        <CListItem content="Import config" left-icon="icon-Import" @click="importConfig"/>
-        <CListItem content="Export config" left-icon="icon-export" :bottom-border="false" @click="exportConfig"/>
+        <CListItem
+            :content="$t('settings.basic.openaiApiKey.title')"
+            left-icon="icon-key"
+            @click="openOpenaiKeyDialog"
+        />
+        <CListItem
+            :content="$t('settings.basic.googleApiKey.title')"
+            left-icon="icon-key"
+            @click="openGoogleKeyDialog"
+        />
+        <CListItem
+            :content="$t('settings.basic.shortcuts.title')"
+            left-icon="icon-gold"
+            @click="jumpToKeyMapSettingPage"
+        />
+        <CListItem :content="$t('settings.basic.import.title')" left-icon="icon-Import" @click="importConfig"/>
+        <CListItem
+            :content="$t('settings.basic.export.title')"
+            left-icon="icon-export"
+            :bottom-border="false"
+            @click="exportConfig"
+        />
       </div>
-      <div class="mt-1 text-lg leading-13">Chat Default Settings</div>
+      <div class="mt-1 text-lg leading-13">{{ $t("settings.chatDefaultSettings") }}</div>
       <CAnimationTabs v-model:active-name="activeTabName" :tab-names="tabNames"/>
       <div class="pt-4 overflow-hidden">
         <Transition name="slip" mode="out-in">
