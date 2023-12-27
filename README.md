@@ -37,6 +37,7 @@
 - [x] Multi-model support
 - [x] DALL·E image generation
 - [x] Google Gemini
+- [x] Multi-language support
 - [ ] Mobile support
     - [x] Mobile web
         - [x] Android
