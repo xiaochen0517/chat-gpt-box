@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import {computed, getCurrentInstance, nextTick, ref, watch} from "vue";
+import {computed, getCurrentInstance, nextTick, onMounted, ref, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
 import AddTabDialog from "../dialog/AddTabDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/tab/CTabs.vue";
 import CTabPane from "@/components/base/tab/CTabPane.vue";
-import {ElMessageBox} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
+import {useAppStateStore} from "@/store/AppStateStore.ts";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
-import {ChatTabInfo} from "@/types/chat/ChatTabInfo.ts";
+import {ChatMessage, ChatTabInfo} from "@/types/chat/ChatTabInfo.ts";
+import {FileUtil} from "@/utils/FileUtil.ts";
 
 /**
  * register shortcut
@@ -57,10 +59,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 const propsActiveChat = ref<ChatInfo | null>(props.activeChat);
 watch(
-  () => props.activeChat,
-  (value) => {
-    propsActiveChat.value = value;
-  }
+    () => props.activeChat,
+    (value) => {
+      propsActiveChat.value = value;
+    },
 );
 
 const chatTabsStore = useChatTabsStore();
@@ -72,23 +74,21 @@ const cleanTabChat = () => {
 const instance = getCurrentInstance();
 const activeTabIndex = ref<number>(0);
 watch(
-  () => activeTabIndex.value,
-  () => {
-    scrollToBottom();
-    if (!instance) return;
-    instance.emit("update:tabIndex", activeTabIndex.value);
-  }
+    () => activeTabIndex.value,
+    () => {
+      scrollToBottom();
+      if (!instance) return;
+      instance.emit("update:tabIndex", activeTabIndex.value);
+    },
 );
 const confirmRemoveTab = (targetKey: number) => {
   removeTab(targetKey);
 };
-
 const addTab = () => {
   if (!addTabDialogRefs.value) return;
   let tabsSize = chatTabNameList.value.length;
   addTabDialogRefs.value.show(tabsSize + 1);
 };
-
 const removeTab = (targetKey: number) => {
   if (!propsActiveChat.value) return;
   // if the tab to be removed is the active tab, switch to the previous tab
@@ -104,31 +104,49 @@ const removeTab = (targetKey: number) => {
   // remove tab
   chatTabsStore.removeChatTab(propsActiveChat.value.id, targetKey);
 };
-
 const chatTabNameList = computed(() => {
   if (!propsActiveChat.value) return [];
   let chatTabList = chatTabsStore.chatTabs[propsActiveChat.value.id];
   if (!chatTabList) return [];
   return chatTabList
-    .map((item: ChatTabInfo) => item.name);
+      .map((item: ChatTabInfo) => item.name);
 });
 const removeTabClick = (index: number) => {
   ElMessageBox.confirm("Are you sure to remove this tab?", "Warning", {
     confirmButtonText: "OK",
     cancelButtonText: "Cancel",
-    type: "warning"
+    type: "warning",
   }).then(() => {
     removeTab(index);
   }).catch(() => {
   });
 };
 
+const exportChatInfo = () => {
+  if (!propsActiveChat.value) return;
+  const chatTabInfo = chatTabsStore.getChatTabInfo(propsActiveChat.value.id, activeTabIndex.value);
+  if (!chatTabInfo) {
+    ElMessage.warning("No chat history");
+    return;
+  }
+  let chatInfoMarkdown = `# Chat Name: ${propsActiveChat.value.name}\n\n`;
+  chatInfoMarkdown += `## Chat Tab: ${chatTabInfo.name}\n\n`;
+  chatTabInfo.chat.forEach((item: ChatMessage) => {
+    chatInfoMarkdown += `### ${item.role}:\n\n`;
+    chatInfoMarkdown += `${item.content}\n\n`;
+  });
+  FileUtil.startDownLoad(`${propsActiveChat.value.name}_export.md`, chatInfoMarkdown);
+};
 const getTabIndex = () => {
   return activeTabIndex.value;
 };
-const scrollContainerRefs = ref();
+
+const appStateStore = useAppStateStore();
+const scrollContainerRefs = ref<HTMLElement | null>(null);
 const scrollToBottom = () => {
   nextTick(() => {
+    if (!configStore.baseConfig.forceScrollToBottom && !appStateStore.lockScrollDown) return;
+    if (!scrollContainerRefs.value) return;
     scrollContainerRefs.value.scrollTop = scrollContainerRefs.value.scrollHeight;
   });
 };
@@ -136,24 +154,54 @@ defineExpose({
   getTabIndex,
   scrollToBottom,
 });
+const containerSize = ref(0);
+const scrollContainerContentRefs = ref<HTMLElement | null>(null);
+onMounted(() => {
+  if (!scrollContainerContentRefs.value) return;
+  containerSize.value = scrollContainerContentRefs.value.clientHeight;
+});
+const scrollHandle = (event: UIEvent) => {
+  // get container size
+  if (!scrollContainerContentRefs.value) return;
+  let currentContainerSize = scrollContainerContentRefs.value.clientHeight;
+  // if container size changed, scroll to bottom
+  if (currentContainerSize !== containerSize.value) {
+    containerSize.value = currentContainerSize;
+    scrollToBottom();
+    return;
+  }
+  const element = event.target as HTMLElement;
+  const scrollTop = Math.round(element.scrollTop);
+  const clientHeight = Math.round(element.clientHeight);
+  const scrollHeight = Math.round(element.scrollHeight);
+  let isLock = scrollTop + clientHeight >= scrollHeight;
+  if (appStateStore.lockScrollDown !== isLock) {
+    appStateStore.lockScrollDown = isLock;
+  }
+};
 </script>
 
 <template>
   <div
       ref="scrollContainerRefs"
-      class="scroll-container overflow-hidden overflow-y-auto box-border scroll-container pt-14"
+      class="scroll-container overflow-hidden overflow-y-auto box-border pt-14"
+      @scroll="scrollHandle"
   >
-    <CTabs
-        v-model:activeKey="activeTabIndex"
-        :tabNames="chatTabNameList"
-        @addTabClick="addTab"
-        @removeTabClick="removeTabClick"
-        @showSlideSideBarClick="$emit('showSlideSideBarClick')"
-    >
-      <CTabPane v-for="(_number, index) in chatTabNameList.length" :key="index">
-        <ChatMsgListBlock :chatInfo="propsActiveChat" :tabIndex="index"/>
-      </CTabPane>
-    </CTabs>
+    <div ref="scrollContainerContentRefs">
+      <CTabs
+          v-model:activeKey="activeTabIndex"
+          :tabNames="chatTabNameList"
+          @addTabClick="addTab"
+          @removeTabClick="removeTabClick"
+          @showSlideSideBarClick="$emit('showSlideSideBarClick')"
+          @exportChatClick="exportChatInfo"
+          @lockScrollDownClick="scrollToBottom"
+      >
+        <CTabPane v-for="(_number, index) in chatTabNameList.length" :key="index">
+          <ChatMsgListBlock :chatInfo="propsActiveChat" :tabIndex="index"/>
+        </CTabPane>
+      </CTabs>
+    </div>
     <AddTabDialog ref="addTabDialogRefs" :chat-id="props.activeChat?.id"/>
   </div>
 </template>

@@ -160,24 +160,24 @@ const getChatOptionsFromSettingsList = (): ChatOptions | null => {
 <template>
   <div class="w-full h-screen bg-neutral-50 dark:bg-neutral-900 overflow-y-auto">
     <CTopNavBar
-        title="Chat Editor"
+        :title="$t('chat.chatSettings.pageTitle')"
         :save-button="isAddChat"
         save-button-text="Add"
         @backClick="jumpToHomePage"
         @saveClick="addChat"
     />
     <div class="px-2 xl:p-0 max-w-content m-auto pt-2 pb-6">
-      <div class="mt-1 text-lg leading-13">Chat Settings</div>
+      <div class="mt-1 text-lg leading-13">{{ $t("settings.basicSettings") }}</div>
       <div class="mb-4 rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
         <CListItem
-            content="Chat name"
+            :content="$t('chat.chatName.title')"
             left-icon="iconfont icon-coupon"
             @click="openChatNameDialog"
             :bottom-border="activeTabName !== 'DALL-E'"
         />
         <CListItem
             v-if="activeTabName !== 'DALL-E'"
-            content="Chat prompt"
+            :content="$t('chat.chatPrompt.title')"
             left-icon="iconfont icon-message-comments"
             :bottom-border="false"
             @click="openChatPromptDialog"

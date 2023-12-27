@@ -90,9 +90,9 @@ const openModelDialog = () => {
         settingsDialogRefs.value.hide();
       });
 };
-const openMaxOutputTokensDialog = () => {
+const openResponseMaxTokensDialog = () => {
   if (!settingsDialogRefs.value) return;
-  GeminiSettingsDialogUtil.showMaxOutputTokensDialog(
+  GeminiSettingsDialogUtil.showResponseMaxTokensDialog(
       settingsDialogRefs.value,
       getConfig().maxOutputTokens)
       .then((value: string | number) => {
@@ -190,18 +190,18 @@ const openTopPDialog = () => {
 
 <template>
   <div class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
-    <CListItem content="Api url" left-icon="icon-link1" @click="openApiUrlDialog"/>
-    <CListItem content="Model" left-icon="icon-rocket" @click="openModelDialog"/>
-    <CListItem content="Max output tokens" left-icon="icon-catalog-download" @click="openMaxOutputTokensDialog"/>
-    <CListItem content="Temperature" left-icon="icon-hot-for-ux" @click="openTemperatureDialog"/>
+    <CListItem :content="$t('settings.apiUrl.title')" left-icon="icon-link1" @click="openApiUrlDialog"/>
+    <CListItem :content="$t('settings.model.title')" left-icon="icon-rocket" @click="openModelDialog"/>
+    <CListItem :content="$t('settings.temperature.title')" left-icon="icon-hot-for-ux" @click="openTemperatureDialog"/>
     <CListItem content="Top K" left-icon="icon-boxplot" @click="openTopKDialog"/>
     <CListItem content="Top P" left-icon="icon-sliders" @click="openTopPDialog"/>
-    <CListItem content="Context max messages" left-icon="icon-file-text" @click="openContextMaxMsgsDialog"/>
+    <CListItem :content="$t('settings.contextMaxMessages.title')" left-icon="icon-file-text" @click="openContextMaxMsgsDialog"/>
+    <CListItem :content="$t('settings.contextMaxTokens.title')" left-icon="icon-build" @click="openContextMaxTokensDialog"/>
     <CListItem
-        content="Context max tokens"
-        left-icon="icon-build"
-        @click="openContextMaxTokensDialog"
+        :content="$t('settings.responseMaxTokens.title')"
+        left-icon="icon-catalog-download"
         :bottom-border="false"
+        @click="openResponseMaxTokensDialog"
     />
     <CSettingsDialog ref="settingsDialogRefs"/>
   </div>

@@ -1,8 +1,11 @@
 import {KeyMapEnum} from "@/enum/KeyMapEnum.ts";
 
 export type BaseConfig = {
+  language: string;
   enterSend: boolean;
   ctrlEnterSend: boolean;
+  bubbleMessage: boolean;
+  forceScrollToBottom: boolean;
 }
 export type DefaultChatConfig = {
   openAi: OpenAiConfig;

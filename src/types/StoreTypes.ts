@@ -21,6 +21,7 @@ export type ConfigStore = {
 }
 
 export type AppStateStore = {
+  lockScrollDown: boolean;
   currentChatId: string | null;
   currentTabIndex: number;
   windowState: WindowState;

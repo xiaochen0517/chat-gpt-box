@@ -164,13 +164,21 @@ const openImageQualityDialog = () => {
 
 <template>
   <div class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
-    <CListItem content="Api url" left-icon="icon-link1" @click="openApiUrlDialog"/>
-    <CListItem content="Model" left-icon="icon-rocket" @click="openModelDialog"/>
-    <CListItem content="Image count" left-icon="icon-Field-number" @click="openImageCountDialog"/>
-    <CListItem content="Image size" left-icon="icon-arrawsalt" @click="openImageSizeDialog"/>
-    <CListItem content="Image style" left-icon="icon-picture" @click="openImageStyleDialog"/>
+    <CListItem :content="$t('settings.apiUrl.title')" left-icon="icon-link1" @click="openApiUrlDialog"/>
+    <CListItem :content="$t('settings.model.title')" left-icon="icon-rocket" @click="openModelDialog"/>
     <CListItem
-        content="Image quality"
+        :content="$t('settings.dalle.imageCount.title')"
+        left-icon="icon-Field-number"
+        @click="openImageCountDialog"
+    />
+    <CListItem
+        :content="$t('settings.dalle.imageSize.title')"
+        left-icon="icon-arrawsalt"
+        @click="openImageSizeDialog"
+    />
+    <CListItem :content="$t('settings.dalle.imageStyle.title')" left-icon="icon-picture" @click="openImageStyleDialog"/>
+    <CListItem
+        :content="$t('settings.dalle.imageQuality.title')"
         left-icon="icon-picture-search"
         :bottom-border="false"
         @click="openImageQualityDialog"

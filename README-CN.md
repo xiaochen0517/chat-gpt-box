@@ -35,6 +35,7 @@
 - [x] 多模型支持
 - [x] DALL·E 图片生成
 - [x] Google Gemini
+- [x] 多语言支持
 - [ ] 移动端支持
     - [x] 移动端网页
     - [x] Android

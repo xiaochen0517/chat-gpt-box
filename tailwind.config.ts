@@ -7,6 +7,11 @@ export default {
   ],
   theme: {
     extend: {
+      margin: {
+        "21": "5.25rem",
+        "22": "5.5rem",
+        "23": "5.75rem",
+      },
       lineHeight: {
         "11": "2.75rem", // 你可以根据需要设置具体的数值
         "12": "3rem",

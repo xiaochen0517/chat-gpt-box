@@ -10,7 +10,7 @@ export class StoreDataMigration {
 
   private static getCurrentVersion(): number {
     console.log("Current version: " + import.meta.env.VITE_STORE_VERSION);
-    return import.meta.env.VITE_STORE_VERSION as number;
+    return Number(import.meta.env.VITE_STORE_VERSION);
   }
 
   public static migrate(): void {
