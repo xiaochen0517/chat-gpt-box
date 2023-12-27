@@ -41,4 +41,8 @@ onMounted(() => {
 .md-editor-preview-wrapper {
   padding: 0 .5rem;
 }
+
+.md-editor-preview {
+  font-size: 1rem !important;
+}
 </style>

@@ -92,9 +92,3 @@ const copyMessageContent = () => {
     </div>
   </div>
 </template>
-
-<style lang="less">
-.github-markdown-body {
-  padding: 10px;
-}
-</style>
