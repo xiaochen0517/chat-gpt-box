@@ -69,7 +69,7 @@ export class GeminiRequest implements BaseRequest {
   }
 
   private async generateRequest(apiKey: string): Promise<RequestInit> {
-    try{
+    try {
       const genAI: GoogleGenerativeAI = new GoogleGenerativeAI(apiKey);
       const model: GenerativeModel = genAI.getGenerativeModel({model: this.chatConfig.model});
       const startChatParams = await this.getStartChatParams(model);
@@ -167,8 +167,10 @@ export class GeminiRequest implements BaseRequest {
     for (let index = chatMessageList.length - 1; index >= 0; index--) {
       const chatMessage = chatMessageList[index];
       sendMessagesTokenCount += (await model.countTokens(chatMessage.content)).totalTokens;
+      // Since the messages submitted by Gemini must be a user message corresponding to an assistant message,
+      // it is necessary to ensure that the historical message must start with user on the basis of max message
       if (sendMessagesTokenCount > this.chatConfig.contextMaxTokens
-        || sendMessages.length >= this.chatConfig.contextMaxMessage + 1) {
+        || (sendMessages.length >= this.chatConfig.contextMaxMessage + 1 && chatMessage.role === ChatMessageRole.Assistant)) {
         break;
       }
       sendMessages.unshift(chatMessage);
