@@ -30,6 +30,10 @@ const addChatClick = () => {
 const openSettingsWindow = () => {
   router.push({path: "/settings"});
 };
+
+const openChatTemplateWindow = () => {
+  router.push({path: "/chat/template"});
+};
 </script>
 
 <template>
@@ -39,13 +43,19 @@ const openSettingsWindow = () => {
           class="group h-10 flex-1 flex justify-center items-center rounded-xl bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-700 hover:dark:bg-neutral-600 active:dark:bg-neutral-700 cursor-pointer"
           @click="addChatClick"
       >
-        <i class="iconfont icon-add text-xl transition ease-in-out group-hover:rotate-180 duration-700"/>
+        <i class="iconfont icon-add text-xl transition ease-in-out group-hover:scale-125 duration-300"/>
+      </div>
+      <div
+          class="group w-10 h-10 flex justify-center items-center rounded-xl bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-700 hover:dark:bg-neutral-600 active:dark:bg-neutral-700 cursor-pointer"
+          @click="openChatTemplateWindow"
+      >
+        <i class="iconfont icon-message-comments text-xl transition ease-in-out group-hover:scale-125 duration-300"/>
       </div>
       <div
           class="group w-10 h-10 flex justify-center items-center rounded-xl bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-700 hover:dark:bg-neutral-600 active:dark:bg-neutral-700 cursor-pointer"
           @click="openSettingsWindow"
       >
-        <i class="iconfont icon-settings text-xl transition ease-in-out group-hover:rotate-180 duration-700"/>
+        <i class="iconfont icon-settings text-xl transition ease-in-out group-hover:rotate-180 duration-300"/>
       </div>
       <div
           class="group w-10 h-10 flex justify-center items-center rounded-xl bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-700 hover:dark:bg-neutral-600 active:dark:bg-neutral-700 cursor-pointer"
@@ -54,12 +64,9 @@ const openSettingsWindow = () => {
         <transition name="fade" mode="out-in">
           <i
               v-if="isDarkMode"
-              class="iconfont icon-daytime-mode text-xl transition ease-in-out group-hover:rotate-180 duration-700"
+              class="iconfont icon-daytime-mode text-xl transition ease-in-out group-hover:scale-125 duration-300"
           />
-          <i
-              v-else
-              class="iconfont icon-night-mode text-xl transition ease-in-out group-hover:rotate-180 duration-700"
-          />
+          <i v-else class="iconfont icon-night-mode text-xl transition ease-in-out group-hover:scale-125 duration-500"/>
         </transition>
       </div>
     </div>

@@ -126,5 +126,8 @@
     "input": {
       "placeholder": "Please enter the message"
     }
+  },
+  "chatTemplate": {
+    "pageTitle": "Chat Template"
   }
 }
