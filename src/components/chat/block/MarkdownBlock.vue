@@ -61,10 +61,6 @@ const defaultRender = md.renderer.rules.fence || function (tokens, idx, options,
 };
 
 md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
-  console.log("tokens", tokens);
-  console.log(options);
-  console.log("env", env);
-  console.log("slf", slf);
   const token = tokens[idx];
   const code = token.content.trim();
   const lines = code.split("\n");
