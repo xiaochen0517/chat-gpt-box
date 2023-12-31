@@ -53,20 +53,20 @@ const copyMessageContent = () => {
       />
     </div>
     <div
-        class="relative mx-4 p-1 rounded-xl dark:bg-neutral-800 flex-1 min-w-0 flex flex-col"
+        class="relative mx-4 p-3 rounded-xl bg-gray-200 dark:bg-neutral-800 flex-1 min-w-0 flex flex-col"
         :class="{'ml-14 user-message-bubble':message.role === 'user', 'mr-14 assistant-message-bubble':message.role !== 'user'}"
     >
       <MarkdownBlock :content="message?.content + (propsGenerating?' ✨':'')"/>
       <div class="flex flex-row gap-1 mt-1">
         <button
-            class="p-2 rounded-md flex justify-center items-center bg-neutral-50 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600 cursor-pointer"
+            class="p-2 rounded-md flex justify-center items-center bg-gray-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600 cursor-pointer"
             @click="copyMessageContent"
         >
           <CheckOutlined v-if="copySuccess"/>
           <CopyOutlined v-else/>
         </button>
         <button
-            class="p-2 rounded-md flex justify-center items-center bg-neutral-50 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
+            class="p-2 rounded-md flex justify-center items-center bg-gray-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
             @click="$emit('edit', message, index)"
         >
           <EditOutlined/>
@@ -78,7 +78,7 @@ const copyMessageContent = () => {
             confirm-button-text="Delete"
         >
           <template #reference>
-            <button class="p-2 rounded-md flex justify-center items-center bg-neutral-50 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600">
+            <button class="p-2 rounded-md flex justify-center items-center bg-gray-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600">
               <DeleteOutlined/>
             </button>
           </template>
