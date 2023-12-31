@@ -189,7 +189,7 @@ const openTopPDialog = () => {
 </script>
 
 <template>
-  <div class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
+  <div class="rounded-xl overflow-hidden text-base select-none border dark:border-0 bg-neutral-100 dark:bg-neutral-800">
     <CListItem :content="$t('settings.apiUrl.title')" left-icon="icon-link1" @click="openApiUrlDialog"/>
     <CListItem :content="$t('settings.model.title')" left-icon="icon-rocket" @click="openModelDialog"/>
     <CListItem :content="$t('settings.temperature.title')" left-icon="icon-hot-for-ux" @click="openTemperatureDialog"/>
