@@ -128,6 +128,7 @@
     }
   },
   "chatTemplate": {
-    "pageTitle": "Chat Template"
+    "pageTitle": "Chat Template",
+    "chatTemplateList": "Template List"
   }
 }

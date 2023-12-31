@@ -126,6 +126,7 @@
     }
   },
   "chatTemplate": {
-    "pageTitle": "聊天模板"
+    "pageTitle": "聊天模板",
+    "chatTemplateList": "模板列表"
   }
 }
