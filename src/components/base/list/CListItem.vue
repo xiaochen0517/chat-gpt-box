@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import {computed, getCurrentInstance, onMounted, ref, watch} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
-import TheKeyMapCode from "@/components/base/list/TheKeyMapCode.vue";
 import {Avatar, Factory, IAvatarProps} from "vue3-avataaars";
 
 type Props = {
   switchValue?: boolean,
   switchEnabled?: boolean,
   content: string,
-  rightContent?: string[],
   tooltip?: string,
   placement?: string,
   leftIcon?: string,
@@ -20,7 +18,6 @@ const props = withDefaults(defineProps<Props>(), {
   switchValue: false,
   switchEnabled: false,
   content: "",
-  rightContent: () => [],
   tooltip: "",
   placement: "top",
   rightIcon: "icon-right",
@@ -73,14 +70,7 @@ const isDarkMode = computed(() => configStore.isDarkMode);
           />
         </el-tooltip>
       </div>
-      <div v-if="rightContent.length>0" class="flex flex-row items-center">
-        <TheKeyMapCode
-            v-for="(keyCode,index) in rightContent"
-            :key="index"
-            :key-map-code="keyCode"
-            :size="75"
-        />
-      </div>
+      <slot name="right"/>
       <el-switch v-if="switchEnabled" v-model="switchValue"/>
       <i v-else class="iconfont" :class="rightIcon"/>
     </div>

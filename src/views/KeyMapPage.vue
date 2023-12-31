@@ -7,6 +7,7 @@ import KeyMapChangeDialog from "@/components/setting/dialog/KeyMapChangeDialog.v
 import {computed, ref} from "vue";
 
 import {ShortcutConfigKey} from "@/types/chat/BaseConfig.ts";
+import TheKeyMapCode from "@/components/base/list/TheKeyMapCode.vue";
 
 const configStore = useConfigStore();
 
@@ -43,11 +44,20 @@ function openKeyMapChangeDialog(shortcutConfigKey: ShortcutConfigKey) {
         <CListItem
             v-for="(keyMapList,shortcutKey,index) in configStore.shortcut"
             :key="shortcutKey"
+            left-icon="icon-shortcut"
             :content="shortcutKey"
-            :right-content="keyMapList"
             :bottom-border="index !== shortcutSize - 1"
             @click="openKeyMapChangeDialog(shortcutKey)"
-        />
+        >
+          <template #right>
+            <TheKeyMapCode
+                v-for="(keyCode,index) in keyMapList"
+                :key="index"
+                :key-map-code="keyCode"
+                :size="75"
+            />
+          </template>
+        </CListItem>
       </div>
     </div>
 
