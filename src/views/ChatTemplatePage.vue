@@ -52,8 +52,8 @@ const openAddChatDialog = (chatTemplate: ChatInfo) => {
         <CListItem
             v-for="(chatTemplate, index) in chatTemplateList"
             :key="chatTemplate.name"
+            :left-avatar="chatTemplate.avatar"
             :content="chatTemplate.name"
-            left-icon="icon-translate1"
             :bottom-border="index < chatTemplateList.length - 1"
             @click="openAddChatDialog(chatTemplate)"
         />

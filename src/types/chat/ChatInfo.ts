@@ -1,8 +1,10 @@
 import {GoogleGeminiConfig, OpenAiChatGptConfig, OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
+import {IAvatarProps} from "vue3-avataaars";
 
 export type ChatInfo = {
   id: string;
   name: string;
+  avatar?: Partial<IAvatarProps>,
   prompt: string;
   chatType: ChatType;
   options: ChatOptions;
