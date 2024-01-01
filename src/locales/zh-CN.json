@@ -127,7 +127,11 @@
   },
   "chatTemplate": {
     "pageTitle": "聊天模板",
-    "chatTemplateList": "模板列表"
+    "chatTemplateList": "模板列表",
+    "messages": {
+      "getSuccess": "获取聊天模板列表成功。",
+      "getFailed": "获取聊天模板列表失败。"
+    }
   },
   "tab": {
     "addTab": {

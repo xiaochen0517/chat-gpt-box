@@ -5,6 +5,9 @@ import axios from "axios";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import CListItem from "@/components/base/list/CListItem.vue";
 import {ElMessage} from "element-plus";
+import i18n from "@/i18n/i18n.ts";
+
+const {t} = i18n.global;
 
 const chatTemplateList = ref<ChatInfo[]>([]);
 
@@ -16,19 +19,19 @@ onMounted(() => {
 const chatTemplateUrl = "http://localhost:14105/chat_template.json";
 
 const getChatTemplateList = () => {
-  axios.get(chatTemplateUrl)
+  axios.get(chatTemplateUrl, {timeout: 5000})
       .then((res) => {
         if (!res || res.status != 200 || !res.data) {
           console.log("get chat template list failed");
-          ElMessage.error("Get chat template list failed");
+          ElMessage.error(t("chatTemplate.messages.getFailed"));
           return;
         }
         chatTemplateList.value = res.data;
-        ElMessage.success("Get chat template list success");
+        ElMessage.success(t("chatTemplate.messages.getSuccess"));
       })
       .catch((err) => {
         console.log(err);
-        ElMessage.error("Get chat template list failed");
+        ElMessage.error(t("chatTemplate.messages.getFailed")+` ${err}`);
       });
 };
 

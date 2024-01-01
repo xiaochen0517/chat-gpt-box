@@ -129,7 +129,11 @@
   },
   "chatTemplate": {
     "pageTitle": "Chat Template",
-    "chatTemplateList": "Template List"
+    "chatTemplateList": "Template List",
+    "messages": {
+      "getSuccess": "Get chat template list successfully.",
+      "getFailed": "Get chat template list failed."
+    }
   },
   "tab": {
     "addTab": {
