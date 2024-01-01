@@ -41,6 +41,10 @@
       "googleApiKey": {
         "title": "Google API Key"
       },
+      "chatTemplateUrl": {
+        "title": "Chat Template Url",
+        "placeholder": "Please enter the chat template url"
+      },
       "shortcuts": {
         "title": "Shortcuts Settings"
       },

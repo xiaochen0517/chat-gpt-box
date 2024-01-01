@@ -60,7 +60,9 @@ const openOpenaiKeyDialog = () => {
 };
 const openGoogleKeyDialog = () => {
   if (!currentDialogRefs.value) return;
-  BaseSettingsDialogUtil.showApiKeyDialog(currentDialogRefs.value, configStore.defaultChatConfig.google.base.apiKey)
+  BaseSettingsDialogUtil.showApiKeyDialog(
+      currentDialogRefs.value,
+      configStore.defaultChatConfig.google.base.apiKey)
       .then((value: string | number) => {
         value = String(value);
         if (!value || value.length === 0) {
@@ -68,6 +70,21 @@ const openGoogleKeyDialog = () => {
           return;
         }
         configStore.defaultChatConfig.google.base.apiKey = value;
+        currentDialogRefs.value?.hide();
+      });
+};
+const openChatTemplateUrlDialog = () => {
+  if (!currentDialogRefs.value) return;
+  BaseSettingsDialogUtil.showChatTemplateUrlDialog(
+      currentDialogRefs.value,
+      configStore.baseConfig.chatTemplateUrl)
+      .then((value: string | number) => {
+        value = String(value);
+        if (!value || value.length === 0) {
+          ElMessage.warning("Please enter the chat template url");
+          return;
+        }
+        configStore.baseConfig.chatTemplateUrl = value;
         currentDialogRefs.value?.hide();
       });
 };
@@ -213,6 +230,11 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
             :content="$t('settings.basic.googleApiKey.title')"
             left-icon="icon-key"
             @click="openGoogleKeyDialog"
+        />
+        <CListItem
+            :content="$t('settings.basic.chatTemplateUrl.title')"
+            left-icon="icon-template-success"
+            @click="openChatTemplateUrlDialog"
         />
         <CListItem
             :content="$t('settings.basic.shortcuts.title')"

@@ -6,6 +6,7 @@ export type BaseConfig = {
   ctrlEnterSend: boolean;
   bubbleMessage: boolean;
   forceScrollToBottom: boolean;
+  chatTemplateUrl: string;
 }
 export type DefaultChatConfig = {
   openAi: OpenAiConfig;

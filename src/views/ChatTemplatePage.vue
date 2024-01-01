@@ -6,20 +6,18 @@ import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import CListItem from "@/components/base/list/CListItem.vue";
 import {ElMessage} from "element-plus";
 import i18n from "@/i18n/i18n.ts";
+import {useConfigStore} from "@/store/ConfigStore.ts";
 
 const {t} = i18n.global;
-
+const configStore = useConfigStore();
 const chatTemplateList = ref<ChatInfo[]>([]);
 
 onMounted(() => {
   getChatTemplateList();
 });
 
-// const chatTemplateUrl = "https://xiaochen0517.github.io/chat-gpt-box/chat_template.json";
-const chatTemplateUrl = "http://localhost:14105/chat_template.json";
-
 const getChatTemplateList = () => {
-  axios.get(chatTemplateUrl, {timeout: 5000})
+  axios.get(configStore.baseConfig.chatTemplateUrl, {timeout: 5000})
       .then((res) => {
         if (!res || res.status != 200 || !res.data) {
           console.log("get chat template list failed");

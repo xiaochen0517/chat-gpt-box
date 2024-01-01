@@ -40,6 +40,10 @@
       "googleApiKey": {
         "title": "Google API Key"
       },
+      "chatTemplateUrl": {
+        "title": "聊天模板地址",
+        "placeholder": "请输入聊天模板地址"
+      },
       "shortcuts": {
         "title": "快捷键设置"
       },
