@@ -128,5 +128,19 @@
   "chatTemplate": {
     "pageTitle": "聊天模板",
     "chatTemplateList": "模板列表"
+  },
+  "tab": {
+    "addTab": {
+      "title": "添加标签页",
+      "success": "添加标签页成功。",
+      "error": "添加标签页失败。",
+      "prefix": "新标签页 ",
+      "errorMessages": {
+        "name": "请输入标签页名称。",
+        "nameEmpty": "标签页名称不能为空。",
+        "nameTooLong": "标签页名称不能超过 20 个字符。",
+        "noActiveChat": "请先选择一个聊天。"
+      }
+    }
   }
 }

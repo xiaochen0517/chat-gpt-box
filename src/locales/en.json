@@ -130,5 +130,19 @@
   "chatTemplate": {
     "pageTitle": "Chat Template",
     "chatTemplateList": "Template List"
+  },
+  "tab": {
+    "addTab": {
+      "title": "Add Tab",
+      "success": "Add tab successfully.",
+      "error": "Add tab failed.",
+      "prefix": "New Tab ",
+      "errorMessages": {
+        "name": "Please enter the tab name.",
+        "nameEmpty": "Tab name cannot be empty.",
+        "nameTooLong": "Tab name cannot be longer than 20 characters.",
+        "noActiveChat": "Please select a chat to add."
+      }
+    }
   }
 }
