@@ -3,7 +3,9 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "delete": "Delete",
-    "edit": "Edit"
+    "edit": "Edit",
+    "add": "Add",
+    "save": "Save"
   },
   "settings": {
     "pageTitle": "Settings",
@@ -136,7 +138,8 @@
     "chatTemplateList": "Template List",
     "messages": {
       "getSuccess": "Get chat template list successfully.",
-      "getFailed": "Get chat template list failed."
+      "getFailed": "Get chat template list failed.",
+      "addSuccess": "Add chat template successfully."
     }
   },
   "tab": {

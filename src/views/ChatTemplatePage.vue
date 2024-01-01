@@ -7,6 +7,7 @@ import CListItem from "@/components/base/list/CListItem.vue";
 import {ElMessage} from "element-plus";
 import i18n from "@/i18n/i18n.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
+import ChatTemplateInfoDialog from "@/components/chat/dialog/ChatTemplateInfoDialog.vue";
 
 const {t} = i18n.global;
 const configStore = useConfigStore();
@@ -25,16 +26,18 @@ const getChatTemplateList = () => {
           return;
         }
         chatTemplateList.value = res.data;
-        ElMessage.success(t("chatTemplate.messages.getSuccess"));
       })
       .catch((err) => {
         console.log(err);
-        ElMessage.error(t("chatTemplate.messages.getFailed")+` ${err}`);
+        ElMessage.error(t("chatTemplate.messages.getFailed") + ` ${err}`);
       });
 };
 
+const chatTemplateInfoDialogRefs = ref<InstanceType<typeof ChatTemplateInfoDialog> | null>(null);
 const openAddChatDialog = (chatTemplate: ChatInfo) => {
   console.log(chatTemplate);
+  if (!chatTemplateInfoDialogRefs.value) return;
+  chatTemplateInfoDialogRefs.value.show(chatTemplate);
 };
 </script>
 
@@ -57,8 +60,15 @@ const openAddChatDialog = (chatTemplate: ChatInfo) => {
             :content="chatTemplate.name"
             :bottom-border="index < chatTemplateList.length - 1"
             @click="openAddChatDialog(chatTemplate)"
-        />
+        >
+          <template #right>
+            <div class="bg-amber-500 shadow-md rounded px-2 py-1 mr-4 text-black text-sm">
+              {{ chatTemplate.chatType.toUpperCase() }}
+            </div>
+          </template>
+        </CListItem>
       </div>
     </div>
+    <ChatTemplateInfoDialog ref="chatTemplateInfoDialogRefs"/>
   </div>
 </template>

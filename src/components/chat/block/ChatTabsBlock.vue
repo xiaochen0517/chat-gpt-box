@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {computed, getCurrentInstance, nextTick, onMounted, ref, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
-import AddTabDialog from "../dialog/AddTabDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/tab/CTabs.vue";
 import CTabPane from "@/components/base/tab/CTabPane.vue";
