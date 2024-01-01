@@ -109,4 +109,13 @@ export class BaseSettingsDialogUtil {
       }
     });
   }
+
+  static showChatTemplateUrlDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string): Promise<string | number> {
+    return dialogRefs.show({
+      type: "input",
+      title: t("settings.basic.chatTemplateUrl.title"),
+      placeholder: t("settings.basic.chatTemplateUrl.placeholder"),
+      content: value,
+    });
+  }
 }

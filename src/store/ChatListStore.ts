@@ -13,6 +13,21 @@ export const useChatListStore = defineStore("chatList", {
         {
           id: "default",
           name: "Assistant",
+          avatar: {
+            isCircle: false,
+            skinColor: "#ffe0bd",
+            hairColor: "#000000",
+            topColor: "#000000",
+            facialHairColor: "#000000",
+            clothesColor: "#000000",
+            clothes: "Hoodie",
+            top: "LongHairStraight",
+            accessories: "Blank",
+            facialHair: "Blank",
+            eyes: "Happy",
+            eyebrows: "Default",
+            mouth: "Smile",
+          },
           prompt: "You are a helpful assistant.",
           chatType: ChatType.CHAT_GPT,
           options: {
@@ -27,6 +42,21 @@ export const useChatListStore = defineStore("chatList", {
         {
           id: "default1",
           name: "GPT-4",
+          avatar: {
+            isCircle: false,
+            skinColor: "#ffe0bd",
+            hairColor: "#000000",
+            topColor: "#000000",
+            facialHairColor: "#000000",
+            clothesColor: "#000000",
+            clothes: "Hoodie",
+            top: "LongHairStraight",
+            accessories: "Blank",
+            facialHair: "Blank",
+            eyes: "Happy",
+            eyebrows: "Default",
+            mouth: "Smile",
+          },
           prompt: "You are a helpful assistant.",
           chatType: ChatType.CHAT_GPT,
           options: {

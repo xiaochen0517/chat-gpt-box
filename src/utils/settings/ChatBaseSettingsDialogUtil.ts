@@ -2,6 +2,7 @@ import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
 import i18n from "@/i18n/i18n.ts";
 
 const {t} = i18n.global;
+
 export class ChatBaseSettingsDialogUtil {
 
   static showChatNameDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string): Promise<string | number> {

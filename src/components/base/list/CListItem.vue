@@ -1,35 +1,38 @@
 <script setup lang="ts">
 import {computed, getCurrentInstance, onMounted, ref, watch} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
-import TheKeyMapCode from "@/components/base/list/TheKeyMapCode.vue";
+import {Avatar, Factory, IAvatarProps} from "vue3-avataaars";
 
 type Props = {
   switchValue?: boolean,
   switchEnabled?: boolean,
   content: string,
-  rightContent?: string[],
   tooltip?: string,
   placement?: string,
   leftIcon?: string,
   rightIcon?: string,
-  bottomBorder?: boolean
+  bottomBorder?: boolean,
+  leftAvatar?: Partial<IAvatarProps>,
 }
 const props = withDefaults(defineProps<Props>(), {
   switchValue: false,
   switchEnabled: false,
   content: "",
-  rightContent: () => [],
   tooltip: "",
   placement: "top",
-  leftIcon: "icon-lock",
   rightIcon: "icon-right",
   bottomBorder: true,
 });
+
+const avatarProps = ref(Factory());
 
 const instance = getCurrentInstance();
 const switchValue = ref(false);
 onMounted(() => {
   switchValue.value = props.switchValue;
+  if (!props.leftIcon) {
+    avatarProps.value = Factory(props.leftAvatar);
+  }
 });
 watch(() => props.switchValue, (value) => {
   switchValue.value = value;
@@ -49,7 +52,8 @@ const isDarkMode = computed(() => configStore.isDarkMode);
         class="flex flex-row items-center"
         :class="bottomBorder?'border-b border-neutral-200 dark:border-neutral-600':''"
     >
-      <div class="flex-1 flex flex-row">
+      <div class="flex-1 flex flex-row items-center" :class="{'py-4': !leftIcon}">
+        <Avatar v-if="!leftIcon" class="w-12 h-12 rounded-full overflow-hidden bg-gray-600" v-bind="avatarProps"/>
         <i class="iconfont text-xl leading-12" :class="leftIcon"/>
         <span class="ml-2 text-base leading-12">{{ content }}</span>
         <el-tooltip
@@ -66,14 +70,7 @@ const isDarkMode = computed(() => configStore.isDarkMode);
           />
         </el-tooltip>
       </div>
-      <div v-if="rightContent.length>0" class="flex flex-row items-center">
-        <TheKeyMapCode
-            v-for="(keyCode,index) in rightContent"
-            :key="index"
-            :key-map-code="keyCode"
-            :size="75"
-        />
-      </div>
+      <slot name="right"/>
       <el-switch v-if="switchEnabled" v-model="switchValue"/>
       <i v-else class="iconfont" :class="rightIcon"/>
     </div>

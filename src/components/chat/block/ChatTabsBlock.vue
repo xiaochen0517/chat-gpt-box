@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {computed, getCurrentInstance, nextTick, onMounted, ref, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
-import AddTabDialog from "../dialog/AddTabDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/tab/CTabs.vue";
 import CTabPane from "@/components/base/tab/CTabPane.vue";
@@ -12,6 +11,11 @@ import {useAppStateStore} from "@/store/AppStateStore.ts";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import {ChatMessage, ChatTabInfo} from "@/types/chat/ChatTabInfo.ts";
 import {FileUtil} from "@/utils/FileUtil.ts";
+import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
+import {ChatTabDialogUtil} from "@/utils/dialog/ChatTabDialogUtil.ts";
+import i18n from "@/i18n/i18n.ts";
+
+const {t} = i18n.global;
 
 /**
  * register shortcut
@@ -20,10 +24,8 @@ const configStore = useConfigStore();
 const shortcutStringConfig = computed(() => configStore.shortcutStringConfig);
 const keys = useMagicKeys();
 const addTabKey = keys[shortcutStringConfig.value.addTab];
-const addTabDialogRefs = ref<InstanceType<typeof AddTabDialog> | null>(null);
 whenever(addTabKey, () => {
-  if (!addTabDialogRefs.value) return;
-  addTabDialogRefs.value.show(chatTabNameList.value.length + 1);
+  openAddTabDialog();
 });
 const removeTabKey = keys[shortcutStringConfig.value.removeTab];
 whenever(removeTabKey, () => {
@@ -84,10 +86,32 @@ watch(
 const confirmRemoveTab = (targetKey: number) => {
   removeTab(targetKey);
 };
-const addTab = () => {
-  if (!addTabDialogRefs.value) return;
-  let tabsSize = chatTabNameList.value.length;
-  addTabDialogRefs.value.show(tabsSize + 1);
+const settingsDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
+const openAddTabDialog = () => {
+  if (!settingsDialogRefs.value) return;
+  const currentTabSize = chatTabNameList.value.length + 1;
+  const defaultTabName = t("tab.addTab.prefix") + currentTabSize;
+  ChatTabDialogUtil.showAddTabDialog(settingsDialogRefs.value, defaultTabName, "")
+      .then((result: string | number) => {
+        result = String(result);
+        if (result.length > 20) {
+          ElMessage.warning(t("tab.addTab.errorMessages.nameTooLong"));
+          return;
+        }
+        if (!propsActiveChat.value) {
+          ElMessage.warning(t("tab.addTab.errorMessages.noActiveChat"));
+          return;
+        }
+        // if the tab name is empty, use the default name
+        if (result.length <= 0) {
+          result = defaultTabName;
+        }
+        chatTabsStore.addChatTab(propsActiveChat.value?.id, result);
+        if (!settingsDialogRefs.value) return;
+        settingsDialogRefs.value.hide();
+      })
+      .catch(() => {
+      });
 };
 const removeTab = (targetKey: number) => {
   if (!propsActiveChat.value) return;
@@ -191,7 +215,7 @@ const scrollHandle = (event: UIEvent) => {
       <CTabs
           v-model:activeKey="activeTabIndex"
           :tabNames="chatTabNameList"
-          @addTabClick="addTab"
+          @addTabClick="openAddTabDialog"
           @removeTabClick="removeTabClick"
           @showSlideSideBarClick="$emit('showSlideSideBarClick')"
           @exportChatClick="exportChatInfo"
@@ -202,7 +226,7 @@ const scrollHandle = (event: UIEvent) => {
         </CTabPane>
       </CTabs>
     </div>
-    <AddTabDialog ref="addTabDialogRefs" :chat-id="props.activeChat?.id"/>
+    <CSettingsDialog ref="settingsDialogRefs"/>
   </div>
 </template>
 

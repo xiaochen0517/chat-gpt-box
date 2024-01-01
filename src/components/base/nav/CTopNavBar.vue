@@ -3,11 +3,11 @@ type Props = {
   title: string,
   saveButton?: boolean,
   saveButtonText?: string,
+  saveButtonIcon?: string,
 }
 const props = withDefaults(defineProps<Props>(), {
   title: "Default Title",
   saveButton: false,
-  saveButtonText: "Save",
 });
 </script>
 
@@ -22,10 +22,13 @@ const props = withDefaults(defineProps<Props>(), {
     <div class="ml-4 text-lg">{{ props.title }}</div>
     <div v-if="saveButton" class="ml-auto">
       <div
-          class="w-14 mr-4 rounded-lg flex justify-center items-center cursor-pointer bg-neutral-200 hover:bg-neutral-300 active:bg-neutral-400 dark:bg-neutral-700 hover:dark:bg-neutral-600 active:dark:bg-neutral-500"
+          class="w-14 h-8 mr-4 rounded-lg flex flex-row justify-center items-center cursor-pointer bg-neutral-200 hover:bg-neutral-300 active:bg-neutral-400 dark:bg-neutral-700 hover:dark:bg-neutral-600 active:dark:bg-neutral-500"
           @click="$emit('saveClick')"
       >
-        <div class="text-md leading-8">{{ props.saveButtonText }}</div>
+        <div v-if="props.saveButtonText && props.saveButtonText.length > 0" class="text-md leading-8">
+          {{ props.saveButtonText }}
+        </div>
+        <i v-else class="iconfont text-base" :class="props.saveButtonIcon"/>
       </div>
     </div>
   </div>
