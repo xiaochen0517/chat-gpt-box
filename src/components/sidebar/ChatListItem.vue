@@ -6,8 +6,7 @@ import {useChatListStore} from "@/store/ChatListStore.ts";
 import {ChatInfo, ChatType} from "@/types/chat/ChatInfo.ts";
 import {onMounted, ref} from "vue";
 import {GoogleGeminiConfig, OpenAiChatGptConfig, OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
-import {Avatar, Factory} from "vue3-avataaars";
-import type {IAvatarProps} from "vue3-avataaars/dist/src/Types";
+import {Avatar, Factory, IAvatarProps} from "vue3-avataaars";
 
 type Props = {
   chatInfo: ChatInfo | null,
@@ -38,6 +37,7 @@ onMounted(() => {
       modelName.value = (props.chatInfo.options as GoogleGeminiConfig).model;
       break;
   }
+  avatarInfo.value = Factory(props.chatInfo.avatar);
 });
 
 const editChatClick = (chatInfo: ChatInfo | null) => {
