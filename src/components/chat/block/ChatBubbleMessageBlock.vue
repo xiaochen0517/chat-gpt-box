@@ -40,7 +40,7 @@ const copyMessageContent = () => {
         v-if="message.role === 'system'"
         class="w-10 h-10 bg-indigo-500 dark:bg-indigo-600 rounded-md leading-10 text-center flex justify-center items-center select-none"
     >
-      <i class="iconfont icon-settings text-2xl leading-10"/>
+      <i class="iconfont icon-settings text-2xl leading-10 text-white"/>
     </div>
     <div
         v-if="message.role === 'assistant'"
@@ -53,7 +53,7 @@ const copyMessageContent = () => {
       />
     </div>
     <div
-        class="relative mx-4 p-3 rounded-xl bg-gray-200 dark:bg-neutral-800 flex-1 min-w-0 flex flex-col"
+        class="relative mx-4 p-3 rounded-xl bg-neutral-200 dark:bg-neutral-800 shadow-lg dark:shadow-neutral-900 flex-1 min-w-0 flex flex-col"
         :class="{'ml-14 user-message-bubble':message.role === 'user', 'mr-14 assistant-message-bubble':message.role !== 'user'}"
     >
       <MarkdownBlock :content="message?.content + (propsGenerating?' ✨':'')"/>
@@ -89,7 +89,7 @@ const copyMessageContent = () => {
         v-if="message.role === 'user'"
         class="w-10 h-10 bg-green-500 dark:bg-green-600 rounded-md leading-10 text-center flex justify-center items-center select-none"
     >
-      <i class="iconfont icon-customer text-2xl leading-10"/>
+      <i class="iconfont icon-customer text-2xl leading-10 text-white"/>
     </div>
   </div>
 </template>

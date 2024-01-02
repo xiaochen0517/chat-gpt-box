@@ -26,8 +26,8 @@ watch(() => props.activeKey, (newVal) => {
   propsActiveKey.value = newVal;
 });
 
-const activeClass = ref("border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:active:bg-neutral-700 text-green-500 dark:text-green-400 font-bold");
-const inactiveClass = ref("border-neutral-400 bg-neutral-200 hover:bg-neutral-300 hover:text-neutral-900 active:bg-neutral-400 dark:border-neutral-600 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:active:bg-neutral-600 text-neutral-500 dark:text-neutral-500 font-bold");
+const activeClass = ref("text-green-500 dark:text-green-400 shadow dark:shadow-neutral-900");
+const inactiveClass = ref("text-neutral-500 dark:text-neutral-400");
 
 const closeActiveClass = ref("hover:bg-neutral-300 dark:hover:bg-neutral-700");
 const closeInactiveClass = ref("hover:bg-neutral-400 dark:hover:bg-neutral-600");
@@ -45,7 +45,7 @@ const lockScrollDownClick = () => {
       <div class="content:max-w-content content:m-auto p-2 overflow-hidden overflow-x-auto w-full rounded-lg rounded-t-none bg-neutral-100 dark:bg-neutral-800 shadow-md flex flex-row gap-2 min-w-full box-border">
         <div class="absolute block content:hidden left-2 top-2 bg-neutral-100 dark:bg-neutral-800">
           <div
-              class=" px-2 py-1.5 ml-2 mr-1 box-border rounded-lg cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-700  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
+              class=" px-2 py-1.5 ml-2 mr-1 box-border rounded-lg cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-900  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
               title="Show slide side bar"
               @click.stop="$emit('showSlideSideBarClick')"
           >
@@ -56,7 +56,7 @@ const lockScrollDownClick = () => {
           <div
               v-for="(item, index) in propsTabNames"
               :key="index"
-              class="px-2 py-1.5 box-border rounded-lg cursor-pointer border select-none flex flex-row items-center whitespace-nowrap"
+              class="px-2 py-1.5 box-border rounded-lg cursor-pointer border select-none flex flex-row items-center whitespace-nowrap border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-900 dark:bg-neutral-800 dark:hover:bg-neutral-800 dark:active:bg-neutral-700"
               :class="propsActiveKey === index ? activeClass: inactiveClass"
               :title="item"
               @click="$emit('update:activeKey', index)"
@@ -71,7 +71,7 @@ const lockScrollDownClick = () => {
             </div>
           </div>
           <div
-              class="px-2 py-1.5 mr-1 box-border rounded-lg cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-700  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
+              class="px-2 py-1.5 mr-1 box-border rounded-lg cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-900  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
               title="Add tab"
               @click="$emit('addTabClick')"
           >
@@ -80,7 +80,7 @@ const lockScrollDownClick = () => {
         </div>
         <div class="absolute right-2 top-2 bg-neutral-100 dark:bg-neutral-800 flex flex-row gap-1">
           <div
-              class="px-2 py-1.5 ml-1 box-border rounded-lg cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-700  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
+              class="px-2 py-1.5 ml-1 box-border rounded-lg cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-900  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
               title="Export chat info"
               @click.stop="$emit('exportChatClick')"
           >
@@ -88,7 +88,7 @@ const lockScrollDownClick = () => {
           </div>
           <div
               v-if="!forceScrollToBottom"
-              class="px-2 py-1.5 mr-2 box-border rounded-lg cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-700  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
+              class="px-2 py-1.5 mr-2 box-border rounded-lg cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-900  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
               :class="{'text-green-500 dark:text-green-400': lockScrollDown}"
               title="Lock scroll down"
               @click.stop="lockScrollDownClick"

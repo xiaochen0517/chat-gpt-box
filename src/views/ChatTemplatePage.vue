@@ -62,7 +62,7 @@ const openAddChatDialog = (chatTemplate: ChatInfo) => {
             @click="openAddChatDialog(chatTemplate)"
         >
           <template #right>
-            <div class="bg-amber-500 shadow-md rounded px-2 py-1 mr-4 text-black text-sm">
+            <div class="bg-amber-400 dark:bg-amber-600 shadow-md rounded px-2 py-1 mr-4 text-sm font-bold text-black">
               {{ chatTemplate.chatType.toUpperCase() }}
             </div>
           </template>
