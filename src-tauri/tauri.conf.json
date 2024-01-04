@@ -27,6 +27,9 @@
       "identifier": "fun.mochen.chat-gpt-box",
       "targets": "all",
       "windows": {
+        "webviewInstallMode": {
+          "type": "embedBootstrapper"
+        },
         "nsis": {
           "license": "../LICENSE",
           "installerIcon": "icons/icon.ico",
@@ -38,7 +41,15 @@
       "csp": null
     },
     "updater": {
-      "active": false
+      "active": true,
+      "endpoints": [
+        "https://xiaochen0517.github.io/chat-gpt-box/app_updater.json"
+      ],
+      "dialog": true,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQ2M0IxNUMzNDA5MTUyQkQKUldTOVVwRkF3eFU3MXNYcDR0Vy95Y1p0RU5QS0xvZDVkUEY1UmkwQlVDVkNPNUVEeFFFYWhLTjAK",
+      "windows": {
+        "installMode": "basicUi"
+      }
     },
     "windows": [
       {
