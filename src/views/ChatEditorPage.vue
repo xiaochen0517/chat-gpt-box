@@ -101,8 +101,11 @@ const openAvatarDialog = () => {
   if (!avatarEditorDialogRefs.value) return;
   avatarEditorDialogRefs.value.show()
       .then((value: IAvatarProps) => {
-        if (!avatarEditorDialogRefs.value) return;
         chatInfo.value.avatar = value;
+        if (!isAddChat.value) {
+          chatListStore.setChatInfo(chatId.value ?? "", "avatar", value);
+        }
+        avatarEditorDialogRefs.value?.hide();
       })
       .catch(() => {
       });
