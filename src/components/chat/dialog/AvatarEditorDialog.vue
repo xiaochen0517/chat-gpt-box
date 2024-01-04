@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {Avatar, Factory, IAvatarProps, Options} from "vue3-avataaars";
-import {getCurrentInstance, onMounted, ref} from "vue";
+import {getCurrentInstance, ref} from "vue";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 import i18n from "@/i18n/i18n.ts";
 
@@ -10,7 +10,8 @@ const avatarProps = ref(Factory({isCircle: false}));
 let resolveFunc: ((value: IAvatarProps | PromiseLike<IAvatarProps>) => void) | null = null;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let rejectFunc: ((reason?: any) => void) | null = null;
-const show = (): Promise<IAvatarProps> => {
+const show = (avatar?: Partial<IAvatarProps>): Promise<IAvatarProps> => {
+  avatarProps.value = Factory(avatar);
   dialogVisible.value = true;
   return new Promise<IAvatarProps>((resolve, reject) => {
     resolveFunc = resolve;
