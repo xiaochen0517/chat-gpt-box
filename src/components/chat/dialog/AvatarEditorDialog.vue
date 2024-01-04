@@ -17,24 +17,24 @@ const show = (): Promise<IAvatarProps> => {
     rejectFunc = reject;
   });
 };
+const hide = () => {
+  dialogVisible.value = false;
+};
 defineExpose({
   show,
-});
-onMounted(() => {
-  console.log(Options.Clothes);
+  hide,
 });
 const instance = getCurrentInstance();
 const commit = () => {
   if (!resolveFunc) return;
   resolveFunc(avatarProps.value);
   instance?.emit("save");
-  dialogVisible.value = false;
 };
 const cancel = () => {
+  dialogVisible.value = false;
   if (!rejectFunc) return;
   rejectFunc();
   instance?.emit("cancel");
-  dialogVisible.value = false;
 };
 </script>
 
