@@ -84,7 +84,3 @@ const isDarkMode = computed(() => configStore.isDarkMode);
     </div>
   </div>
 </template>
-
-<style scoped lang="less">
-
-</style>
