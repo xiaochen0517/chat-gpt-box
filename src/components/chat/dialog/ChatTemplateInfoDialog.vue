@@ -53,7 +53,7 @@ const addChat = () => {
   >
     <div class="w-full flex flex-col gap-2 items-center">
       <Avatar class="w-32 h-32 rounded-full overflow-hidden bg-gray-600" v-bind="avatarFactory"/>
-      <div class="my-2 bg-amber-500 shadow-md rounded px-2 py-1 text-black">
+      <div class="my-2 bg-amber-400 dark:bg-amber-600 shadow-md rounded px-2 py-1 text-sm font-bold text-black">
         {{ templateInfo.chatType.toUpperCase() }}
       </div>
       <div class="w-10/12 mb-2 text-base rounded-md bg-neutral-700 px-2 py-1">{{ templateInfo.prompt }}</div>
