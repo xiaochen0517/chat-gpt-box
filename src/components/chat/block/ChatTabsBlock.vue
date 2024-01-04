@@ -4,7 +4,7 @@ import ChatMsgListBlock from "./ChatMsgListBlock.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/tab/CTabs.vue";
 import CTabPane from "@/components/base/tab/CTabPane.vue";
-import {ElMessage, ElMessageBox} from "element-plus";
+import {ElMessage} from "element-plus";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {useAppStateStore} from "@/store/AppStateStore.ts";
@@ -83,15 +83,22 @@ watch(
       instance.emit("update:tabIndex", activeTabIndex.value);
     },
 );
-const confirmRemoveTab = (targetKey: number) => {
-  removeTab(targetKey);
+const confirmRemoveTab = (targetIndex: number) => {
+  if (!baseDialogRefs.value) return;
+  ChatTabDialogUtil.showCloseTabDialog(baseDialogRefs.value, chatTabNameList.value[targetIndex])
+      .then(() => {
+        removeTab(targetIndex);
+        baseDialogRefs.value?.hide();
+      })
+      .catch(() => {
+      });
 };
-const settingsDialogRefs = ref<InstanceType<typeof CBaseDialog> | null>(null);
+const baseDialogRefs = ref<InstanceType<typeof CBaseDialog> | null>(null);
 const openAddTabDialog = () => {
-  if (!settingsDialogRefs.value) return;
+  if (!baseDialogRefs.value) return;
   const currentTabSize = chatTabNameList.value.length + 1;
   const defaultTabName = t("tab.addTab.prefix") + currentTabSize;
-  ChatTabDialogUtil.showAddTabDialog(settingsDialogRefs.value, defaultTabName, "")
+  ChatTabDialogUtil.showAddTabDialog(baseDialogRefs.value, defaultTabName, "")
       .then((result: string | number) => {
         result = String(result);
         if (result.length > 20) {
@@ -107,14 +114,13 @@ const openAddTabDialog = () => {
           result = defaultTabName;
         }
         chatTabsStore.addChatTab(propsActiveChat.value?.id, result);
-        if (!settingsDialogRefs.value) return;
-        settingsDialogRefs.value.hide();
+        if (!baseDialogRefs.value) return;
+        baseDialogRefs.value.hide();
       })
       .catch(() => {
       });
 };
 const removeTab = (targetKey: number) => {
-  if (!propsActiveChat.value) return;
   // if the tab to be removed is the active tab, switch to the previous tab
   if (activeTabIndex.value === targetKey) {
     // switch tab
@@ -125,8 +131,11 @@ const removeTab = (targetKey: number) => {
       activeTabIndex.value = targetKey;
     }
   }
-  // remove tab
-  chatTabsStore.removeChatTab(propsActiveChat.value.id, targetKey);
+  // remove tab, use nextTick to avoid removing a tab without the current tab switching to the previous tab
+  nextTick(() => {
+    if (!propsActiveChat.value) return;
+    chatTabsStore.removeChatTab(propsActiveChat.value.id, targetKey);
+  });
 };
 const chatTabNameList = computed(() => {
   if (!propsActiveChat.value) return [];
@@ -136,14 +145,7 @@ const chatTabNameList = computed(() => {
       .map((item: ChatTabInfo) => item.name);
 });
 const removeTabClick = (index: number) => {
-  ElMessageBox.confirm("Are you sure to remove this tab?", "Warning", {
-    confirmButtonText: "OK",
-    cancelButtonText: "Cancel",
-    type: "warning",
-  }).then(() => {
-    removeTab(index);
-  }).catch(() => {
-  });
+  confirmRemoveTab(index);
 };
 
 const exportChatInfo = () => {
@@ -226,7 +228,7 @@ const scrollHandle = (event: UIEvent) => {
         </CTabPane>
       </CTabs>
     </div>
-    <CBaseDialog ref="settingsDialogRefs"/>
+    <CBaseDialog ref="baseDialogRefs"/>
   </div>
 </template>
 

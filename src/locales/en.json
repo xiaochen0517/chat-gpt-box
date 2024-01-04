@@ -154,6 +154,10 @@
         "nameTooLong": "Tab name cannot be longer than 20 characters.",
         "noActiveChat": "Please select a chat to add."
       }
+    },
+    "closeTab": {
+        "title": "Close Tab",
+        "description": "Are you sure you want to close this tab?"
     }
   }
 }

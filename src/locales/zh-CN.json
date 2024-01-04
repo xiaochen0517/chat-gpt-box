@@ -152,6 +152,10 @@
         "nameTooLong": "标签页名称不能超过 20 个字符。",
         "noActiveChat": "请先选择一个聊天。"
       }
+    },
+    "closeTab": {
+      "title": "关闭标签页",
+      "description": "您确定要关闭此标签页吗？"
     }
   }
 }

@@ -1,4 +1,4 @@
-export type DialogType = "input" | "slider" | "select";
+export type DialogType = "hint" | "input" | "slider" | "select";
 export type InputOptions = {
   type: "text" | "number";
   min: number;

@@ -12,4 +12,13 @@ export class ChatTabDialogUtil {
       content: value,
     });
   }
+
+  static showCloseTabDialog(dialogRefs: InstanceType<typeof CBaseDialog>, tabName: string): Promise<string | number> {
+    return dialogRefs.show({
+      type: "hint",
+      title: t("tab.closeTab.title"),
+      description: t("tab.closeTab.description", {tabName: tabName}),
+      content: "",
+    });
+  }
 }
