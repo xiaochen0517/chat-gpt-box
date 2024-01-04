@@ -10,7 +10,8 @@
     "tauri": "tauri dev",
     "build-tauri": "tauri build",
     "cap-sync": "vite build && cap sync",
-    "eslint": "eslint --ext .js,.vue src",
+    "lint": "eslint --ext .js,.vue src",
+    "lint-fix": "eslint --fix --ext .js,.vue src",
     "tsc": "vue-tsc --noEmit"
   },
   "dependencies": {
