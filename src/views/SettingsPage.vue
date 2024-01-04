@@ -7,7 +7,7 @@ import CAnimationTabs from "@/components/base/tab/CAnimationTabs.vue";
 import ChatGptSettingsList from "@/components/setting/chat/ChatGptSettingsList.vue";
 import DallESettingsList from "@/components/setting/chat/DallESettingsList.vue";
 import GeminiSettingsList from "@/components/setting/chat/GeminiSettingsList.vue";
-import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
+import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
 import {BaseSettingsDialogUtil} from "@/utils/settings/BaseSettingsDialogUtil.ts";
 import {ElMessage} from "element-plus";
 import {storeToRefs} from "pinia";
@@ -30,7 +30,7 @@ const jumpToKeyMapSettingPage = () => {
 const configStore = useConfigStore();
 const {isDarkMode, baseConfig} = storeToRefs(configStore);
 
-const currentDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
+const currentDialogRefs = ref<InstanceType<typeof CBaseDialog> | null>(null);
 const openLanguageDialog = () => {
   if (!currentDialogRefs.value) return;
   BaseSettingsDialogUtil.showLanguageDialog(currentDialogRefs.value, configStore.baseConfig.language)
@@ -60,7 +60,9 @@ const openOpenaiKeyDialog = () => {
 };
 const openGoogleKeyDialog = () => {
   if (!currentDialogRefs.value) return;
-  BaseSettingsDialogUtil.showApiKeyDialog(currentDialogRefs.value, configStore.defaultChatConfig.google.base.apiKey)
+  BaseSettingsDialogUtil.showApiKeyDialog(
+      currentDialogRefs.value,
+      configStore.defaultChatConfig.google.base.apiKey)
       .then((value: string | number) => {
         value = String(value);
         if (!value || value.length === 0) {
@@ -68,6 +70,21 @@ const openGoogleKeyDialog = () => {
           return;
         }
         configStore.defaultChatConfig.google.base.apiKey = value;
+        currentDialogRefs.value?.hide();
+      });
+};
+const openChatTemplateUrlDialog = () => {
+  if (!currentDialogRefs.value) return;
+  BaseSettingsDialogUtil.showChatTemplateUrlDialog(
+      currentDialogRefs.value,
+      configStore.baseConfig.chatTemplateUrl)
+      .then((value: string | number) => {
+        value = String(value);
+        if (!value || value.length === 0) {
+          ElMessage.warning("Please enter the chat template url");
+          return;
+        }
+        configStore.baseConfig.chatTemplateUrl = value;
         currentDialogRefs.value?.hide();
       });
 };
@@ -164,7 +181,7 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
     <CTopNavBar :title="$t('settings.pageTitle')" @backClick="jumpToHomePage"/>
     <div class="px-2 xl:p-0 max-w-content m-auto pt-2 pb-6">
       <div class="mt-1 text-lg leading-13">{{ $t("settings.basicSettings") }}</div>
-      <div class="rounded-xl overflow-hidden text-base select-none">
+      <div class="rounded-xl overflow-hidden text-base select-none border dark:border-0">
         <CListItem
             :content="$t('settings.basic.language.title')"
             left-icon="icon-translate1"
@@ -215,6 +232,11 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
             @click="openGoogleKeyDialog"
         />
         <CListItem
+            :content="$t('settings.basic.chatTemplateUrl.title')"
+            left-icon="icon-template-success"
+            @click="openChatTemplateUrlDialog"
+        />
+        <CListItem
             :content="$t('settings.basic.shortcuts.title')"
             left-icon="icon-gold"
             @click="jumpToKeyMapSettingPage"
@@ -237,6 +259,6 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
         </Transition>
       </div>
     </div>
-    <CSettingsDialog ref="currentDialogRefs"/>
+    <CBaseDialog ref="currentDialogRefs"/>
   </div>
 </template>

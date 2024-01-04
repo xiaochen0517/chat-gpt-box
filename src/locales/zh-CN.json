@@ -3,7 +3,9 @@
     "cancel": "取消",
     "confirm": "确定",
     "delete": "删除",
-    "edit": "编辑"
+    "edit": "编辑",
+    "add": "添加",
+    "save": "保存"
   },
   "settings": {
     "pageTitle": "设置",
@@ -39,6 +41,10 @@
       },
       "googleApiKey": {
         "title": "Google API Key"
+      },
+      "chatTemplateUrl": {
+        "title": "聊天模板地址",
+        "placeholder": "请输入聊天模板地址"
       },
       "shortcuts": {
         "title": "快捷键设置"
@@ -115,7 +121,8 @@
     },
     "chatName": {
       "title": "聊天名称",
-      "placeholder": "请输入聊天名称"
+      "placeholder": "请输入聊天名称",
+      "emptyHint": "请点击此处输入聊天名称"
     },
     "chatPrompt": {
       "title": "聊天提示",
@@ -123,6 +130,51 @@
     },
     "input": {
       "placeholder": "请输入消息内容"
+    }
+  },
+  "chatTemplate": {
+    "pageTitle": "聊天模板",
+    "chatTemplateList": "模板列表",
+    "messages": {
+      "getSuccess": "获取聊天模板列表成功。",
+      "getFailed": "获取聊天模板列表失败。",
+      "addSuccess": "添加聊天模板成功。"
+    }
+  },
+  "tab": {
+    "addTab": {
+      "title": "添加标签页",
+      "success": "添加标签页成功。",
+      "error": "添加标签页失败。",
+      "prefix": "新标签页 ",
+      "errorMessages": {
+        "name": "请输入标签页名称。",
+        "nameEmpty": "标签页名称不能为空。",
+        "nameTooLong": "标签页名称不能超过 20 个字符。",
+        "noActiveChat": "请先选择一个聊天。"
+      }
+    },
+    "closeTab": {
+      "title": "关闭标签页",
+      "description": "您确定要关闭此标签页吗？"
+    }
+  },
+  "avatar": {
+    "editor": {
+      "title": "编辑头像",
+      "hairColor": "发色",
+      "skinColor": "肤色",
+      "clothesColor": "衣服颜色",
+      "topColor": "上衣颜色",
+      "facialHairColor": "胡须颜色",
+      "Accessories": "配饰",
+      "Eyes": "眼睛",
+      "Eyebrows": "眉毛",
+      "FacialHair": "胡须",
+      "Mouths": "嘴巴",
+      "Tops": "上衣",
+      "Clothes": "衣服",
+      "GraphicShirt": "图形衬衫"
     }
   }
 }

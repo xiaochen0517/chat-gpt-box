@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import {computed, getCurrentInstance, nextTick, onMounted, ref, watch} from "vue";
 import ChatMsgListBlock from "./ChatMsgListBlock.vue";
-import AddTabDialog from "../dialog/AddTabDialog.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/tab/CTabs.vue";
 import CTabPane from "@/components/base/tab/CTabPane.vue";
-import {ElMessage, ElMessageBox} from "element-plus";
+import {ElMessage} from "element-plus";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {useAppStateStore} from "@/store/AppStateStore.ts";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import {ChatMessage, ChatTabInfo} from "@/types/chat/ChatTabInfo.ts";
 import {FileUtil} from "@/utils/FileUtil.ts";
+import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
+import {ChatTabDialogUtil} from "@/utils/dialog/ChatTabDialogUtil.ts";
+import i18n from "@/i18n/i18n.ts";
+
+const {t} = i18n.global;
 
 /**
  * register shortcut
@@ -20,10 +24,8 @@ const configStore = useConfigStore();
 const shortcutStringConfig = computed(() => configStore.shortcutStringConfig);
 const keys = useMagicKeys();
 const addTabKey = keys[shortcutStringConfig.value.addTab];
-const addTabDialogRefs = ref<InstanceType<typeof AddTabDialog> | null>(null);
 whenever(addTabKey, () => {
-  if (!addTabDialogRefs.value) return;
-  addTabDialogRefs.value.show(chatTabNameList.value.length + 1);
+  openAddTabDialog();
 });
 const removeTabKey = keys[shortcutStringConfig.value.removeTab];
 whenever(removeTabKey, () => {
@@ -57,22 +59,15 @@ const props = withDefaults(defineProps<Props>(), {
   tabIndex: 0,
 });
 
+const instance = getCurrentInstance();
 const propsActiveChat = ref<ChatInfo | null>(props.activeChat);
+const activeTabIndex = ref<number>(props.tabIndex);
 watch(
     () => props.activeChat,
     (value) => {
       propsActiveChat.value = value;
     },
 );
-
-const chatTabsStore = useChatTabsStore();
-const cleanTabChat = () => {
-  if (!propsActiveChat.value) return;
-  chatTabsStore.cleanTabChat(propsActiveChat.value.id, activeTabIndex.value);
-};
-
-const instance = getCurrentInstance();
-const activeTabIndex = ref<number>(0);
 watch(
     () => activeTabIndex.value,
     () => {
@@ -81,16 +76,56 @@ watch(
       instance.emit("update:tabIndex", activeTabIndex.value);
     },
 );
-const confirmRemoveTab = (targetKey: number) => {
-  removeTab(targetKey);
+watch(
+    () => props.tabIndex,
+    (value) => {
+      activeTabIndex.value = value;
+    },
+);
+
+const chatTabsStore = useChatTabsStore();
+const cleanTabChat = () => {
+  if (!propsActiveChat.value) return;
+  chatTabsStore.cleanTabChat(propsActiveChat.value.id, activeTabIndex.value);
 };
-const addTab = () => {
-  if (!addTabDialogRefs.value) return;
-  let tabsSize = chatTabNameList.value.length;
-  addTabDialogRefs.value.show(tabsSize + 1);
+const confirmRemoveTab = (targetIndex: number) => {
+  if (!baseDialogRefs.value) return;
+  ChatTabDialogUtil.showCloseTabDialog(baseDialogRefs.value, chatTabNameList.value[targetIndex])
+      .then(() => {
+        removeTab(targetIndex);
+        baseDialogRefs.value?.hide();
+      })
+      .catch(() => {
+      });
+};
+const baseDialogRefs = ref<InstanceType<typeof CBaseDialog> | null>(null);
+const openAddTabDialog = () => {
+  if (!baseDialogRefs.value) return;
+  const currentTabSize = chatTabNameList.value.length + 1;
+  const defaultTabName = t("tab.addTab.prefix") + currentTabSize;
+  ChatTabDialogUtil.showAddTabDialog(baseDialogRefs.value, defaultTabName, "")
+      .then((result: string | number) => {
+        result = String(result);
+        if (result.length > 20) {
+          ElMessage.warning(t("tab.addTab.errorMessages.nameTooLong"));
+          return;
+        }
+        if (!propsActiveChat.value) {
+          ElMessage.warning(t("tab.addTab.errorMessages.noActiveChat"));
+          return;
+        }
+        // if the tab name is empty, use the default name
+        if (result.length <= 0) {
+          result = defaultTabName;
+        }
+        chatTabsStore.addChatTab(propsActiveChat.value?.id, result);
+        if (!baseDialogRefs.value) return;
+        baseDialogRefs.value.hide();
+      })
+      .catch(() => {
+      });
 };
 const removeTab = (targetKey: number) => {
-  if (!propsActiveChat.value) return;
   // if the tab to be removed is the active tab, switch to the previous tab
   if (activeTabIndex.value === targetKey) {
     // switch tab
@@ -101,8 +136,11 @@ const removeTab = (targetKey: number) => {
       activeTabIndex.value = targetKey;
     }
   }
-  // remove tab
-  chatTabsStore.removeChatTab(propsActiveChat.value.id, targetKey);
+  // remove tab, use nextTick to avoid removing a tab without the current tab switching to the previous tab
+  nextTick(() => {
+    if (!propsActiveChat.value) return;
+    chatTabsStore.removeChatTab(propsActiveChat.value.id, targetKey);
+  });
 };
 const chatTabNameList = computed(() => {
   if (!propsActiveChat.value) return [];
@@ -112,14 +150,7 @@ const chatTabNameList = computed(() => {
       .map((item: ChatTabInfo) => item.name);
 });
 const removeTabClick = (index: number) => {
-  ElMessageBox.confirm("Are you sure to remove this tab?", "Warning", {
-    confirmButtonText: "OK",
-    cancelButtonText: "Cancel",
-    type: "warning",
-  }).then(() => {
-    removeTab(index);
-  }).catch(() => {
-  });
+  confirmRemoveTab(index);
 };
 
 const exportChatInfo = () => {
@@ -191,7 +222,7 @@ const scrollHandle = (event: UIEvent) => {
       <CTabs
           v-model:activeKey="activeTabIndex"
           :tabNames="chatTabNameList"
-          @addTabClick="addTab"
+          @addTabClick="openAddTabDialog"
           @removeTabClick="removeTabClick"
           @showSlideSideBarClick="$emit('showSlideSideBarClick')"
           @exportChatClick="exportChatInfo"
@@ -202,7 +233,7 @@ const scrollHandle = (event: UIEvent) => {
         </CTabPane>
       </CTabs>
     </div>
-    <AddTabDialog ref="addTabDialogRefs" :chat-id="props.activeChat?.id"/>
+    <CBaseDialog ref="baseDialogRefs"/>
   </div>
 </template>
 

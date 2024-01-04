@@ -6,6 +6,7 @@ import {useChatListStore} from "@/store/ChatListStore.ts";
 import {ChatInfo, ChatType} from "@/types/chat/ChatInfo.ts";
 import {onMounted, ref} from "vue";
 import {GoogleGeminiConfig, OpenAiChatGptConfig, OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
+import {Avatar, Factory, IAvatarProps} from "vue3-avataaars";
 
 type Props = {
   chatInfo: ChatInfo | null,
@@ -19,6 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
   drag: false,
 });
 const modelName = ref("");
+const avatarInfo = ref<IAvatarProps>(Factory());
 onMounted(() => {
   if (!props.chatInfo) {
     modelName.value = "NONE";
@@ -35,6 +37,7 @@ onMounted(() => {
       modelName.value = (props.chatInfo.options as GoogleGeminiConfig).model;
       break;
   }
+  avatarInfo.value = Factory(props.chatInfo.avatar);
 });
 
 const editChatClick = (chatInfo: ChatInfo | null) => {
@@ -57,24 +60,18 @@ const deleteChatClick = (chatInfo: ChatInfo | null) => {
 </script>
 
 <template>
-  <div class="flex flex-row items-center relative w-full box-border px-2 py-1 mb-1 rounded-xl hover:bg-neutral-200 active:bg-neutral-300 dark:hover:bg-neutral-700 dark:active:bg-neutral-600 cursor-pointer">
+  <div
+      class="flex flex-row items-center relative w-full box-border p-2 mb-1 rounded-xl hover:bg-neutral-200 active:bg-neutral-300 dark:hover:bg-neutral-700 dark:active:bg-neutral-600 border dark:border-neutral-900 cursor-pointer"
+      :class="{'text-green-500 dark:text-green-400 shadow-md dark:shadow-neutral-900':chatInfo && chatInfo.id === activeChatInfo?.id}"
+      @click="$emit('itemClick', chatInfo)"
+  >
     <div class="pr-1 flex-1 flex flex-row gap-1 items-center">
-      <div class="handle rotate-90" title="Drag to sort">
+      <div class="handle rotate-90" title="Drag to sort" @click.stop>
         <i class="iconfont icon-more" :class="drag?'':'cursor-grab'"/>
       </div>
-      <div
-          class="flex-1 text-md leading-8 select-none overflow-hidden overflow-ellipsis whitespace-nowrap font-bold max-w-[9rem]"
-          :class="{'text-green-500 dark:text-green-400':chatInfo && chatInfo.id === activeChatInfo?.id}"
-          @click.stop="$emit('itemClick', chatInfo)"
-      >
+      <Avatar class="w-8 h-8 rounded-full bg-gray-500 mr-2" v-bind="avatarInfo"/>
+      <div class="flex-1 text-md leading-8 select-none overflow-hidden overflow-ellipsis whitespace-nowrap max-w-[12rem]">
         {{ chatInfo?.name }}
-      </div>
-      <div
-          class="w-24 overflow-hidden overflow-ellipsis whitespace-nowrap border border-neutral-300 dark:border-neutral-700 rounded px-1 bg-yellow-400 dark:bg-amber-600 text-xs leading-5"
-          @click.stop="editChatClick(chatInfo)"
-      >
-        <i class="iconfont icon-settings font-normal"/>
-        {{ chatInfo?.options.model.toUpperCase() }}
       </div>
     </div>
     <el-popover overlayClassName="robot-editor-popover" placement="bottom" trigger="hover">

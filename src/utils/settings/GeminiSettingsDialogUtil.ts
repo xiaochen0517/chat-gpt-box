@@ -1,14 +1,14 @@
 import {BaseSettingsDialogUtil} from "@/utils/settings/BaseSettingsDialogUtil.ts";
 import {GeminiModelList} from "@/models/GeminiModelList.ts";
-import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
+import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
 
 export class GeminiSettingsDialogUtil extends BaseSettingsDialogUtil {
 
-  static showGeminiModelDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string) {
+  static showGeminiModelDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string) {
     return this.showModelDialog(dialogRefs, GeminiModelList, value);
   }
 
-  static showMaxOutputTokensDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: number) {
+  static showMaxOutputTokensDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: number) {
     return dialogRefs.show({
       type: "slider",
       title: "Max Output Tokens",
@@ -23,7 +23,7 @@ export class GeminiSettingsDialogUtil extends BaseSettingsDialogUtil {
     });
   }
 
-  static showTopKDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: number) {
+  static showTopKDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: number) {
     return dialogRefs.show({
       type: "input",
       title: "Top K",
@@ -37,7 +37,7 @@ export class GeminiSettingsDialogUtil extends BaseSettingsDialogUtil {
     });
   }
 
-  static showTopPDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: number) {
+  static showTopPDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: number) {
     return dialogRefs.show({
       type: "slider",
       title: "Top P",

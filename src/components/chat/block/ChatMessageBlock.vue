@@ -41,13 +41,13 @@ const copyMessageContent = () => {
           v-if="message.role === 'system'"
           class="w-10 h-10 bg-indigo-500 dark:bg-indigo-600 rounded-md leading-10 text-center flex justify-center items-center select-none"
       >
-        <i class="iconfont icon-settings text-2xl leading-10"/>
+        <i class="iconfont icon-settings text-2xl leading-10 text-white"/>
       </div>
       <div
           v-if="message.role === 'user'"
           class="w-10 h-10 bg-green-500 dark:bg-green-600 rounded-md leading-10 text-center flex justify-center items-center select-none"
       >
-        <i class="iconfont icon-customer text-2xl leading-10"/>
+        <i class="iconfont icon-customer text-2xl leading-10 text-white"/>
       </div>
       <div
           v-if="message.role === 'assistant'"
@@ -92,9 +92,3 @@ const copyMessageContent = () => {
     </div>
   </div>
 </template>
-
-<style lang="less">
-.github-markdown-body {
-  padding: 10px;
-}
-</style>

@@ -24,7 +24,7 @@ export const useChatTabsStore = defineStore("chatTabs", {
             chat: [{role: ChatMessageRole.System, content: "You are a helpful assistant. Please ask me anything."}],
           },
         ],
-      }
+      },
     };
   },
   actions: {
@@ -51,7 +51,7 @@ export const useChatTabsStore = defineStore("chatTabs", {
       if (!chatInfo) return;
       const chatMessageList = chatInfo.chatType === ChatType.DALL_E ? [] : [{
         role: ChatMessageRole.System,
-        content: chatInfo.prompt
+        content: chatInfo.prompt,
       }];
       this.chatTabs[id].push({
         name: tabName,

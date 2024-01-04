@@ -1,10 +1,11 @@
-import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
+import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
 import i18n from "@/i18n/i18n.ts";
 
 const {t} = i18n.global;
+
 export class ChatBaseSettingsDialogUtil {
 
-  static showChatNameDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string): Promise<string | number> {
+  static showChatNameDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string): Promise<string | number> {
     return dialogRefs.show({
       type: "input",
       title: t("chat.chatName.title"),
@@ -13,7 +14,7 @@ export class ChatBaseSettingsDialogUtil {
     });
   }
 
-  static showChatPromptDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string): Promise<string | number> {
+  static showChatPromptDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string): Promise<string | number> {
     return dialogRefs.show({
       type: "input",
       title: t("chat.chatPrompt.title"),

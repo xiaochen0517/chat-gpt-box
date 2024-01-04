@@ -1,4 +1,4 @@
-import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
+import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
 import {BaseSettingsDialogUtil} from "@/utils/settings/BaseSettingsDialogUtil.ts";
 import {DallEModelList, ImageQualityList, ImageStyleList} from "@/models/DallEModelList.ts";
 import {SelectOptionItem} from "@/types/base/CSettingDialog.ts";
@@ -7,11 +7,11 @@ import i18n from "@/i18n/i18n.ts";
 const {t} = i18n.global;
 export class DallESettingsDialogUtil extends BaseSettingsDialogUtil {
   
-  static showDallEModelDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string) {
+  static showDallEModelDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string) {
     return this.showModelDialog(dialogRefs, DallEModelList, value);
   }
   
-  static showImageCountDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: number) {
+  static showImageCountDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: number) {
     return dialogRefs.show({
       type: "slider",
       title: t("settings.dalle.imageCount.title"),
@@ -27,7 +27,7 @@ export class DallESettingsDialogUtil extends BaseSettingsDialogUtil {
     });
   }
   
-  static showImageSizeDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, list: SelectOptionItem[], value: string) {
+  static showImageSizeDialog(dialogRefs: InstanceType<typeof CBaseDialog>, list: SelectOptionItem[], value: string) {
     return dialogRefs.show({
       type: "select",
       title: t("settings.dalle.imageSize.title"),
@@ -38,7 +38,7 @@ export class DallESettingsDialogUtil extends BaseSettingsDialogUtil {
     });
   }
   
-  static showImageStyleDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string) {
+  static showImageStyleDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string) {
     return dialogRefs.show({
       type: "select",
       title: t("settings.dalle.imageStyle.title"),
@@ -50,7 +50,7 @@ export class DallESettingsDialogUtil extends BaseSettingsDialogUtil {
     });
   }
   
-  static showImageQualityDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string) {
+  static showImageQualityDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string) {
     return dialogRefs.show({
       type: "select",
       title: t("settings.dalle.imageQuality.title"),

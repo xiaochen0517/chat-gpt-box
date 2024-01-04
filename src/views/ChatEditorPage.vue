@@ -12,8 +12,10 @@ import ChatGptSettingsList from "@/components/setting/chat/ChatGptSettingsList.v
 import GeminiSettingsList from "@/components/setting/chat/GeminiSettingsList.vue";
 import CListItem from "@/components/base/list/CListItem.vue";
 import {ChatBaseSettingsDialogUtil} from "@/utils/settings/ChatBaseSettingsDialogUtil.ts";
-import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
+import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
 import {GoogleGeminiConfig, OpenAiChatGptConfig, OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
+import AvatarEditorDialog from "@/components/chat/dialog/AvatarEditorDialog.vue";
+import {IAvatarProps} from "vue3-avataaars";
 
 const route = useRoute();
 const chatId: Ref<string | null> = ref(null);
@@ -93,7 +95,18 @@ const jumpToHomePage = () => {
 
 const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
 const activeTabName = ref("GPT");
-const settingsDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
+const settingsDialogRefs = ref<InstanceType<typeof CBaseDialog> | null>(null);
+const avatarEditorDialogRefs = ref<InstanceType<typeof AvatarEditorDialog> | null>(null);
+const openAvatarDialog = () => {
+  if (!avatarEditorDialogRefs.value) return;
+  avatarEditorDialogRefs.value.show()
+      .then((value: IAvatarProps) => {
+        if (!avatarEditorDialogRefs.value) return;
+        chatInfo.value.avatar = value;
+      })
+      .catch(() => {
+      });
+};
 const openChatNameDialog = () => {
   if (!settingsDialogRefs.value) return;
   ChatBaseSettingsDialogUtil.showChatNameDialog(settingsDialogRefs.value, chatInfo.value.name)
@@ -168,11 +181,12 @@ const getChatOptionsFromSettingsList = (): ChatOptions | null => {
     />
     <div class="px-2 xl:p-0 max-w-content m-auto pt-2 pb-6">
       <div class="mt-1 text-lg leading-13">{{ $t("settings.basicSettings") }}</div>
-      <div class="mb-4 rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
+      <div class="mb-4 rounded-xl overflow-hidden text-base select-none border dark:border-0 bg-neutral-100 dark:bg-neutral-800">
         <CListItem
-            :content="$t('chat.chatName.title')"
-            left-icon="iconfont icon-coupon"
+            :content="!chatInfo.name || chatInfo.name === '' ? $t('chat.chatName.emptyHint') : chatInfo.name"
+            :left-avatar="chatInfo.avatar"
             @click="openChatNameDialog"
+            @avatarClick="openAvatarDialog"
             :bottom-border="activeTabName !== 'DALL-E'"
         />
         <CListItem
@@ -212,7 +226,8 @@ const getChatOptionsFromSettingsList = (): ChatOptions | null => {
         </Transition>
       </div>
     </div>
-    <CSettingsDialog ref="settingsDialogRefs"/>
+    <CBaseDialog ref="settingsDialogRefs"/>
+    <AvatarEditorDialog ref="avatarEditorDialogRefs"/>
   </div>
 </template>
 

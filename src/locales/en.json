@@ -3,7 +3,9 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "delete": "Delete",
-    "edit": "Edit"
+    "edit": "Edit",
+    "add": "Add",
+    "save": "Save"
   },
   "settings": {
     "pageTitle": "Settings",
@@ -40,6 +42,10 @@
       },
       "googleApiKey": {
         "title": "Google API Key"
+      },
+      "chatTemplateUrl": {
+        "title": "Chat Template Url",
+        "placeholder": "Please enter the chat template url"
       },
       "shortcuts": {
         "title": "Shortcuts Settings"
@@ -117,7 +123,8 @@
     },
     "chatName": {
       "title": "Chat Name",
-      "placeholder": "Please enter the chat name"
+      "placeholder": "Please enter the chat name",
+      "emptyHint": "Please click here to enter a chat name"
     },
     "chatPrompt": {
       "title": "Chat Prompt",
@@ -125,6 +132,51 @@
     },
     "input": {
       "placeholder": "Please enter the message"
+    }
+  },
+  "chatTemplate": {
+    "pageTitle": "Chat Template",
+    "chatTemplateList": "Template List",
+    "messages": {
+      "getSuccess": "Get chat template list successfully.",
+      "getFailed": "Get chat template list failed.",
+      "addSuccess": "Add chat template successfully."
+    }
+  },
+  "tab": {
+    "addTab": {
+      "title": "Add Tab",
+      "success": "Add tab successfully.",
+      "error": "Add tab failed.",
+      "prefix": "New Tab ",
+      "errorMessages": {
+        "name": "Please enter the tab name.",
+        "nameEmpty": "Tab name cannot be empty.",
+        "nameTooLong": "Tab name cannot be longer than 20 characters.",
+        "noActiveChat": "Please select a chat to add."
+      }
+    },
+    "closeTab": {
+      "title": "Close Tab",
+      "description": "Are you sure you want to close this tab?"
+    }
+  },
+  "avatar": {
+    "editor": {
+      "title": "Avatar Editor",
+      "hairColor": "Hair Color",
+      "skinColor": "Skin Color",
+      "clothesColor": "Clothes Color",
+      "topColor": "Top Color",
+      "facialHairColor": "Facial Hair Color",
+      "Accessories": "Accessories",
+      "Eyes": "Eyes",
+      "Eyebrows": "Eyebrows",
+      "FacialHair": "Facial Hair",
+      "Mouths": "Mouths",
+      "Tops": "Tops",
+      "Clothes": "Clothes",
+      "GraphicShirt": "Graphic Shirts"
     }
   }
 }

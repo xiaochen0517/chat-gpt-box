@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CListItem from "@/components/base/list/CListItem.vue";
-import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
+import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
 import {onMounted, ref} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {ElMessage} from "element-plus";
@@ -11,7 +11,7 @@ import _ from "lodash";
 
 const configStore = useConfigStore();
 const chatListStore = useChatListStore();
-const settingsDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
+const settingsDialogRefs = ref<InstanceType<typeof CBaseDialog> | null>(null);
 
 type Props = {
   noDefault?: boolean,
@@ -189,7 +189,7 @@ const openTopPDialog = () => {
 </script>
 
 <template>
-  <div class="rounded-xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-800">
+  <div class="rounded-xl overflow-hidden text-base select-none border dark:border-0 bg-neutral-100 dark:bg-neutral-800">
     <CListItem :content="$t('settings.apiUrl.title')" left-icon="icon-link1" @click="openApiUrlDialog"/>
     <CListItem :content="$t('settings.model.title')" left-icon="icon-rocket" @click="openModelDialog"/>
     <CListItem :content="$t('settings.temperature.title')" left-icon="icon-hot-for-ux" @click="openTemperatureDialog"/>
@@ -203,6 +203,6 @@ const openTopPDialog = () => {
         :bottom-border="false"
         @click="openResponseMaxTokensDialog"
     />
-    <CSettingsDialog ref="settingsDialogRefs"/>
+    <CBaseDialog ref="settingsDialogRefs"/>
   </div>
 </template>
