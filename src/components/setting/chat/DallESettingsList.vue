@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CListItem from "@/components/base/list/CListItem.vue";
-import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
+import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
 import {onMounted, ref} from "vue";
 import {ElMessage} from "element-plus";
 import {useConfigStore} from "@/store/ConfigStore.ts";
@@ -13,7 +13,7 @@ import _ from "lodash";
 
 const configStore = useConfigStore();
 const chatListStore = useChatListStore();
-const settingsDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
+const settingsDialogRefs = ref<InstanceType<typeof CBaseDialog> | null>(null);
 type Props = {
   noDefault?: boolean,
   chatId?: string | null,
@@ -183,6 +183,6 @@ const openImageQualityDialog = () => {
         :bottom-border="false"
         @click="openImageQualityDialog"
     />
-    <CSettingsDialog ref="settingsDialogRefs"/>
+    <CBaseDialog ref="settingsDialogRefs"/>
   </div>
 </template>

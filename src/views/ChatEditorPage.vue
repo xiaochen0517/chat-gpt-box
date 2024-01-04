@@ -12,7 +12,7 @@ import ChatGptSettingsList from "@/components/setting/chat/ChatGptSettingsList.v
 import GeminiSettingsList from "@/components/setting/chat/GeminiSettingsList.vue";
 import CListItem from "@/components/base/list/CListItem.vue";
 import {ChatBaseSettingsDialogUtil} from "@/utils/settings/ChatBaseSettingsDialogUtil.ts";
-import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
+import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
 import {GoogleGeminiConfig, OpenAiChatGptConfig, OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
 
 const route = useRoute();
@@ -93,7 +93,7 @@ const jumpToHomePage = () => {
 
 const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
 const activeTabName = ref("GPT");
-const settingsDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
+const settingsDialogRefs = ref<InstanceType<typeof CBaseDialog> | null>(null);
 const openChatNameDialog = () => {
   if (!settingsDialogRefs.value) return;
   ChatBaseSettingsDialogUtil.showChatNameDialog(settingsDialogRefs.value, chatInfo.value.name)
@@ -212,7 +212,7 @@ const getChatOptionsFromSettingsList = (): ChatOptions | null => {
         </Transition>
       </div>
     </div>
-    <CSettingsDialog ref="settingsDialogRefs"/>
+    <CBaseDialog ref="settingsDialogRefs"/>
   </div>
 </template>
 

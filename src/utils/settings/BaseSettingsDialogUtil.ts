@@ -1,4 +1,4 @@
-import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
+import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
 import {SelectOptionItem} from "@/types/base/CSettingDialog.ts";
 import {LanguageList} from "@/models/LanguageList.ts";
 import i18n from "@/i18n/i18n.ts";
@@ -6,7 +6,7 @@ import i18n from "@/i18n/i18n.ts";
 const {t} = i18n.global;
 export class BaseSettingsDialogUtil {
 
-  static showLanguageDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string) {
+  static showLanguageDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string) {
     return dialogRefs.show({
       type: "select",
       title: "Language",
@@ -17,7 +17,7 @@ export class BaseSettingsDialogUtil {
     });
   }
 
-  static showApiKeyDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string) {
+  static showApiKeyDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string) {
     return dialogRefs.show({
       type: "input",
       title: t("settings.basic.apiKey.title"),
@@ -26,7 +26,7 @@ export class BaseSettingsDialogUtil {
     });
   }
 
-  static showApiDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string) {
+  static showApiDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string) {
     return dialogRefs.show({
       type: "input",
       title: t("settings.apiUrl.title"),
@@ -35,7 +35,7 @@ export class BaseSettingsDialogUtil {
     });
   }
 
-  static showModelDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, list: SelectOptionItem[], value: string) {
+  static showModelDialog(dialogRefs: InstanceType<typeof CBaseDialog>, list: SelectOptionItem[], value: string) {
     return dialogRefs.show({
       type: "select",
       title: t("settings.model.title"),
@@ -46,7 +46,7 @@ export class BaseSettingsDialogUtil {
     });
   }
 
-  static showTemperatureDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: number) {
+  static showTemperatureDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: number) {
     return dialogRefs.show({
       type: "slider",
       title: t("settings.temperature.title"),
@@ -62,7 +62,7 @@ export class BaseSettingsDialogUtil {
     });
   }
 
-  static showContextMaxMessagesDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: number) {
+  static showContextMaxMessagesDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: number) {
     return dialogRefs.show({
       type: "slider",
       title: t("settings.contextMaxMessages.title"),
@@ -78,7 +78,7 @@ export class BaseSettingsDialogUtil {
     });
   }
 
-  static showContextMaxTokensDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: number) {
+  static showContextMaxTokensDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: number) {
     return dialogRefs.show({
       type: "slider",
       title: t("settings.contextMaxTokens.title"),
@@ -94,7 +94,7 @@ export class BaseSettingsDialogUtil {
     });
   }
 
-  static showResponseMaxTokensDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: number) {
+  static showResponseMaxTokensDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: number) {
     return dialogRefs.show({
       type: "slider",
       title: t("settings.responseMaxTokens.title"),
@@ -110,7 +110,7 @@ export class BaseSettingsDialogUtil {
     });
   }
 
-  static showChatTemplateUrlDialog(dialogRefs: InstanceType<typeof CSettingsDialog>, value: string): Promise<string | number> {
+  static showChatTemplateUrlDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string): Promise<string | number> {
     return dialogRefs.show({
       type: "input",
       title: t("settings.basic.chatTemplateUrl.title"),

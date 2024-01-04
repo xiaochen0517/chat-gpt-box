@@ -7,7 +7,7 @@ import CAnimationTabs from "@/components/base/tab/CAnimationTabs.vue";
 import ChatGptSettingsList from "@/components/setting/chat/ChatGptSettingsList.vue";
 import DallESettingsList from "@/components/setting/chat/DallESettingsList.vue";
 import GeminiSettingsList from "@/components/setting/chat/GeminiSettingsList.vue";
-import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
+import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
 import {BaseSettingsDialogUtil} from "@/utils/settings/BaseSettingsDialogUtil.ts";
 import {ElMessage} from "element-plus";
 import {storeToRefs} from "pinia";
@@ -30,7 +30,7 @@ const jumpToKeyMapSettingPage = () => {
 const configStore = useConfigStore();
 const {isDarkMode, baseConfig} = storeToRefs(configStore);
 
-const currentDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
+const currentDialogRefs = ref<InstanceType<typeof CBaseDialog> | null>(null);
 const openLanguageDialog = () => {
   if (!currentDialogRefs.value) return;
   BaseSettingsDialogUtil.showLanguageDialog(currentDialogRefs.value, configStore.baseConfig.language)
@@ -259,6 +259,6 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
         </Transition>
       </div>
     </div>
-    <CSettingsDialog ref="currentDialogRefs"/>
+    <CBaseDialog ref="currentDialogRefs"/>
   </div>
 </template>

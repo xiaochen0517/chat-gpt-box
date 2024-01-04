@@ -11,7 +11,7 @@ import {useAppStateStore} from "@/store/AppStateStore.ts";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import {ChatMessage, ChatTabInfo} from "@/types/chat/ChatTabInfo.ts";
 import {FileUtil} from "@/utils/FileUtil.ts";
-import CSettingsDialog from "@/components/base/dialog/CSettingsDialog.vue";
+import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
 import {ChatTabDialogUtil} from "@/utils/dialog/ChatTabDialogUtil.ts";
 import i18n from "@/i18n/i18n.ts";
 
@@ -86,7 +86,7 @@ watch(
 const confirmRemoveTab = (targetKey: number) => {
   removeTab(targetKey);
 };
-const settingsDialogRefs = ref<InstanceType<typeof CSettingsDialog> | null>(null);
+const settingsDialogRefs = ref<InstanceType<typeof CBaseDialog> | null>(null);
 const openAddTabDialog = () => {
   if (!settingsDialogRefs.value) return;
   const currentTabSize = chatTabNameList.value.length + 1;
@@ -226,7 +226,7 @@ const scrollHandle = (event: UIEvent) => {
         </CTabPane>
       </CTabs>
     </div>
-    <CSettingsDialog ref="settingsDialogRefs"/>
+    <CBaseDialog ref="settingsDialogRefs"/>
   </div>
 </template>
 
