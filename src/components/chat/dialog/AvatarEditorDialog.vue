@@ -10,7 +10,8 @@ const avatarProps = ref(Factory({isCircle: false}));
 let resolveFunc: ((value: IAvatarProps | PromiseLike<IAvatarProps>) => void) | null = null;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let rejectFunc: ((reason?: any) => void) | null = null;
-const show = (): Promise<IAvatarProps> => {
+const show = (avatar?: Partial<IAvatarProps>): Promise<IAvatarProps> => {
+  avatarProps.value = Factory(avatar);
   dialogVisible.value = true;
   return new Promise<IAvatarProps>((resolve, reject) => {
     resolveFunc = resolve;

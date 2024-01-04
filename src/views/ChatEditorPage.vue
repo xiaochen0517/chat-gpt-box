@@ -99,7 +99,7 @@ const settingsDialogRefs = ref<InstanceType<typeof CBaseDialog> | null>(null);
 const avatarEditorDialogRefs = ref<InstanceType<typeof AvatarEditorDialog> | null>(null);
 const openAvatarDialog = () => {
   if (!avatarEditorDialogRefs.value) return;
-  avatarEditorDialogRefs.value.show()
+  avatarEditorDialogRefs.value.show(chatInfo.value.avatar)
       .then((value: IAvatarProps) => {
         chatInfo.value.avatar = value;
         if (!isAddChat.value) {
