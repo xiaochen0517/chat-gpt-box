@@ -14,11 +14,16 @@ import App from "./App.vue";
 import dialogWidth from "@/plugins/DialogWidth.ts";
 import AppUtil from "@/utils/AppUtil.ts";
 
+import {markdownLinkOpenDirective} from "@/plugins/MarkdownLinkOpenDirective.ts";
+
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 
 const app = createApp(App);
+
+app.directive("link-open", markdownLinkOpenDirective);
+
 app.use(pinia);
 app.use(router);
 app.use(ElementPlus);

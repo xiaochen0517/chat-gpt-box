@@ -93,6 +93,6 @@ watch(() => props.content, (value) => {
 
 <template>
   <div class="p-2">
-    <article class="markdown-body" :markdown-theme="theme" v-html="html"/>
+    <article class="markdown-body" :markdown-theme="theme" v-html="html" v-link-open/>
   </div>
 </template>
