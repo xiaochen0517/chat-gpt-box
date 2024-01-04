@@ -42,6 +42,7 @@ const activeChatInfo = ref<ChatInfo | null>(null);
 const changeChat = (chatInfo: ChatInfo) => {
   activeChatInfo.value = chatInfo;
   if (appStateStore.currentChatId !== chatInfo.id) {
+    tabIndex.value = 0;
     appStateStore.currentChatId = chatInfo.id;
     if (slideSideBarBlockRefs.value) {
       slideSideBarBlockRefs.value.hide();

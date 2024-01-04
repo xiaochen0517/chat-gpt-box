@@ -59,22 +59,15 @@ const props = withDefaults(defineProps<Props>(), {
   tabIndex: 0,
 });
 
+const instance = getCurrentInstance();
 const propsActiveChat = ref<ChatInfo | null>(props.activeChat);
+const activeTabIndex = ref<number>(props.tabIndex);
 watch(
     () => props.activeChat,
     (value) => {
       propsActiveChat.value = value;
     },
 );
-
-const chatTabsStore = useChatTabsStore();
-const cleanTabChat = () => {
-  if (!propsActiveChat.value) return;
-  chatTabsStore.cleanTabChat(propsActiveChat.value.id, activeTabIndex.value);
-};
-
-const instance = getCurrentInstance();
-const activeTabIndex = ref<number>(0);
 watch(
     () => activeTabIndex.value,
     () => {
@@ -83,6 +76,18 @@ watch(
       instance.emit("update:tabIndex", activeTabIndex.value);
     },
 );
+watch(
+    () => props.tabIndex,
+    (value) => {
+      activeTabIndex.value = value;
+    },
+);
+
+const chatTabsStore = useChatTabsStore();
+const cleanTabChat = () => {
+  if (!propsActiveChat.value) return;
+  chatTabsStore.cleanTabChat(propsActiveChat.value.id, activeTabIndex.value);
+};
 const confirmRemoveTab = (targetIndex: number) => {
   if (!baseDialogRefs.value) return;
   ChatTabDialogUtil.showCloseTabDialog(baseDialogRefs.value, chatTabNameList.value[targetIndex])
