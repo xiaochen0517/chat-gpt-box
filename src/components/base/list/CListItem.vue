@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<Props>(), {
   bottomBorder: true,
 });
 
-const avatarProps = ref(Factory());
+const avatarProps = ref<IAvatarProps>(Factory());
 
 const instance = getCurrentInstance();
 const switchValue = ref(false);
@@ -36,6 +36,9 @@ onMounted(() => {
 });
 watch(() => props.switchValue, (value) => {
   switchValue.value = value;
+});
+watch(() => props.leftAvatar, (value) => {
+  avatarProps.value = Factory(value);
 });
 watch(switchValue, (value) => {
   if (!instance) return;
@@ -53,7 +56,12 @@ const isDarkMode = computed(() => configStore.isDarkMode);
         :class="bottomBorder?'border-b border-neutral-200 dark:border-neutral-600':''"
     >
       <div class="flex-1 flex flex-row items-center" :class="{'py-4': !leftIcon}">
-        <Avatar v-if="!leftIcon" class="w-12 h-12 rounded-full overflow-hidden bg-gray-600" v-bind="avatarProps"/>
+        <Avatar
+            v-if="!leftIcon"
+            class="w-12 h-12 mr-3 rounded-full overflow-hidden bg-gray-600"
+            v-bind="avatarProps"
+            @click.stop="$emit('avatarClick')"
+        />
         <i class="iconfont text-xl leading-12" :class="leftIcon"/>
         <span class="ml-2 text-base leading-12">{{ content }}</span>
         <el-tooltip

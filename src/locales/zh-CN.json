@@ -121,7 +121,8 @@
     },
     "chatName": {
       "title": "聊天名称",
-      "placeholder": "请输入聊天名称"
+      "placeholder": "请输入聊天名称",
+      "emptyHint": "请点击此处输入聊天名称"
     },
     "chatPrompt": {
       "title": "聊天提示",
@@ -156,6 +157,24 @@
     "closeTab": {
       "title": "关闭标签页",
       "description": "您确定要关闭此标签页吗？"
+    }
+  },
+  "avatar": {
+    "editor": {
+      "title": "编辑头像",
+      "hairColor": "发色",
+      "skinColor": "肤色",
+      "clothesColor": "衣服颜色",
+      "topColor": "上衣颜色",
+      "facialHairColor": "胡须颜色",
+      "Accessories": "配饰",
+      "Eyes": "眼睛",
+      "Eyebrows": "眉毛",
+      "FacialHair": "胡须",
+      "Mouths": "嘴巴",
+      "Tops": "上衣",
+      "Clothes": "衣服",
+      "GraphicShirt": "图形衬衫"
     }
   }
 }
