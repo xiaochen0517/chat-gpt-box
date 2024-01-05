@@ -45,31 +45,9 @@
 
 ## 教程
 
-### 下载/打包
+### 下载
 
 下载最新版本：[GitHub Release](https://github.com/xiaochen0517/chat-gpt-box/releases)
-
-可下载已打包好的可执行文件，也可自行打包。
-
-```shell
-# 安装依赖
-yarn install
-
-# 打包Web版本
-yarn build
-
-# 打包Tauri桌面版本
-yarn build-tauri
-```
-
-**Android**
-
-```shell
-# 打包同步到Android目录
-yarn cap-sync
-
-# 使用Android Studio打开android目录，手动打包
-```
 
 ### 安装
 
