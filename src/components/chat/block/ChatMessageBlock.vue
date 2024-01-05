@@ -35,7 +35,7 @@ const copyMessageContent = () => {
 </script>
 
 <template>
-  <div class="group p-3" :class="{'bg-neutral-100 dark:bg-neutral-800': message.role === 'user'}">
+  <div class="group p-3" :class="{'bg-[#d4d4d48a] dark:bg-[#27272afa]': message.role === 'user', 'bg-[#e5e5e56a] dark:bg-[#27272a7a]': message.role !== 'user'}">
     <div class="flex flex-row gap-2">
       <div
           v-if="message.role === 'system'"
