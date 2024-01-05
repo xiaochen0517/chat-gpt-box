@@ -1,18 +1,18 @@
 {
-  "version": "v0.9.1",
-  "notes": "fix avatar editor\n修复头像编辑器",
+  "version": "v0.10.1",
+  "notes": "markdown link open in browser\n\nupdate message list style\n\nfix some bug",
   "platforms": {
-    "darwin-x86_64": {
-      "signature": "Content of app.tar.gz.sig",
-      "url": "https://github.com/xiaochen0517/chat-gpt-box/releases/download/v0.9.1/chat-gpt-box_0.9.1_x64.dmg"
-    },
     "linux-x86_64": {
-      "signature": "Content of app.AppImage.tar.gz.sig",
-      "url": "https://github.com/xiaochen0517/chat-gpt-box/releases/download/v0.9.1/chat-gpt-box_0.9.1_amd64.deb"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTOVVwRkF3eFU3MXJ1bkhoZFpUY0RiUlZlOWVxZTZEcTc0c1J0TjNRdExxM080ZzJGY0RuT3p4cGd3N0RsUVdnclB5SFlpcVNVYWxmZ0F5dlZyUllzZG9odEh6c0o3dWc0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzA0NDYwNzA3CWZpbGU6Y2hhdC1ncHQtYm94XzAuMTAuMV9hbWQ2NC5BcHBJbWFnZS50YXIuZ3oKVHZHT2NGaU1yV1BCMzhQNjd4S0N2Rlp3M3dQaUNVOXY1cHY2LzFwTVM4MEtyaGdqVFp3cFB4aWZXSHN3eCtQTjFSeUphb01Sdi9KV2VpQ240aG50QVE9PQo=",
+      "url": "https://github.com/xiaochen0517/chat-gpt-box/releases/download/v0.10.1/chat-gpt-box_0.10.1_amd64.AppImage.tar.gz"
     },
     "windows-x86_64": {
-      "signature": "Content of app.msi.sig",
-      "url": "https://github.com/xiaochen0517/chat-gpt-box/releases/download/v0.9.1/chat-gpt-box_0.9.1_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTOVVwRkF3eFU3MXFpbHZuMTlpbGUxVDF4aEVmU0Z2aUFBUWRhRVpFUVJHN1dHTjBhN2U1VjdQb2ltcm5ockRrVEc0MlNqaEhOa2lwamlDd0p4a3ZsQnJ6cjcxM3hPSlFzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzA0NDYwODgzCWZpbGU6Y2hhdC1ncHQtYm94XzAuMTAuMV94NjQtc2V0dXAubnNpcy56aXAKek9YUldyczRpWXNFYVVtcDJmYm9HaFRQZWxDalplVWdxUmwrY0Q5QUsza3JMOVdVZnM5RGRNMHp4cE45MlJZZWVDdjJiMlJqTkVud29WT3Z6VE9sQkE9PQo=",
+      "url": "https://github.com/xiaochen0517/chat-gpt-box/releases/download/v0.10.1/chat-gpt-box_0.10.1_x64-setup.nsis.zip"
+    },
+    "macos-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTOVVwRkF3eFU3MWl4RTh3T1pJVUlZcmpJd0xkajZGZ0wzbzN5SXNNNkt6QnpSK21zNkxFSFFjSnQyblVKRGhzZGxKemtZN20zUGhWanFVeWt5a2hZSnJmODk2Uk9JaGd3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzA0NDYwNzMzCWZpbGU6Y2hhdC1ncHQtYm94LmFwcC50YXIuZ3oKVVNKcWJLRzRYdTBiRnZXc3JBVG1XV1VVUEV2K3VBekRZWklMN0hpdzVPUXg3VXp4K1JMOURRNjFOcktrbFdWQ2ZTT1V2dnArRUZTL1pCZ3hQK2lpQkE9PQo=",
+      "url": "https://github.com/xiaochen0517/chat-gpt-box/releases/download/v0.10.1/chat-gpt-box.app.tar.gz"
     }
   }
 }
