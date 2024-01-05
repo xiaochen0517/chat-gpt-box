@@ -72,7 +72,7 @@ const dialogWidthLg = inject("dialogWidthLg");
         <div class="text-lg leading-12 text-center">{{ title }}</div>
         <div
             v-if="description && description.length !== 0"
-            class="px-4 pb-1 flex flex-row"
+            class="px-4 pb-1 flex flex-row gap-1"
             :class="{'justify-end': descAlign === 'right', 'justify-center': descAlign === 'center'}"
         >
           <i class="iconfont icon-info-circle text-neutral-500 dark:text-neutral-400"></i>

@@ -54,6 +54,20 @@
       },
       "export": {
         "title": "导出设置"
+      },
+      "about": {
+        "title": "关于",
+        "description": "跨平台ChatGPT工具箱，支持 GPT & DALL-E API。",
+        "introduction": "介绍",
+        "introductionUrl": "https://github.com/xiaochen0517/chat-gpt-box/blob/master/README-CN.md",
+        "document": "文档",
+        "documentUrl": "https://github.com/xiaochen0517/chat-gpt-box/blob/master/doc/doc-cn.md",
+        "github": "Github",
+        "githubUrl": "https://github.com/xiaochen0517/chat-gpt-box/",
+        "issue": "反馈问题",
+        "issueUrl": "https://github.com/xiaochen0517/chat-gpt-box/issues/new/choose",
+        "author": "作者",
+        "authorUrl": "https://github.com/xiaochen0517"
       }
     },
     "chatDefaultSettings": "聊天默认设置",
@@ -162,6 +176,7 @@
   "avatar": {
     "editor": {
       "title": "编辑头像",
+      "description": "您可以在此处编辑头像，未指定的头像会随机生成。",
       "hairColor": "发色",
       "skinColor": "肤色",
       "clothesColor": "衣服颜色",
@@ -172,7 +187,7 @@
       "Eyebrows": "眉毛",
       "FacialHair": "胡须",
       "Mouths": "嘴巴",
-      "Tops": "上衣",
+      "Tops": "头部配饰",
       "Clothes": "衣服",
       "GraphicShirt": "图形衬衫"
     }

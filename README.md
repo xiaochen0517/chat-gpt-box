@@ -47,31 +47,9 @@
 
 ## Tutorial
 
-### Download/Build
+### Download
 
 Download Release: [GitHub Release](https://github.com/xiaochen0517/chat-gpt-box/releases)
-
-You can download the pre-packaged executable file, or build it by yourself.
-
-```shell
-# Install dependencies
-yarn install
-
-# Build Web version
-yarn build
-
-# Build Tauri desktop version
-yarn build-tauri
-```
-
-**Android**
-
-```shell
-# Package and sync to the Android directory
-yarn cap-sync
-
-# Use Android Studio to open the android directory and pack it manually
-```
 
 ### Install
 
