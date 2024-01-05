@@ -35,7 +35,7 @@ const copyMessageContent = () => {
 </script>
 
 <template>
-  <div class="group py-1 pb-2 mt-3">
+  <div class="group p-3" :class="{'bg-neutral-100 dark:bg-neutral-800': message.role === 'user'}">
     <div class="flex flex-row gap-2">
       <div
           v-if="message.role === 'system'"
@@ -59,7 +59,7 @@ const copyMessageContent = () => {
             class="w-6 h-6"
         />
       </div>
-      <div class="flex-1 min-w-0 scroll-auto">
+      <div class="pl-2 flex-1 min-w-0 scroll-auto">
         <MarkdownBlock :content="message?.content + (propsGenerating?' ✨':'')"/>
       </div>
     </div>

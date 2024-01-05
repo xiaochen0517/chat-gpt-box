@@ -92,7 +92,5 @@ watch(() => props.content, (value) => {
 </script>
 
 <template>
-  <div class="p-2">
-    <article class="markdown-body" :markdown-theme="theme" v-html="html" v-link-open/>
-  </div>
+  <article class="markdown-body" :markdown-theme="theme" v-html="html" v-link-open/>
 </template>
