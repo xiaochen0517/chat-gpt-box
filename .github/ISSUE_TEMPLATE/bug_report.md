@@ -7,10 +7,10 @@ assignees: xiaochen0517
 
 ---
 
-版本：
+Version:
 
-系统：
+Operating System:
 
-问题：
+Issue Description:
 
-复现方式：
+How to Reproduce:

@@ -1,7 +1,5 @@
 import {ObjectDirective} from "vue";
-import AppUtil from "@/utils/AppUtil.ts";
-import {shell} from "@tauri-apps/api";
-import {Browser} from "@capacitor/browser";
+import {LinkUtil} from "@/utils/LinkUtil.ts";
 
 export const markdownLinkOpenDirective: ObjectDirective<HTMLElement> = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -12,27 +10,13 @@ export const markdownLinkOpenDirective: ObjectDirective<HTMLElement> = {
         const openLinkUrl = (target as HTMLLinkElement).href;
         console.log("Link clicked:", openLinkUrl);
         event.preventDefault();
-        if (AppUtil.isTauri()) {
-          shell.open(openLinkUrl)
-            .then(() => {
-              console.log("Link opened in default browser");
-            })
-            .catch((error) => {
-              console.error("Error opening link in default browser:", error);
-            });
-        } else if (AppUtil.isMobile()){
-          Browser.open({url: openLinkUrl})
-            .then(() => {
-              console.log("Link opened in default browser");
-            })
-            .catch((error) => {
-              console.error("Error opening link in default browser:", error);
-            });
-        } else {
-          // new tab open
-          window.open(openLinkUrl, "_blank");
-          console.log("Link opened in new tab");
-        }
+        LinkUtil.openLink(openLinkUrl)
+          .then((linkOpenTarget) => {
+            console.log("Link opened in", linkOpenTarget);
+          })
+          .catch((error) => {
+            console.error("Error opening link:", error);
+          });
       }
     });
   },

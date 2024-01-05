@@ -33,6 +33,11 @@ const routes: RouteType[] = [
     name: "ChatTemplate",
     component: () => import("@/views/ChatTemplatePage.vue"),
   },
+  {
+    path: "/about",
+    name: "About",
+    component: () => import("@/views/AboutPage.vue"),
+  }
 ];
 
 const router = createRouter({

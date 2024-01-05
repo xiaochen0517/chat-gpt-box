@@ -55,6 +55,20 @@
       },
       "export": {
         "title": "Export Settings"
+      },
+      "about": {
+        "title": "About",
+        "description": "Cross-platform ChatGPTBox, supporting GPT & DALL-E API.",
+        "introduction": "Introduction",
+        "introductionUrl": "https://github.com/xiaochen0517/chat-gpt-box/blob/master/README.md",
+        "document": "Document",
+        "documentUrl": "https://github.com/xiaochen0517/chat-gpt-box/blob/master/doc/doc.md",
+        "github": "Github",
+        "githubUrl": "https://github.com/xiaochen0517/chat-gpt-box/",
+        "issue": "Issue feedback",
+        "issueUrl": "https://github.com/xiaochen0517/chat-gpt-box/issues/new/choose",
+        "author": "Author",
+        "authorUrl": "https://github.com/xiaochen0517"
       }
     },
     "chatDefaultSettings": "Chat Default Settings",
