@@ -164,6 +164,7 @@
   "avatar": {
     "editor": {
       "title": "Avatar Editor",
+      "description": "You can edit your avatar here, and unspecified avatars will be randomly generated.",
       "hairColor": "Hair Color",
       "skinColor": "Skin Color",
       "clothesColor": "Clothes Color",

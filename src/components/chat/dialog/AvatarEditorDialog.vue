@@ -43,7 +43,7 @@ const cancel = () => {
   <CDialog
       :title="t('avatar.editor.title')"
       v-model:visible="dialogVisible"
-      description="未指定的部分将会自动生成"
+      :description="t('avatar.editor.description')"
       desc-align="center"
       @cancel="cancel"
       @ok="commit"

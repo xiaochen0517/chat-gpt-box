@@ -162,6 +162,7 @@
   "avatar": {
     "editor": {
       "title": "编辑头像",
+      "description": "您可以在此处编辑头像，未指定的头像会随机生成。",
       "hairColor": "发色",
       "skinColor": "肤色",
       "clothesColor": "衣服颜色",
@@ -172,7 +173,7 @@
       "Eyebrows": "眉毛",
       "FacialHair": "胡须",
       "Mouths": "嘴巴",
-      "Tops": "上衣",
+      "Tops": "头部配饰",
       "Clothes": "衣服",
       "GraphicShirt": "图形衬衫"
     }
