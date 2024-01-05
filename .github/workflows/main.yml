@@ -37,8 +37,8 @@ jobs:
               src-tauri/target/release/bundle/msi/*.msi.zip
               src-tauri/target/release/bundle/msi/*.msi.zip.sig
               src-tauri/target/release/bundle/nsis/*.exe
-              src-tauri/target/release/bundle/nsis/*.exe.zip
-              src-tauri/target/release/bundle/nsis/*.exe.zip.sig
+              src-tauri/target/release/bundle/nsis/*.nsis.zip
+              src-tauri/target/release/bundle/nsis/*.nsis.zip.sig
 
     steps:
       - name: Checkout
