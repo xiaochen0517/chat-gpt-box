@@ -245,8 +245,13 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
         <CListItem
             :content="$t('settings.basic.export.title')"
             left-icon="icon-export"
-            :bottom-border="false"
             @click="exportConfig"
+        />
+        <CListItem
+            :content="$t('settings.basic.about.title')"
+            left-icon="icon-gongyinglianfuwu"
+            :bottom-border="false"
+            @click="$router.push({path: '/about'})"
         />
       </div>
       <div class="mt-1 text-lg leading-13">{{ $t("settings.chatDefaultSettings") }}</div>
