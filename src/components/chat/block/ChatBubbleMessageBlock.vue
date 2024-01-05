@@ -53,10 +53,10 @@ const copyMessageContent = () => {
       />
     </div>
     <div
-        class="relative mx-4 p-3 rounded-xl bg-neutral-200 dark:bg-neutral-800 shadow-lg dark:shadow-neutral-900 flex-1 min-w-0 flex flex-col"
+        class="relative mx-4 px-4 pt-4 pb-2 rounded-xl bg-neutral-200 dark:bg-neutral-800 shadow-lg dark:shadow-neutral-900 flex-1 min-w-0 flex flex-col"
         :class="{'ml-14 user-message-bubble':message.role === 'user', 'mr-14 assistant-message-bubble':message.role !== 'user'}"
     >
-      <MarkdownBlock :content="message?.content + (propsGenerating?' ✨':'')"/>
+      <MarkdownBlock class="pb-2" :content="message?.content + (propsGenerating?' ✨':'')"/>
       <div class="flex flex-row gap-1 mt-1">
         <button
             class="p-2 rounded-md flex justify-center items-center bg-gray-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600 cursor-pointer"
