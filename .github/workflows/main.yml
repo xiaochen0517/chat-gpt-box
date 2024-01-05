@@ -63,6 +63,9 @@ jobs:
           sudo apt-get install -y webkit2gtk-4.0
 
       - name: Install app dependencies and build it
+        env:
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_KEY }}
+          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
         run: yarn install && yarn build-tauri
 
       - name: Upload Artifact
