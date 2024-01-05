@@ -30,7 +30,7 @@ const jumpToUrl = (url: string) => {
       <div class="text-center text-sm text-neutral-500 dark:text-neutral-400">
         Version {{ packageJson.version }}&nbsp;&nbsp;( Apache License 2.0 )
       </div>
-      <div class="bg-neutral-100 dark:bg-neutral-800 rounded-xl overflow-hidden mt-6">
+      <div class="bg-neutral-100 dark:bg-neutral-800 rounded-xl overflow-hidden mt-6 border dark:border-0">
         <CListItem
             :content="$t('settings.basic.about.introduction')"
             left-icon="icon-zhuanshuchangjing"
