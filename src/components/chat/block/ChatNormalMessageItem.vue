@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {CheckOutlined, CopyOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons-vue";
-import MarkdownBlock from "@/components/chat/block/MarkdownBlock.vue";
+import MessageMarkdownComponent from "@/components/chat/block/MessageMarkdownComponent.vue";
 import {ref, watch} from "vue";
 import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
 
@@ -60,7 +60,7 @@ const copyMessageContent = () => {
         />
       </div>
       <div class="pl-2 flex-1 min-w-0 scroll-auto">
-        <MarkdownBlock :content="message?.content + (propsGenerating?' ✨':'')"/>
+        <MessageMarkdownComponent :content="message?.content + (propsGenerating?' ✨':'')"/>
       </div>
     </div>
     <div class="flex flex-row gap-1 mt-2 ml-12 pointer-events-none opacity-100 3xl:opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto">

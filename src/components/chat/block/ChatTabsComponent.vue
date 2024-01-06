@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {computed, getCurrentInstance, nextTick, onMounted, ref, watch} from "vue";
-import ChatMsgListBlock from "./ChatMsgListBlock.vue";
+import ChatMessagesListComponent from "./ChatMessagesListComponent.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/tab/CTabs.vue";
 import CTabPane from "@/components/base/tab/CTabPane.vue";
@@ -229,7 +229,7 @@ const scrollHandle = (event: UIEvent) => {
           @lockScrollDownClick="scrollToBottom"
       >
         <CTabPane v-for="(_number, index) in chatTabNameList.length" :key="index">
-          <ChatMsgListBlock :chatInfo="propsActiveChat" :tabIndex="index"/>
+          <ChatMessagesListComponent :chatInfo="propsActiveChat" :tabIndex="index"/>
         </CTabPane>
       </CTabs>
     </div>

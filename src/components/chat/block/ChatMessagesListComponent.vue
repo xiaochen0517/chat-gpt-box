@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {computed, ref, watch} from "vue";
-import ChatMessageBlock from "./ChatMessageBlock.vue";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import EditMessageDialog from "../dialog/EditMessageDialog.vue";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import {ChatMessage} from "@/types/chat/ChatTabInfo.ts";
-import ChatBubbleMessageBlock from "@/components/chat/block/ChatBubbleMessageBlock.vue";
+import ChatNormalMessageItem from "@/components/chat/block/ChatNormalMessageItem.vue";
+import ChatBubbleMessageItem from "@/components/chat/block/ChatBubbleMessageItem.vue";
 
 const chatTabsStore = useChatTabsStore();
 const configStore = useConfigStore();
@@ -55,7 +55,7 @@ const getGenerating = (index: number) => {
 <template>
   <div>
     <div v-if="!bubbleMessage">
-      <ChatMessageBlock
+      <ChatNormalMessageItem
           v-for="(chatMessage, index) in chatTabInfo?.chat"
           :key="index"
           :index="index"
@@ -67,7 +67,7 @@ const getGenerating = (index: number) => {
       />
     </div>
     <div v-else>
-      <ChatBubbleMessageBlock
+      <ChatBubbleMessageItem
           v-for="(chatMessage, index) in chatTabInfo?.chat"
           :key="index"
           :index="index"

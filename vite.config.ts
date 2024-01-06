@@ -5,6 +5,9 @@ import packageJson from "./package.json";
 import wasm from "vite-plugin-wasm";
 import topLevelAwait from "vite-plugin-top-level-await";
 import vueJsx from "@vitejs/plugin-vue-jsx";
+import AutoImport from "unplugin-auto-import/vite";
+import Components from "unplugin-vue-components/vite";
+import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 
 function resolve(url: string) {
   return path.resolve(__dirname, url);
@@ -16,6 +19,12 @@ export default defineConfig({
     wasm(),
     topLevelAwait(),
     vueJsx(),
+    AutoImport({
+      resolvers: [ElementPlusResolver()],
+    }),
+    Components({
+      resolvers: [ElementPlusResolver()],
+    }),
   ],
   clearScreen: false,
   server: {

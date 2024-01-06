@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import {nextTick, ref} from "vue";
-import SideBarBlock from "@/components/sidebar/SideBarBlock.vue";
-import ChatContentBlock from "@/components/chat/block/ChatContentBlock.vue";
+import SideBarComponent from "@/components/sidebar/SideBarComponent.vue";
+import HomeChatComponent from "@/components/chat/block/HomeChatComponent.vue";
 
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 
-const chatContentBlockRefs = ref<InstanceType<typeof ChatContentBlock> | null>(null);
+const chatContentBlockRefs = ref<InstanceType<typeof HomeChatComponent> | null>(null);
 const changeChatClick = (chatInfo: ChatInfo) => {
   nextTick(() => {
     if (!chatContentBlockRefs.value) return;
@@ -16,7 +16,7 @@ const changeChatClick = (chatInfo: ChatInfo) => {
 
 <template>
   <div class="w-full h-full flex flex-row box-border">
-    <SideBarBlock class="hidden content:flex" @changeChatClick="changeChatClick"/>
-    <ChatContentBlock class="flex-1" ref="chatContentBlockRefs"/>
+    <SideBarComponent class="hidden content:flex" @changeChatClick="changeChatClick"/>
+    <HomeChatComponent class="flex-1" ref="chatContentBlockRefs"/>
   </div>
 </template>
