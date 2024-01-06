@@ -5,7 +5,7 @@ import {useChatListStore} from "@/store/ChatListStore.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useAppStateStore} from "@/store/AppStateStore.ts";
 import draggable from "vuedraggable";
-import ChatListItem from "@/components/sidebar/ChatListItem.vue";
+import ChatBotItem from "@/components/sidebar/ChatBotItem.vue";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 
 const appStateStore = useAppStateStore();
@@ -91,7 +91,7 @@ const dragStatus = ref(false);
         ghost-class="ghost-class"
     >
       <template #item="{element}">
-        <ChatListItem
+        <ChatBotItem
             :chat-info="element"
             :active-chat-info="activeChatInfo"
             :drag="dragStatus"
