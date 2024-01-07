@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 release
+
+# element ui auto generated files
+auto-imports.d.ts
+components.d.ts
