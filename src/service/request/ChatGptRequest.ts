@@ -16,6 +16,26 @@ const chatTabsStore = useChatTabsStore();
 
 const DATA_DONE_FLAG: string = "[DONE]";
 
+enum ErrorType {
+  JSON_PARSE_ERROR = "JSON_PARSE_ERROR",
+  PARSE_DONE = "PARSE_DONE",
+}
+
+class ParseDataError implements Error {
+  name: string;
+  public message: string;
+  public type: ErrorType;
+  public json: string;
+
+  constructor(message: string = "ERROR", type: ErrorType = ErrorType.PARSE_DONE, json: string = "") {
+    this.name = "ParseDataError";
+    this.message = message;
+    this.type = type;
+    this.json = json;
+  }
+
+}
+
 export class ChatGptRequest implements BaseRequest {
 
   chatInfo: ChatInfo;
@@ -32,6 +52,11 @@ export class ChatGptRequest implements BaseRequest {
   abortController: AbortController | null = null;
 
   reader: ReadableStreamDefaultReader | null = null;
+
+  /**
+   * response json may be incomplete, so we need to save the error json and append it to the next response json
+   */
+  errorJson: string | null = null;
 
   constructor(chatInfo: ChatInfo, tabIndex: number, refreshCallbackFunc: () => void | null) {
     this.chatInfo = chatInfo;
@@ -183,8 +208,35 @@ export class ChatGptRequest implements BaseRequest {
     }
     // This is a Uint8Array type byte array that needs to be decoded.
     // It is possible that a single data packet contains multiple independent blocks, which are split using "data:".
-    const resultDecoded = decoder.decode(result.value);
+    let resultDecoded = decoder.decode(result.value);
+    if (this.errorJson && this.errorJson.length > 0) {
+      // append error json
+      this.errorJson += resultDecoded;
+      resultDecoded = this.errorJson;
+      this.errorJson = null;
+    }
     const dataList = resultDecoded.split("data:");
+    // parse data
+    try {
+      this.parseDataList(dataList);
+    } catch (error: unknown) {
+      if (!(error instanceof ParseDataError)) throw error;
+      // check error type
+      if (error.type === ErrorType.JSON_PARSE_ERROR) {
+        // save error json
+        this.errorJson = error.json;
+      } else {
+        throw error;
+      }
+    }
+    if (!this.reader) {
+      this.setGenerating(false);
+      return;
+    }
+    await this.readResponse(await this.reader.read());
+  };
+
+  private parseDataList(dataList: string[]): void {
     // parse data
     for (const data of dataList) {
       const resultData = this.parsePieceData(data);
@@ -198,12 +250,7 @@ export class ChatGptRequest implements BaseRequest {
         }
       }
     }
-    if (!this.reader) {
-      this.setGenerating(false);
-      return;
-    }
-    await this.readResponse(await this.reader.read());
-  };
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private parsePieceData(data: string): any | null {
@@ -231,7 +278,11 @@ export class ChatGptRequest implements BaseRequest {
       // parse json data
       return JSON.parse(data);
     } catch (error) {
-      throw new Error(`parse json data error: ${error}\nparse data: ${data}`);
+      throw new ParseDataError(
+        `parse json data error: ${error}\nparse data: ${data}`,
+        ErrorType.JSON_PARSE_ERROR,
+        data,
+      );
     }
   }
 
