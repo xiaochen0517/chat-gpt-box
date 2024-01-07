@@ -209,6 +209,7 @@ export class ChatGptRequest implements BaseRequest {
     // This is a Uint8Array type byte array that needs to be decoded.
     // It is possible that a single data packet contains multiple independent blocks, which are split using "data:".
     let resultDecoded = decoder.decode(result.value);
+    console.log("result decoded: ", resultDecoded);
     if (this.errorJson && this.errorJson.length > 0) {
       // append error json
       this.errorJson += resultDecoded;
