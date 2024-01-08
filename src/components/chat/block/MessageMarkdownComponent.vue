@@ -11,6 +11,11 @@ import markdownItTaskLists from "markdown-it-task-lists";
 import "@/assets/style/github-markdown.css";
 import hljs from "highlight.js";
 import "@/assets/style/highlight-github.less";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import * as hljsDefineVue from "highlightjs-vue";
+
+hljsDefineVue(hljs);
 
 type Props = {
   content: string
@@ -45,17 +50,21 @@ const md = new MarkdownIt({
     if (lang && hljs.getLanguage(lang)) {
       try {
         return "<div class=\"markdown-code-block highlight-dark\"><pre class=\"hljs\"><code>" +
-            `${hljs.highlight(lang, str, true).value}</code></pre></div>`;
+            `${hljs.highlight(str, {language: lang, ignoreIllegals: true}).value}</code></pre></div>`;
       } catch (__) {
-        // ignore
+        return getDefaultCodeBlock(str);
       }
     }
-    return "<div class=\"markdown-code-block highlight-dark\"><pre class=\"hljs\"><code>"+str+"</code></pre></div>";
+    return getDefaultCodeBlock(str);
   },
 });
+const getDefaultCodeBlock = (code: string) => {
+  return `<div class="markdown-code-block highlight-dark"><pre class="hljs"><code>${code}</code></pre></div>`;
+};
 md.use(markdownItKatex);
 md.use(markdownItTaskLists);
-// 保存原始的fence（代码块）渲染规则
+
+// default render
 const defaultRender = md.renderer.rules.fence || function (tokens, idx, options, _env, self) {
   return self.renderToken(tokens, idx, options);
 };

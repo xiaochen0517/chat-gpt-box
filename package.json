@@ -1,7 +1,7 @@
 {
   "name": "chat-gpt-box",
   "private": true,
-  "version": "0.10.3",
+  "version": "0.10.4",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
@@ -29,6 +29,7 @@
     "element-plus": "^2.4.0",
     "github-markdown-css": "^5.5.0",
     "highlight.js": "^11.9.0",
+    "highlightjs-vue": "^1.0.0",
     "lodash": "^4.17.21",
     "markdown-it": "^14.0.0",
     "markdown-it-katex": "^2.0.3",
