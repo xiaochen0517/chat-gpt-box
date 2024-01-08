@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {getCurrentInstance, ref} from "vue";
-import MenuListBlock from "@/components/sidebar/MenuListBlock.vue";
-import RobotListBlock from "@/components/sidebar/ChatListBlock.vue";
+import BottomMenuComponent from "@/components/sidebar/BottomMenuComponent.vue";
+import ChatBotListComponent from "@/components/sidebar/ChatBotListComponent.vue";
 
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 
@@ -11,7 +11,7 @@ const changeChatClick = (chatInfo: ChatInfo) => {
   instance.emit("changeChatClick", chatInfo);
 };
 
-const robotListBlockRefs = ref<InstanceType<typeof RobotListBlock> | null>(null);
+const robotListBlockRefs = ref<InstanceType<typeof ChatBotListComponent> | null>(null);
 const robotListScrollToBottom = () => {
   if (!robotListBlockRefs.value) return;
   robotListBlockRefs.value.scrollToBottom();
@@ -41,12 +41,12 @@ defineExpose({
       size="20rem"
   >
     <div class="h-full w-80 flex flex-col">
-      <RobotListBlock
+      <ChatBotListComponent
           class="flex-1"
           ref="robotListBlockRefs"
           @changeChatClick="changeChatClick"
       />
-      <MenuListBlock @added-robot="robotListScrollToBottom"/>
+      <BottomMenuComponent @added-robot="robotListScrollToBottom"/>
     </div>
   </el-drawer>
 </template>

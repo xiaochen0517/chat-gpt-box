@@ -5,7 +5,7 @@ import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import i18n from "@/i18n/i18n.ts";
 
 import "./assets/style/tailwind.less";
-import ElementPlus from "element-plus";
+// import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
 import "element-plus/theme-chalk/dark/css-vars.css";
 import "./assets/style/global.less";
@@ -26,7 +26,7 @@ app.directive("link-open", markdownLinkOpenDirective);
 
 app.use(pinia);
 app.use(router);
-app.use(ElementPlus);
+// app.use(ElementPlus);
 app.use(dialogWidth);
 app.use(i18n);
 app.mount("#app");
