@@ -11,11 +11,12 @@ import markdownItTaskLists from "markdown-it-task-lists";
 import "@/assets/style/github-markdown.css";
 import hljs from "highlight.js";
 import "@/assets/style/highlight-github.less";
+import xmlLanguage from "highlight.js/lib/languages/xml.js";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import * as hljsDefineVue from "highlightjs-vue";
+// import {hljsDefineVue} from "highlightjs-vue";
 
-hljsDefineVue(hljs);
+hljs.registerLanguage("vue", xmlLanguage);
 
 type Props = {
   content: string
