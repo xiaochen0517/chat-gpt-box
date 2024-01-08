@@ -11,6 +11,11 @@ import markdownItTaskLists from "markdown-it-task-lists";
 import "@/assets/style/github-markdown.css";
 import hljs from "highlight.js";
 import "@/assets/style/highlight-github.less";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import hljsDefineVue from "highlightjs-vue";
+
+hljsDefineVue(hljs);
 
 type Props = {
   content: string
@@ -43,14 +48,16 @@ const setMarkdownCodeTheme = (isDark: boolean) => {
 const md = new MarkdownIt({
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
+      console.log("highlight", lang);
+      console.log("code", str);
       try {
         return "<div class=\"markdown-code-block highlight-dark\"><pre class=\"hljs\"><code>" +
-            `${hljs.highlight(lang, str, true).value}</code></pre></div>`;
+            `${hljs.highlight(str, {language: lang, ignoreIllegals: true}).value}</code></pre></div>`;
       } catch (__) {
         // ignore
       }
     }
-    return "<div class=\"markdown-code-block highlight-dark\"><pre class=\"hljs\"><code>"+str+"</code></pre></div>";
+    return "<div class=\"markdown-code-block highlight-dark\"><pre class=\"hljs\"><code>" + str + "</code></pre></div>";
   },
 });
 md.use(markdownItKatex);
