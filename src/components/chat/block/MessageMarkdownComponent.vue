@@ -13,7 +13,7 @@ import hljs from "highlight.js";
 import "@/assets/style/highlight-github.less";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import hljsDefineVue from "highlightjs-vue";
+import * as hljsDefineVue from "highlightjs-vue";
 
 hljsDefineVue(hljs);
 
@@ -48,18 +48,19 @@ const setMarkdownCodeTheme = (isDark: boolean) => {
 const md = new MarkdownIt({
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
-      console.log("highlight", lang);
-      console.log("code", str);
       try {
         return "<div class=\"markdown-code-block highlight-dark\"><pre class=\"hljs\"><code>" +
             `${hljs.highlight(str, {language: lang, ignoreIllegals: true}).value}</code></pre></div>`;
       } catch (__) {
-        // ignore
+        return getDefaultCodeBlock(str);
       }
     }
-    return "<div class=\"markdown-code-block highlight-dark\"><pre class=\"hljs\"><code>" + str + "</code></pre></div>";
+    return getDefaultCodeBlock(str);
   },
 });
+const getDefaultCodeBlock = (code: string) => {
+  return `<div class="markdown-code-block highlight-dark"><pre class="hljs"><code>${code}</code></pre></div>`;
+};
 md.use(markdownItKatex);
 md.use(markdownItTaskLists);
 // 保存原始的fence（代码块）渲染规则
