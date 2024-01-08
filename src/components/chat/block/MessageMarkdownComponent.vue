@@ -63,7 +63,8 @@ const getDefaultCodeBlock = (code: string) => {
 };
 md.use(markdownItKatex);
 md.use(markdownItTaskLists);
-// 保存原始的fence（代码块）渲染规则
+
+// default render
 const defaultRender = md.renderer.rules.fence || function (tokens, idx, options, _env, self) {
   return self.renderToken(tokens, idx, options);
 };
