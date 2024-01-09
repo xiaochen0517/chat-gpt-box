@@ -10,23 +10,16 @@ const dialogVisible = ref(false);
 
 const formData = ref<ChatMessage>({
   role: ChatMessageRole.System,
-  content: ""
+  content: "",
 });
 const formRules = ref({
-  role: [
-    {
-      required: true,
-      message: "Please input role",
-      trigger: "blur"
-    }
-  ],
   content: [
     {
       required: true,
       message: "Please input message",
-      trigger: "blur"
-    }
-  ]
+      trigger: "blur",
+    },
+  ],
 });
 
 const chatId = ref<string | null>(null);
@@ -37,8 +30,9 @@ const editMessageFormRef = ref<InstanceType<typeof ElForm> | null>(null);
 const chatTabsStore = useChatTabsStore();
 const commit = async () => {
   if (!editMessageFormRef.value) return;
-  if (!chatId.value || !tabIndex.value || !messageIndex.value) {
-    ElMessage.warning("Please select a message first");
+  const errorMessage = checkParams();
+  if (errorMessage && errorMessage.length > 0) {
+    ElMessage.error(errorMessage);
     return;
   }
   await editMessageFormRef.value.validate((valid, fields) => {
@@ -51,17 +45,29 @@ const commit = async () => {
   });
 };
 
-const show = (id: string, tIndex: number, mIndex: number) => {
+const checkParams = (): string | null => {
+  if (!chatId.value || chatId.value.length === 0) {
+    return "Chat ID is empty";
+  }
+  if (tabIndex.value < 0) {
+    return "Tab index is invalid";
+  }
+  if (messageIndex.value < 0) {
+    return "Message index is invalid";
+  }
+  return null;
+};
+
+const show = (message: ChatMessage, id: string, tIndex: number, mIndex: number) => {
   chatId.value = id;
   tabIndex.value = tIndex;
   messageIndex.value = mIndex;
-  const message = chatTabsStore.chatTabs[chatId.value][tIndex].chat[mIndex];
   formData.value = _.cloneDeep(message);
   dialogVisible.value = true;
 };
 
 defineExpose({
-  show
+  show,
 });
 </script>
 
@@ -69,26 +75,18 @@ defineExpose({
   <CDialog
       v-model:visible="dialogVisible"
       title="Edit Message"
-      @ok="commit"
       size="large"
+      :disable-enter="true"
+      @ok="commit"
   >
     <el-form
         class="w-full"
         ref="editMessageFormRef"
         :model="formData"
         :rules="formRules"
-        label-width="100px"
-        label-position="left"
     >
-      <el-form-item label="Role" prop="role">
-        <el-select v-model="formData.role" placeholder="Please select role">
-          <el-option value="system">system</el-option>
-          <el-option value="user">user</el-option>
-          <el-option value="assistant">assistant</el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="Message" prop="content">
-        <el-input type="textarea" v-model="formData.content" :auto-size="{ minRows: 3, maxRows: 6 }"/>
+      <el-form-item prop="content">
+        <el-input type="textarea" v-model="formData.content" :rows="15" :auto-size="{ minRows: 15, maxRows: 20 }"/>
       </el-form-item>
     </el-form>
   </CDialog>

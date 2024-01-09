@@ -8,9 +8,11 @@ const {t} = i18n.global;
 const keys = useMagicKeys();
 const instance = getCurrentInstance();
 whenever(keys["escape"], () => {
+  if (props.disableEscape) return;
   cancelDialog();
 });
 whenever(keys["enter"], () => {
+  if (props.disableEnter) return;
   instance?.emit("ok");
 });
 
@@ -19,9 +21,11 @@ type Props = {
   title: string,
   cancelText?: string | null,
   okText?: string | null,
-  description?: string
-  descAlign?: "left" | "center" | "right"
-  size?: "default" | "large"
+  description?: string,
+  descAlign?: "left" | "center" | "right",
+  size?: "default" | "large",
+  disableEnter?: boolean
+  disableEscape?: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
   visible: false,
@@ -31,6 +35,8 @@ const props = withDefaults(defineProps<Props>(), {
   description: "",
   descAlign: "left",
   size: "default",
+  disableEnter: false,
+  disableEscape: false,
 });
 
 const propsCancelText = ref("CANCEL");
