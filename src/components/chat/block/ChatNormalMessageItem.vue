@@ -8,20 +8,14 @@ type Props = {
   message: ChatMessage;
   index: number | null;
   generating: boolean;
+  showRefresh?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
   message: () => ({role: ChatMessageRole.System, content: "..."}),
   index: null,
   generating: false,
+  showRefresh: false,
 });
-
-const propsGenerating = ref(false);
-watch(() => props.generating,
-  (value) => {
-    propsGenerating.value = value;
-  },
-  {immediate: true}
-);
 
 const copySuccess = ref(false);
 const copyMessageContent = () => {
@@ -60,7 +54,7 @@ const copyMessageContent = () => {
         />
       </div>
       <div class="pl-2 flex-1 min-w-0 scroll-auto">
-        <MessageMarkdownComponent :content="message?.content + (propsGenerating?' ✨':'')"/>
+        <MessageMarkdownComponent :content="message?.content + (props.generating?' ✨':'')"/>
       </div>
     </div>
     <div class="flex flex-row gap-1 mt-2 ml-12 pointer-events-none opacity-100 3xl:opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto">
@@ -89,6 +83,13 @@ const copyMessageContent = () => {
           </button>
         </template>
       </el-popconfirm>
+      <button
+          v-if="props.showRefresh"
+          class="p-2 rounded-md flex flex-row items-center bg-gray-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
+          @click="$emit('regenerating')"
+      >
+        <i class="iconfont icon-reload w-4 h-4 mb-0.5"/>
+      </button>
     </div>
   </div>
 </template>

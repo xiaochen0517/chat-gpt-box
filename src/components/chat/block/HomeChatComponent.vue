@@ -81,6 +81,12 @@ const showSlideSideBar = () => {
 defineExpose({
   changeChat
 });
+
+const chatInputComponent = ref<InstanceType<typeof ChatInputComponent> | null>(null);
+const messageRegenerating = () => {
+  if (!chatInputComponent.value) return;
+  chatInputComponent.value.regenerating();
+};
 </script>
 
 <template>
@@ -92,8 +98,9 @@ defineExpose({
           v-model:tabIndex="tabIndex"
           :active-chat="activeChatInfo"
           @showSlideSideBarClick="showSlideSideBar"
+          @regenerating="messageRegenerating"
       />
-      <ChatInputComponent :chat-id="activeChatInfo?.id" :tab-index="tabIndex" @refresh="messageRefresh"/>
+      <ChatInputComponent ref="chatInputComponent" :chat-id="activeChatInfo?.id" :tab-index="tabIndex" @refresh="messageRefresh"/>
     </div>
     <SlideSideBarComponent ref="slideSideBarBlockRefs" @changeChatClick="changeChat"/>
   </div>

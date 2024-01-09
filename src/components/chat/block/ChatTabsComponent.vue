@@ -229,7 +229,11 @@ const scrollHandle = (event: UIEvent) => {
           @lockScrollDownClick="scrollToBottom"
       >
         <CTabPane v-for="(_number, index) in chatTabNameList.length" :key="index">
-          <ChatMessagesListComponent :chatInfo="propsActiveChat" :tabIndex="index"/>
+          <ChatMessagesListComponent
+              :chatInfo="propsActiveChat"
+              :tabIndex="index"
+              @regenerating="$emit('regenerating')"
+          />
         </CTabPane>
       </CTabs>
     </div>
