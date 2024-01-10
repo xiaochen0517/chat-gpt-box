@@ -11,10 +11,7 @@ import markdownItTaskLists from "markdown-it-task-lists";
 import "@/assets/style/github-markdown.css";
 import hljs from "highlight.js";
 import "@/assets/style/highlight-github.less";
-import xmlLanguage from "highlight.js/lib/languages/xml.js";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-// import {hljsDefineVue} from "highlightjs-vue";
+import xmlLanguage from "highlight.js/lib/languages/xml";
 
 hljs.registerLanguage("vue", xmlLanguage);
 

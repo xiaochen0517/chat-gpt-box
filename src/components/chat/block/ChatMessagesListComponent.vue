@@ -41,9 +41,9 @@ const deleteMessage = (_message: ChatMessage, index: number) => {
 };
 
 const editMessageDialogRefs = ref<InstanceType<typeof EditMessageDialog> | null>(null);
-const editMessage = (_message: ChatMessage, index: number) => {
+const editMessage = (message: ChatMessage, index: number) => {
   if (!editMessageDialogRefs.value || !propsChatInfo.value) return;
-  editMessageDialogRefs.value.show(propsChatInfo.value.id, props.tabIndex, index);
+  editMessageDialogRefs.value.show(message, propsChatInfo.value.id, props.tabIndex, index);
 };
 
 const getGenerating = (index: number) => {
