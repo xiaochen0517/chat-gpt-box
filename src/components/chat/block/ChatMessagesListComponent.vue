@@ -24,10 +24,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 const propsChatInfo = ref<ChatInfo | null>(props.chatInfo);
 watch(
-  () => props.chatInfo,
-  (value) => {
-    propsChatInfo.value = value;
-  }
+    () => props.chatInfo,
+    (value) => {
+      propsChatInfo.value = value;
+    },
 );
 
 const chatTabInfo = computed(() => {
@@ -50,6 +50,11 @@ const getGenerating = (index: number) => {
   if (!chatTabInfo.value) return false;
   return chatTabInfo.value.generating && index === chatTabInfo.value.chat.length - 1;
 };
+const getShowRefresh = (index: number) => {
+  if (!chatTabInfo.value) return false;
+  const lastChatIndex = chatTabInfo.value.chat.length - 1;
+  return index === lastChatIndex && chatTabInfo.value.chat[lastChatIndex].role === "assistant";
+};
 </script>
 
 <template>
@@ -62,8 +67,10 @@ const getGenerating = (index: number) => {
           :message="chatMessage"
           :generating="getGenerating(index as number)"
           :options="propsChatInfo?.options"
+          :show-refresh="getShowRefresh(index as number)"
           @delete="deleteMessage"
           @edit="editMessage"
+          @regenerating="$emit('regenerating')"
       />
     </div>
     <div v-else>
@@ -74,8 +81,10 @@ const getGenerating = (index: number) => {
           :message="chatMessage"
           :generating="getGenerating(index as number)"
           :options="propsChatInfo?.options"
+          :show-refresh="getShowRefresh(index as number)"
           @delete="deleteMessage"
           @edit="editMessage"
+          @regenerating="$emit('regenerating')"
       />
     </div>
     <EditMessageDialog ref="editMessageDialogRefs"/>

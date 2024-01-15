@@ -40,10 +40,10 @@ const chatInputContent = ref("");
 const chatListStore = useChatListStore();
 const chatInfo = ref<ChatInfo | null>(null);
 watch(() => props.chatId,
-  (newChatId) => {
-    chatInfo.value = chatListStore.getChatInfo(newChatId ?? "");
-  },
-  {immediate: true}
+    (newChatId) => {
+      chatInfo.value = chatListStore.getChatInfo(newChatId ?? "");
+    },
+    {immediate: true},
 );
 
 const chatTabsStore = useChatTabsStore();
@@ -60,11 +60,16 @@ const submitContent = () => {
     return;
   }
   if (chatInputContent.value.length <= 0 || /^\s*$/.test(chatInputContent.value)) return;
+  sendMessage(chatInputContent.value.trim());
+  chatInputContent.value = "";
+};
+
+const sendMessage = (message: string) => {
   if (!tabInfo.value.request) {
+    if (!chatInfo.value) return;
     tabInfo.value.request = createRequest(chatInfo.value, props.tabIndex, messageRefresh);
   }
-  tabInfo.value.request.sendMessage(chatInputContent.value.trim());
-  chatInputContent.value = "";
+  tabInfo.value.request.sendMessage(message);
 };
 
 const messageRefresh = () => {
@@ -128,6 +133,22 @@ const ctrlEnterKeyDown = (event: KeyboardEvent) => {
     submitContent();
   }
 };
+
+const regenerating = () => {
+  // get last user message
+  if (!chatInfo.value) return;
+  let chatTabInfo = chatTabsStore.getChatTabInfo(chatInfo.value.id, props.tabIndex);
+  if (!chatTabInfo) return;
+  let lastUserMessage = chatTabInfo.chat[chatTabInfo.chat.length - 2];
+  if (!lastUserMessage) return;
+  // delete last user and assistant message
+  chatTabsStore.chatTabs[chatInfo.value.id][props.tabIndex].chat.splice(-2, 2);
+  // send last user message
+  sendMessage(lastUserMessage.content);
+};
+defineExpose({
+  regenerating,
+});
 
 const resizeableDivRefs = ref<InstanceType<typeof HTMLDivElement> | null>(null);
 const divHeight = ref(200); // Initial height
