@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-    <img alt="windows" src="https://img.shields.io/badge/windows->=10-brightgreen?logo=microsoft">
+    <img alt="windows" src="https://img.shields.io/badge/windows->=7-brightgreen?logo=microsoft">
     <img alt="ubuntu" src="https://img.shields.io/badge/ubuntu->=20-orange?logo=ubuntu">
     <img alt="macOS" src="https://img.shields.io/badge/macOS->=10-blue?logo=apple">
     <img alt="Android" src="https://img.shields.io/badge/Android->=5.1-green?logo=android">
