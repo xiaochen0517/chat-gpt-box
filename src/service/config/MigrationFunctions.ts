@@ -23,7 +23,7 @@ export const migrateFunctions: Array<() => void> = [
     const configStore = JSON.parse(jsonStr);
     if (!configStore) return;
     if (!configStore.baseConfig) return;
-    // move
+    // move config
     configStore["defaultChatConfig"] = {
       openAi: {
         base: {

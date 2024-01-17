@@ -1,27 +1,21 @@
 <script setup lang="ts">
 import {CheckOutlined, CopyOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons-vue";
 import MessageMarkdownBlock from "@/components/chat/block/MessageMarkdownComponent.vue";
-import {ref, watch} from "vue";
+import {ref} from "vue";
 import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
 
 type Props = {
   message: ChatMessage;
   index: number | null;
   generating: boolean;
+  showRefresh?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
   message: () => ({role: ChatMessageRole.System, content: "..."}),
   index: null,
   generating: false,
+  showRefresh: false,
 });
-
-const propsGenerating = ref(false);
-watch(() => props.generating,
-  (value) => {
-    propsGenerating.value = value;
-  },
-  {immediate: true}
-);
 
 const copySuccess = ref(false);
 const copyMessageContent = () => {
@@ -56,7 +50,7 @@ const copyMessageContent = () => {
         class="relative mx-4 px-4 pt-4 pb-2 rounded-xl bg-neutral-200 dark:bg-neutral-800 shadow-lg dark:shadow-neutral-900 flex-1 min-w-0 flex flex-col"
         :class="{'ml-14 user-message-bubble':message.role === 'user', 'mr-14 assistant-message-bubble':message.role !== 'user'}"
     >
-      <MessageMarkdownBlock class="pb-2" :content="message?.content + (propsGenerating?' ✨':'')"/>
+      <MessageMarkdownBlock class="pb-2" :content="message?.content + (props.generating?' ✨':'')"/>
       <div class="flex flex-row gap-1 mt-1">
         <button
             class="p-2 rounded-md flex justify-center items-center bg-gray-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600 cursor-pointer"
@@ -83,6 +77,13 @@ const copyMessageContent = () => {
             </button>
           </template>
         </el-popconfirm>
+        <button
+            v-if="props.showRefresh && !props.generating"
+            class="p-2 rounded-md flex flex-row items-center bg-gray-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
+            @click="$emit('regenerating')"
+        >
+          <i class="iconfont icon-reload w-4 h-4 mb-0.5"/>
+        </button>
       </div>
     </div>
     <div

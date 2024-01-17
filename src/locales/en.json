@@ -146,6 +146,10 @@
     },
     "input": {
       "placeholder": "Please enter the message"
+    },
+    "copy": {
+      "success": "Copy successfully",
+      "error": "Copy failed"
     }
   },
   "chatTemplate": {
