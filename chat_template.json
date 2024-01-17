@@ -21,9 +21,99 @@
     "chatType": "chat_gpt",
     "options": {
       "apiUrl": "https://api.openai.com/",
-      "model": "gpt-3.5-turbo",
+      "model": "gpt-4-1106-preview",
       "temperature": 0.7,
       "contextMaxMessage": 5,
+      "contextMaxTokens": 2048,
+      "responseMaxTokens": 0
+    }
+  },
+  {
+    "id": "",
+    "name": "Full stack engineer",
+    "avatar": {
+      "isCircle": false,
+      "skinColor": "#ffe0bd",
+      "hairColor": "#000000",
+      "topColor": "#E6E6E6",
+      "clothesColor": "#000000",
+      "facialHairColor": "#E8E1E1",
+      "accessories": "Blank",
+      "eyes": "Default",
+      "eyebrows": "Default",
+      "mouth": "Smile",
+      "top": "ShortHairTheCaesar",
+      "clothes": "CollarSweater",
+      "graphicShirt": "Pizza",
+      "facialHair": "Blank"
+    },
+    "prompt": "Act a full-stack senior engineer, I need to solve some problems related to back-end and front-end development. Please answer the questions I have about full-stack development without explanations.",
+    "chatType": "chat_gpt",
+    "options": {
+      "apiUrl": "https://api.openai.com/",
+      "model": "gpt-4-1106-preview",
+      "temperature": 0.7,
+      "contextMaxMessage": 2,
+      "contextMaxTokens": 2048,
+      "responseMaxTokens": 0
+    }
+  },
+  {
+    "id": "",
+    "name": "全栈开发",
+    "avatar": {
+      "isCircle": false,
+      "skinColor": "#ffe0bd",
+      "hairColor": "#000000",
+      "topColor": "#E6E6E6",
+      "clothesColor": "#000000",
+      "facialHairColor": "#E8E1E1",
+      "accessories": "Blank",
+      "eyes": "Default",
+      "eyebrows": "Default",
+      "mouth": "Smile",
+      "top": "ShortHairTheCaesar",
+      "clothes": "CollarSweater",
+      "graphicShirt": "Pizza",
+      "facialHair": "Blank"
+    },
+    "prompt": "充当一个全栈高级工程师，我需要解决一些与后端和前端开发相关的问题，请对我提出的全栈开发的问题进行回答，不需要解释。",
+    "chatType": "chat_gpt",
+    "options": {
+      "apiUrl": "https://api.openai.com/",
+      "model": "gpt-4-1106-preview",
+      "temperature": 0.7,
+      "contextMaxMessage": 2,
+      "contextMaxTokens": 2048,
+      "responseMaxTokens": 0
+    }
+  },
+  {
+    "id": "",
+    "name": "Translation",
+    "avatar": {
+      "isCircle": false,
+      "skinColor": "#ffe0bd",
+      "hairColor": "#000000",
+      "topColor": "#E6E6E6",
+      "clothesColor": "#000000",
+      "facialHairColor": "#E8E1E1",
+      "accessories": "Blank",
+      "eyes": "Default",
+      "eyebrows": "Default",
+      "mouth": "Smile",
+      "top": "ShortHairTheCaesar",
+      "clothes": "CollarSweater",
+      "graphicShirt": "Pizza",
+      "facialHair": "Blank"
+    },
+    "prompt": "Please act as an Interpreter and translate the English and Chinese contents sent by the users to each other.",
+    "chatType": "chat_gpt",
+    "options": {
+      "apiUrl": "https://api.openai.com/",
+      "model": "gpt-4-1106-preview",
+      "temperature": 0.7,
+      "contextMaxMessage": 0,
       "contextMaxTokens": 2048,
       "responseMaxTokens": 0
     }
