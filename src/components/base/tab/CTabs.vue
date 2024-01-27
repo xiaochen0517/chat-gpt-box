@@ -41,9 +41,9 @@ const lockScrollDownClick = () => {
 
 <template>
   <div class="flex flex-col w-full">
-    <div class="absolute z-10 top-0 left-0 w-full px-2 total:px-0 flex flex-col">
-      <div class="content:max-w-content content:m-auto p-2 overflow-hidden overflow-x-auto w-full rounded-lg rounded-t-none bg-neutral-100 dark:bg-neutral-800 shadow-md flex flex-row gap-2 min-w-full box-border">
-        <div class="absolute block content:hidden left-2 top-2 bg-neutral-100 dark:bg-neutral-800">
+    <div class="content:max-w-content content:m-auto absolute z-10 top-0 left-0 right-0 w-full px-2 total:px-0 flex flex-col">
+      <div class="p-2 overflow-hidden overflow-x-auto w-full rounded-lg rounded-t-none bg-neutral-100 dark:bg-neutral-800 shadow-md flex flex-row gap-2 min-w-full box-border">
+        <div class="absolute block mobile:hidden left-2 top-2 bg-neutral-100 dark:bg-neutral-800">
           <div
               class=" px-2 py-1.5 ml-2 mr-1 box-border rounded-lg cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-900  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
               title="Show slide side bar"
@@ -52,7 +52,7 @@ const lockScrollDownClick = () => {
             <i class="iconfont icon-category text-md leading-3 font-bold mx-1"/>
           </div>
         </div>
-        <div class="flex flex-row gap-1 ml-11 content:ml-0 mr-10" :class="{'mr-21':!forceScrollToBottom}">
+        <div class="flex flex-row gap-1 ml-11 mobile:ml-0 mr-10" :class="{'mr-21':!forceScrollToBottom}">
           <div
               v-for="(item, index) in propsTabNames"
               :key="index"
