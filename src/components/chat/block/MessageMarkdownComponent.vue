@@ -47,6 +47,7 @@ const setMarkdownCodeTheme = (isDark: boolean) => {
 };
 
 const md = new MarkdownIt({
+  html: true,
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
