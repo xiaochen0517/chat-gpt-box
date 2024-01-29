@@ -36,8 +36,8 @@ export const migrateFunctions: Array<() => void> = [
           contextMaxMessage: configStore.baseConfig.contextMaxMessage,
           contextMaxTokens: configStore.baseConfig.contextMaxTokens,
           responseMaxTokens: configStore.baseConfig.responseMaxTokens,
-        }
-      }
+        },
+      },
     };
     // delete
     delete configStore.baseConfig.apiKey;
@@ -49,5 +49,22 @@ export const migrateFunctions: Array<() => void> = [
     delete configStore.baseConfig.responseMaxTokens;
     // save
     localStorage.setItem("Config", JSON.stringify(configStore));
-  }
+  },
+  /**
+   * Migrate from version 2 to 3
+   *
+   * configStore.baseConfig.chatTemplateUrl default value change
+   * from "https://xiaochen0517.github.io/chat-gpt-box/chat_template.json" to "https://chat-gpt-box.plus/chat_template.json"
+   */
+  () => {
+    const jsonStr = localStorage.getItem("Config");
+    if (!jsonStr) return;
+    const configStore = JSON.parse(jsonStr);
+    if (!configStore) return;
+    if (!configStore.baseConfig) return;
+    if (!configStore.baseConfig.chatTemplateUrl) return;
+    if (configStore.baseConfig.chatTemplateUrl !== "https://xiaochen0517.github.io/chat-gpt-box/chat_template.json") return;
+    configStore.baseConfig.chatTemplateUrl = "https://chat-gpt-box.plus/chat_template.json";
+    localStorage.setItem("Config", JSON.stringify(configStore));
+  },
 ];
