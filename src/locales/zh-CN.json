@@ -120,6 +120,7 @@
     },
     "deleteChat": {
       "title": "删除聊天",
+      "description": "您确定要删除此聊天吗？",
       "success": "删除聊天成功。",
       "error": "删除聊天失败。"
     },

@@ -192,6 +192,8 @@ export class GeminiRequest implements BaseRequest {
     return {
       maxOutputTokens: this.chatConfig.maxOutputTokens > 0 ? this.chatConfig.maxOutputTokens : undefined,
       temperature: this.chatConfig.temperature,
+      topK: this.chatConfig.topK,
+      topP: this.chatConfig.topP,
     };
   }
 

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import {computed, getCurrentInstance, onMounted, ref, watch} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
-import {Avatar, Factory, IAvatarProps} from "vue3-avataaars";
+import {Avatar, IAvatarProps} from "vue3-avataaars";
+import {AvatarUtil} from "@/utils/AvatarUtil.ts";
 
 type Props = {
   switchValue?: boolean,
@@ -24,21 +25,21 @@ const props = withDefaults(defineProps<Props>(), {
   bottomBorder: true,
 });
 
-const avatarProps = ref<IAvatarProps>(Factory());
+const avatarProps = ref<IAvatarProps>(AvatarUtil.getDefaultAvatar());
 
 const instance = getCurrentInstance();
 const switchValue = ref(false);
 onMounted(() => {
   switchValue.value = props.switchValue;
   if (!props.leftIcon) {
-    avatarProps.value = Factory(props.leftAvatar);
+    avatarProps.value = AvatarUtil.initDefaultAvatar(props.leftAvatar);
   }
 });
 watch(() => props.switchValue, (value) => {
   switchValue.value = value;
 });
 watch(() => props.leftAvatar, (value) => {
-  avatarProps.value = Factory(value);
+  avatarProps.value = AvatarUtil.initDefaultAvatar(value);
 });
 watch(switchValue, (value) => {
   if (!instance) return;

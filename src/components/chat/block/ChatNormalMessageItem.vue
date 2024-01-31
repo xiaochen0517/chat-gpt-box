@@ -3,12 +3,14 @@ import {CheckOutlined, CopyOutlined, DeleteOutlined, EditOutlined} from "@ant-de
 import MessageMarkdownComponent from "@/components/chat/block/MessageMarkdownComponent.vue";
 import {ref} from "vue";
 import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
+import {Avatar, IAvatarProps} from "vue3-avataaars";
 
 type Props = {
   message: ChatMessage;
   index: number | null;
   generating: boolean;
   showRefresh?: boolean;
+  avatar: IAvatarProps;
 }
 const props = withDefaults(defineProps<Props>(), {
   message: () => ({role: ChatMessageRole.System, content: "..."}),
@@ -45,13 +47,9 @@ const copyMessageContent = () => {
       </div>
       <div
           v-if="message.role === 'assistant'"
-          class="w-10 h-10 bg-sky-500 dark:bg-sky-600 rounded-md leading-10 text-center flex justify-center items-center select-none"
+          class="w-10 h-10 bg-sky-500 dark:bg-sky-600 rounded-md overflow-hidden flex flex-row justify-center"
       >
-        <img
-            src="../../../assets/images/chat_gpt.svg"
-            alt="avatar"
-            class="w-6 h-6"
-        />
+        <Avatar class="mt-1" v-bind="avatar"/>
       </div>
       <div class="pl-2 flex-1 min-w-0 scroll-auto">
         <MessageMarkdownComponent :content="message?.content + (props.generating?' ✨':'')"/>
