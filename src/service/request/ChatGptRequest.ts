@@ -68,6 +68,7 @@ export class ChatGptRequest implements BaseRequest {
   public sendMessage(message: string): Promise<string> {
     this.abortController = new AbortController();
     this.stopFlag = false;
+    this.errorJson = null;
     this.setGenerating(true);
     try {
       this.pushUserMessage2ChatTab(message);
@@ -256,7 +257,7 @@ export class ChatGptRequest implements BaseRequest {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private parsePieceData(data: string): any | null {
     // skip empty data
-    if (data.length === 0) {
+    if (!data || data.trim().length === 0) {
       return null;
     }
     // [DONE] means the end of the data

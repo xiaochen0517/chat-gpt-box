@@ -75,10 +75,7 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": "warn",
     "vue/no-deprecated-slot-attribute": "off",
     "vue/no-dupe-keys": "off",
-    "linebreak-style": [
-      "error",
-      "windows"
-    ],
+    "linebreak-style": "off",
     "quotes": [
       "error",
       "double"
@@ -86,6 +83,6 @@ module.exports = {
     "semi": [
       "error",
       "always"
-    ]
+    ],
   }
 };
