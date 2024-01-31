@@ -16,7 +16,7 @@ export const useConfigStore = defineStore("config", {
         ctrlEnterSend: false,
         bubbleMessage: true,
         forceScrollToBottom: false,
-        chatTemplateUrl: "https://xiaochen0517.github.io/chat-gpt-box/chat_template.json",
+        chatTemplateUrl: "https://chat-gpt-box.plus/chat_template.json",
       },
       defaultChatConfig: {
         openAi: {

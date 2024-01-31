@@ -16,7 +16,7 @@ const changeChatClick = (chatInfo: ChatInfo) => {
 
 <template>
   <div class="w-full h-full flex flex-row box-border">
-    <SideBarComponent class="hidden content:flex" @changeChatClick="changeChatClick"/>
+    <SideBarComponent class="hidden mobile:flex" @changeChatClick="changeChatClick"/>
     <HomeChatComponent class="flex-1" ref="chatContentBlockRefs"/>
   </div>
 </template>
