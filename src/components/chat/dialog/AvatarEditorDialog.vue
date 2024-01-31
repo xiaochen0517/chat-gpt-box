@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import {Avatar, Factory, IAvatarProps, Options} from "vue3-avataaars";
+import {Avatar, IAvatarProps, Options} from "vue3-avataaars";
 import {getCurrentInstance, ref} from "vue";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 import i18n from "@/i18n/i18n.ts";
+import {AvatarUtil} from "@/utils/AvatarUtil.ts";
 
 const {t} = i18n.global;
 const dialogVisible = ref(false);
-const avatarProps = ref(Factory({isCircle: false}));
+const avatarProps = ref(AvatarUtil.getDefaultAvatar());
 let resolveFunc: ((value: IAvatarProps | PromiseLike<IAvatarProps>) => void) | null = null;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let rejectFunc: ((reason?: any) => void) | null = null;
 const show = (avatar?: Partial<IAvatarProps>): Promise<IAvatarProps> => {
-  avatarProps.value = Factory(avatar);
+  avatarProps.value = AvatarUtil.initDefaultAvatar(avatar);
   dialogVisible.value = true;
   return new Promise<IAvatarProps>((resolve, reject) => {
     resolveFunc = resolve;
@@ -48,13 +49,13 @@ const cancel = () => {
       @cancel="cancel"
       @ok="commit"
   >
-    <div class="w-full mt-4 flex flex-col items-center">
+    <div class="w-full h-full mt-4 flex flex-col items-center">
       <Avatar
           class="w-36 h-36 rounded-full overflow-hidden bg-gray-600"
           v-bind="avatarProps"
       />
-      <div class="mt-6">
-        <ElForm :model="avatarProps" label-width="5rem">
+      <div class="w-full mt-6">
+        <ElForm :model="avatarProps" label-width="10rem">
           <ElFormItem :label="t('avatar.editor.hairColor')">
             <ElColorPicker v-model="avatarProps.hairColor" show-alpha/>
           </ElFormItem>

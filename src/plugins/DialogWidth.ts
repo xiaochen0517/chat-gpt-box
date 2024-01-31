@@ -1,5 +1,4 @@
-import {ref, watch} from "vue";
-import {App} from "vue";
+import {App, ref, watch} from "vue";
 
 export default {
   install(app: App) {

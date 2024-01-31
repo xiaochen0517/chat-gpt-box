@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, ref, watch} from "vue";
+import {computed, ref} from "vue";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import EditMessageDialog from "../dialog/EditMessageDialog.vue";
@@ -7,7 +7,7 @@ import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import {ChatMessage} from "@/types/chat/ChatTabInfo.ts";
 import ChatNormalMessageItem from "@/components/chat/block/ChatNormalMessageItem.vue";
 import ChatBubbleMessageItem from "@/components/chat/block/ChatBubbleMessageItem.vue";
-import {Factory} from "vue3-avataaars";
+import {AvatarUtil} from "@/utils/AvatarUtil.ts";
 
 const chatTabsStore = useChatTabsStore();
 const configStore = useConfigStore();
@@ -28,8 +28,8 @@ const chatTabInfo = computed(() => {
   return chatTabsStore.chatTabs[props.chatInfo.id][props.tabIndex];
 });
 const avatarProps = computed(() => {
-  if (!props.chatInfo) return Factory();
-  return Factory(props.chatInfo.avatar);
+  if (!props.chatInfo) return AvatarUtil.getDefaultAvatar();
+  return AvatarUtil.initDefaultAvatar(props.chatInfo.avatar);
 });
 
 const deleteMessage = (_message: ChatMessage, index: number) => {

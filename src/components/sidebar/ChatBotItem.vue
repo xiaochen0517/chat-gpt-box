@@ -5,9 +5,10 @@ import {useChatListStore} from "@/store/ChatListStore.ts";
 import {ChatInfo, ChatType} from "@/types/chat/ChatInfo.ts";
 import {onMounted, ref} from "vue";
 import {GoogleGeminiConfig, OpenAiChatGptConfig, OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
-import {Avatar, Factory, IAvatarProps} from "vue3-avataaars";
+import {Avatar, IAvatarProps} from "vue3-avataaars";
 import {ChatDialogUtil} from "@/utils/dialog/ChatDialogUtil.ts";
 import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
+import {AvatarUtil} from "@/utils/AvatarUtil.ts";
 
 type Props = {
   chatInfo: ChatInfo | null,
@@ -21,7 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
   drag: false,
 });
 const modelName = ref("");
-const avatarInfo = ref<IAvatarProps>(Factory());
+const avatarInfo = ref<IAvatarProps>(AvatarUtil.getDefaultAvatar());
 onMounted(() => {
   if (!props.chatInfo) {
     modelName.value = "NONE";
@@ -38,7 +39,7 @@ onMounted(() => {
       modelName.value = (props.chatInfo.options as GoogleGeminiConfig).model;
       break;
   }
-  avatarInfo.value = Factory(props.chatInfo.avatar);
+  avatarInfo.value = AvatarUtil.initDefaultAvatar(props.chatInfo.avatar);
 });
 
 const editChatClick = (chatInfo: ChatInfo | null) => {

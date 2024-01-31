@@ -3,13 +3,14 @@ import CDialog from "@/components/base/dialog/CDialog.vue";
 import {ref} from "vue";
 import {ChatInfo, ChatType} from "@/types/chat/ChatInfo.ts";
 import {OpenAiChatGptConfig} from "@/types/chat/BaseConfig.ts";
-import {Avatar, Factory} from "vue3-avataaars";
+import {Avatar} from "vue3-avataaars";
 import i18n from "@/i18n/i18n.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {ElMessage} from "element-plus";
+import {AvatarUtil} from "@/utils/AvatarUtil.ts";
 
 const {t} = i18n.global;
-const avatarFactory = ref(Factory());
+const avatarFactory = ref(AvatarUtil.getDefaultAvatar());
 const dialogVisible = ref(false);
 const templateInfo = ref<ChatInfo>({
   id: "",
@@ -27,7 +28,7 @@ const templateInfo = ref<ChatInfo>({
 });
 const show = (chatInfo: ChatInfo) => {
   templateInfo.value = chatInfo;
-  avatarFactory.value = Factory(chatInfo.avatar);
+  avatarFactory.value = AvatarUtil.initDefaultAvatar(chatInfo.avatar);
   dialogVisible.value = true;
 };
 defineExpose({
