@@ -34,6 +34,11 @@ const avatarProps = computed(() => {
 
 const deleteMessage = (_message: ChatMessage, index: number) => {
   if (!props.chatInfo) return;
+  // stop generating if the last message is delete
+  if (chatTabInfo.value && chatTabInfo.value.generating && index === chatTabInfo.value.chat.length - 1) {
+    chatTabInfo.value.request?.cancel();
+    chatTabsStore.setGenerating(props.chatInfo.id, props.tabIndex, false);
+  }
   chatTabsStore.removeChatMessage(props.chatInfo.id, props.tabIndex, index);
 };
 

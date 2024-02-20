@@ -2,7 +2,7 @@ import type {IAvatarProps} from "vue3-avataaars";
 
 export class AvatarUtil {
 
-  public static initDefaultAvatar(optionalAvatar: Partial<IAvatarProps>): IAvatarProps {
+  public static initDefaultAvatar(optionalAvatar?: Partial<IAvatarProps>): IAvatarProps {
     return {
       isCircle: false,
       circleColor: "#00000000",
