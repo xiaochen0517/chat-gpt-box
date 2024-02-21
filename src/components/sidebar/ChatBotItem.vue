@@ -66,16 +66,18 @@ const deleteChatClick = (chatInfo: ChatInfo | null) => {
       :class="{'text-green-500 dark:text-green-400 shadow-md dark:shadow-neutral-900':chatInfo && chatInfo.id === activeChatInfo?.id}"
       @click="$emit('itemClick', chatInfo)"
   >
-    <div class="pr-1 flex-1 flex flex-row gap-1 items-center">
-      <div class="handle rotate-90" title="Drag to sort" @click.stop>
+    <div class="pr-1 flex-1 flex flex-row">
+      <div class="handle rotate-90 mr-2" title="Drag to sort" @click.stop>
         <i class="iconfont icon-more" :class="drag?'':'cursor-grab'"/>
       </div>
       <Avatar class="w-8 h-8 rounded-full bg-gray-500 mr-2" v-bind="avatarInfo"/>
-      <div class="flex-1 text-md leading-8 select-none overflow-hidden overflow-ellipsis whitespace-nowrap max-w-[12rem]">
-        {{ chatInfo?.name }}
+      <div class="flex-1 relative">
+        <span class="absolute left-0 w-full text-md leading-8 select-none overflow-hidden overflow-ellipsis whitespace-nowrap">
+          {{ chatInfo?.name }}
+        </span>
       </div>
     </div>
-    <el-popover overlayClassName="robot-editor-popover" placement="bottom" trigger="hover">
+    <el-popover overlayClassName="robot-editor-popover" placement="bottom" trigger="click">
       <template #default>
         <div class="p-2 m-0">
           <div
@@ -95,7 +97,7 @@ const deleteChatClick = (chatInfo: ChatInfo | null) => {
       <template #reference>
         <div
             class="robot-control-button flex justify-center items-center hover:bg-neutral-300 dark:hover:bg-neutral-600 w-6 h-6 rounded-md"
-            @click.stop=""
+            @click.stop.prevent=""
         >
           <ellipsis-outlined/>
         </div>
