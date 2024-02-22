@@ -149,7 +149,7 @@ const switchDarkMode = (isDark: boolean) => {
   </div>
 </template>
 
-<style lang="less">
+<style lang="postcss">
 @import "assets/icons/iconfont.css";
 
 body,
