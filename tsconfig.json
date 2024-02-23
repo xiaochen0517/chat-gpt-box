@@ -26,17 +26,13 @@
       "@/*": [
         "src/*"
       ]
-    },
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "allowSyntheticDefaultImports": true
+    }
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
-    "src/**/*.vue"
+    "src/**/*.vue",
   ],
   "references": [
     {

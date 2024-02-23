@@ -1,11 +1,9 @@
 import {shell} from "@tauri-apps/api";
-import {Browser} from "@capacitor/browser";
 import AppUtil from "@/utils/AppUtil.ts";
 
 export enum LinkOpenTarget {
   NEW_TAB = "new_tab",
   DEFAULT_BROWSER = "default_browser",
-  MOBILE_BROWSER = "mobile_browser",
 }
 
 export class LinkUtil {
@@ -15,14 +13,6 @@ export class LinkUtil {
         this.openLinkInDefaultBrowser(url)
           .then(() => {
             resolve(LinkOpenTarget.DEFAULT_BROWSER);
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      } else if (AppUtil.isMobile()) {
-        this.openLinkInMobileBrowser(url)
-          .then(() => {
-            resolve(LinkOpenTarget.MOBILE_BROWSER);
           })
           .catch((error) => {
             reject(error);
@@ -50,9 +40,5 @@ export class LinkUtil {
 
   static openLinkInDefaultBrowser(url: string) {
     return shell.open(url);
-  }
-
-  static openLinkInMobileBrowser(url: string) {
-    return Browser.open({url: url});
   }
 }
