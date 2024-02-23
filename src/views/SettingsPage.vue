@@ -18,6 +18,7 @@ import {useChatListStore} from "@/store/ChatListStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {FileUtil} from "@/utils/FileUtil.ts";
 import i18n from "@/i18n/i18n.ts";
+import OllamaSettingsList from "@/components/setting/chat/OllamaSettingsList.vue";
 
 const jumpToHomePage = () => {
   router.back();
@@ -173,7 +174,7 @@ const exportConfig = () => {
 };
 
 const activeTabName = ref("");
-const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
+const tabNames = ref(["GPT", "DALL-E", "Gemini", "Ollama"]);
 </script>
 
 <template>
@@ -261,6 +262,7 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
           <ChatGptSettingsList v-if="activeTabName === 'GPT'"/>
           <DallESettingsList v-else-if="activeTabName === 'DALL-E'"/>
           <GeminiSettingsList v-else-if="activeTabName === 'Gemini'"/>
+          <OllamaSettingsList v-else-if="activeTabName === 'Ollama'"/>
         </Transition>
       </div>
     </div>

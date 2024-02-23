@@ -13,9 +13,15 @@ import GeminiSettingsList from "@/components/setting/chat/GeminiSettingsList.vue
 import CListItem from "@/components/base/list/CListItem.vue";
 import {ChatBaseSettingsDialogUtil} from "@/utils/settings/ChatBaseSettingsDialogUtil.ts";
 import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
-import {GoogleGeminiConfig, OpenAiChatGptConfig, OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
+import {
+  GoogleGeminiConfig,
+  OllamaDefaultConfig,
+  OpenAiChatGptConfig,
+  OpenAiDallEConfig,
+} from "@/types/chat/BaseConfig.ts";
 import AvatarEditorDialog from "@/components/chat/dialog/AvatarEditorDialog.vue";
 import {IAvatarProps} from "vue3-avataaars";
+import OllamaSettingsList from "@/components/setting/chat/OllamaSettingsList.vue";
 
 const route = useRoute();
 const chatId: Ref<string | null> = ref(null);
@@ -60,6 +66,8 @@ const changeChatType = (chatType: ChatType) => {
     activeTabName.value = "DALL-E";
   } else if (chatType === ChatType.GEMINI) {
     activeTabName.value = "Gemini";
+  } else if (chatType === ChatType.OLLAMA) {
+    activeTabName.value = "Ollama";
   }
 };
 const checkChatId = (): boolean => {
@@ -86,6 +94,8 @@ const tabChangeHandle = (name: string) => {
     chatInfo.value.chatType = ChatType.DALL_E;
   } else if (name === "Gemini") {
     chatInfo.value.chatType = ChatType.GEMINI;
+  } else if (name === "Ollama") {
+    chatInfo.value.chatType = ChatType.OLLAMA;
   }
 };
 
@@ -93,7 +103,7 @@ const jumpToHomePage = () => {
   router.back();
 };
 
-const tabNames = ref(["GPT", "DALL-E", "Gemini"]);
+const tabNames = ref(["GPT", "DALL-E", "Gemini", "Ollama"]);
 const activeTabName = ref("GPT");
 const settingsDialogRefs = ref<InstanceType<typeof CBaseDialog> | null>(null);
 const avatarEditorDialogRefs = ref<InstanceType<typeof AvatarEditorDialog> | null>(null);
@@ -161,6 +171,7 @@ const addChat = () => {
 const chatGptSettingsListRefs = ref<InstanceType<typeof ChatGptSettingsList> | null>(null);
 const dallESettingsListRefs = ref<InstanceType<typeof DallESettingsList> | null>(null);
 const geminiSettingsListRefs = ref<InstanceType<typeof GeminiSettingsList> | null>(null);
+const ollamaSettingsListRefs = ref<InstanceType<typeof OllamaSettingsList> | null>(null);
 const getChatOptionsFromSettingsList = (): ChatOptions | null => {
   if (activeTabName.value === "GPT") {
     return chatGptSettingsListRefs.value?.getConfig() as OpenAiChatGptConfig;
@@ -168,6 +179,8 @@ const getChatOptionsFromSettingsList = (): ChatOptions | null => {
     return dallESettingsListRefs.value?.getConfig() as OpenAiDallEConfig;
   } else if (activeTabName.value === "Gemini") {
     return geminiSettingsListRefs.value?.getConfig() as GoogleGeminiConfig;
+  } else if (activeTabName.value === "Ollama") {
+    return ollamaSettingsListRefs.value?.getConfig() as OllamaDefaultConfig;
   }
   return null;
 };
@@ -223,6 +236,12 @@ const getChatOptionsFromSettingsList = (): ChatOptions | null => {
           <GeminiSettingsList
               v-else-if="activeTabName === 'Gemini'"
               ref="geminiSettingsListRefs"
+              :chat-id="chatId"
+              no-default
+          />
+          <OllamaSettingsList
+              v-else-if="activeTabName === 'Ollama'"
+              ref="ollamaSettingsListRefs"
               :chat-id="chatId"
               no-default
           />

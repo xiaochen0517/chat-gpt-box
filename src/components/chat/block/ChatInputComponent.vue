@@ -67,9 +67,17 @@ const submitContent = () => {
 const sendMessage = (message: string) => {
   if (!tabInfo.value.request) {
     if (!chatInfo.value) return;
-    tabInfo.value.request = createRequest(chatInfo.value, props.tabIndex, messageRefresh);
+    try {
+      tabInfo.value.request = createRequest(chatInfo.value, props.tabIndex, messageRefresh);
+    } catch (error) {
+      ElMessage.error("Failed to create request: " + error);
+      return;
+    }
   }
-  tabInfo.value.request.sendMessage(message);
+  tabInfo.value.request.sendMessage(message)
+      .catch((error: Error) => {
+        ElMessage.error("Failed to send message: " + error);
+      });
 };
 
 const messageRefresh = () => {
