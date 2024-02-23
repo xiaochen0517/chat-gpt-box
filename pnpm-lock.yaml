@@ -88,6 +88,9 @@ devDependencies:
   '@types/highlightjs':
     specifier: ^9.12.6
     version: 9.12.6
+  '@types/lodash':
+    specifier: ^4.14.202
+    version: 4.14.202
   '@types/markdown-it':
     specifier: ^13.0.7
     version: 13.0.7
@@ -1153,7 +1156,6 @@ packages:
 
   /@types/lodash@4.14.202:
     resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==}
-    dev: false
 
   /@types/markdown-it@13.0.7:
     resolution: {integrity: sha512-U/CBi2YUUcTHBt5tjO2r5QV/x0Po6nsYwQU4Y04fBS6vfoImaiZ6f8bi3CjTCxBPQSO1LMyUqkByzi8AidyxfA==}

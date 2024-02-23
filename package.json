@@ -44,6 +44,7 @@
   "devDependencies": {
     "@tauri-apps/cli": "^1.5.10",
     "@types/highlightjs": "^9.12.6",
+    "@types/lodash": "^4.14.202",
     "@types/markdown-it": "^13.0.7",
     "@types/node": "^20.11.20",
     "@types/uuid": "^9.0.8",
