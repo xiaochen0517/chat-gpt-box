@@ -4,7 +4,12 @@ import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {v4 as uuidv4} from "uuid";
 import _ from "lodash";
 import {ChatInfo, ChatOptions, ChatType} from "@/types/chat/ChatInfo.ts";
-import {GoogleGeminiConfig, OpenAiChatGptConfig, OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
+import {
+  GoogleGeminiConfig,
+  OllamaDefaultConfig,
+  OpenAiChatGptConfig,
+  OpenAiDallEConfig,
+} from "@/types/chat/BaseConfig.ts";
 
 export const useChatListStore = defineStore("chatList", {
   state: (): ChatListStore => {
@@ -110,6 +115,13 @@ export const useChatListStore = defineStore("chatList", {
       const chatInfo = this.chatList[index];
       if (chatInfo.chatType !== ChatType.GEMINI) return;
       (chatInfo.options as GoogleGeminiConfig)[key] = value;
+    },
+    setOllamaChatOptions<K extends keyof OllamaDefaultConfig>(id: string, key: K, value: OllamaDefaultConfig[K]) {
+      const index = this.getChatInfoIndex(id);
+      if (index < 0) return;
+      const chatInfo = this.chatList[index];
+      if (chatInfo.chatType !== ChatType.OLLAMA) return;
+      (chatInfo.options as OllamaDefaultConfig)[key] = value;
     },
     setChatOptions<K extends keyof ChatOptions>(id: string, key: K, value: ChatOptions[K]) {
       const index = this.getChatInfoIndex(id);

@@ -52,6 +52,19 @@ export const useConfigStore = defineStore("config", {
             contextMaxTokens: 2048,
             contextMaxMessage: 5,
           }
+        },
+        ollama: {
+          base: {
+            apiKey: "",
+          },
+          default: {
+            apiUrl: "http://localhost:11434/",
+            model: "llama2",
+            temperature: 0.7,
+            contextMaxMessage: 5,
+            contextMaxTokens: 2048,
+            responseMaxTokens: 0,
+          }
         }
       },
       shortcut: _.cloneDeep(DEFAULT_SHORTCUT),
