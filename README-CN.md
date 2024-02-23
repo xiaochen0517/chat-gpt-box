@@ -6,7 +6,7 @@
     <a href="./README.md">English</a> | 简体中文
 </p>
 <p align="center">
-    <em>跨平台ChatGPT工具箱，支持 GPT & DALL-E API。</em>
+    <em>跨平台ChatGPT工具箱，支持 OpenAI GPT & DALL-E，Google Gemini，Ollama。</em>
 </p>
 
 <p align="center">
@@ -35,6 +35,7 @@
 - [x] 多模型支持
 - [x] DALL·E 图片生成
 - [x] Google Gemini
+- [x] Ollama 支持
 - [x] 多语言支持
 - [ ] 移动端支持
     - [x] 移动端网页

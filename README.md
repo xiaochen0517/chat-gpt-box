@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-    <em>Cross-platform ChatGPTBox, supporting GPT & DALL-E API.</em>
+    <em>Cross-platform ChatGPTBox, supporting OpenAI GPT & DALL-E, Google Gemini, Ollama.</em>
 </p>
 
 <p align="center">
@@ -37,6 +37,7 @@
 - [x] Multi-model support
 - [x] DALL·E image generation
 - [x] Google Gemini
+- [x] Ollama support
 - [x] Multi-language support
 - [ ] Mobile support
     - [x] Mobile web
