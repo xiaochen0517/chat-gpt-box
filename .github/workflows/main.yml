@@ -48,7 +48,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 'latest'
-          cache: 'yarn'
+          cache: 'pnpm'
 
       - name: Install rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -58,11 +58,11 @@ jobs:
         with:
           workspaces: src-tauri -> target
 
-      - name: Cache yarn packages
+      - name: Cache pnpm packages
         uses: actions/cache@v3
         with:
           path: ./node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Install webkit2gtk (ubuntu only)
         if: matrix.os == 'ubuntu-latest'
@@ -74,7 +74,7 @@ jobs:
         env:
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_KEY }}
           TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
-        run: yarn install && yarn build-tauri
+        run: pnpm install && pnpm run build-tauri
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
