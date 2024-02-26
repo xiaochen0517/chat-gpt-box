@@ -14,7 +14,6 @@
     <img alt="windows" src="https://img.shields.io/badge/windows->=7-brightgreen?logo=microsoft">
     <img alt="ubuntu" src="https://img.shields.io/badge/ubuntu->=20-orange?logo=ubuntu">
     <img alt="macOS" src="https://img.shields.io/badge/macOS->=10-blue?logo=apple">
-    <img alt="Android" src="https://img.shields.io/badge/Android->=5.1-green?logo=android">
 </p>
 
 <p align="center">
@@ -23,7 +22,7 @@
 
 ## Features
 
-- Supports multiple platforms, including Windows, Linux, macOS and Android
+- Supports multiple platforms, including Windows, Linux and macOS
 - Allows for individual customization of chat settings, with multiple chat configurations that do not interfere with
   each other
 - Single chat configurations support multiple tabs, enabling multiple chat windows to be opened at the same time
@@ -39,10 +38,6 @@
 - [x] Google Gemini
 - [x] Ollama support
 - [x] Multi-language support
-- [ ] Mobile support
-    - [x] Mobile web
-        - [x] Android
-        - [ ] iOS
 - [ ] TTS (Text-to-Speech) synthesis
 - [ ] Whisper speech recognition
 

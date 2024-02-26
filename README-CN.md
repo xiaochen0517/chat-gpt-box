@@ -13,7 +13,6 @@
     <img alt="windows" src="https://img.shields.io/badge/windows->=7-brightgreen?logo=microsoft">
     <img alt="ubuntu" src="https://img.shields.io/badge/ubuntu->=20-orange?logo=ubuntu">
     <img alt="macOS" src="https://img.shields.io/badge/macOS->=10-blue?logo=apple">
-    <img alt="Android" src="https://img.shields.io/badge/Android->=5.1-green?logo=android">
 </p>
 
 <p align="center">
@@ -22,7 +21,7 @@
 
 ## 特性
 
-- 支持多平台，Windows、Linux、macOS 和 Android
+- 支持多平台，Windows、Linux 和 macOS
 - 可单独自定义聊天配置，多聊天配置互不干扰
 - 单聊天配置支持多标签页，可同时打开多个聊天窗口
 - 全局快捷键支持，可自定义快捷键
@@ -37,10 +36,6 @@
 - [x] Google Gemini
 - [x] Ollama 支持
 - [x] 多语言支持
-- [ ] 移动端支持
-    - [x] 移动端网页
-    - [x] Android
-    - [ ] iOS
 - [ ] TTS 语音合成
 - [ ] Whisper 语音识别
 
