@@ -27,11 +27,8 @@ watch(() => props.activeKey, (newVal) => {
   propsActiveKey.value = newVal;
 });
 
-const activeClass = ref("text-green-500 dark:text-green-400 shadow dark:shadow-neutral-900");
-const inactiveClass = ref("text-neutral-500 dark:text-neutral-400");
-
-const closeActiveClass = ref("hover:bg-neutral-300 dark:hover:bg-neutral-700");
-const closeInactiveClass = ref("hover:bg-neutral-400 dark:hover:bg-neutral-600");
+const activeClass = ref("text-green-400 border-green-400 dark:text-green-500 dark:border-green-500");
+const inactiveClass = ref("text-neutral-500 dark:text-neutral-400 border-neutral-100 dark:border-neutral-800");
 
 const instance = getCurrentInstance();
 const lockScrollDownClick = () => {
@@ -49,11 +46,21 @@ onMounted(() => {
     tabBarContainerRefs.value.scrollLeft += Math.floor(event.deltaY*.3) as number;
   }, {passive: false});
 });
+
+defineEmits([
+  "addTabClick",
+  "removeTabClick",
+  "update:activeKey",
+  "showSlideSideBarClick",
+  "cleanChatClick",
+  "exportChatClick",
+  "lockScrollDownClick",
+]);
 </script>
 
 <template>
   <div class="flex flex-col w-full h-full">
-    <div class="w-full p-2 pb-3 overflow-hidden rounded-lg rounded-t-none bg-neutral-100 dark:bg-neutral-800 shadow-md flex flex-row gap-2 min-w-full box-border">
+    <div class="w-full p-2 overflow-hidden rounded-md rounded-t-none bg-neutral-100 dark:bg-neutral-800 shadow-md flex flex-row gap-2 min-w-full box-border">
       <!--menu button-->
       <CTabButton
           class="block mobile:hidden"
@@ -70,15 +77,15 @@ onMounted(() => {
           <div
               v-for="(item, index) in propsTabNames"
               :key="index"
-              class="px-2 py-1.5 box-border rounded-lg cursor-pointer border select-none flex flex-row items-center whitespace-nowrap border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-900 dark:bg-neutral-800 dark:hover:bg-neutral-800 dark:active:bg-neutral-700"
+              class="px-2 py-1.5 rounded-md cursor-pointer border-2 select-none flex flex-row items-center whitespace-nowrap bg-neutral-200 hover:bg-neutral-300 active:bg-neutral-400 dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:active:bg-neutral-700"
               :class="propsActiveKey === index ? activeClass: inactiveClass"
               :title="item"
               @click="$emit('update:activeKey', index)"
           >
             {{ item }}
             <div
-                class="ml-1 w-5 h-5 flex justify-center items-center rounded hover:bg-neutral-400"
-                :class="propsActiveKey === index ? closeActiveClass: closeInactiveClass"
+                class="ml-1 w-5 h-5 flex justify-center items-center rounded"
+                :class="propsActiveKey === index ? 'hover:text-green-300': 'hover:text-neutral-100'"
                 @click.stop="$emit('removeTabClick', index)"
             >
               <i class="iconfont icon-close text-sm leading-3 font-bold"/>
@@ -109,6 +116,6 @@ onMounted(() => {
 
 <style scoped lang="postcss">
 .tab-bar::-webkit-scrollbar {
-  @apply h-1.5 mt-0.5;
+  @apply h-0.5 mt-0.5;
 }
 </style>
