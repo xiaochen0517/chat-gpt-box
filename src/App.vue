@@ -10,11 +10,7 @@ import {exit} from "@tauri-apps/api/process";
 import AppUtil from "@/utils/AppUtil.ts";
 import {WindowState} from "@/types/StoreTypes.ts";
 import {StoreDataMigration} from "@/service/config/StoreDataMigration.ts";
-import {App} from "@capacitor/app";
-import {useRoute} from "vue-router";
-import router from "@/router/Router.ts";
 
-const route = useRoute();
 const configStore = useConfigStore();
 const chatTabsStore = useChatTabsStore();
 const chatListStore = useChatListStore();
@@ -28,25 +24,7 @@ onMounted(async () => {
   checkConfig();
   addTauriListener();
   await recoverWindowState();
-  androidBackListener();
 });
-
-const androidBackListener = () => {
-  if (!AppUtil.isMobile()) return;
-  App.addListener("backButton", () => {
-    // If the dialog is open, disable the back button.
-    const dialogs = document.querySelectorAll(".el-overlay");
-    const isDialogOpen = Array.from(dialogs).some(dialog => getComputedStyle(dialog).display !== "none");
-    if (route.name !== "Home") {
-      if (isDialogOpen) {
-        return;
-      }
-      router.back();
-      return;
-    }
-    App.exitApp();
-  });
-};
 
 const addTauriListener = () => {
   if (!AppUtil.isTauri()) return;
@@ -149,17 +127,17 @@ const switchDarkMode = (isDark: boolean) => {
   </div>
 </template>
 
-<style lang="less">
+<style lang="postcss">
 @import "assets/icons/iconfont.css";
 
 body,
 html {
-@apply p-0 m-0 h-screen w-full;
+  @apply p-0 m-0 h-screen w-full;
   font-family: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
 }
 
 #app {
-@apply h-full w-full text-sm;
+  @apply h-full w-full text-sm;
 }
 </style>

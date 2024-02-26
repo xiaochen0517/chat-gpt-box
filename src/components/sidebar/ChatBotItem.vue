@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import {EllipsisOutlined} from "@ant-design/icons-vue";
 import router from "@/router/Router.ts";
-import {ElMessageBox} from "element-plus";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {ChatInfo, ChatType} from "@/types/chat/ChatInfo.ts";
 import {onMounted, ref} from "vue";
 import {GoogleGeminiConfig, OpenAiChatGptConfig, OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
-import {Avatar, Factory, IAvatarProps} from "vue3-avataaars";
+import {Avatar, IAvatarProps} from "vue3-avataaars";
+import {ChatDialogUtil} from "@/utils/dialog/ChatDialogUtil.ts";
+import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
+import {AvatarUtil} from "@/utils/AvatarUtil.ts";
 
 type Props = {
   chatInfo: ChatInfo | null,
@@ -20,7 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
   drag: false,
 });
 const modelName = ref("");
-const avatarInfo = ref<IAvatarProps>(Factory());
+const avatarInfo = ref<IAvatarProps>(AvatarUtil.getDefaultAvatar());
 onMounted(() => {
   if (!props.chatInfo) {
     modelName.value = "NONE";
@@ -37,7 +39,7 @@ onMounted(() => {
       modelName.value = (props.chatInfo.options as GoogleGeminiConfig).model;
       break;
   }
-  avatarInfo.value = Factory(props.chatInfo.avatar);
+  avatarInfo.value = AvatarUtil.initDefaultAvatar(props.chatInfo.avatar);
 });
 
 const editChatClick = (chatInfo: ChatInfo | null) => {
@@ -46,16 +48,15 @@ const editChatClick = (chatInfo: ChatInfo | null) => {
 };
 
 const chatListStore = useChatListStore();
+const baseDialogRefs = ref<InstanceType<typeof CBaseDialog> | null>(null);
 const deleteChatClick = (chatInfo: ChatInfo | null) => {
-  if (!chatInfo) return;
-  ElMessageBox.confirm(`Are you sure to delete ${chatInfo.name}?`, "Warning", {
-    confirmButtonText: "OK",
-    cancelButtonText: "Cancel",
-    type: "warning",
-  }).then(() => {
-    chatListStore.deleteChat(chatInfo.id);
-  }).catch(() => {
-  });
+  if (!chatInfo || !baseDialogRefs.value) return;
+  ChatDialogUtil.showDeleteChatDialog(baseDialogRefs.value)
+      .then(() => {
+        chatListStore.deleteChat(chatInfo.id);
+      })
+      .catch(() => {
+      });
 };
 </script>
 
@@ -65,16 +66,18 @@ const deleteChatClick = (chatInfo: ChatInfo | null) => {
       :class="{'text-green-500 dark:text-green-400 shadow-md dark:shadow-neutral-900':chatInfo && chatInfo.id === activeChatInfo?.id}"
       @click="$emit('itemClick', chatInfo)"
   >
-    <div class="pr-1 flex-1 flex flex-row gap-1 items-center">
-      <div class="handle rotate-90" title="Drag to sort" @click.stop>
+    <div class="pr-1 flex-1 flex flex-row">
+      <div class="handle rotate-90 mr-2" title="Drag to sort" @click.stop>
         <i class="iconfont icon-more" :class="drag?'':'cursor-grab'"/>
       </div>
       <Avatar class="w-8 h-8 rounded-full bg-gray-500 mr-2" v-bind="avatarInfo"/>
-      <div class="flex-1 text-md leading-8 select-none overflow-hidden overflow-ellipsis whitespace-nowrap max-w-[12rem]">
-        {{ chatInfo?.name }}
+      <div class="flex-1 relative">
+        <span class="absolute left-0 w-full text-md leading-8 select-none overflow-hidden overflow-ellipsis whitespace-nowrap">
+          {{ chatInfo?.name }}
+        </span>
       </div>
     </div>
-    <el-popover overlayClassName="robot-editor-popover" placement="bottom" trigger="hover">
+    <el-popover overlayClassName="robot-editor-popover" placement="bottom" trigger="click">
       <template #default>
         <div class="p-2 m-0">
           <div
@@ -94,11 +97,12 @@ const deleteChatClick = (chatInfo: ChatInfo | null) => {
       <template #reference>
         <div
             class="robot-control-button flex justify-center items-center hover:bg-neutral-300 dark:hover:bg-neutral-600 w-6 h-6 rounded-md"
-            @click.stop=""
+            @click.stop.prevent=""
         >
           <ellipsis-outlined/>
         </div>
       </template>
     </el-popover>
+    <CBaseDialog ref="baseDialogRefs"/>
   </div>
 </template>

@@ -88,16 +88,15 @@ const dialogWidthLg = inject("dialogWidthLg");
       <div class="w-full px-4 pt-1 pb-4 flex flex-row">
         <slot></slot>
       </div>
-      <div class="flex flex-row text-center text-md leading-10 border-t border-neutral-100 dark:border-neutral-700 select-none">
+      <div class="flex flex-row gap-2 justify-end p-2 text-center border-t border-neutral-100 dark:border-neutral-700 select-none">
         <div
-            class="flex-1 cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 hover:dark:bg-neutral-700 active:dark:bg-neutral-600"
+            class="border rounded-md dark:border-neutral-700 text-base leading-8 px-2 cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 hover:dark:bg-neutral-700 active:dark:bg-neutral-600"
             @click.stop="cancelDialog"
         >
           {{ propsCancelText }}
         </div>
-        <div class="border-l border-neutral-100 dark:border-neutral-700 box-border"></div>
         <div
-            class="flex-1 cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 hover:dark:bg-neutral-700 active:dark:bg-neutral-600"
+            class="border rounded-md dark:border-cyan-800 text-base leading-8 px-2 cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 dark:bg-cyan-700 hover:dark:bg-cyan-800 active:dark:bg-cyan-900"
             @click.stop="$emit('ok')"
         >
           {{ propsOkText }}

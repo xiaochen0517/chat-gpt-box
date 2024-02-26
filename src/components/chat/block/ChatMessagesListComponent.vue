@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, ref, watch} from "vue";
+import {computed, ref} from "vue";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import EditMessageDialog from "../dialog/EditMessageDialog.vue";
@@ -7,6 +7,7 @@ import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import {ChatMessage} from "@/types/chat/ChatTabInfo.ts";
 import ChatNormalMessageItem from "@/components/chat/block/ChatNormalMessageItem.vue";
 import ChatBubbleMessageItem from "@/components/chat/block/ChatBubbleMessageItem.vue";
+import {AvatarUtil} from "@/utils/AvatarUtil.ts";
 
 const chatTabsStore = useChatTabsStore();
 const configStore = useConfigStore();
@@ -22,28 +23,29 @@ const props = withDefaults(defineProps<Props>(), {
   tabIndex: 0,
 });
 
-const propsChatInfo = ref<ChatInfo | null>(props.chatInfo);
-watch(
-    () => props.chatInfo,
-    (value) => {
-      propsChatInfo.value = value;
-    },
-);
-
 const chatTabInfo = computed(() => {
-  if (!propsChatInfo.value) return null;
-  return chatTabsStore.chatTabs[propsChatInfo.value.id][props.tabIndex];
+  if (!props.chatInfo) return null;
+  return chatTabsStore.chatTabs[props.chatInfo.id][props.tabIndex];
+});
+const avatarProps = computed(() => {
+  if (!props.chatInfo) return AvatarUtil.getDefaultAvatar();
+  return AvatarUtil.initDefaultAvatar(props.chatInfo.avatar);
 });
 
 const deleteMessage = (_message: ChatMessage, index: number) => {
-  if (!propsChatInfo.value) return;
-  chatTabsStore.removeChatMessage(propsChatInfo.value.id, props.tabIndex, index);
+  if (!props.chatInfo) return;
+  // stop generating if the last message is delete
+  if (chatTabInfo.value && chatTabInfo.value.generating && index === chatTabInfo.value.chat.length - 1) {
+    chatTabInfo.value.request?.cancel();
+    chatTabsStore.setGenerating(props.chatInfo.id, props.tabIndex, false);
+  }
+  chatTabsStore.removeChatMessage(props.chatInfo.id, props.tabIndex, index);
 };
 
 const editMessageDialogRefs = ref<InstanceType<typeof EditMessageDialog> | null>(null);
 const editMessage = (message: ChatMessage, index: number) => {
-  if (!editMessageDialogRefs.value || !propsChatInfo.value) return;
-  editMessageDialogRefs.value.show(message, propsChatInfo.value.id, props.tabIndex, index);
+  if (!editMessageDialogRefs.value || !props.chatInfo) return;
+  editMessageDialogRefs.value.show(message, props.chatInfo.id, props.tabIndex, index);
 };
 
 const getGenerating = (index: number) => {
@@ -66,8 +68,9 @@ const getShowRefresh = (index: number) => {
           :index="index"
           :message="chatMessage"
           :generating="getGenerating(index as number)"
-          :options="propsChatInfo?.options"
+          :options="chatInfo?.options"
           :show-refresh="getShowRefresh(index as number)"
+          :avatar="avatarProps"
           @delete="deleteMessage"
           @edit="editMessage"
           @regenerating="$emit('regenerating')"
@@ -80,8 +83,9 @@ const getShowRefresh = (index: number) => {
           :index="index"
           :message="chatMessage"
           :generating="getGenerating(index as number)"
-          :options="propsChatInfo?.options"
+          :options="chatInfo?.options"
           :show-refresh="getShowRefresh(index as number)"
+          :avatar="avatarProps"
           @delete="deleteMessage"
           @edit="editMessage"
           @regenerating="$emit('regenerating')"

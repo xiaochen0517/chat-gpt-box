@@ -32,7 +32,8 @@ export default {
       },
       screens: {
         "content": "96rem",
-        "total": "116rem"
+        "mobile": "76rem",
+        "total": "116rem",
       }
     },
     screens: {

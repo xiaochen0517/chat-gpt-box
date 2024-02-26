@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import {computed, defineAsyncComponent, getCurrentInstance, nextTick, onMounted, ref, watch} from "vue";
+import {computed, defineAsyncComponent, getCurrentInstance, nextTick, ref, watch} from "vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import {ElMessage} from "element-plus";
 import {createRequest} from "@/utils/RequestUtil.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
-import AppUtil from "@/utils/AppUtil.ts";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import {ChatTabInfo} from "@/types/chat/ChatTabInfo.ts";
 
@@ -67,9 +66,17 @@ const submitContent = () => {
 const sendMessage = (message: string) => {
   if (!tabInfo.value.request) {
     if (!chatInfo.value) return;
-    tabInfo.value.request = createRequest(chatInfo.value, props.tabIndex, messageRefresh);
+    try {
+      tabInfo.value.request = createRequest(chatInfo.value, props.tabIndex, messageRefresh);
+    } catch (error) {
+      ElMessage.error("Failed to create request: " + error);
+      return;
+    }
   }
-  tabInfo.value.request.sendMessage(message);
+  tabInfo.value.request.sendMessage(message)
+      .catch((error: Error) => {
+        ElMessage.error("Failed to send message: " + error);
+      });
 };
 
 const messageRefresh = () => {
@@ -152,12 +159,6 @@ defineExpose({
 
 const resizeableDivRefs = ref<InstanceType<typeof HTMLDivElement> | null>(null);
 const divHeight = ref(200); // Initial height
-onMounted(() => {
-  // check current environment
-  if (AppUtil.isMobile()) {
-    divHeight.value = 100;
-  }
-});
 
 let defaultCursorY: number;
 let maxDivHeight: number;

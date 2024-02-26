@@ -16,7 +16,7 @@ export const useConfigStore = defineStore("config", {
         ctrlEnterSend: false,
         bubbleMessage: true,
         forceScrollToBottom: false,
-        chatTemplateUrl: "https://xiaochen0517.github.io/chat-gpt-box/chat_template.json",
+        chatTemplateUrl: "https://chat-gpt-box.plus/chat_template.json",
       },
       defaultChatConfig: {
         openAi: {
@@ -51,6 +51,19 @@ export const useConfigStore = defineStore("config", {
             temperature: 0.7,
             contextMaxTokens: 2048,
             contextMaxMessage: 5,
+          }
+        },
+        ollama: {
+          base: {
+            apiKey: "",
+          },
+          default: {
+            apiUrl: "http://localhost:11434/",
+            model: "llama2",
+            temperature: 0.7,
+            contextMaxMessage: 5,
+            contextMaxTokens: 2048,
+            responseMaxTokens: 0,
           }
         }
       },

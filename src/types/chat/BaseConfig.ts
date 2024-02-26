@@ -11,6 +11,7 @@ export type BaseConfig = {
 export type DefaultChatConfig = {
   openAi: OpenAiConfig;
   google: GoogleConfig;
+  ollama: OllamaConfig;
 }
 export type OpenAiConfig = {
   base: OpenAiBaseConfig;
@@ -52,6 +53,21 @@ export type GoogleGeminiConfig = {
   topK?: number;
   contextMaxTokens: number;
   contextMaxMessage: number;
+}
+export type OllamaConfig = {
+  base: OllamaBaseConfig;
+  default: OllamaDefaultConfig;
+}
+export type OllamaBaseConfig = {
+  apiKey: string;
+}
+export type OllamaDefaultConfig = {
+  apiUrl: string;
+  model: string;
+  temperature: number;
+  contextMaxMessage: number;
+  contextMaxTokens: number;
+  responseMaxTokens: number;
 }
 export type ShortcutConfig = {
   focusInput: KeyMapEnum[];

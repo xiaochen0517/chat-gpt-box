@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
-import {computed, getCurrentInstance, inject, onMounted, Ref} from "vue";
-import {ComponentInternalInstance} from "vue";
+import {ComponentInternalInstance, computed, getCurrentInstance, inject, onMounted, Ref} from "vue";
 
 const instance: ComponentInternalInstance | null = getCurrentInstance();
 

@@ -4,13 +4,12 @@ import axios, {AxiosError, AxiosResponse} from "axios";
 import {DallEChatRequestBody} from "@/types/request/DallERequestTypes.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
-import AppUtil from "@/utils/AppUtil.ts";
 import {OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
 
 // global store
 const configStore = useConfigStore();
 const chatTabsStore = useChatTabsStore();
-const imgWidth = AppUtil.isMobile() ? "90%" : "400px";
+const imgWidth = "400px";
 
 export class DallERequest implements BaseRequest {
 
@@ -107,7 +106,7 @@ export class DallERequest implements BaseRequest {
     let content = "";
     for (const item of data) {
       content += `Revised prompt: \`${item.revised_prompt ?? "None revised"}\`\n\nGenerated image: \n\n` +
-        `<img src="${item.url}" width="${imgWidth}"/>\n\n`;
+        `<img alt="generated image" src="${item.url}" width="${imgWidth}"/>\n\n`;
     }
     this.setAssistantMsgContent(content);
     this.setGenerating(false);

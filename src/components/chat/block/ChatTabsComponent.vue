@@ -241,10 +241,8 @@ const scrollHandle = (event: UIEvent) => {
   </div>
 </template>
 
-<style scoped lang="less">
-.scroll-container {
-  &::-webkit-scrollbar-track {
+<style scoped lang="postcss">
+.scroll-container &::-webkit-scrollbar-track {
   @apply mt-14;
-  }
 }
 </style>
