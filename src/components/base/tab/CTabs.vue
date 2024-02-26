@@ -43,10 +43,10 @@ const tabBarContainerRefs = ref<HTMLElement | null>(null);
 // horizontal scroll without shift key
 onMounted(() => {
   if (!tabBarContainerRefs.value) return;
-  tabBarContainerRefs.value?.addEventListener("wheel", function (event) {
+  tabBarContainerRefs.value.addEventListener("wheel", function (event) {
     if (!tabBarContainerRefs.value) return;
     event.preventDefault();
-    tabBarContainerRefs.value.scrollLeft += event.deltaY as number;
+    tabBarContainerRefs.value.scrollLeft += Math.floor(event.deltaY*.3) as number;
   }, {passive: false});
 });
 </script>

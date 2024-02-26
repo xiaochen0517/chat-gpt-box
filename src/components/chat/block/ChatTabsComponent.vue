@@ -214,7 +214,7 @@ const scrollHandle = (event: UIEvent) => {
 
 <template>
   <div
-      class="scroll-container overflow-hidden box-border"
+      class="overflow-hidden box-border"
       @scroll="scrollHandle"
   >
     <div class="content:max-w-content content:m-auto w-full h-full">
@@ -230,7 +230,7 @@ const scrollHandle = (event: UIEvent) => {
       >
         <CTabPane
             ref="scrollContainerRefs"
-            class=" overflow-hidden overflow-y-auto box-border"
+            class="overflow-hidden overflow-y-auto box-border"
             v-for="(_number, index) in chatTabNameList.length"
             :key="index"
         >
