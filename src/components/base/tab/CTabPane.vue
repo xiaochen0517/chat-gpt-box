@@ -18,7 +18,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-show="isActive">
+  <div v-if="isActive" class="flex-1 w-full h-full mt-1 relative">
     <slot></slot>
   </div>
 </template>
