@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import {computed, getCurrentInstance, provide, ref, watch} from "vue";
+import {computed, getCurrentInstance, onMounted, provide, ref, watch} from "vue";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useAppStateStore} from "@/store/AppStateStore.ts";
+import CTabButton from "@/components/base/tab/CTabButton.vue";
 
 const configStore = useConfigStore();
 const appStateStore = useAppStateStore();
@@ -37,22 +38,35 @@ const lockScrollDownClick = () => {
   appStateStore.lockScrollDown = !appStateStore.lockScrollDown;
   instance?.emit("lockScrollDownClick");
 };
+
+const tabBarContainerRefs = ref<HTMLElement | null>(null);
+// horizontal scroll without shift key
+onMounted(() => {
+  if (!tabBarContainerRefs.value) return;
+  tabBarContainerRefs.value?.addEventListener("wheel", function (event) {
+    if (!tabBarContainerRefs.value) return;
+    event.preventDefault();
+    tabBarContainerRefs.value.scrollLeft += event.deltaY as number;
+  }, {passive: false});
+});
 </script>
 
 <template>
-  <div class="flex flex-col w-full">
-    <div class="content:max-w-content content:m-auto absolute z-10 top-0 left-0 right-0 w-full px-2 total:px-0 flex flex-col">
-      <div class="p-2 overflow-hidden overflow-x-auto w-full rounded-lg rounded-t-none bg-neutral-100 dark:bg-neutral-800 shadow-md flex flex-row gap-2 min-w-full box-border">
-        <div class="absolute block mobile:hidden left-2 top-2 bg-neutral-100 dark:bg-neutral-800">
-          <div
-              class=" px-2 py-1.5 ml-2 mr-1 box-border rounded-lg cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-900  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
-              title="Show slide side bar"
-              @click.stop="$emit('showSlideSideBarClick')"
-          >
-            <i class="iconfont icon-category text-md leading-3 font-bold mx-1"/>
-          </div>
-        </div>
-        <div class="flex flex-row gap-1 ml-11 mobile:ml-0 mr-10" :class="{'mr-21':!forceScrollToBottom}">
+  <div class="flex flex-col w-full h-full">
+    <div class="w-full p-2 pb-3 overflow-hidden rounded-lg rounded-t-none bg-neutral-100 dark:bg-neutral-800 shadow-md flex flex-row gap-2 min-w-full box-border">
+      <!--menu button-->
+      <CTabButton
+          class="block mobile:hidden"
+          icon="icon-category"
+          title="Show slide side bar"
+          @click="$emit('showSlideSideBarClick')"
+      />
+      <!--tab bar-->
+      <div class="flex-1 h-full relative">
+        <div
+            ref="tabBarContainerRefs"
+            class="tab-bar pb-1 absolute left-0 right-0 flex flex-row gap-1 overflow-hidden overflow-x-auto"
+        >
           <div
               v-for="(item, index) in propsTabNames"
               :key="index"
@@ -78,26 +92,23 @@ const lockScrollDownClick = () => {
             <i class="iconfont icon-add text-md leading-3 font-bold mx-1"/>
           </div>
         </div>
-        <div class="absolute right-2 top-2 bg-neutral-100 dark:bg-neutral-800 flex flex-row gap-1">
-          <div
-              class="px-2 py-1.5 ml-1 box-border rounded-lg cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-900  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
-              title="Export chat info"
-              @click.stop="$emit('exportChatClick')"
-          >
-            <i class="iconfont icon-upload1 text-md leading-3 font-bold mx-1"/>
-          </div>
-          <div
-              v-if="!forceScrollToBottom"
-              class="px-2 py-1.5 mr-2 box-border rounded-lg cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-900  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
-              :class="{'text-green-500 dark:text-green-400': lockScrollDown}"
-              title="Lock scroll down"
-              @click.stop="lockScrollDownClick"
-          >
-            <i class="iconfont icon-down1 text-md leading-3 font-bold mx-1"/>
-          </div>
-        </div>
       </div>
+      <!--ctrl button-->
+      <CTabButton icon="icon-clear" title="Clean current tab chat messages" @click="$emit('cleanChatClick')"/>
+      <CTabButton icon="icon-upload1" title="Export chat info" @click="$emit('exportChatClick')"/>
+      <CTabButton
+          v-if="!forceScrollToBottom"
+          title="Lock scroll down"
+          :active="lockScrollDown"
+          @click="lockScrollDownClick"
+      />
     </div>
     <slot></slot>
   </div>
 </template>
+
+<style scoped lang="postcss">
+.tab-bar::-webkit-scrollbar {
+  @apply h-1.5 mt-0.5;
+}
+</style>
