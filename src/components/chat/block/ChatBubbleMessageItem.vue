@@ -45,7 +45,7 @@ const copyMessageContent = () => {
       <Avatar class="mt-1" v-bind="avatar"/>
     </div>
     <div
-        class="relative mx-4 px-4 pt-4 pb-2 rounded-xl bg-neutral-200 dark:bg-neutral-800 shadow-lg dark:shadow-neutral-900 flex-1 min-w-0 flex flex-col"
+        class="relative mx-4 px-4 pt-4 pb-2 rounded-md bg-neutral-200 dark:bg-neutral-800 shadow-lg dark:shadow-neutral-900 flex-1 min-w-0 flex flex-col"
         :class="{'ml-14 user-message-bubble':message.role === 'user', 'mr-14 assistant-message-bubble':message.role !== 'user'}"
     >
       <MessageMarkdownBlock class="pb-2" :content="message?.content + (props.generating?' ✨':'')"/>

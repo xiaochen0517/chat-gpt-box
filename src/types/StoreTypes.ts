@@ -33,6 +33,7 @@ export type AppStateStore = {
     x: number;
     y: number;
   };
+  inputHeight: number;
 }
 
 export enum WindowState {

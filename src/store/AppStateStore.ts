@@ -16,6 +16,7 @@ export const useAppStateStore = defineStore("appState", {
         x: 200,
         y: 200,
       },
+      inputHeight: 80,
     };
   },
   actions: {

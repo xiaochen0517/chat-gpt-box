@@ -69,36 +69,38 @@ const scrollToBottom = () => {
 };
 
 defineExpose({
-  scrollToBottom
+  scrollToBottom,
 });
 
 const dragStatus = ref(false);
 </script>
 
 <template>
-  <div
-      ref="robotListRefs"
-      class="overflow-hidden overflow-y-auto"
-  >
-    <draggable
-        class="min-h-full max-h-0 p-1"
-        v-model="chatList"
-        item-key="id"
-        handle=".handle"
-        @start="dragStatus = true"
-        @end="dragStatus = false"
-        :forceFallback="true"
-        ghost-class="ghost-class"
+  <div class="flex-1 relative w-full h-full">
+    <div
+        ref="robotListRefs"
+        class="absolute w-full h-full overflow-hidden overflow-y-auto"
     >
-      <template #item="{element}">
-        <ChatBotItem
-            :chat-info="element"
-            :active-chat-info="activeChatInfo"
-            :drag="dragStatus"
-            @itemClick="changeActiveChat"
-        />
-      </template>
-    </draggable>
+      <draggable
+          class="p-1"
+          v-model="chatList"
+          item-key="id"
+          handle=".handle"
+          @start="dragStatus = true"
+          @end="dragStatus = false"
+          :forceFallback="true"
+          ghost-class="ghost-class"
+      >
+        <template #item="{element}">
+          <ChatBotItem
+              :chat-info="element"
+              :active-chat-info="activeChatInfo"
+              :drag="dragStatus"
+              @itemClick="changeActiveChat"
+          />
+        </template>
+      </draggable>
+    </div>
   </div>
 </template>
 

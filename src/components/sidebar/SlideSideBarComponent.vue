@@ -1,21 +1,6 @@
 <script setup lang="ts">
-import {getCurrentInstance, ref} from "vue";
-import BottomMenuComponent from "@/components/sidebar/BottomMenuComponent.vue";
-import ChatBotListComponent from "@/components/sidebar/ChatBotListComponent.vue";
-
-import {ChatInfo} from "@/types/chat/ChatInfo.ts";
-
-const instance = getCurrentInstance();
-const changeChatClick = (chatInfo: ChatInfo) => {
-  if (!instance) return;
-  instance.emit("changeChatClick", chatInfo);
-};
-
-const robotListBlockRefs = ref<InstanceType<typeof ChatBotListComponent> | null>(null);
-const robotListScrollToBottom = () => {
-  if (!robotListBlockRefs.value) return;
-  robotListBlockRefs.value.scrollToBottom();
-};
+import {ref} from "vue";
+import SideBarContainer from "@/components/sidebar/SideBarContainer.vue";
 
 const drawerVisible = ref(false);
 
@@ -40,13 +25,6 @@ defineExpose({
       direction="ltr"
       size="20rem"
   >
-    <div class="h-full w-80 flex flex-col">
-      <ChatBotListComponent
-          class="flex-1"
-          ref="robotListBlockRefs"
-          @changeChatClick="changeChatClick"
-      />
-      <BottomMenuComponent @added-robot="robotListScrollToBottom"/>
-    </div>
+    <SideBarContainer @changeChatClick="$emit('changeChatClick', $event)"/>
   </el-drawer>
 </template>
