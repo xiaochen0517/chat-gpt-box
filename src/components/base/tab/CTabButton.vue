@@ -13,7 +13,7 @@ withDefaults(defineProps<CTabButtonProps>(), {
 
 <template>
   <div
-      class="px-2 py-1.5 box-border rounded-md cursor-pointer border-2 border-neutral-300 bg-neutral-100 hover:bg-neutral-300 hover:border-neutral-300 hover:dark:border-neutral-700 active:bg-neutral-400 dark:border-neutral-900  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
+      class="px-2 py-1.5 box-border rounded-md cursor-pointer border-2 border-neutral-300 bg-neutral-100 hover:border-neutral-300 hover:dark:border-neutral-700 active:bg-neutral-300 dark:border-neutral-900  dark:bg-neutral-900 dark:active:bg-neutral-700 select-none"
       :class="{'text-green-500 dark:text-green-400': active}"
       :title="hint"
   >
