@@ -198,5 +198,13 @@
       "Clothes": "Clothes",
       "GraphicShirt": "Graphic Shirts"
     }
+  },
+  "sidebar": {
+    "addChat": {
+      "button": "ADD CHAT"
+    },
+    "template": {
+      "button": "TEMPLATE"
+    }
   }
 }

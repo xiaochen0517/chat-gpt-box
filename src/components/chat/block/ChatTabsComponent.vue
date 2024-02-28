@@ -214,22 +214,29 @@ const scrollHandle = (event: UIEvent) => {
 
 <template>
   <div
-      ref="scrollContainerRefs"
-      class="scroll-container overflow-hidden overflow-y-auto box-border pt-14"
+      class="overflow-hidden box-border"
       @scroll="scrollHandle"
   >
-    <div ref="scrollContainerContentRefs">
+    <div class="content:max-w-content content:m-auto w-full h-full">
       <CTabs
           v-model:activeKey="activeTabIndex"
           :tabNames="chatTabNameList"
           @addTabClick="openAddTabDialog"
           @removeTabClick="removeTabClick"
           @showSlideSideBarClick="$emit('showSlideSideBarClick')"
+          @cleanChatClick="cleanTabChat"
           @exportChatClick="exportChatInfo"
           @lockScrollDownClick="scrollToBottom"
       >
-        <CTabPane v-for="(_number, index) in chatTabNameList.length" :key="index">
+        <CTabPane
+            ref="scrollContainerRefs"
+            class="overflow-hidden overflow-y-auto box-border"
+            v-for="(_number, index) in chatTabNameList.length"
+            :key="index"
+        >
           <ChatMessagesListComponent
+              ref="scrollContainerContentRefs"
+              class="absolute"
               :chatInfo="propsActiveChat"
               :tabIndex="index"
               @regenerating="$emit('regenerating')"
@@ -240,9 +247,3 @@ const scrollHandle = (event: UIEvent) => {
     <CBaseDialog ref="baseDialogRefs"/>
   </div>
 </template>
-
-<style scoped lang="postcss">
-.scroll-container &::-webkit-scrollbar-track {
-  @apply mt-14;
-}
-</style>

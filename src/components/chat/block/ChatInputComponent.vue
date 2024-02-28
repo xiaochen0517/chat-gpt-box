@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, defineAsyncComponent, getCurrentInstance, nextTick, ref, watch} from "vue";
+import {computed, defineAsyncComponent, getCurrentInstance, nextTick, onMounted, ref, watch} from "vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import {ElMessage} from "element-plus";
 import {createRequest} from "@/utils/RequestUtil.ts";
@@ -8,6 +8,7 @@ import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import {ChatTabInfo} from "@/types/chat/ChatTabInfo.ts";
+import {useAppStateStore} from "@/store/AppStateStore.ts";
 
 const SendOutlined = defineAsyncComponent(() => import("@ant-design/icons-vue/SendOutlined"));
 
@@ -158,11 +159,16 @@ defineExpose({
 });
 
 const resizeableDivRefs = ref<InstanceType<typeof HTMLDivElement> | null>(null);
-const divHeight = ref(200); // Initial height
-
+const divHeight = ref(80); // Initial height
+const appStateStore = useAppStateStore();
+onMounted(() => {
+  if (appStateStore.inputHeight && appStateStore.inputHeight >= 80) {
+    divHeight.value = appStateStore.inputHeight;
+  }
+});
 let defaultCursorY: number;
 let maxDivHeight: number;
-let minDivHeight = 100;
+let minDivHeight = 80;
 const initResize = (event: MouseEvent | TouchEvent) => {
   // 当鼠标按下时，开始监听鼠标移动和鼠标松开事件
   event.preventDefault();
@@ -191,6 +197,10 @@ const stopResizing = () => {
   window.removeEventListener("mouseup", stopResizing);
   window.removeEventListener("touchmove", startResizing);
   window.removeEventListener("touchend", stopResizing);
+  // Save the height of the div
+  if (appStateStore.inputHeight !== divHeight.value) {
+    appStateStore.inputHeight = divHeight.value;
+  }
 };
 </script>
 
@@ -212,7 +222,7 @@ const stopResizing = () => {
           @keydown="handleKeydown"
       />
       <div
-          class="w-10 h-10 rounded-md absolute right-3 top-1/2 transform -translate-y-1/2 flex justify-center items-center ml-2 text-sm cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 dark:hover:bg-neutral-700 dark:active:bg-neutral-800 border-2 border-neutral-200 hover:border-neutral-300 active:border-neutral-400 dark:border-neutral-600"
+          class="w-10 h-10 rounded-md absolute right-3 bottom-3 flex flex-row justify-center items-center text-sm text-neutral-50 cursor-pointer border-2 bg-cyan-500 border-transparent hover:border-neutral-300 active:bg-cyan-600 dark:bg-cyan-700 dark:border-neutral-800 dark:hover:border-neutral-700 dark:active:bg-cyan-600"
           title="Send message"
           @click.stop="submitContent"
       >

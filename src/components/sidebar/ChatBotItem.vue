@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import {EllipsisOutlined} from "@ant-design/icons-vue";
 import router from "@/router/Router.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {ChatInfo, ChatType} from "@/types/chat/ChatInfo.ts";
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {GoogleGeminiConfig, OpenAiChatGptConfig, OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
 import {Avatar, IAvatarProps} from "vue3-avataaars";
 import {ChatDialogUtil} from "@/utils/dialog/ChatDialogUtil.ts";
@@ -58,17 +57,21 @@ const deleteChatClick = (chatInfo: ChatInfo | null) => {
       .catch(() => {
       });
 };
+
+const isActive = computed(() => {
+  return props.chatInfo && props.activeChatInfo && props.chatInfo.id === props.activeChatInfo.id;
+});
 </script>
 
 <template>
   <div
-      class="flex flex-row items-center relative w-full box-border p-2 mb-1 rounded-xl hover:bg-neutral-200 active:bg-neutral-300 dark:hover:bg-neutral-700 dark:active:bg-neutral-600 border dark:border-neutral-900 cursor-pointer"
-      :class="{'text-green-500 dark:text-green-400 shadow-md dark:shadow-neutral-900':chatInfo && chatInfo.id === activeChatInfo?.id}"
+      class="flex flex-row items-center relative w-full box-border p-2 mb-1 rounded-md border-2 border-transparent cursor-pointer"
+      :class="isActive ? 'text-green-500 border-green-500 dark:text-green-500 dark:border-green-500 dark:hover:border-green-600':'hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-800 dark:hover:border-neutral-700 dark:active:bg-neutral-700'"
       @click="$emit('itemClick', chatInfo)"
   >
     <div class="pr-1 flex-1 flex flex-row">
       <div class="handle rotate-90 mr-2" title="Drag to sort" @click.stop>
-        <i class="iconfont icon-more" :class="drag?'':'cursor-grab'"/>
+        <i class="iconfont icon-more text-xl font-bold" :class="drag?'':'cursor-grab'"/>
       </div>
       <Avatar class="w-8 h-8 rounded-full bg-gray-500 mr-2" v-bind="avatarInfo"/>
       <div class="flex-1 relative">
@@ -96,10 +99,11 @@ const deleteChatClick = (chatInfo: ChatInfo | null) => {
       </template>
       <template #reference>
         <div
-            class="robot-control-button flex justify-center items-center hover:bg-neutral-300 dark:hover:bg-neutral-600 w-6 h-6 rounded-md"
+            class="flex justify-center items-center w-6 h-6 rounded-md"
+            :class="isActive?'hover:text-green-300 dark:hover:text-green-700':'hover:text-neutral-300 dark:hover:text-neutral-500'"
             @click.stop.prevent=""
         >
-          <ellipsis-outlined/>
+          <i class="iconfont icon-more text-xl font-bold"/>
         </div>
       </template>
     </el-popover>

@@ -197,5 +197,13 @@
       "Clothes": "衣服",
       "GraphicShirt": "图形衬衫"
     }
+  },
+  "sidebar": {
+    "addChat": {
+      "button": "添加"
+    },
+    "template": {
+      "button": "模板"
+    }
   }
 }
