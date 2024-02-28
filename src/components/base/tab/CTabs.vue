@@ -91,13 +91,7 @@ defineEmits([
               <i class="iconfont icon-close text-sm leading-3 font-bold"/>
             </div>
           </div>
-          <div
-              class="px-2 py-1.5 mr-1 box-border rounded-lg cursor-pointer border border-neutral-300 bg-neutral-100 hover:bg-neutral-300 active:bg-neutral-400 dark:border-neutral-900  dark:bg-neutral-900  dark:hover:bg-neutral-800  dark:active:bg-neutral-700 select-none"
-              title="Add tab"
-              @click="$emit('addTabClick')"
-          >
-            <i class="iconfont icon-add text-md leading-3 font-bold mx-1"/>
-          </div>
+          <CTabButton icon="icon-add" title="Add tab" @click="$emit('addTabClick')"/>
         </div>
       </div>
       <!--ctrl button-->
