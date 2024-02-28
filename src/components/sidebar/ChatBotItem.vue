@@ -65,8 +65,8 @@ const isActive = computed(() => {
 
 <template>
   <div
-      class="flex flex-row items-center relative w-full box-border p-2 mb-1 rounded-md border-2 border-transparent hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-800 dark:hover:border-neutral-700 dark:active:bg-neutral-700 cursor-pointer"
-      :class="{'text-green-500 dark:text-green-400 border-green-500 dark:border-green-700 dark:hover:border-green-600':isActive}"
+      class="flex flex-row items-center relative w-full box-border p-2 mb-1 rounded-md border-2 border-transparent cursor-pointer"
+      :class="isActive ? 'text-green-500 border-green-500 dark:text-green-500 dark:border-green-500 dark:hover:border-green-600':'hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-800 dark:hover:border-neutral-700 dark:active:bg-neutral-700'"
       @click="$emit('itemClick', chatInfo)"
   >
     <div class="pr-1 flex-1 flex flex-row">
@@ -99,8 +99,8 @@ const isActive = computed(() => {
       </template>
       <template #reference>
         <div
-            class="robot-control-button flex justify-center items-center hover:text-neutral-300 dark:hover:text-green-300 w-6 h-6 rounded-md"
-            :class="{'hover:text-green-300 dark:hover:text-green-200':isActive}"
+            class="flex justify-center items-center w-6 h-6 rounded-md"
+            :class="isActive?'hover:text-green-300 dark:hover:text-green-700':'hover:text-neutral-300 dark:hover:text-neutral-500'"
             @click.stop.prevent=""
         >
           <i class="iconfont icon-more text-xl font-bold"/>
