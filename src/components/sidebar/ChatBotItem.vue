@@ -65,15 +65,15 @@ const isActive = computed(() => {
 
 <template>
   <div
-      class="flex flex-row items-center relative w-full box-border p-2 mb-1 rounded-md border-2 border-transparent cursor-pointer"
-      :class="isActive ? 'text-green-500 border-green-500 dark:text-green-500 dark:border-green-500 dark:hover:border-green-600':'hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-800 dark:hover:border-neutral-700 dark:active:bg-neutral-700'"
+      class="flex flex-row items-center relative w-full p-1.5 mb-1 rounded-xl cursor-pointer dark:hover:bg-neutral-700 dark:hover:bg-opacity-30"
+      :class="{'bg-neutral-700 bg-opacity-30':isActive}"
       @click="$emit('itemClick', chatInfo)"
   >
     <div class="pr-1 flex-1 flex flex-row">
-      <div class="handle rotate-90 mr-2" title="Drag to sort" @click.stop>
+      <div class="handle rotate-90 mr-2 dark:text-neutral-400" title="Drag to sort" @click.stop>
         <i class="iconfont icon-more text-xl font-bold" :class="drag?'':'cursor-grab'"/>
       </div>
-      <Avatar class="w-8 h-8 rounded-full bg-gray-500 mr-2" v-bind="avatarInfo"/>
+      <Avatar v-if="false" class="w-8 h-8 rounded-full bg-gray-500 mr-2" v-bind="avatarInfo"/>
       <div class="flex-1 relative">
         <span class="absolute left-0 w-full text-md leading-8 select-none overflow-hidden overflow-ellipsis whitespace-nowrap">
           {{ chatInfo?.name }}
@@ -99,8 +99,7 @@ const isActive = computed(() => {
       </template>
       <template #reference>
         <div
-            class="flex justify-center items-center w-6 h-6 rounded-md"
-            :class="isActive?'hover:text-green-300 dark:hover:text-green-700':'hover:text-neutral-300 dark:hover:text-neutral-500'"
+            class="flex justify-center items-center w-6 h-6 rounded-md dark:text-neutral-400 dark:hover:text-white"
             @click.stop.prevent=""
         >
           <i class="iconfont icon-more text-xl font-bold"/>
