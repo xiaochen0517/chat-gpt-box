@@ -60,6 +60,22 @@ export const ChatGptModelList: SelectOptionItem[] = [
   {
     label: "gpt-4-1106-preview",
     value: "gpt-4-1106-preview"
+  },
+  {
+    label: "gpt-4-turbo",
+    value: "gpt-4-turbo"
+  },
+  {
+    label: "gpt-4-turbo-2024-04-09",
+    value: "gpt-4-turbo-2024-04-09"
+  },
+  {
+    label: "gpt-4o",
+    value: "gpt-4o"
+  },
+  {
+    label: "gpt-4o-2024-05-13",
+    value: "gpt-4o-2024-05-13"
   }
 ];
 
