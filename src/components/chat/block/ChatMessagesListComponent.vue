@@ -60,8 +60,8 @@ const getShowRefresh = (index: number) => {
 </script>
 
 <template>
-  <div>
-    <div v-if="!bubbleMessage">
+  <div class="w-full">
+    <template v-if="!bubbleMessage">
       <ChatNormalMessageItem
           v-for="(chatMessage, index) in chatTabInfo?.chat"
           :key="index"
@@ -75,8 +75,8 @@ const getShowRefresh = (index: number) => {
           @edit="editMessage"
           @regenerating="$emit('regenerating')"
       />
-    </div>
-    <div v-else>
+    </template>
+    <template v-else>
       <ChatBubbleMessageItem
           v-for="(chatMessage, index) in chatTabInfo?.chat"
           :key="index"
@@ -90,7 +90,7 @@ const getShowRefresh = (index: number) => {
           @edit="editMessage"
           @regenerating="$emit('regenerating')"
       />
-    </div>
+    </template>
     <EditMessageDialog ref="editMessageDialogRefs"/>
   </div>
 </template>
