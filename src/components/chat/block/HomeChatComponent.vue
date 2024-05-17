@@ -93,7 +93,6 @@ const messageRegenerating = () => {
   <div class="w-full box-border relative">
     <div class="h-full w-full px-2 min-w-[12rem] content:max-w-content content:mx-auto flex flex-col">
       <ChatTabsComponent
-          class="flex-1"
           ref="chatTabsBlockRefs"
           v-model:tabIndex="tabIndex"
           :active-chat="activeChatInfo"

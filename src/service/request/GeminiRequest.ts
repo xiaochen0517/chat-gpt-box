@@ -73,7 +73,6 @@ export class GeminiRequest implements BaseRequest {
       const genAI: GoogleGenerativeAI = new GoogleGenerativeAI(apiKey);
       const model: GenerativeModel = genAI.getGenerativeModel({model: this.chatConfig.model});
       const startChatParams = await this.getStartChatParams(model);
-      console.log("request message", startChatParams);
       return {
         method: "POST",
         headers: {
