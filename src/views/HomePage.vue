@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {nextTick, ref} from "vue";
-import SideBarComponent from "@/components/sidebar/SideBarComponent.vue";
+import DefaultSideBarComponent from "@/components/sidebar/DefaultSideBarComponent.vue";
 import HomeChatComponent from "@/components/chat/block/HomeChatComponent.vue";
 
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
@@ -16,7 +16,7 @@ const changeChatClick = (chatInfo: ChatInfo) => {
 
 <template>
   <div class="w-full h-full flex flex-row box-border">
-    <SideBarComponent class="hidden mobile:flex" @changeChatClick="changeChatClick"/>
+    <DefaultSideBarComponent class="hidden mobile:flex" @changeChatClick="changeChatClick"/>
     <HomeChatComponent class="flex-1" ref="chatContentBlockRefs"/>
   </div>
 </template>
