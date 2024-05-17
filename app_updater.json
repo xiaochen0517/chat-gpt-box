@@ -1,6 +1,6 @@
 {
-  "version": "v0.12.0",
-  "notes": "\nollama support\nfix some bugs\n",
+  "version": "v0.12.1",
+  "notes": "\ngpt-4o support\n",
   "platforms": {
     "linux-x86_64": {
       "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTOVVwRkF3eFU3MWpKSExuVWZxNmZuWWd4NTJRMWRwcTVlVC9RU21UNWNMTzNFN1RNc1FlUHF1Z1NWVE5aY29yVWQ4TDA4dVBSMlVCYklvSThaVnJtbnZERGZMVGJuQ2dvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzE1OTEwOTUzCWZpbGU6Y2hhdC1ncHQtYm94XzAuMTIuMV9hbWQ2NC5BcHBJbWFnZS50YXIuZ3oKY1AzRUZ4ZXRJaXRhTnpnaDRQV2RzRytZUmJ2M3g2NnNrbStxRXl6d2hsTFV2UmlGVGVGeFJqV2ZrLzdJZW9QSmNGN3ZsclNtdmVNY05mamJMb0VxQ2c9PQo=",
