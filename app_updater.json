@@ -3,16 +3,16 @@
   "notes": "\ngpt-4o support\n",
   "platforms": {
     "linux-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTOVVwRkF3eFU3MWpKSExuVWZxNmZuWWd4NTJRMWRwcTVlVC9RU21UNWNMTzNFN1RNc1FlUHF1Z1NWVE5aY29yVWQ4TDA4dVBSMlVCYklvSThaVnJtbnZERGZMVGJuQ2dvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzE1OTEwOTUzCWZpbGU6Y2hhdC1ncHQtYm94XzAuMTIuMV9hbWQ2NC5BcHBJbWFnZS50YXIuZ3oKY1AzRUZ4ZXRJaXRhTnpnaDRQV2RzRytZUmJ2M3g2NnNrbStxRXl6d2hsTFV2UmlGVGVGeFJqV2ZrLzdJZW9QSmNGN3ZsclNtdmVNY05mamJMb0VxQ2c9PQo=",
-      "url": "https://github.com/xiaochen0517/chat-gpt-box/releases/download/v0.12.1/chat-gpt-box_0.12.1_amd64.AppImage.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTOVVwRkF3eFU3MW1Nc3QwWGJBWjJKQUxpSGdFTW5vdW5naFVBTld3VWVZZC9JZEltNVZJcXFBMDBYU2JzQkJvQSthdk8xbUg2Zktsanl4WllsdEtlbzJoM2hMaHBNalFBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzE1OTE1OTc4CWZpbGU6Y2hhdC1ncHQtYm94XzAuMTIuMl9hbWQ2NC5BcHBJbWFnZS50YXIuZ3oKYURYbUkrSXhua01BbElwdnJPYVlwaThmUytwdDdJYjJIVDVOcGQ4TDBGOTczcUdWcGZWcFZuNEViUmRIU0I4K0JQMnpBY3NLaHY3WkFVbVkwaEt3QWc9PQo=",
+      "url": "https://github.com/xiaochen0517/chat-gpt-box/releases/download/v0.12.2/chat-gpt-box_0.12.2_amd64.AppImage.tar.gz"
     },
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTOVVwRkF3eFU3MXZXeXQ4U2VqK3dwTklHc3pzbVJjd3orSlg0WDk3eXFFcS9tckZ5MmFyZE40MkFDVnVrVW53eUlMNFplQlFSQ1Z1eEgxd293RGRQMEVSM3dtam4yK1FjPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzE1OTExMDcwCWZpbGU6Q2hhdEdwdEJveF8wLjEyLjFfeDY0LXNldHVwLm5zaXMuemlwCjlvSFVBd0k1K2RNdUtCeXVyNHcwc3lWa0M3RVlxTmtKNy9zM1g3SERrdmw4NHhUdmtLVTUzQlJBQm1GaDVyUXhPbnpoNWxhQTl4cEU0dmQ2TFJONUFBPT0K",
-      "url": "https://github.com/xiaochen0517/chat-gpt-box/releases/download/v0.12.1/ChatGptBox_0.12.1_x64-setup.nsis.zip"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTOVVwRkF3eFU3MXVxOHBGZVBxQnV2YmFIajRMNUQyMWZvSEVSZkRrZER1L3lDdHlQcXAyd2dPZVl5OU1OaEZmRERCOWp4OVQwMm9kWUhiNUpCNi9zaWRCL09TQUNsMVFVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzE1OTE1Nzk4CWZpbGU6Q2hhdEdwdEJveF8wLjEyLjJfeDY0LXNldHVwLm5zaXMuemlwCmJONTVqaGs5N0ZxdWdUdlJwYXFXRmxhWVFndmE4ZEpGTEh6MER5ZW4rQ2d2ZXUrdTJHelpXZU5LVCtsRXZ0UUJpc1JnZDdmbkJTd3hRNHpqWndHR0NRPT0K",
+      "url": "https://github.com/xiaochen0517/chat-gpt-box/releases/download/v0.12.2/ChatGptBox_0.12.2_x64-setup.nsis.zip"
     },
     "macos-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTOVVwRkF3eFU3MWgzZnFYcTBPUktFYWljSmk3dWZMa2ptM004bm5VSEhMdjhGV0ZsTlUzanlvUFVYNmVWU2wybUtnUmdWZVZVR1BpUStwK1VRTkxxUU05OWpJaDl5cXcwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzE1OTEwNzQxCWZpbGU6Q2hhdEdwdEJveC5hcHAudGFyLmd6Cjl4cGVTVWpqWkFwRkhHRGpLZHQ0U3JvWmVXbEJmKzBwN3pIQ2lCeGFTNVNkS1ZCNVd4TGdRbDY2RnFPaDZtUGVBdTJrN1R0d3c2elFlcFg3cjFQSkRnPT0K",
-      "url": "https://github.com/xiaochen0517/chat-gpt-box/releases/download/v0.12.1/ChatGptBox.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTOVVwRkF3eFU3MWxhTWFEa3RmeW4zV3c5TkxrWHloNmZIVWRqNi9yTWVFSk9haTJaZUl3dlB1cWRtUE5ESXppSEdJL0RrL0tRdzRXTjQ1UWIvZDFRMWtxb3F4RXQ3SndzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzE1OTE1NDc5CWZpbGU6Q2hhdEdwdEJveC5hcHAudGFyLmd6CnVxM2pBdTVTRXlOdlpOaFJ6SnpxNHlkTHhvbmJwZHBHd1lEeWNBYmpwSEdza3pKeHVCSUZCQTJ0amFXaU5DY0xWUFVMRzNGa1llai85VHF6OHFucUN3PT0K",
+      "url": "https://github.com/xiaochen0517/chat-gpt-box/releases/download/v0.12.2/ChatGptBox.app.tar.gz"
     }
   }
 }
