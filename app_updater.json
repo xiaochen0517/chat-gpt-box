@@ -1,6 +1,6 @@
 {
-  "version": "v0.12.1",
-  "notes": "\ngpt-4o support\n",
+  "version": "v0.12.2",
+  "notes": "\nfix chat message list width issue\n",
   "platforms": {
     "linux-x86_64": {
       "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTOVVwRkF3eFU3MW1Nc3QwWGJBWjJKQUxpSGdFTW5vdW5naFVBTld3VWVZZC9JZEltNVZJcXFBMDBYU2JzQkJvQSthdk8xbUg2Zktsanl4WllsdEtlbzJoM2hMaHBNalFBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzE1OTE1OTc4CWZpbGU6Y2hhdC1ncHQtYm94XzAuMTIuMl9hbWQ2NC5BcHBJbWFnZS50YXIuZ3oKYURYbUkrSXhua01BbElwdnJPYVlwaThmUytwdDdJYjJIVDVOcGQ4TDBGOTczcUdWcGZWcFZuNEViUmRIU0I4K0JQMnpBY3NLaHY3WkFVbVkwaEt3QWc9PQo=",
