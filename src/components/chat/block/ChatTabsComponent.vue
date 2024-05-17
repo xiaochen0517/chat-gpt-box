@@ -72,8 +72,7 @@ watch(
     () => activeTabIndex.value,
     () => {
       scrollToBottom();
-      if (!instance) return;
-      instance.emit("update:tabIndex", activeTabIndex.value);
+      instance?.emit("update:tabIndex", activeTabIndex.value);
     },
 );
 watch(
@@ -173,12 +172,11 @@ const getTabIndex = () => {
 };
 
 const appStateStore = useAppStateStore();
-const scrollContainerRefs = ref<HTMLElement | null>(null);
+const scrollContainerRef = ref<HTMLElement>();
 const scrollToBottom = () => {
   nextTick(() => {
-    if (!configStore.baseConfig.forceScrollToBottom && !appStateStore.lockScrollDown) return;
-    if (!scrollContainerRefs.value) return;
-    scrollContainerRefs.value.scrollTop = scrollContainerRefs.value.scrollHeight;
+    if ((!configStore.baseConfig.forceScrollToBottom && !appStateStore.lockScrollDown) || !scrollContainerRef.value) return;
+    scrollContainerRef.value.scrollTop = scrollContainerRef.value.scrollHeight;
   });
 };
 defineExpose({
@@ -186,15 +184,15 @@ defineExpose({
   scrollToBottom,
 });
 const containerSize = ref(0);
-const scrollContainerContentRefs = ref<HTMLElement | null>(null);
+const scrollContainerContentRef = ref<HTMLElement>();
 onMounted(() => {
-  if (!scrollContainerContentRefs.value) return;
-  containerSize.value = scrollContainerContentRefs.value.clientHeight;
+  if (!scrollContainerContentRef.value) return;
+  containerSize.value = scrollContainerContentRef.value.clientHeight;
 });
 const scrollHandle = (event: UIEvent) => {
   // get container size
-  if (!scrollContainerContentRefs.value) return;
-  let currentContainerSize = scrollContainerContentRefs.value.clientHeight;
+  if (!scrollContainerContentRef.value) return;
+  let currentContainerSize = scrollContainerContentRef.value.clientHeight;
   // if container size changed, scroll to bottom
   if (currentContainerSize !== containerSize.value) {
     containerSize.value = currentContainerSize;
@@ -210,39 +208,38 @@ const scrollHandle = (event: UIEvent) => {
     appStateStore.lockScrollDown = isLock;
   }
 };
+
+defineEmits([
+  "update:tabIndex",
+  "showSlideSideBarClick",
+  "regenerating",
+]);
 </script>
 
 <template>
-  <div
-      class="overflow-hidden box-border"
-      @scroll="scrollHandle"
-  >
-    <div class="content:max-w-content content:m-auto w-full h-full">
-      <CTabs
-          v-model:activeKey="activeTabIndex"
-          :tabNames="chatTabNameList"
-          @addTabClick="openAddTabDialog"
-          @removeTabClick="removeTabClick"
-          @showSlideSideBarClick="$emit('showSlideSideBarClick')"
-          @cleanChatClick="cleanTabChat"
-          @exportChatClick="exportChatInfo"
-          @lockScrollDownClick="scrollToBottom"
-      >
-        <CTabPane
-            ref="scrollContainerRefs"
-            class="overflow-hidden overflow-y-auto box-border"
-            v-for="(_number, index) in chatTabNameList.length"
-            :key="index"
-        >
-          <ChatMessagesListComponent
-              ref="scrollContainerContentRefs"
-              class="absolute"
-              :chatInfo="propsActiveChat"
-              :tabIndex="index"
-              @regenerating="$emit('regenerating')"
-          />
-        </CTabPane>
-      </CTabs>
+  <div class="flex-1 content:max-w-content content:m-auto w-full h-full flex flex-col">
+    <CTabs
+        v-model:activeKey="activeTabIndex"
+        :tabNames="chatTabNameList"
+        @addTabClick="openAddTabDialog"
+        @removeTabClick="removeTabClick"
+        @showSlideSideBarClick="$emit('showSlideSideBarClick')"
+        @cleanChatClick="cleanTabChat"
+        @exportChatClick="exportChatInfo"
+        @lockScrollDownClick="scrollToBottom"
+    />
+    <div
+        ref="scrollContainerRef"
+        class="flex-1 w-full h-full pt-1 relative overflow-hidden overflow-y-auto box-border"
+        @scroll="scrollHandle"
+    >
+      <ChatMessagesListComponent
+          ref="scrollContainerContentRef"
+          class="absolute w-full"
+          :chatInfo="propsActiveChat"
+          :tabIndex="activeTabIndex"
+          @regenerating="$emit('regenerating')"
+      />
     </div>
     <CBaseDialog ref="baseDialogRefs"/>
   </div>

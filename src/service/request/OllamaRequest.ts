@@ -166,7 +166,6 @@ export class OllamaRequest implements BaseRequest {
     let messages: ChatMessage[] = this.getMaxContextMessage();
     messages = this.filterMessagesWithTokenLimit(messages);
     messages.unshift({role: ChatMessageRole.System, content: this.chatInfo.prompt});
-    console.log("send messages: ", messages);
     return messages;
   }
 
@@ -207,7 +206,6 @@ export class OllamaRequest implements BaseRequest {
     // This is a Uint8Array type byte array that needs to be decoded.
     // It is possible that a single data packet contains multiple independent blocks, which are split using "data:".
     let resultDecoded = decoder.decode(result.value);
-    console.log("result decoded: ", resultDecoded);
     if (this.errorJson && this.errorJson.length > 0) {
       // append error json
       this.errorJson += resultDecoded;
@@ -259,7 +257,6 @@ export class OllamaRequest implements BaseRequest {
     }
     // [DONE] means the end of the data
     if (data.trim() === DATA_DONE_FLAG) {
-      console.log("read data done");
       this.setGenerating(false);
       return null;
     }

@@ -101,7 +101,6 @@ export class DallERequest implements BaseRequest {
 
   private handleResponse = (response: AxiosResponse): void => {
     if (!this.checkResponse(response)) return;
-    console.log("response: ", response);
     const data = response.data.data;
     let content = "";
     for (const item of data) {
