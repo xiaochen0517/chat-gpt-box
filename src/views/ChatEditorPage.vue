@@ -187,7 +187,7 @@ const getChatOptionsFromSettingsList = (): ChatOptions | null => {
 </script>
 
 <template>
-  <div class="w-full h-screen bg-neutral-50 dark:bg-neutral-900 overflow-y-auto">
+  <div class="w-full h-screen bg-neutral-50 dark:bg-neutral-800 overflow-y-auto">
     <CTopNavBar
         :title="$t('chat.chatSettings.pageTitle')"
         :save-button="isAddChat"
@@ -197,7 +197,7 @@ const getChatOptionsFromSettingsList = (): ChatOptions | null => {
     />
     <div class="px-2 xl:p-0 max-w-content m-auto pt-2 pb-6">
       <div class="mt-1 text-lg leading-13">{{ $t("settings.basicSettings") }}</div>
-      <div class="mb-4 rounded-md overflow-hidden text-base select-none border dark:border-0 bg-neutral-100 dark:bg-neutral-800">
+      <div class="mb-4 rounded-2xl p-2 overflow-hidden text-base select-none border dark:border-0 bg-neutral-100 dark:bg-neutral-900">
         <CListItem
             :content="!chatInfo.name || chatInfo.name === '' ? $t('chat.chatName.emptyHint') : chatInfo.name"
             :left-avatar="chatInfo.avatar"

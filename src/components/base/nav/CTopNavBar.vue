@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div class="mx-2 mt-2 py-3 flex flex-row items-center select-none rounded-md border shadow-md bg-neutral-100 dark:border-0 dark:bg-neutral-800">
+  <div class="mx-2 mt-2 py-3 flex flex-row items-center select-none rounded-2xl bg-neutral-100 dark:bg-neutral-900">
     <div
         class="w-8 h-8 ml-4 rounded-md flex justify-center cursor-pointer bg-neutral-200 dark:bg-neutral-700 hover:dark:bg-neutral-600"
         @click.stop="$emit('backClick')"
