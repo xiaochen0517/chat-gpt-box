@@ -42,7 +42,7 @@ const openAddChatDialog = (chatTemplate: ChatInfo) => {
 </script>
 
 <template>
-  <div class="w-full h-screen bg-neutral-50 dark:bg-neutral-900 overflow-y-auto">
+  <div class="w-full h-screen bg-neutral-50 dark:bg-neutral-800 overflow-y-auto">
     <CTopNavBar
         :title="$t('chatTemplate.pageTitle')"
         save-button
@@ -50,9 +50,9 @@ const openAddChatDialog = (chatTemplate: ChatInfo) => {
         @backClick="$router.back()"
         @saveClick="getChatTemplateList"
     />
-    <div class="px-2 xl:p-0 max-w-content m-auto pt-2 pb-6">
+    <div class="px-2 xl:p-0 max-w-3xl m-auto pt-2 pb-6">
       <div class="mt-1 text-lg leading-13">{{ $t("chatTemplate.chatTemplateList") }}</div>
-      <div class="rounded-md overflow-hidden text-base select-none border dark:border-0">
+      <div class="rounded-2xl overflow-hidden text-base select-none p-2 flex flex-col gap-2 dark:bg-neutral-900">
         <CListItem
             v-for="(chatTemplate, index) in chatTemplateList"
             :key="chatTemplate.name"

@@ -178,11 +178,11 @@ const tabNames = ref(["GPT", "DALL-E", "Gemini", "Ollama"]);
 </script>
 
 <template>
-  <div class="w-full h-screen  bg-neutral-50 dark:bg-neutral-900 overflow-y-auto">
+  <div class="w-full h-screen  bg-neutral-50 dark:bg-neutral-800 overflow-y-auto">
     <CTopNavBar :title="$t('settings.pageTitle')" @backClick="jumpToHomePage"/>
-    <div class="px-2 xl:p-0 max-w-content m-auto pt-2 pb-6">
+    <div class="px-2 xl:p-0 max-w-3xl m-auto pt-2 pb-6">
       <div class="mt-1 text-lg leading-13">{{ $t("settings.basicSettings") }}</div>
-      <div class="rounded-md overflow-hidden text-base select-none border dark:border-0">
+      <div class="rounded-2xl dark:bg-neutral-900 p-2 flex flex-col gap-2 overflow-hidden text-base select-none border dark:border-0">
         <CListItem
             :content="$t('settings.basic.language.title')"
             left-icon="icon-translate1"

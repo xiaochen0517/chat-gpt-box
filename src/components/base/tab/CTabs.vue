@@ -95,6 +95,7 @@ defineEmits([
     <CTabButton icon="icon-upload1" title="Export chat info" @click="$emit('exportChatClick')"/>
     <CTabButton
         v-if="!forceScrollToBottom"
+        icon="icon-down-arrow"
         title="Lock scroll down"
         :active="lockScrollDown"
         @click="lockScrollDownClick"

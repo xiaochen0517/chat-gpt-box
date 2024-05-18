@@ -195,7 +195,7 @@ const getChatOptionsFromSettingsList = (): ChatOptions | null => {
         @backClick="jumpToHomePage"
         @saveClick="addChat"
     />
-    <div class="px-2 xl:p-0 max-w-content m-auto pt-2 pb-6">
+    <div class="px-2 xl:p-0 max-w-3xl m-auto pt-2 pb-6">
       <div class="mt-1 text-lg leading-13">{{ $t("settings.basicSettings") }}</div>
       <div class="mb-4 rounded-2xl p-2 overflow-hidden text-base select-none border dark:border-0 bg-neutral-100 dark:bg-neutral-900">
         <CListItem
