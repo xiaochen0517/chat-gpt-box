@@ -118,7 +118,7 @@ const switchDarkMode = (isDark: boolean) => {
 </script>
 
 <template>
-  <div class="bg-neutral-100 text-black dark:bg-neutral-900 dark:text-stone-100 flex-row w-full h-full">
+  <div class="bg-neutral-100 text-black dark:bg-neutral-800 dark:text-stone-200 flex-row w-full h-full">
     <router-view v-slot="{Component}">
       <transition name="el-zoom-in-top" mode="out-in">
         <component :is="Component"/>

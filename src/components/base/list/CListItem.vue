@@ -51,30 +51,28 @@ const isDarkMode = computed(() => configStore.isDarkMode);
 </script>
 
 <template>
-  <div class="leading-12 px-3 cursor-pointer bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-800 hover:dark:bg-neutral-700 active:dark:bg-neutral-600">
-    <div
-        class="flex flex-row items-center"
-        :class="bottomBorder?'border-b border-neutral-200 dark:border-neutral-600':''"
-    >
-      <div class="flex-1 flex flex-row items-center" :class="{'py-4': !leftIcon}">
+  <div class="rounded-xl px-3 cursor-pointer bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-900 hover:dark:bg-neutral-800 hover:bg-opacity-20 active:dark:bg-neutral-600">
+    <div class="flex flex-row items-center">
+      <div class="flex-1 flex flex-row items-center" :class="{'py-2': !leftIcon}">
         <Avatar
             v-if="!leftIcon"
             class="w-12 h-12 mr-3 rounded-full overflow-hidden bg-gray-600"
             v-bind="avatarProps"
             @click.stop="$emit('avatarClick')"
         />
-        <i class="iconfont text-xl leading-12" :class="leftIcon"/>
-        <span class="ml-2 text-base leading-12">{{ content }}</span>
+        <i class="iconfont text-xl" :class="leftIcon"/>
+        <span class="ml-2 text-base leading-10">{{ content }}</span>
         <el-tooltip
             v-if="tooltip && tooltip.length !== 0"
             :content="tooltip"
             :effect="isDarkMode?'dark':'light'"
             :placement="placement"
             :hide-after="0"
+            :show-arrow="false"
         >
           <i
               v-if="tooltip && tooltip.length !== 0"
-              class="iconfont icon-question-circle text-xl leading-12 ml-2"
+              class="iconfont icon-question-circle text-xl ml-2"
               @click.stop=""
           />
         </el-tooltip>

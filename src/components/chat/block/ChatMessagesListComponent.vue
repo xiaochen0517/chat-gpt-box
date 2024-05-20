@@ -57,10 +57,14 @@ const getShowRefresh = (index: number) => {
   const lastChatIndex = chatTabInfo.value.chat.length - 1;
   return index === lastChatIndex && chatTabInfo.value.chat[lastChatIndex].role === "assistant";
 };
+
+defineEmits([
+  "regenerating",
+]);
 </script>
 
 <template>
-  <div class="w-full">
+  <div class="px-4">
     <template v-if="!bubbleMessage">
       <ChatNormalMessageItem
           v-for="(chatMessage, index) in chatTabInfo?.chat"

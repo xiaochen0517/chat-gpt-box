@@ -18,7 +18,7 @@ const ChatTabsComponent = defineAsyncComponent({
     <div class="flex-1 flex w-full text-center items-center">
       <div class="w-full text-2xl">Error!</div>
     </div>
-  `
+  `,
   },
   delay: 0,
 });
@@ -37,7 +37,7 @@ const ChatInputComponent = defineAsyncComponent({
     <div class="h-36 flex w-full text-center items-center">
       <div class="w-full text-2xl">Error!</div>
     </div>
-  `
+  `,
   },
 });
 
@@ -50,6 +50,7 @@ const messageRefresh = () => {
 
 const appStateStore = useAppStateStore();
 const activeChatInfo = ref<ChatInfo | null>(null);
+const chatListLoading = ref<boolean>(false);
 /**
  * If the chat displayed in the current app configuration is different from the chat that has been changed,
  * the new content needs to be written in. If there is a sidebar, its close function should be called. Moreover,
@@ -57,6 +58,7 @@ const activeChatInfo = ref<ChatInfo | null>(null);
  * @param chatInfo
  */
 const changeChat = (chatInfo: ChatInfo) => {
+  chatListLoading.value = true;
   activeChatInfo.value = chatInfo;
   if (appStateStore.currentChatId !== chatInfo.id) {
     tabIndex.value = 0;
@@ -66,11 +68,17 @@ const changeChat = (chatInfo: ChatInfo) => {
     }
   }
   setTimeout(() => {
+    chatListLoading.value = false;
+    scrollToBottom();
+  }, 200);
+};
+
+const scrollToBottom = () => {
+  setTimeout(() => {
     nextTick(() => {
-      if (!chatTabsBlockRefs.value) return;
-      chatTabsBlockRefs.value.scrollToBottom();
+      chatTabsBlockRefs.value?.scrollToBottom();
     });
-  }, 100);
+  }, 200);
 };
 
 const slideSideBarBlockRefs = ref<InstanceType<typeof SlideSideBarComponent> | null>(null);
@@ -79,7 +87,7 @@ const showSlideSideBar = () => {
   slideSideBarBlockRefs.value.show();
 };
 defineExpose({
-  changeChat
+  changeChat,
 });
 
 const chatInputComponent = ref<InstanceType<typeof ChatInputComponent> | null>(null);
@@ -92,16 +100,35 @@ const messageRegenerating = () => {
 <template>
   <div class="w-full box-border relative">
     <div class="h-full w-full px-2 min-w-[12rem] content:max-w-content content:mx-auto flex flex-col">
-      <ChatTabsComponent
-          class="flex-1"
-          ref="chatTabsBlockRefs"
-          v-model:tabIndex="tabIndex"
-          :active-chat="activeChatInfo"
-          @showSlideSideBarClick="showSlideSideBar"
-          @regenerating="messageRegenerating"
+      <transition name="fade" mode="out-in">
+        <div v-if="chatListLoading" class="flex-1" v-loading="chatListLoading" element-loading-background="#17171700">
+        </div>
+        <ChatTabsComponent
+            v-else
+            ref="chatTabsBlockRefs"
+            v-model:tabIndex="tabIndex"
+            :active-chat="activeChatInfo"
+            @showSlideSideBarClick="showSlideSideBar"
+            @regenerating="messageRegenerating"
+        />
+      </transition>
+      <ChatInputComponent
+          ref="chatInputComponent"
+          :chat-id="activeChatInfo?.id"
+          :tab-index="tabIndex"
+          @refresh="messageRefresh"
       />
-      <ChatInputComponent ref="chatInputComponent" :chat-id="activeChatInfo?.id" :tab-index="tabIndex" @refresh="messageRefresh"/>
     </div>
     <SlideSideBarComponent ref="slideSideBarBlockRefs" @changeChatClick="changeChat"/>
   </div>
 </template>
+
+<style scoped lang="postcss">
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+</style>

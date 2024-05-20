@@ -17,7 +17,7 @@ const jumpToUrl = (url: string) => {
 </script>
 
 <template>
-  <div class="w-full h-screen  bg-neutral-50 dark:bg-neutral-900 overflow-y-auto">
+  <div class="w-full h-screen bg-neutral-50 dark:bg-neutral-800 overflow-y-auto">
     <CTopNavBar :title="$t('settings.basic.about.title')" @backClick="$router.back()"/>
     <div class="px-2 3xl:p-0 max-w-3xl m-auto pt-2 pb-6">
       <div class="w-full pt-16 pb-6 flex flex-row items-center justify-center">
@@ -30,7 +30,7 @@ const jumpToUrl = (url: string) => {
       <div class="text-center text-sm text-neutral-500 dark:text-neutral-400">
         Version {{ packageJson.version }}&nbsp;&nbsp;( Apache License 2.0 )
       </div>
-      <div class="bg-neutral-100 dark:bg-neutral-800 rounded-md overflow-hidden mt-6 border dark:border-0">
+      <div class="bg-neutral-100 dark:bg-neutral-900 rounded-2xl overflow-hidden mt-6 p-2 flex flex-col gap-2">
         <CListItem
             :content="$t('settings.basic.about.introduction')"
             left-icon="icon-zhuanshuchangjing"

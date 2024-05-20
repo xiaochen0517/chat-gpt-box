@@ -4,6 +4,7 @@ import MessageMarkdownBlock from "@/components/chat/block/MessageMarkdownCompone
 import {ref} from "vue";
 import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
 import {Avatar, IAvatarProps} from "vue3-avataaars";
+import ChatMessageControlComponent from "@/components/chat/block/ChatMessageControlComponent.vue";
 
 type Props = {
   message: ChatMessage;
@@ -32,6 +33,7 @@ const copyMessageContent = () => {
 
 <template>
   <div class="py-1 pb-8 pr-2 mt-3 flex flex-row">
+    <!-- 左侧头像 -->
     <div
         v-if="message.role === 'system'"
         class="w-10 h-10 bg-indigo-500 dark:bg-indigo-600 rounded-md leading-10 text-center flex justify-center items-center select-none"
@@ -44,46 +46,35 @@ const copyMessageContent = () => {
     >
       <Avatar class="mt-1" v-bind="avatar"/>
     </div>
+    <!-- 消息区域 -->
     <div
-        class="relative mx-4 px-4 pt-4 pb-2 rounded-md bg-neutral-200 dark:bg-neutral-800 shadow-lg dark:shadow-neutral-900 flex-1 min-w-0 flex flex-col"
-        :class="{'ml-14 user-message-bubble':message.role === 'user', 'mr-14 assistant-message-bubble':message.role !== 'user'}"
+        class="group relative mx-4 rounded-2xl flex-1 min-w-0 flex"
+        :class="{'ml-14 flex-row':message.role === 'user', 'mr-14 flex-col':message.role !== 'user'}"
     >
-      <MessageMarkdownBlock class="pb-2" :content="message?.content + (props.generating?' ✨':'')"/>
-      <div class="flex flex-row gap-1 mt-1">
-        <button
-            class="p-2 rounded-md flex justify-center items-center bg-gray-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600 cursor-pointer"
-            @click="copyMessageContent"
-        >
-          <CheckOutlined v-if="copySuccess"/>
-          <CopyOutlined v-else/>
-        </button>
-        <button
-            class="p-2 rounded-md flex justify-center items-center bg-gray-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
-            @click="$emit('edit', message, index)"
-        >
-          <EditOutlined/>
-        </button>
-        <el-popconfirm
-            title="delete message"
-            @confirm="$emit('delete', message, index)"
-            confirm-button-type="danger"
-            confirm-button-text="Delete"
-        >
-          <template #reference>
-            <button class="p-2 rounded-md flex justify-center items-center bg-gray-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600">
-              <DeleteOutlined/>
-            </button>
-          </template>
-        </el-popconfirm>
-        <button
-            v-if="props.showRefresh && !props.generating"
-            class="p-2 rounded-md flex flex-row items-center bg-gray-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
-            @click="$emit('regenerating')"
-        >
-          <i class="iconfont icon-reload w-4 h-4 mb-0.5"/>
-        </button>
-      </div>
+      <button
+          v-if="message.role === 'user'"
+          class="ml-auto mt-1 h-fit opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200 rounded-full p-3 mr-2 flex justify-center items-center text-lg hover:bg-neutral-300 active:bg-neutral-400 dark:hover:bg-neutral-700 dark:active:bg-neutral-600 dark:bg-opacity-20"
+          @click="$emit('edit', message, index)"
+      >
+        <EditOutlined/>
+      </button>
+      <MessageMarkdownBlock
+          :class="{' py-3 px-6 rounded-3xl dark:bg-neutral-700 dark:bg-opacity-60': message.role === 'user'}"
+          :content="message?.content + (props.generating?' ✨':'')"
+      />
+      <ChatMessageControlComponent
+          v-if="message.role !== 'user'"
+          :role="message.role"
+          :copySuccess="copySuccess"
+          :showRefresh="props.showRefresh"
+          :generating="props.generating"
+          @copy="copyMessageContent"
+          @edit="$emit('edit', message, index)"
+          @delete="$emit('delete', message, index)"
+          @regenerating="$emit('regenerating')"
+      />
     </div>
+    <!-- 右侧头像 -->
     <div
         v-if="message.role === 'user'"
         class="w-10 h-10 bg-green-500 dark:bg-green-600 rounded-md leading-10 text-center flex justify-center items-center select-none"
@@ -92,31 +83,3 @@ const copyMessageContent = () => {
     </div>
   </div>
 </template>
-
-<style lang="postcss">
-.github-markdown-body {
-  padding: 10px;
-}
-
-.user-message-bubble::before {
-  content: "";
-  position: absolute;
-  top: 0.875rem;
-  right: -1rem;
-  width: 0;
-  height: 0;
-  border: 0.5rem solid transparent;
-  @apply dark:border-l-neutral-800;
-}
-
-.assistant-message-bubble::before {
-  content: "";
-  position: absolute;
-  top: 0.875rem;
-  left: -1rem;
-  width: 0;
-  height: 0;
-  border: 0.5rem solid transparent;
-  @apply dark:border-r-neutral-800;
-}
-</style>
