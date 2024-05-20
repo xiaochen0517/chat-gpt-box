@@ -80,7 +80,7 @@ const isActive = computed(() => {
         </span>
       </div>
     </div>
-    <el-popover overlayClassName="robot-editor-popover" placement="bottom" trigger="click">
+    <el-popover overlayClassName="robot-editor-popover" placement="bottom" trigger="click" :show-arrow="false">
       <template #default>
         <div class="p-2 m-0">
           <div

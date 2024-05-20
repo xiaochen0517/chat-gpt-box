@@ -37,7 +37,3 @@ let iconClass = computed(() => {
     <span v-else>{{ KeyMapUtil.formatShortcutKeyMap2ShowCode(props.keyMapCode) }}</span>
   </span>
 </template>
-
-<style scoped lang="less">
-
-</style>

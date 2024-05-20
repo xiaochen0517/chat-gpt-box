@@ -64,7 +64,7 @@ defineEmits([
 </script>
 
 <template>
-  <div>
+  <div class="px-4">
     <template v-if="!bubbleMessage">
       <ChatNormalMessageItem
           v-for="(chatMessage, index) in chatTabInfo?.chat"

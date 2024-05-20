@@ -4,6 +4,9 @@ import MessageMarkdownComponent from "@/components/chat/block/MessageMarkdownCom
 import {ref} from "vue";
 import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
 import {Avatar, IAvatarProps} from "vue3-avataaars";
+import MessageMarkdownBlock from "@/components/chat/block/MessageMarkdownComponent.vue";
+import ChatMessageControlComponent from "@/components/chat/block/ChatMessageControlComponent.vue";
+import ChatMessageControlButton from "@/components/base/button/ChatMessageControlButton.vue";
 
 type Props = {
   message: ChatMessage;
@@ -31,7 +34,10 @@ const copyMessageContent = () => {
 </script>
 
 <template>
-  <div class="group p-3" :class="{'bg-[#d4d4d48a] dark:bg-[#27272afa]': message.role === 'user', 'bg-[#e5e5e56a] dark:bg-[#27272a7a]': message.role !== 'user'}">
+  <div
+      class="group p-3 bg-opacity-40 dark:bg-opacity-60"
+      :class="{'bg-neutral-100 dark:bg-neutral-900 rounded-2xl': message.role === 'user'}"
+  >
     <div class="flex flex-row gap-2">
       <div
           v-if="message.role === 'system'"
@@ -51,43 +57,27 @@ const copyMessageContent = () => {
       >
         <Avatar class="mt-1" v-bind="avatar"/>
       </div>
-      <div class="pl-2 flex-1 min-w-0 scroll-auto">
+      <div class="pl-2 flex-1 min-w-0">
         <MessageMarkdownComponent :content="message?.content + (props.generating?' ✨':'')"/>
+        <ChatMessageControlComponent
+            v-if="message.role !== 'user'"
+            :role="message.role"
+            :copySuccess="copySuccess"
+            :showRefresh="props.showRefresh"
+            :generating="props.generating"
+            @copy="copyMessageContent"
+            @edit="$emit('edit', message, index)"
+            @delete="$emit('delete', message, index)"
+            @regenerating="$emit('regenerating')"
+        />
+        <ChatMessageControlButton
+            v-else
+            class="mt-4"
+            icon="icon-edit"
+            tooltip="Edit"
+            @click="$emit('edit', message, index)"
+        />
       </div>
-    </div>
-    <div class="flex flex-row gap-1 mt-2 ml-12 pointer-events-none opacity-100 3xl:opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto">
-      <button
-          class="p-2 rounded-md flex justify-center items-center bg-neutral-50 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
-          @click="copyMessageContent"
-      >
-        <CheckOutlined v-if="copySuccess"/>
-        <CopyOutlined v-else/>
-      </button>
-      <button
-          class="p-2 rounded-md flex justify-center items-center bg-neutral-50 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
-          @click="$emit('edit', message, index)"
-      >
-        <EditOutlined/>
-      </button>
-      <el-popconfirm
-          title="delete message"
-          @confirm="$emit('delete', message, index)"
-          confirm-button-type="danger"
-          confirm-button-text="Delete"
-      >
-        <template #reference>
-          <button class="p-2 rounded-md flex justify-center items-center bg-neutral-50 hover:bg-neutral-200 active:bg-neutral-300 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600">
-            <DeleteOutlined/>
-          </button>
-        </template>
-      </el-popconfirm>
-      <button
-          v-if="props.showRefresh"
-          class="p-2 rounded-md flex flex-row items-center bg-gray-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
-          @click="$emit('regenerating')"
-      >
-        <i class="iconfont icon-reload w-4 h-4 mb-0.5"/>
-      </button>
     </div>
   </div>
 </template>
