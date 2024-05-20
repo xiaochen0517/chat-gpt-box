@@ -4,6 +4,7 @@ import MessageMarkdownBlock from "@/components/chat/block/MessageMarkdownCompone
 import {ref} from "vue";
 import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
 import {Avatar, IAvatarProps} from "vue3-avataaars";
+import ChatMessageControlComponent from "@/components/chat/block/ChatMessageControlComponent.vue";
 
 type Props = {
   message: ChatMessage;
@@ -48,53 +49,30 @@ const copyMessageContent = () => {
     <!-- 消息区域 -->
     <div
         class="group relative mx-4 rounded-2xl flex-1 min-w-0 flex"
-        :class="{'ml-14 flex-row items-center':message.role === 'user', 'mr-14 flex-col':message.role !== 'user'}"
+        :class="{'ml-14 flex-row':message.role === 'user', 'mr-14 flex-col':message.role !== 'user'}"
     >
       <button
           v-if="message.role === 'user'"
-          class="opacity-0 group-hover:opacity-100 transition-opacity delay-200 rounded-full p-3 mr-2 ml-16 flex justify-center items-center text-lg hover:bg-neutral-300 active:bg-neutral-400 dark:hover:bg-neutral-700 dark:active:bg-neutral-600 dark:bg-opacity-20"
+          class="ml-auto mt-1 h-fit opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200 rounded-full p-3 mr-2 flex justify-center items-center text-lg hover:bg-neutral-300 active:bg-neutral-400 dark:hover:bg-neutral-700 dark:active:bg-neutral-600 dark:bg-opacity-20"
           @click="$emit('edit', message, index)"
       >
         <EditOutlined/>
       </button>
       <MessageMarkdownBlock
-          :class="{'flex-1 py-3 px-4 rounded-3xl dark:bg-neutral-700 dark:bg-opacity-60': message.role === 'user'}"
+          :class="{' py-3 px-6 rounded-3xl dark:bg-neutral-700 dark:bg-opacity-60': message.role === 'user'}"
           :content="message?.content + (props.generating?' ✨':'')"
       />
-      <div v-if="message.role !== 'user'" class="flex flex-row gap-1 mt-1">
-        <button
-            class="p-2 rounded-md flex justify-center items-center bg-gray-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600 cursor-pointer"
-            @click="copyMessageContent"
-        >
-          <CheckOutlined v-if="copySuccess"/>
-          <CopyOutlined v-else/>
-        </button>
-        <button
-            class="p-2 rounded-md flex justify-center items-center bg-gray-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
-            @click="$emit('edit', message, index)"
-        >
-          <EditOutlined/>
-        </button>
-        <el-popconfirm
-            title="delete message"
-            @confirm="$emit('delete', message, index)"
-            confirm-button-type="danger"
-            confirm-button-text="Delete"
-        >
-          <template #reference>
-            <button class="p-2 rounded-md flex justify-center items-center bg-gray-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600">
-              <DeleteOutlined/>
-            </button>
-          </template>
-        </el-popconfirm>
-        <button
-            v-if="props.showRefresh && !props.generating"
-            class="p-2 rounded-md flex flex-row items-center bg-gray-200 hover:bg-neutral-300 active:bg-neutral-400 text-neutral-600 hover:text-neutral-700 dark:text-neutral-100 dark:bg-transparent dark:hover:bg-neutral-700 dark:active:bg-neutral-600"
-            @click="$emit('regenerating')"
-        >
-          <i class="iconfont icon-reload w-4 h-4 mb-0.5"/>
-        </button>
-      </div>
+      <ChatMessageControlComponent
+          v-if="message.role !== 'user'"
+          :role="message.role"
+          :copySuccess="copySuccess"
+          :showRefresh="props.showRefresh"
+          :generating="props.generating"
+          @copy="copyMessageContent"
+          @edit="$emit('edit', message, index)"
+          @delete="$emit('delete', message, index)"
+          @regenerating="$emit('regenerating')"
+      />
     </div>
     <!-- 右侧头像 -->
     <div

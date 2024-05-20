@@ -68,6 +68,7 @@ const isDarkMode = computed(() => configStore.isDarkMode);
             :effect="isDarkMode?'dark':'light'"
             :placement="placement"
             :hide-after="0"
+            :show-arrow="false"
         >
           <i
               v-if="tooltip && tooltip.length !== 0"

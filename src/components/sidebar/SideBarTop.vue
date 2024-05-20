@@ -23,7 +23,3 @@ const {t} = i18n.global;
     </div>
   </div>
 </template>
-
-<style scoped lang="less">
-
-</style>
