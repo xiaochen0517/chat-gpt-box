@@ -6,51 +6,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat GPT Box</title>
   <style>
-    html {
-      width: 100%;
-      height: 100vh;
-    }
+      html {
+          width: 100%;
+          height: 100vh;
+      }
 
-    body {
-      font-family: 'Harmony OS Sans SC', 'PingFang SC', 'Microsoft YaHei', 'WenQuanYi Micro Hei', 'sans-serif';
-      width: 100%;
-      height: 100%;
-    }
+      body {
+          font-family: 'Harmony OS Sans SC', 'PingFang SC', 'Microsoft YaHei', 'WenQuanYi Micro Hei', 'sans-serif';
+          width: 100%;
+          height: 100%;
+      }
   </style>
-  <link rel="stylesheet" href="assets/styles/tailwind-output.css">
-  <link rel="stylesheet" href="assets/styles/main.css">
+  <link rel="stylesheet" href="/assets/styles/tailwind-output.css">
+  <link rel="stylesheet" href="/assets/styles/main.css">
 </head>
 
 <body class="bg-neutral-800 text-neutral-100 p-2 text-base">
-  <div class="w-full flex flex-row items-center gap-2 bg-neutral-700 rounded-md p-2">
-    <div>
-      <img class="w-8 h-8" src="assets/imgs/icon.png" alt="icon" />
+  <div class="max-w-7xl mx-auto">
+    <div class="w-full flex flex-row items-center gap-2 bg-neutral-900 rounded-2xl p-2">
+      <div class="flex flex-row items-center">
+        <img class="w-8 h-8" src="/assets/imgs/icon.png" alt="icon"/>
+        <span class="ml-2 text-sm font-bold text-nowrap">Chat GPT Box</span>
+      </div>
+<!--      <div class="flex-1 flex flex-row gap-2 items-center select-none">-->
+<!--        <a-->
+<!--                class="px-12 py-1 rounded-xl cursor-pointer hover:bg-opacity-40 hover:bg-neutral-800 active:bg-opacity-80 active:bg-neutral-800"-->
+<!--                href="/"-->
+<!--        >-->
+<!--          首页-->
+<!--        </a>-->
+<!--      </div>-->
     </div>
-    <div class="w-full flex flex-row gap-2 items-center">
-      <div class="px-12 py-1 rounded-md cursor-pointer border-2 border-neutral-600 hover:border-neutral-500">首页</div>
-      <div class="px-12 py-1 rounded-md cursor-pointer border-2 border-neutral-600 hover:border-neutral-500">下载</div>
-      <div class="px-12 py-1 rounded-md cursor-pointer border-2 border-neutral-600 hover:border-neutral-500">关于</div>
-      <div class="px-12 py-1 rounded-md cursor-pointer border-2 border-neutral-600 hover:border-neutral-500">联系</div>
+    <div class="mt-4 py-24 px-4 flex flex-row items-center text-center bg-neutral-900 rounded-2xl">
+      <div class="flex-1 flex flex-col items-center">
+        <h1 class="text-3xl font-bold">Chat GPT Box</h1>
+        <h2 class="text-lg mt-2 w-96">跨平台ChatGPT工具箱，支持 OpenAI GPT & DALL-E，Google Gemini，Ollama。</h2>
+        <div class="flex flex-row items-center gap-4 mt-4">
+          <a
+                  class="px-12 py-1 rounded-md cursor-pointer bg-emerald-600 active:bg-emerald-500"
+                  href="https://github.com/xiaochen0517/chat-gpt-box/releases"
+                  target="_blank" title="下载安装" rel="noopener"
+          >
+            下载安装
+          </a>
+          <a
+                  class="px-12 py-1 rounded-md cursor-pointer no-underline bg-cyan-600 active:bg-cyan-500"
+                  href="https://chat.mochen.fun" target="_blank" title="在线试用" rel="noopener"
+          >
+            在线试用
+          </a>
+        </div>
+      </div>
+      <div class="flex-1 mr-4">
+        <img class="h-96 rounded-md overflow-hidden" src="/assets/imgs/use_example.png" alt="icon"/>
+      </div>
+    </div>
+    <div class="mt-4 p-4 flex flex-row bg-neutral-900 rounded-t-2xl">
+      <span class="text-sm text-neutral-500">© 2024 ChatGptBox. All Rights Reserved.</span>
     </div>
   </div>
-  <div class="mt-2 py-24 flex flex-col items-center text-center bg-neutral-700 rounded-md p-2">
-    <h1 class="text-3xl font-bold">Chat GPT Box</h1>
-    <h2 class="text-lg mt-2">跨平台ChatGPT工具箱，支持 OpenAI GPT & DALL-E，Google Gemini，Ollama。</h2>
-    <img class="h-96 mt-8" src="assets/imgs/use_example.png" alt="icon" />
-  </div>
-  <div class="mt-2 flex flex-col items-center text-center bg-neutral-700 rounded-md p-2">
-    <div class="flex flex-row gap-2">
-      <button
-        class="px-12 py-1 rounded-md cursor-pointer bg-emerald-600 active:bg-emerald-500 border-2 border-neutral-700 hover:border-neutral-600">
-        下载安装
-      </button>
-      <a class="px-12 py-1 rounded-md cursor-pointer no-underline bg-cyan-600 active:bg-cyan-500 border-2 border-neutral-700 hover:border-neutral-600"
-        href="https://chat.mochen.fun" target="_blank" title="在线试用" rel="noopener">
-        在线试用
-      </a>
-    </div>
-  </div>
-  <script src="assets/js/main.js"></script>
+  <script src="/assets/js/main.js"></script>
 </body>
 
 </html>

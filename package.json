@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tailwindcss -i ./assets/styles/tailwind.css -o ./assets/styles/tailwind-output.css --watch"
+    "dev": "tailwindcss -i ./assets/styles/tailwind.css -o ./assets/styles/tailwind-output.css --watch",
+    "start": "http-server -a localhost -p 8000"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "http-server": "^14.1.1",
     "tailwindcss": "^3.4.1"
   }
 }
