@@ -8,6 +8,7 @@ import {GeminiSettingsDialogUtil} from "@/utils/settings/GeminiSettingsDialogUti
 import {GoogleGeminiConfig} from "@/types/chat/BaseConfig.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import _ from "lodash";
+import {ApiDialogExpandButtons} from "@/utils/settings/BaseSettingsDialogUtil.ts";
 
 const configStore = useConfigStore();
 const chatListStore = useChatListStore();
@@ -62,7 +63,8 @@ const openApiUrlDialog = () => {
   if (!settingsDialogRefs.value) return;
   GeminiSettingsDialogUtil.showApiDialog(
       settingsDialogRefs.value,
-      getConfig().apiUrl)
+      getConfig().apiUrl,
+      props.noDefault)
       .then((value: string | number) => {
         value = String(value);
         if (!value || value === "") {
@@ -186,6 +188,15 @@ const openTopPDialog = () => {
         settingsDialogRefs.value.hide();
       });
 };
+
+const expandClick = (content: string | number, key: ApiDialogExpandButtons) => {
+  if (key === ApiDialogExpandButtons.ApiAllChange && !props.noDefault) {
+    configStore.defaultChatConfig.google.gemini["apiUrl"] = content as string;
+    chatListStore.setAllGeminiChatOptions("apiUrl", content as string);
+    settingsDialogRefs.value?.hide();
+    return;
+  }
+};
 </script>
 
 <template>
@@ -195,14 +206,22 @@ const openTopPDialog = () => {
     <CListItem :content="$t('settings.temperature.title')" left-icon="icon-hot-for-ux" @click="openTemperatureDialog"/>
     <CListItem content="Top K" left-icon="icon-boxplot" @click="openTopKDialog"/>
     <CListItem content="Top P" left-icon="icon-sliders" @click="openTopPDialog"/>
-    <CListItem :content="$t('settings.contextMaxMessages.title')" left-icon="icon-file-text" @click="openContextMaxMsgsDialog"/>
-    <CListItem :content="$t('settings.contextMaxTokens.title')" left-icon="icon-build" @click="openContextMaxTokensDialog"/>
+    <CListItem
+        :content="$t('settings.contextMaxMessages.title')"
+        left-icon="icon-file-text"
+        @click="openContextMaxMsgsDialog"
+    />
+    <CListItem
+        :content="$t('settings.contextMaxTokens.title')"
+        left-icon="icon-build"
+        @click="openContextMaxTokensDialog"
+    />
     <CListItem
         :content="$t('settings.responseMaxTokens.title')"
         left-icon="icon-catalog-download"
         :bottom-border="false"
         @click="openResponseMaxTokensDialog"
     />
-    <CBaseDialog ref="settingsDialogRefs"/>
+    <CBaseDialog ref="settingsDialogRefs" @expand-click="expandClick"/>
   </div>
 </template>

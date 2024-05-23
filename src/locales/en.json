@@ -75,7 +75,8 @@
     "apiUrl": {
       "title": "Api url",
       "placeholder": "Please enter the api url",
-      "description": "The URL of the API to use for the chat."
+      "description": "Enter the request address of the API, for example: http:localhost:5000, and click OK to save to the default configuration, but the address of the existing chat will not be updated. If you need to update the address of an existing chat API, click the Modify All button.",
+      "allChange": "All Change"
     },
     "model": {
       "title": "Model",

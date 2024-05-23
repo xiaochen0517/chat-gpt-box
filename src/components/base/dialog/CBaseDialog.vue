@@ -20,6 +20,7 @@ const defaultOption: ShowOption = {
     max: 0,
     size: "small",
   },
+  expandButtons: [],
 };
 
 const showDialog = ref(false);
@@ -48,16 +49,22 @@ defineExpose({
 const instance = getCurrentInstance();
 const ok = () => {
   if (!instance) return;
-  instance.emit("ok");
+  instance.emit("okClick");
   if (!resolveFunc) return;
   resolveFunc(dialogOptions.value.content);
 };
 const cancel = () => {
   if (!instance || !rejectFunc) return;
   showDialog.value = false;
-  instance.emit("cancel");
+  instance.emit("cancelClick");
   rejectFunc();
 };
+const expandClick = (key: string) => {
+  if (!instance) return;
+  instance.emit("expand-click", dialogOptions.value.content, key);
+};
+
+defineEmits(["okClick", "cancelClick", "expandClick"]);
 </script>
 
 <template>
@@ -65,8 +72,10 @@ const cancel = () => {
       v-model:visible="showDialog"
       :title="dialogOptions.title"
       :description="dialogOptions.description"
-      @cancel="cancel"
-      @ok="ok()"
+      :expand-buttons="dialogOptions.expandButtons"
+      @cancelClick="cancel"
+      @okClick="ok()"
+      @expand-click="expandClick"
   >
     <div class="px-2 w-full">
       <el-input

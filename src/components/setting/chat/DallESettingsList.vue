@@ -10,6 +10,7 @@ import {DALLE2ImageSizeList, DALLE3ImageSizeList} from "@/models/DallEModelList.
 import {OpenAiDallEConfig} from "@/types/chat/BaseConfig.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import _ from "lodash";
+import {ApiDialogExpandButtons} from "@/utils/settings/BaseSettingsDialogUtil.ts";
 
 const configStore = useConfigStore();
 const chatListStore = useChatListStore();
@@ -61,7 +62,8 @@ const openApiUrlDialog = () => {
   if (!settingsDialogRefs.value) return;
   DallESettingsDialogUtil.showApiDialog(
       settingsDialogRefs.value,
-      getConfig().apiUrl)
+      getConfig().apiUrl,
+      props.noDefault)
       .then((value: string | number) => {
         value = String(value);
         if (!value || value === "") {
@@ -160,6 +162,15 @@ const openImageQualityDialog = () => {
         settingsDialogRefs.value.hide();
       });
 };
+
+const expandClick = (content: string | number, key: ApiDialogExpandButtons) => {
+  if (key === ApiDialogExpandButtons.ApiAllChange && !props.noDefault) {
+    configStore.defaultChatConfig.openAi.dallE["apiUrl"] = content as string;
+    chatListStore.setAllDallEChatOptions("apiUrl", content as string);
+    settingsDialogRefs.value?.hide();
+    return;
+  }
+};
 </script>
 
 <template>
@@ -183,6 +194,6 @@ const openImageQualityDialog = () => {
         :bottom-border="false"
         @click="openImageQualityDialog"
     />
-    <CBaseDialog ref="settingsDialogRefs"/>
+    <CBaseDialog ref="settingsDialogRefs" @expand-click="expandClick"/>
   </div>
 </template>

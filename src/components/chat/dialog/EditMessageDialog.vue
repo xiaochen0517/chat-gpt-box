@@ -77,7 +77,7 @@ defineExpose({
       title="Edit Message"
       size="large"
       :disable-enter="true"
-      @ok="commit"
+      @okClick="commit"
   >
     <el-form
         class="w-full"

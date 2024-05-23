@@ -49,8 +49,8 @@ const addChat = () => {
       :title="templateInfo.name"
       :ok-text="t('dialog.add')"
       :cancel-text="t('dialog.cancel')"
-      @ok="addChat"
-      @cancel="dialogVisible = false"
+      @okClick="addChat"
+      @cancelClick="dialogVisible = false"
   >
     <div class="w-full flex flex-col gap-2 items-center">
       <Avatar class="w-32 h-32 rounded-full overflow-hidden bg-gray-600" v-bind="avatarFactory"/>

@@ -19,6 +19,11 @@ export type SelectOptionItem = {
 export type SelectOptions = {
   list: SelectOptionItem[];
 };
+export type ExpandButton = {
+  key: string,
+  text: string,
+  icon?: string,
+}
 export type ShowOption = {
   type: DialogType;
   title: string;
@@ -28,4 +33,5 @@ export type ShowOption = {
   inputOptions?: InputOptions;
   sliderOptions?: SliderOptions;
   selectOptions?: SelectOptions;
+  expandButtons?: ExpandButton[];
 };
