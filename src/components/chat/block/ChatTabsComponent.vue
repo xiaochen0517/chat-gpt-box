@@ -3,7 +3,6 @@ import {computed, getCurrentInstance, nextTick, onMounted, ref, watch} from "vue
 import ChatMessagesListComponent from "./ChatMessagesListComponent.vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import CTabs from "@/components/base/tab/CTabs.vue";
-import CTabPane from "@/components/base/tab/CTabPane.vue";
 import {ElMessage} from "element-plus";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
@@ -14,6 +13,7 @@ import {FileUtil} from "@/utils/FileUtil.ts";
 import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
 import {ChatTabDialogUtil} from "@/utils/dialog/ChatTabDialogUtil.ts";
 import i18n from "@/i18n/i18n.ts";
+import LockScrollDownButton from "@/components/base/button/LockScrollDownButton.vue";
 
 const {t} = i18n.global;
 
@@ -179,6 +179,12 @@ const scrollToBottom = () => {
     scrollContainerRef.value.scrollTop = scrollContainerRef.value.scrollHeight;
   });
 };
+const scrollToTop = () => {
+  nextTick(() => {
+    if (!scrollContainerRef.value) return;
+    scrollContainerRef.value.scrollTop = 0;
+  });
+};
 defineExpose({
   getTabIndex,
   scrollToBottom,
@@ -217,7 +223,7 @@ defineEmits([
 </script>
 
 <template>
-  <div class="flex-1 content:max-w-content content:m-auto w-full h-full flex flex-col">
+  <div class="flex-1 content:max-w-content content:m-auto w-full h-full flex flex-col relative">
     <CTabs
         v-model:activeKey="activeTabIndex"
         :tabNames="chatTabNameList"
@@ -226,7 +232,6 @@ defineEmits([
         @showSlideSideBarClick="$emit('showSlideSideBarClick')"
         @cleanChatClick="cleanTabChat"
         @exportChatClick="exportChatInfo"
-        @lockScrollDownClick="scrollToBottom"
     />
     <div
         ref="scrollContainerRef"
@@ -241,6 +246,7 @@ defineEmits([
           @regenerating="$emit('regenerating')"
       />
     </div>
+    <LockScrollDownButton @lockScrollDownClick="scrollToBottom" @scrollUpClick="scrollToTop"/>
     <CBaseDialog ref="baseDialogRefs"/>
   </div>
 </template>
