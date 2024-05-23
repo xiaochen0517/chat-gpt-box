@@ -1,6 +1,13 @@
 <script setup lang="ts">
-import {computed, onMounted, provide, ref, watch} from "vue";
+import {computed, getCurrentInstance, onMounted, provide, ref, watch} from "vue";
+import {useConfigStore} from "@/store/ConfigStore.ts";
+import {useAppStateStore} from "@/store/AppStateStore.ts";
 import CTabButton from "@/components/base/tab/CTabButton.vue";
+
+const configStore = useConfigStore();
+const appStateStore = useAppStateStore();
+const forceScrollToBottom = computed(() => configStore.baseConfig.forceScrollToBottom);
+const lockScrollDown = computed(() => appStateStore.lockScrollDown);
 
 type Props = {
   activeKey: number;
@@ -20,6 +27,12 @@ watch(() => props.activeKey, (newVal) => {
   propsActiveKey.value = newVal;
 });
 
+const instance = getCurrentInstance();
+const lockScrollDownClick = () => {
+  appStateStore.lockScrollDown = !appStateStore.lockScrollDown;
+  instance?.emit("lockScrollDownClick");
+};
+
 const tabBarContainerRefs = ref<HTMLElement | null>(null);
 // horizontal scroll without shift key
 onMounted(() => {
@@ -38,6 +51,7 @@ defineEmits([
   "showSlideSideBarClick",
   "cleanChatClick",
   "exportChatClick",
+  "lockScrollDownClick",
 ]);
 </script>
 
@@ -79,6 +93,13 @@ defineEmits([
     <!--ctrl button-->
     <CTabButton icon="icon-clear" title="Clean current tab chat messages" @click="$emit('cleanChatClick')"/>
     <CTabButton icon="icon-upload1" title="Export chat info" @click="$emit('exportChatClick')"/>
+    <CTabButton
+        v-if="!forceScrollToBottom"
+        icon="icon-down-arrow"
+        title="Lock scroll down"
+        :active="lockScrollDown"
+        @click="lockScrollDownClick"
+    />
   </div>
 </template>
 

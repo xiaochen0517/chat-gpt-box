@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import {CheckOutlined, CopyOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons-vue";
 import MessageMarkdownComponent from "@/components/chat/block/MessageMarkdownComponent.vue";
 import {ref} from "vue";
 import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
 import {Avatar, IAvatarProps} from "vue3-avataaars";
+import MessageMarkdownBlock from "@/components/chat/block/MessageMarkdownComponent.vue";
 import ChatMessageControlComponent from "@/components/chat/block/ChatMessageControlComponent.vue";
 import ChatMessageControlButton from "@/components/base/button/ChatMessageControlButton.vue";
 
