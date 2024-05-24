@@ -36,7 +36,7 @@ const cancel = () => {
   dialogVisible.value = false;
   if (!rejectFunc) return;
   rejectFunc();
-  instance?.emit("cancel");
+  instance?.emit("cancelClick");
 };
 </script>
 
@@ -46,8 +46,8 @@ const cancel = () => {
       v-model:visible="dialogVisible"
       :description="t('avatar.editor.description')"
       desc-align="center"
-      @cancel="cancel"
-      @ok="commit"
+      @cancelClick="cancel"
+      @okClick="commit"
   >
     <div class="w-full h-full mt-4 flex flex-col items-center">
       <Avatar

@@ -93,7 +93,7 @@ function confirm() {
 </script>
 
 <template>
-  <CDialog v-model:visible="showDialog" title="New Key" @ok="confirm">
+  <CDialog v-model:visible="showDialog" title="New Key" @okClick="confirm">
     <div class="flex flex-col w-full">
       <div class="flex justify-center w-full h-14">
         <div v-if="editedKeyMapList.length===0" class="mt-2.5 text-gray-400"> Press any key to set shortcut</div>

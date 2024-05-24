@@ -1,9 +1,14 @@
 import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
-import {SelectOptionItem} from "@/types/base/CSettingDialog.ts";
+import {ExpandButton, SelectOptionItem, ShowOption} from "@/types/base/CSettingDialog.ts";
 import {LanguageList} from "@/models/LanguageList.ts";
 import i18n from "@/i18n/i18n.ts";
 
 const {t} = i18n.global;
+
+export enum ApiDialogExpandButtons {
+  ApiAllChange = "apiAllChange",
+}
+
 export class BaseSettingsDialogUtil {
 
   static showLanguageDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string) {
@@ -26,13 +31,20 @@ export class BaseSettingsDialogUtil {
     });
   }
 
-  static showApiDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string) {
+  static showApiDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string, inChatEdit: boolean = false) {
     return dialogRefs.show({
       type: "input",
       title: t("settings.apiUrl.title"),
       placeholder: t("settings.apiUrl.placeholder"),
       content: value,
-    });
+      description: inChatEdit ? "" : t("settings.apiUrl.description"),
+      expandButtons: inChatEdit ? [] : [
+        {
+          key: ApiDialogExpandButtons.ApiAllChange,
+          text: t("settings.apiUrl.allChange"),
+        } as ExpandButton,
+      ],
+    } as ShowOption);
   }
 
   static showModelDialog(dialogRefs: InstanceType<typeof CBaseDialog>, list: SelectOptionItem[], value: string) {
@@ -105,8 +117,8 @@ export class BaseSettingsDialogUtil {
         max: 4096,
         step: 1,
         showInput: true,
-        size: "small"
-      }
+        size: "small",
+      },
     });
   }
 
