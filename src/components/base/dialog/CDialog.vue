@@ -2,6 +2,7 @@
 import {getCurrentInstance, inject, onMounted, ref, watch} from "vue";
 import {useMagicKeys, whenever} from "@vueuse/core";
 import i18n from "@/i18n/i18n.ts";
+import {ExpandButton} from "@/types/base/CSettingDialog.ts";
 
 const {t} = i18n.global;
 
@@ -13,7 +14,7 @@ whenever(keys["escape"], () => {
 });
 whenever(keys["enter"], () => {
   if (props.disableEnter) return;
-  instance?.emit("ok");
+  instance?.emit("okClick");
 });
 
 type Props = {
@@ -26,6 +27,7 @@ type Props = {
   size?: "default" | "large",
   disableEnter?: boolean
   disableEscape?: boolean
+  expandButtons?: ExpandButton[]
 }
 const props = withDefaults(defineProps<Props>(), {
   visible: false,
@@ -37,6 +39,7 @@ const props = withDefaults(defineProps<Props>(), {
   size: "default",
   disableEnter: false,
   disableEscape: false,
+  expandButtons: () => [],
 });
 
 const propsCancelText = ref("CANCEL");
@@ -59,11 +62,13 @@ watch(showDialog, (value) => {
 const cancelDialog = () => {
   if (!instance) return;
   showDialog.value = false;
-  instance.emit("cancel");
+  instance.emit("cancelClick");
 };
 
 const dialogWidth = inject("dialogWidth");
 const dialogWidthLg = inject("dialogWidthLg");
+
+defineEmits(["update:visible", "okClick", "cancelClick", "expandClick"]);
 </script>
 
 <template>
@@ -96,8 +101,16 @@ const dialogWidthLg = inject("dialogWidthLg");
           {{ propsCancelText }}
         </div>
         <div
+            v-for="expandInfo in expandButtons"
+            :key="expandInfo.key"
             class="border rounded-md dark:border-cyan-800 text-base leading-8 px-2 cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 dark:bg-cyan-700 hover:dark:bg-cyan-800 active:dark:bg-cyan-900"
-            @click.stop="$emit('ok')"
+            @click.stop="$emit('expandClick', expandInfo.key)"
+        >
+          {{ expandInfo.text }}
+        </div>
+        <div
+            class="border rounded-md dark:border-cyan-800 text-base leading-8 px-2 cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 dark:bg-cyan-700 hover:dark:bg-cyan-800 active:dark:bg-cyan-900"
+            @click.stop="$emit('okClick')"
         >
           {{ propsOkText }}
         </div>

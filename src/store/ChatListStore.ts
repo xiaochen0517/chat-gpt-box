@@ -41,7 +41,7 @@ export const useChatListStore = defineStore("chatList", {
             temperature: 0.7,
             contextMaxMessage: 5,
             contextMaxTokens: 2048,
-            responseMaxTokens: 0
+            responseMaxTokens: 0,
           },
         },
         {
@@ -70,10 +70,10 @@ export const useChatListStore = defineStore("chatList", {
             temperature: 0.7,
             contextMaxMessage: 2,
             contextMaxTokens: 2048,
-            responseMaxTokens: 0
+            responseMaxTokens: 0,
           },
         },
-      ]
+      ],
     };
   },
   actions: {
@@ -102,12 +102,24 @@ export const useChatListStore = defineStore("chatList", {
       if (chatInfo.chatType !== ChatType.CHAT_GPT) return;
       (chatInfo.options as OpenAiChatGptConfig)[key] = value;
     },
+    setAllGPTChatOptions<K extends keyof OpenAiChatGptConfig>(key: K, value: OpenAiChatGptConfig[K]) {
+      for (const chatInfo of this.chatList) {
+        if (chatInfo.chatType !== ChatType.CHAT_GPT) continue;
+        (chatInfo.options as OpenAiChatGptConfig)[key] = value;
+      }
+    },
     setDallEChatOptions<K extends keyof OpenAiDallEConfig>(id: string, key: K, value: OpenAiDallEConfig[K]) {
       const index = this.getChatInfoIndex(id);
       if (index < 0) return;
       const chatInfo = this.chatList[index];
       if (chatInfo.chatType !== ChatType.DALL_E) return;
       (chatInfo.options as OpenAiDallEConfig)[key] = value;
+    },
+    setAllDallEChatOptions<K extends keyof OpenAiDallEConfig>(key: K, value: OpenAiDallEConfig[K]) {
+      for (const chatInfo of this.chatList) {
+        if (chatInfo.chatType !== ChatType.DALL_E) continue;
+        (chatInfo.options as OpenAiDallEConfig)[key] = value;
+      }
     },
     setGeminiChatOptions<K extends keyof GoogleGeminiConfig>(id: string, key: K, value: GoogleGeminiConfig[K]) {
       const index = this.getChatInfoIndex(id);
@@ -116,12 +128,24 @@ export const useChatListStore = defineStore("chatList", {
       if (chatInfo.chatType !== ChatType.GEMINI) return;
       (chatInfo.options as GoogleGeminiConfig)[key] = value;
     },
+    setAllGeminiChatOptions<K extends keyof GoogleGeminiConfig>(key: K, value: GoogleGeminiConfig[K]) {
+      for (const chatInfo of this.chatList) {
+        if (chatInfo.chatType !== ChatType.GEMINI) continue;
+        (chatInfo.options as GoogleGeminiConfig)[key] = value;
+      }
+    },
     setOllamaChatOptions<K extends keyof OllamaDefaultConfig>(id: string, key: K, value: OllamaDefaultConfig[K]) {
       const index = this.getChatInfoIndex(id);
       if (index < 0) return;
       const chatInfo = this.chatList[index];
       if (chatInfo.chatType !== ChatType.OLLAMA) return;
       (chatInfo.options as OllamaDefaultConfig)[key] = value;
+    },
+    setAllOllamaChatOptions<K extends keyof OllamaDefaultConfig>(key: K, value: OllamaDefaultConfig[K]) {
+      for (const chatInfo of this.chatList) {
+        if (chatInfo.chatType !== ChatType.OLLAMA) continue;
+        (chatInfo.options as OllamaDefaultConfig)[key] = value;
+      }
     },
     setChatOptions<K extends keyof ChatOptions>(id: string, key: K, value: ChatOptions[K]) {
       const index = this.getChatInfoIndex(id);
