@@ -243,6 +243,7 @@ export class ChatGptRequest implements BaseRequest {
       if (!resultData) continue;
       // parse choices
       for (const choice of resultData.choices) {
+        if (!choice || !choice.delta) continue;
         const content = choice.delta.content;
         // check content
         if (content) {
