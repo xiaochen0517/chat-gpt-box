@@ -39,7 +39,10 @@ const deleteMessage = (_message: ChatMessage, index: number) => {
     chatTabInfo.value.request?.cancel();
     chatTabsStore.setGenerating(props.chatInfo.id, props.tabIndex, false);
   }
+  // delete assistant message
   chatTabsStore.removeChatMessage(props.chatInfo.id, props.tabIndex, index);
+  // delete user message
+  chatTabsStore.removeChatMessage(props.chatInfo.id, props.tabIndex, index - 1);
 };
 
 const editMessageDialogRefs = ref<InstanceType<typeof EditMessageDialog> | null>(null);
