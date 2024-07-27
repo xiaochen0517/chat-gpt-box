@@ -2,14 +2,12 @@ name: Build and Release
 
 on:
   workflow_dispatch:
-  pull_request:
-    types: [ closed ]
-    branches:
-      - master
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   build:
-    if: github.event.pull_request.merged == true
     name: Build and Release
     runs-on: ${{ matrix.os }}
     strategy:
