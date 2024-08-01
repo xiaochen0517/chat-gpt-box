@@ -48,7 +48,7 @@ const copyMessageContent = () => {
     </div>
     <!-- 消息区域 -->
     <div
-        class="group relative mx-4 rounded-2xl flex-1 min-w-0 flex"
+        class="flex-1 group relative mx-4 rounded-2xl min-w-0 flex"
         :class="{'ml-14 flex-row':message.role === 'user', 'mr-14 flex-col':message.role !== 'user'}"
     >
       <button
@@ -59,9 +59,12 @@ const copyMessageContent = () => {
         <EditOutlined/>
       </button>
       <MessageMarkdownBlock
-          :class="{' py-3 px-6 rounded-3xl dark:bg-neutral-700 dark:bg-opacity-60': message.role === 'user'}"
+          v-if="message.role !== 'user'"
           :content="message?.content + (props.generating?' ✨':'')"
       />
+      <div v-if="message.role === 'user'" class="py-3 px-6 rounded-3xl dark:bg-neutral-700 dark:bg-opacity-60 text-base break-words whitespace-pre-wrap">
+        {{ message?.content + (props.generating ? " ✨" : "") }}
+      </div>
       <ChatMessageControlComponent
           v-if="message.role !== 'user'"
           :role="message.role"
