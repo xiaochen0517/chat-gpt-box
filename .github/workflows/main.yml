@@ -59,6 +59,9 @@ jobs:
         with:
           workspaces: src-tauri -> target
 
+      - name: Cargo refresh
+        run: cd src-tauri && cargo update
+
       - name: Install webkit2gtk (ubuntu only)
         if: matrix.os == 'ubuntu-latest'
         run: |
