@@ -168,7 +168,7 @@ onMounted(() => {
 });
 let defaultCursorY: number;
 let maxDivHeight: number;
-let minDivHeight = 80;
+let minDivHeight = 85;
 const initResize = (event: MouseEvent | TouchEvent) => {
   // 当鼠标按下时，开始监听鼠标移动和鼠标松开事件
   event.preventDefault();
@@ -213,16 +213,16 @@ const stopResizing = () => {
     >
       <i class="iconfont icon-more"/>
     </div>
-    <div class="w-full h-full flex flex-row relative">
+    <div class="w-full h-full py-2 flex flex-row relative">
       <textarea
           ref="chatInputTextAreaRefs"
-          class="flex-1 w-full h-full m-0 py-2 pl-2 pr-14 block rounded-md bg-neutral-100 box-border border-2 border-neutral-300 focus:border-neutral-400 dark:bg-neutral-800 dark:border-neutral-600 dark:focus:border-neutral-400 resize-none"
+          class="flex-1 w-full h-full m-0 py-3 pl-3 pr-14 block rounded-2xl box-border resize-none border border-neutral-300 focus-visible:ring-neutral-300 dark:border-neutral-700 focus-visible:ring-2 dark:focus-visible:ring-neutral-600"
           v-model="chatInputContent"
           :placeholder="$t('chat.input.placeholder')"
           @keydown="handleKeydown"
       />
       <div
-          class="w-10 h-10 rounded-md absolute right-3 bottom-3 flex flex-row justify-center items-center text-sm text-neutral-50 cursor-pointer border-2 bg-cyan-500 border-transparent hover:border-neutral-300 active:bg-cyan-600 dark:bg-cyan-700 dark:border-neutral-800 dark:hover:border-neutral-700 dark:active:bg-cyan-600"
+          class="w-10 h-10 rounded-xl absolute right-3 bottom-5 flex flex-row justify-center items-center text-sm text-neutral-50 cursor-pointer border-2 bg-cyan-500 border-transparent hover:border-neutral-300 active:bg-cyan-600 dark:bg-cyan-700 dark:border-neutral-800 dark:hover:border-neutral-700 dark:active:bg-cyan-600"
           title="Send message"
           @click.stop="submitContent"
       >
