@@ -66,7 +66,7 @@ const isActive = computed(() => {
 <template>
   <div
       class="flex flex-row items-center relative w-full p-1.5 mb-1 rounded-xl cursor-pointer dark:hover:bg-neutral-700 dark:hover:bg-opacity-30"
-      :class="{'bg-neutral-700 bg-opacity-30':isActive}"
+      :class="{'bg-neutral-400 dark:bg-neutral-800 bg-opacity-20':isActive}"
       @click="$emit('itemClick', chatInfo)"
   >
     <div class="pr-1 flex-1 flex flex-row">

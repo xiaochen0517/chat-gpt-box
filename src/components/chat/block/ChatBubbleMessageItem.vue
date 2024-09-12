@@ -53,7 +53,7 @@ const copyMessageContent = () => {
     >
       <button
           v-if="message.role === 'user'"
-          class="ml-auto mt-1 h-fit opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200 rounded-full p-3 mr-2 flex justify-center items-center text-lg hover:bg-neutral-300 active:bg-neutral-400 dark:hover:bg-neutral-700 dark:active:bg-neutral-600 dark:bg-opacity-20"
+          class="ml-auto mt-1 h-fit opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200 rounded-full p-3 mr-2 flex justify-center items-center text-lg hover:bg-neutral-200 active:bg-neutral-300 dark:hover:bg-neutral-700 dark:active:bg-neutral-600 dark:bg-opacity-20"
           @click="$emit('edit', message, index)"
       >
         <EditOutlined/>
@@ -62,7 +62,7 @@ const copyMessageContent = () => {
           v-if="message.role !== 'user'"
           :content="message?.content + (props.generating?' ✨':'')"
       />
-      <div v-if="message.role === 'user'" class="py-3 px-6 rounded-3xl dark:bg-neutral-700 dark:bg-opacity-60 text-base break-words whitespace-pre-wrap">
+      <div v-if="message.role === 'user'" class="py-3 px-6 rounded-3xl bg-neutral-200 dark:bg-neutral-700 dark:bg-opacity-60 text-base break-words whitespace-pre-wrap">
         {{ message?.content + (props.generating ? " ✨" : "") }}
       </div>
       <ChatMessageControlComponent

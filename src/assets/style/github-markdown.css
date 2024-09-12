@@ -120,7 +120,7 @@
     /*--color-canvas-subtle: #f6f8fa;*/
     --color-canvas-subtle: transparent;
     --color-border-default: #d0d7de;
-    --color-border-muted: hsla(210, 18%, 87%, 1);
+    --color-border-muted: #c8c8c8;
     --color-neutral-muted: rgba(175, 184, 193, 0.2);
     --color-accent-fg: #0969da;
     --color-accent-emphasis: #0969da;
@@ -135,7 +135,7 @@
     --color-done-emphasis: #8250df;
     --color-code: #3594f7;
     --color-code-background: #3594f71a;
-    --color-code-block-background: #f3f3f3;
+    --color-code-block-background: #e3e3e3;
     --color-code-line-number: #484f58;
 }
 

@@ -42,7 +42,7 @@ defineEmits([
 </script>
 
 <template>
-  <div class="w-full py-2 px-2.5 mt-2 overflow-hidden rounded-2xl bg-neutral-100 dark:bg-neutral-900 flex flex-row gap-2 min-w-full box-border">
+  <div class="w-full py-2 px-2.5 mt-2 overflow-hidden rounded-2xl bg-neutral-200 dark:bg-neutral-900 flex flex-row gap-2 min-w-full box-border">
     <!--menu button-->
     <CTabButton
         class="block mobile:hidden"
@@ -59,8 +59,8 @@ defineEmits([
         <div
             v-for="(item, index) in propsTabNames"
             :key="index"
-            class="group px-2 py-1 rounded-xl cursor-pointer select-none flex flex-row items-center whitespace-nowrap bg-neutral-100 active:bg-neutral-200 hover:dark:bg-neutral-800 dark:active:bg-neutral-700"
-            :class="propsActiveKey === index ? 'dark:bg-neutral-800': ' dark:bg-neutral-900'"
+            class="group px-2 py-1 rounded-xl cursor-pointer select-none flex flex-row items-center whitespace-nowrap active:bg-neutral-200 hover:dark:bg-neutral-800 dark:active:bg-neutral-700"
+            :class="propsActiveKey === index ? 'bg-neutral-100 dark:bg-neutral-800': 'bg-neutral-200 dark:bg-neutral-900'"
             :title="item"
             @click="$emit('update:activeKey', index)"
         >

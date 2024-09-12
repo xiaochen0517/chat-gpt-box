@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<Props>(), {
 <template>
   <div class="w-full h-12">
     <div class="fixed w-full px-4 pt-2">
-      <div class="py-1.5 flex flex-row items-center select-none rounded-2xl bg-neutral-100 dark:bg-neutral-900">
+      <div class="py-1.5 flex flex-row items-center select-none rounded-2xl bg-neutral-100 border border-neutral-300 dark:bg-neutral-900 dark:border-neutral-800">
         <div
             class="w-8 h-8 ml-4 rounded-md flex justify-center cursor-pointer hover:dark:bg-neutral-800 hover:bg-opacity-20 active:dark:bg-neutral-800 active:bg-opacity-80"
             @click.stop="$emit('backClick')"

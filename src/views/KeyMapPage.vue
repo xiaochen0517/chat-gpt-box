@@ -40,11 +40,11 @@ function openKeyMapChangeDialog(shortcutConfigKey: ShortcutConfigKey) {
     />
     <div class="px-2 xl:p-0 max-w-3xl m-auto mt-2">
       <div class="mt-1 text-lg leading-13">KeyMap Settings</div>
-      <div class="rounded-2xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-900 p-2 flex flex-col gap-2">
+      <div class="rounded-2xl bg-neutral-100 dark:bg-neutral-900 p-2 flex flex-col gap-2 overflow-hidden text-base select-none border dark:border-0">
         <CListItem
             v-for="(keyMapList,shortcutKey,index) in configStore.shortcut"
             :key="shortcutKey"
-            left-icon="icon-shortcut"
+            :show-left-icon="false"
             :content="shortcutKey"
             :bottom-border="index !== shortcutSize - 1"
             @click="openKeyMapChangeDialog(shortcutKey)"

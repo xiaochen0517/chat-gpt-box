@@ -8,6 +8,8 @@ import {ElMessage} from "element-plus";
 import i18n from "@/i18n/i18n.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import ChatTemplateInfoDialog from "@/components/chat/dialog/ChatTemplateInfoDialog.vue";
+import {Avatar} from "vue3-avataaars";
+import ChatTemplateTypeLabel from "@/components/chat/block/ChatTemplateTypeLabel.vue";
 
 const {t} = i18n.global;
 const configStore = useConfigStore();
@@ -52,7 +54,7 @@ const openAddChatDialog = (chatTemplate: ChatInfo) => {
     />
     <div class="px-2 xl:p-0 max-w-3xl m-auto pt-2 pb-6">
       <div class="mt-1 text-lg leading-13">{{ $t("chatTemplate.chatTemplateList") }}</div>
-      <div class="rounded-2xl overflow-hidden text-base select-none p-2 flex flex-col gap-2 dark:bg-neutral-900">
+      <div class="rounded-2xl bg-neutral-100 dark:bg-neutral-900 p-2 flex flex-col gap-2 overflow-hidden text-base select-none border dark:border-0">
         <CListItem
             v-for="(chatTemplate, index) in chatTemplateList"
             :key="chatTemplate.name"
@@ -62,9 +64,7 @@ const openAddChatDialog = (chatTemplate: ChatInfo) => {
             @click="openAddChatDialog(chatTemplate)"
         >
           <template #right>
-            <div class="bg-amber-400 dark:bg-amber-600 shadow-md rounded px-2 py-1 mr-4 text-sm font-bold text-black">
-              {{ chatTemplate.chatType.toUpperCase() }}
-            </div>
+            <ChatTemplateTypeLabel :chat-type="chatTemplate.chatType"/>
           </template>
         </CListItem>
       </div>
