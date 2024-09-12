@@ -31,7 +31,6 @@
           "type": "embedBootstrapper"
         },
         "nsis": {
-          "template": "./templates/installer.nsi",
           "license": "../LICENSE",
           "installerIcon": "icons/icon.ico",
           "installMode": "both"
