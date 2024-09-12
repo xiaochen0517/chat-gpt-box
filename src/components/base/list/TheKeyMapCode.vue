@@ -10,7 +10,7 @@ type Props = {
 }
 const props = withDefaults(defineProps<Props>(), {
   keyMapCode: "",
-  size: 100
+  size: 100,
 });
 
 let keyMapCodeClassNameEnum = {
@@ -32,7 +32,10 @@ let iconClass = computed(() => {
 </script>
 
 <template>
-  <span class="font-bold text-sm mr-2 px-2 py-1 opacity-60 bg-gray-400 bg-opacity-10" :class="`scale-${props.size}`">
+  <span
+      class="font-bold text-sm mr-2 px-2 py-1 opacity-60 bg-gray-400 bg-opacity-10 rounded-xl border border-neutral-300 dark:border-neutral-700"
+      :class="`scale-${props.size}`"
+  >
     <i v-if="iconClass" class="iconfont" :class="iconClass"/>
     <span v-else>{{ KeyMapUtil.formatShortcutKeyMap2ShowCode(props.keyMapCode) }}</span>
   </span>

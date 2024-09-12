@@ -8,6 +8,7 @@ import i18n from "@/i18n/i18n.ts";
 import {useChatListStore} from "@/store/ChatListStore.ts";
 import {ElMessage} from "element-plus";
 import {AvatarUtil} from "@/utils/AvatarUtil.ts";
+import ChatTemplateTypeLabel from "@/components/chat/block/ChatTemplateTypeLabel.vue";
 
 const {t} = i18n.global;
 const avatarFactory = ref(AvatarUtil.getDefaultAvatar());
@@ -54,10 +55,10 @@ const addChat = () => {
   >
     <div class="w-full flex flex-col gap-2 items-center">
       <Avatar class="w-32 h-32 rounded-full overflow-hidden bg-gray-600" v-bind="avatarFactory"/>
-      <div class="my-2 bg-amber-400 dark:bg-amber-600 shadow-md rounded px-2 py-1 text-sm font-bold text-black">
-        {{ templateInfo.chatType.toUpperCase() }}
+      <ChatTemplateTypeLabel :chat-type="templateInfo.chatType"/>
+      <div class="w-10/12 mb-2 text-base rounded-md bg-neutral-200 dark:bg-neutral-700 px-2 py-1">
+        {{ templateInfo.prompt }}
       </div>
-      <div class="w-10/12 mb-2 text-base rounded-md bg-neutral-700 px-2 py-1">{{ templateInfo.prompt }}</div>
     </div>
   </CDialog>
 </template>

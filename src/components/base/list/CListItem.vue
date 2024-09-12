@@ -11,6 +11,7 @@ type Props = {
   tooltip?: string,
   placement?: string,
   leftIcon?: string,
+  showLeftIcon?: boolean,
   rightIcon?: string,
   bottomBorder?: boolean,
   leftAvatar?: Partial<IAvatarProps>,
@@ -21,6 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
   content: "",
   tooltip: "",
   placement: "top",
+  showLeftIcon: true,
   rightIcon: "icon-right",
   bottomBorder: true,
 });
@@ -51,16 +53,16 @@ const isDarkMode = computed(() => configStore.isDarkMode);
 </script>
 
 <template>
-  <div class="rounded-xl px-3 cursor-pointer bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-900 hover:dark:bg-neutral-800 hover:bg-opacity-20 active:dark:bg-neutral-600">
+  <div class="rounded-xl px-3 cursor-pointer bg-neutral-100 hover:bg-neutral-400 active:bg-neutral-300 dark:bg-neutral-900 hover:dark:bg-neutral-800 hover:bg-opacity-20 active:dark:bg-neutral-600">
     <div class="flex flex-row items-center">
-      <div class="flex-1 flex flex-row items-center" :class="{'py-2': !leftIcon}">
+      <div class="flex-1 flex flex-row items-center" :class="{'py-2': !leftIcon && showLeftIcon}">
         <Avatar
-            v-if="!leftIcon"
+            v-if="!leftIcon && showLeftIcon"
             class="w-12 h-12 mr-3 rounded-full overflow-hidden bg-gray-600"
             v-bind="avatarProps"
             @click.stop="$emit('avatarClick')"
         />
-        <i class="iconfont text-xl" :class="leftIcon"/>
+        <i v-if="showLeftIcon" class="iconfont text-xl" :class="leftIcon"/>
         <span class="ml-2 text-base leading-10">{{ content }}</span>
         <el-tooltip
             v-if="tooltip && tooltip.length !== 0"
