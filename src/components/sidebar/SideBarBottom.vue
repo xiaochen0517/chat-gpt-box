@@ -35,13 +35,13 @@ const openSettingsWindow = () => {
 <template>
   <div class="w-full p-4 flex flex-row justify-between rounded-md gap-2">
     <div
-        class="group w-10 h-10 flex justify-center items-center rounded-md border dark:border-0 bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-700 hover:dark:bg-neutral-600 active:dark:bg-neutral-700 cursor-pointer"
+        class="group w-10 h-10 flex justify-center items-center rounded-md border dark:border-0 bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-900 hover:dark:bg-neutral-700 hover:dark:bg-opacity-70 active:dark:bg-neutral-700 cursor-pointer"
         @click="openSettingsWindow"
     >
       <i class="iconfont icon-settings text-xl transition ease-in-out group-hover:rotate-180 duration-300"/>
     </div>
     <div
-        class="group w-10 h-10 flex justify-center items-center rounded-md border dark:border-0 bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-700 hover:dark:bg-neutral-600 active:dark:bg-neutral-700 cursor-pointer"
+        class="group w-10 h-10 flex justify-center items-center rounded-md border dark:border-0 bg-neutral-100 hover:bg-neutral-200 active:bg-neutral-300 dark:bg-neutral-900 hover:dark:bg-neutral-700 hover:dark:bg-opacity-70 active:dark:bg-neutral-700 cursor-pointer"
         @click="handleChange"
     >
       <transition name="fade" mode="out-in">

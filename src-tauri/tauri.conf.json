@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "ChatGptBox",
-    "version": "0.12.2"
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {
@@ -31,7 +31,6 @@
           "type": "embedBootstrapper"
         },
         "nsis": {
-          "template": "./templates/installer.nsi",
           "license": "../LICENSE",
           "installerIcon": "icons/icon.ico",
           "installMode": "both"

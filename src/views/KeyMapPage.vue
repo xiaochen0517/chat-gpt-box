@@ -24,28 +24,27 @@ let shortcutSize = computed(() => Object.keys(configStore.shortcut).length);
 const KeyMapChangeDialogRefs = ref<InstanceType<typeof KeyMapChangeDialog> | null>(null);
 
 function openKeyMapChangeDialog(shortcutConfigKey: ShortcutConfigKey) {
-  if (!KeyMapChangeDialogRefs.value) return;
-  KeyMapChangeDialogRefs.value.show(shortcutConfigKey);
+  KeyMapChangeDialogRefs.value?.show(shortcutConfigKey);
 }
 </script>
 
 <template>
   <div class="w-full min-h-screen bg-neutral-50 dark:bg-neutral-800 overflow-y-auto">
     <CTopNavBar
-        title="Key Map"
+        :title="$t('keyMap.pageTitle')"
         saveButton
-        saveButtonText="RESET"
+        :saveButtonText="$t('keyMap.reset')"
         @backClick="backClick"
         @saveClick="resetKeyMap"
     />
     <div class="px-2 xl:p-0 max-w-3xl m-auto mt-2">
-      <div class="mt-1 text-lg leading-13">KeyMap Settings</div>
-      <div class="rounded-2xl overflow-hidden text-base select-none bg-neutral-100 dark:bg-neutral-900 p-2 flex flex-col gap-2">
+      <div class="mt-1 text-lg leading-13">{{ $t("keyMap.pageTitle") }}</div>
+      <div class="rounded-2xl bg-neutral-100 dark:bg-neutral-900 p-2 flex flex-col gap-2 overflow-hidden text-base select-none border dark:border-0">
         <CListItem
             v-for="(keyMapList,shortcutKey,index) in configStore.shortcut"
             :key="shortcutKey"
-            left-icon="icon-shortcut"
-            :content="shortcutKey"
+            :show-left-icon="false"
+            :content="$t(`keyMap.listTitles.${shortcutKey}`)"
             :bottom-border="index !== shortcutSize - 1"
             @click="openKeyMapChangeDialog(shortcutKey)"
         >

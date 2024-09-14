@@ -117,6 +117,29 @@
       }
     }
   },
+  "keyMap": {
+    "pageTitle": "Key Map Configuration",
+    "reset": "Reset",
+    "listTitles": {
+      "focusInput": "Focus Input",
+      "openSetting": "Open Setting Page",
+      "addTab": "Add new tab",
+      "removeTab": "Remove current tab",
+      "cleanTabChat": "Clean current tab chat history",
+      "prevTab": "Switch to previous tab",
+      "nextTab": "Switch to next tab",
+      "addRobot": "Add new chat",
+      "switchRobot": "Switch to another chat",
+      "prevRobot": "Switch to previous chat",
+      "nextRobot": "Switch to next chat"
+    },
+    "dialog": {
+      "title": "Modify Keyboard Shortcuts",
+      "hint": "Press any key to set shortcut",
+      "repeatHint": "Keyboard shortcuts repeat: ",
+      "repeatHint2": "Do you need to replace it ?"
+    }
+  },
   "chat": {
     "chatSettings": {
       "pageTitle": "Chat Settings"
