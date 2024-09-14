@@ -28,7 +28,7 @@ function hide() {
 
 defineExpose({
   show,
-  hide
+  hide,
 });
 
 const configStore = useConfigStore();
@@ -63,7 +63,7 @@ watch(currentList, (list: string[]) => {
 
 let repeatTextShow = ref(false);
 
-function confirm() {
+const confirm = () => {
   if (!editedShortcutName.value) return;
 
   // select the keyName currently being edited
@@ -88,20 +88,20 @@ function confirm() {
   // not repeat, or prompt has been saved
   configStore.setShortcut(editedShortcutName.value, editedKeyMapList.value as KeyMapEnum[]);
   hide();
-}
+};
 
 </script>
 
 <template>
-  <CDialog v-model:visible="showDialog" title="New Key" @okClick="confirm">
+  <CDialog v-model:visible="showDialog" :title="$t('keyMap.dialog.title')" @okClick="confirm">
     <div class="flex flex-col w-full">
       <div class="flex justify-center w-full h-14">
-        <div v-if="editedKeyMapList.length===0" class="mt-2.5 text-gray-400"> Press any key to set shortcut</div>
+        <div v-if="editedKeyMapList.length===0" class="mt-2.5 text-gray-400">{{ $t("keyMap.dialog.hint") }}</div>
         <TheKeyMapCode v-for="key in editedKeyMapList" :key="key" class="h-min mx-2 mt-4" :key-map-code="key"/>
       </div>
       <div v-show="repeatTextShow" class="font-bold text-center mt-2">
-        Keyboard shortcuts repeat: <span class="text-yellow-600">{{ editedShortcutName }}</span>.
-        <div class="mt-2">Do you need to replace it ?</div>
+        {{ $t("keyMap.dialog.repeatHint") }}<span class="text-yellow-600">{{ editedShortcutName }}</span>.
+        <div class="mt-2">{{ $t("keyMap.dialog.repeatHint2") }}</div>
       </div>
     </div>
   </CDialog>

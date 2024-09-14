@@ -116,6 +116,29 @@
       }
     }
   },
+  "keyMap": {
+    "pageTitle": "快捷键配置",
+    "reset": "重置",
+    "listTitles": {
+      "focusInput": "聚焦输入框",
+      "openSetting": "打开设置页面",
+      "addTab": "添加新标签页",
+      "removeTab": "删除当前标签页",
+      "cleanTabChat": "清空当前标签页聊天记录",
+      "prevTab": "切换到上一个标签页",
+      "nextTab": "切换到下一个标签页",
+      "addRobot": "添加新聊天",
+      "switchRobot": "切换到另一个聊天",
+      "prevRobot": "切换到上一个聊天",
+      "nextRobot": "切换到下一个聊天"
+    },
+    "dialog": {
+      "title": "设置快捷键",
+      "hint": "按任意键设置快捷键",
+      "repeatHint": "键盘快捷键重复：",
+      "repeatHint2": "是否需要替换？"
+    }
+  },
   "chat": {
     "chatSettings": {
       "pageTitle": "聊天设置"

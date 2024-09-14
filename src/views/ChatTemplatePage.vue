@@ -8,7 +8,6 @@ import {ElMessage} from "element-plus";
 import i18n from "@/i18n/i18n.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import ChatTemplateInfoDialog from "@/components/chat/dialog/ChatTemplateInfoDialog.vue";
-import {Avatar} from "vue3-avataaars";
 import ChatTemplateTypeLabel from "@/components/chat/block/ChatTemplateTypeLabel.vue";
 
 const {t} = i18n.global;
