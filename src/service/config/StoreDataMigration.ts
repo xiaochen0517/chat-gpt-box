@@ -1,4 +1,5 @@
 import {migrateFunctions} from "./MigrationFunctions";
+import {logger} from "@/logger/Logger.ts";
 
 export class StoreDataMigration {
 
@@ -9,7 +10,7 @@ export class StoreDataMigration {
   }
 
   private static getCurrentVersion(): number {
-    console.log("Current version: " + import.meta.env.VITE_STORE_VERSION);
+    logger.info("Current version: " + import.meta.env.VITE_STORE_VERSION);
     return Number(import.meta.env.VITE_STORE_VERSION);
   }
 
