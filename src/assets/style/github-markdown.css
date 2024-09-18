@@ -18,6 +18,9 @@
 .line-number {
     display: block;
 }
+.katex-html {
+    display: none;
+}
 
 [markdown-theme="dark"] {
     /*dark*/
