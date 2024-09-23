@@ -12,7 +12,8 @@
     "cap-sync": "vite build && cap sync",
     "lint": "eslint --ext .js,.vue src",
     "lint-fix": "eslint --fix --ext .js,.vue src",
-    "tsc": "vue-tsc --noEmit"
+    "tsc": "vue-tsc --noEmit",
+    "test": "vitest"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",
@@ -61,6 +62,7 @@
     "vite": "^4.5.3",
     "vite-plugin-top-level-await": "^1.4.1",
     "vite-plugin-wasm": "^3.3.0",
+    "vitest": "^2.1.1",
     "vue-eslint-parser": "^9.4.2",
     "vue-tsc": "^1.8.27"
   }

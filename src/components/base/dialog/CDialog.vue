@@ -52,7 +52,12 @@ onMounted(() => {
 
 const showDialog = ref(false);
 watch(() => props.visible, (value) => {
+  if (value === undefined || value === null) {
+    return;
+  }
   showDialog.value = value;
+}, {
+  immediate: true,
 });
 watch(showDialog, (value) => {
   if (!instance) return;
@@ -109,7 +114,7 @@ defineEmits(["update:visible", "okClick", "cancelClick", "expandClick"]);
           {{ expandInfo.text }}
         </div>
         <div
-            class="border rounded-md text-base leading-8 px-2 cursor-pointer bg-cyan-400 border-cyan-400 hover:bg-cyan-500 hover:border-cyan-500 hover:text-neutral-900 active:bg-cyan-600 active:border-cyan-600 active:text-black dark:border-cyan-800 dark:bg-cyan-700 hover:dark:bg-cyan-800 dark:text-neutral-300 active:dark:bg-cyan-900"
+            class="border rounded-md text-base leading-8 px-2 cursor-pointer bg-cyan-400 border-cyan-400 hover:bg-cyan-500 hover:border-cyan-500 hover:text-neutral-900 active:bg-cyan-600 active:border-cyan-600 active:text-black dark:border-cyan-800 dark:bg-cyan-700 hover:dark:bg-cyan-600 hover:dark:text-neutral-100 dark:text-neutral-300 active:dark:bg-cyan-500"
             @click.stop="$emit('okClick')"
         >
           {{ propsOkText }}
