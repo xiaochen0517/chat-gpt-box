@@ -17,6 +17,7 @@ import "@/assets/style/highlight-github.less";
 import xmlLanguage from "highlight.js/lib/languages/xml";
 import {ElMessage} from "element-plus";
 import i18n from "@/i18n/i18n.ts";
+import logger from "@/utils/logger/Logger.ts";
 
 const {t} = i18n.global;
 hljs.registerLanguage("vue", xmlLanguage);
@@ -134,10 +135,10 @@ function copyCode() {
   if (!codeText) return;
   // copy to clipboard
   navigator.clipboard.writeText(codeText).then(() => {
-    console.log("copy success");
+    logger.info("copy success");
     ElMessage.success(t("chat.copy.success"));
   }).catch(() => {
-    console.log("copy failed");
+    logger.info("copy failed");
     ElMessage.error(t("chat.copy.error"));
   });
 }

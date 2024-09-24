@@ -7,8 +7,9 @@ import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import NewVersionInfoDialog from "@/components/updater/NewVersionInfoDialog.vue";
 import UpdateUtil from "@/utils/UpdateUtil.ts";
 import {ElMessage} from "element-plus";
+import logger from "@/utils/logger/Logger.ts";
 
-const chatContentBlockRefs = ref<InstanceType<typeof HomeChatComponent>>(null);
+const chatContentBlockRefs = ref<InstanceType<typeof HomeChatComponent> | null>(null);
 const changeChatClick = (chatInfo: ChatInfo) => {
   nextTick(() => {
     if (!chatContentBlockRefs.value) return;
@@ -16,12 +17,12 @@ const changeChatClick = (chatInfo: ChatInfo) => {
   });
 };
 
-const newVersionInfoDialogRef = ref<InstanceType<typeof NewVersionInfoDialog>>(null);
+const newVersionInfoDialogRef = ref<InstanceType<typeof NewVersionInfoDialog> | null>(null);
 const checkUpdate = () => {
   setTimeout(async () => {
     if (await UpdateUtil.checkUpdate()) {
       ElMessage.success("New version available");
-      console.log("New version available");
+      logger.info("New version available");
       newVersionInfoDialogRef.value?.show();
     }
   });
