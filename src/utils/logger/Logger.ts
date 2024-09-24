@@ -11,15 +11,18 @@ export type CreateLoggerOptions = {
   logLevel?: LogLevel;
   logLabel?: string;
   showTime?: boolean;
+  showLabel?: boolean;
 };
 
 export class Logger {
 
   private readonly logLevel: LogLevel;
 
-  private logLabel: string = "MAIN";
+  private readonly logLabel: string = "MAIN";
 
-  private showTime: boolean = true;
+  private readonly showTime: boolean = true;
+
+  private readonly showLabel: boolean = true;
 
   public static create(option: CreateLoggerOptions): Logger {
     return new Logger(option);
@@ -29,6 +32,7 @@ export class Logger {
     this.logLevel = option.logLevel ?? LogLevel.INFO;
     this.logLabel = option.logLabel ?? "MAIN";
     this.showTime = option.showTime ?? true;
+    this.showLabel = option.showLabel ?? true;
   }
 
   public error(...messages: unknown[]): void {
@@ -52,14 +56,36 @@ export class Logger {
   }
 
   private print(level: LogLevel, messages: unknown[]): void {
+    const params = this.getPrintParams(level, messages);
+    switch (level) {
+      case LogLevel.ERROR:
+        console.error(...params);
+        break;
+      case LogLevel.WARN:
+        console.warn(...params);
+        break;
+      case LogLevel.INFO:
+        console.info(...params);
+        break;
+      case LogLevel.DEBUG:
+        console.debug(...params);
+        break;
+      default:
+        console.log(...params);
+    }
+  }
+
+  private getPrintParams(level: LogLevel, messages: unknown[]): unknown[] {
     const params = [];
     params.push(...Logger.getLevelLabel(level));
     if (this.showTime) {
-      params.push(DateUtil.getCurrentTime());
+      params.push(`[${DateUtil.getCurrentTime()}]`);
     }
-    params.push(`[${this.logLabel}]`);
+    if (this.showLabel) {
+      params.push(`[${this.logLabel}]`);
+    }
     params.push(...messages);
-    console.log(...params);
+    return params;
   }
 
   private static getLevelLabel(level: LogLevel): string[] {
@@ -69,11 +95,11 @@ export class Logger {
       case LogLevel.WARN:
         return ["%c WARN  ", "background: #b45309; color: white; border-radius: 4px; padding: 2px 4px;"];
       case LogLevel.INFO:
-        return ["%c INFO  ", "background: #0369a1; color: white; border-radius: 4px; padding: 2px 4px;"];
+        return ["%c INFO  ", "background: #0369a1; color: white; border-radius: 4px; padding: 2px 4px; margin-left: 14px;"];
       case LogLevel.DEBUG:
-        return ["%c DEBUG ", "background: #334155; color: white; border-radius: 4px; padding: 2px 4px;"];
+        return ["%c DEBUG ", "background: #334155; color: white; border-radius: 4px; padding: 2px 4px; margin-left: 14px;"];
       default:
-        return ["%c UNKNOWN", "background: #000000; color: white; border-radius: 4px; padding: 2px 4px;"];
+        return ["%c UNKNOWN", "background: #000000; color: white; border-radius: 4px; padding: 2px 4px; margin-left: 14px;"];
     }
   }
 }
