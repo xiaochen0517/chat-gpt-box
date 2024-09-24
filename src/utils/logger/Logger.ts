@@ -1,3 +1,5 @@
+import {DateUtil} from "@/utils/DateUtil.ts";
+
 export enum LogLevel {
   ERROR,
   WARN,
@@ -7,13 +9,17 @@ export enum LogLevel {
 
 export type CreateLoggerOptions = {
   logLevel?: LogLevel;
+  logLabel?: string;
+  showTime?: boolean;
 };
 
 export class Logger {
 
   private readonly logLevel: LogLevel;
 
-  private name: string = "MAIN";
+  private logLabel: string = "MAIN";
+
+  private showTime: boolean = true;
 
   public static create(option: CreateLoggerOptions): Logger {
     return new Logger(option);
@@ -21,6 +27,8 @@ export class Logger {
 
   public constructor(option: CreateLoggerOptions) {
     this.logLevel = option.logLevel ?? LogLevel.INFO;
+    this.logLabel = option.logLabel ?? "MAIN";
+    this.showTime = option.showTime ?? true;
   }
 
   public error(...messages: unknown[]): void {
@@ -44,7 +52,14 @@ export class Logger {
   }
 
   private print(level: LogLevel, messages: unknown[]): void {
-    console.log(...Logger.getLevelLabel(level), `[${this.name}]`, ...messages);
+    const params = [];
+    params.push(...Logger.getLevelLabel(level));
+    if (this.showTime) {
+      params.push(DateUtil.getCurrentTime());
+    }
+    params.push(`[${this.logLabel}]`);
+    params.push(...messages);
+    console.log(...params);
   }
 
   private static getLevelLabel(level: LogLevel): string[] {
