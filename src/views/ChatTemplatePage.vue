@@ -9,6 +9,7 @@ import i18n from "@/i18n/i18n.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import ChatTemplateInfoDialog from "@/components/chat/dialog/ChatTemplateInfoDialog.vue";
 import ChatTemplateTypeLabel from "@/components/chat/block/ChatTemplateTypeLabel.vue";
+import logger from "@/utils/logger/Logger.ts";
 
 const {t} = i18n.global;
 const configStore = useConfigStore();
@@ -22,21 +23,21 @@ const getChatTemplateList = () => {
   axios.get(configStore.baseConfig.chatTemplateUrl, {timeout: 5000})
       .then((res) => {
         if (!res || res.status != 200 || !res.data) {
-          console.log("get chat template list failed");
+          logger.info("get chat template list failed");
           ElMessage.error(t("chatTemplate.messages.getFailed"));
           return;
         }
         chatTemplateList.value = res.data;
       })
       .catch((err) => {
-        console.log(err);
+        logger.error(err);
         ElMessage.error(t("chatTemplate.messages.getFailed") + ` ${err}`);
       });
 };
 
 const chatTemplateInfoDialogRefs = ref<InstanceType<typeof ChatTemplateInfoDialog> | null>(null);
 const openAddChatDialog = (chatTemplate: ChatInfo) => {
-  console.log(chatTemplate);
+  logger.info("open add chat dialog, chat template => ", chatTemplate);
   if (!chatTemplateInfoDialogRefs.value) return;
   chatTemplateInfoDialogRefs.value.show(chatTemplate);
 };

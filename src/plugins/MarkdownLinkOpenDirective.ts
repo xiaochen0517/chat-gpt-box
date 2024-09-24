@@ -1,5 +1,6 @@
 import {ObjectDirective} from "vue";
 import {LinkUtil} from "@/utils/LinkUtil.ts";
+import logger from "@/utils/logger/Logger.ts";
 
 export const markdownLinkOpenDirective: ObjectDirective<HTMLElement> = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -8,14 +9,14 @@ export const markdownLinkOpenDirective: ObjectDirective<HTMLElement> = {
       const target = event.target as HTMLElement;
       if (target.tagName === "A") {
         const openLinkUrl = (target as HTMLLinkElement).href;
-        console.log("Link clicked:", openLinkUrl);
+        logger.info("Link clicked:", openLinkUrl);
         event.preventDefault();
         LinkUtil.openLink(openLinkUrl)
           .then((linkOpenTarget) => {
-            console.log("Link opened in", linkOpenTarget);
+            logger.info("Link opened in", linkOpenTarget);
           })
           .catch((error) => {
-            console.error("Error opening link:", error);
+            logger.error("Error opening link:", error);
           });
       }
     });

@@ -6,6 +6,7 @@ import {encoding_for_model, Tiktoken, TiktokenModel} from "tiktoken";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
 import {OpenAiChatGptConfig} from "@/types/chat/BaseConfig.ts";
+import logger from "@/utils/logger/Logger.ts";
 
 const CHAT_GPT_API_SUFFIX: string = "v1/chat/completions";
 const HTTP_REQ_TYPE: string = "POST";
@@ -91,7 +92,7 @@ export class ChatGptRequest implements BaseRequest {
     }
     if (!this.reader) return;
     this.reader.cancel().then(() => {
-      console.log("取消读取");
+      logger.info("read cancel");
       this.reader = null;
     }).catch((error) => {
       console.error(error);
@@ -202,7 +203,7 @@ export class ChatGptRequest implements BaseRequest {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readResponse = async (result: ReadableStreamReadResult<any>): Promise<void> => {
     if (result.done || this.stopFlag) {
-      console.log("读取完成");
+      logger.info("read done");
       this.setGenerating(false);
       return;
     }
@@ -261,7 +262,7 @@ export class ChatGptRequest implements BaseRequest {
     }
     // [DONE] means the end of the data
     if (data.trim() === DATA_DONE_FLAG) {
-      console.log("read data done");
+      logger.info("read data done");
       this.setGenerating(false);
       return null;
     }

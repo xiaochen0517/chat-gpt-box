@@ -107,7 +107,7 @@ export class GeminiRequest implements BaseRequest {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readResponse = async (result: ReadableStreamReadResult<any>): Promise<void> => {
     if (result.done || this.stopFlag) {
-      console.log("读取完成");
+      logger.info("read done");
       return;
     }
     if (!this.reader) {
