@@ -7,6 +7,10 @@
     "add": "Add",
     "save": "Save"
   },
+  "updater": {
+    "cancelUpdate": "Cancel Update",
+    "openReleasePage": "Open Release Page"
+  },
   "settings": {
     "pageTitle": "Settings",
     "basicSettings": "Basic Settings",

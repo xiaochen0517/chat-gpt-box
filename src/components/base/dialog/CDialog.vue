@@ -9,11 +9,11 @@ const {t} = i18n.global;
 const keys = useMagicKeys();
 const instance = getCurrentInstance();
 whenever(keys["escape"], () => {
-  if (props.disableEscape) return;
+  if (props.disableEscape || !props.visible) return;
   cancelDialog();
 });
 whenever(keys["enter"], () => {
-  if (props.disableEnter) return;
+  if (props.disableEnter || !props.visible) return;
   instance?.emit("okClick");
 });
 
@@ -25,9 +25,11 @@ type Props = {
   description?: string,
   descAlign?: "left" | "center" | "right",
   size?: "default" | "large",
-  disableEnter?: boolean
-  disableEscape?: boolean
-  expandButtons?: ExpandButton[]
+  disableEnter?: boolean,
+  disableEscape?: boolean,
+  expandButtons?: ExpandButton[],
+  okButtonLoading?: boolean,
+  cancelButtonLoading?: boolean,
 }
 const props = withDefaults(defineProps<Props>(), {
   visible: false,
@@ -40,6 +42,8 @@ const props = withDefaults(defineProps<Props>(), {
   disableEnter: false,
   disableEscape: false,
   expandButtons: () => [],
+  okButtonLoading: false,
+  cancelButtonLoading: false,
 });
 
 const propsCancelText = ref("CANCEL");
@@ -65,7 +69,7 @@ watch(showDialog, (value) => {
 });
 
 const cancelDialog = () => {
-  if (!instance) return;
+  if (!instance || props.cancelButtonLoading) return;
   showDialog.value = false;
   instance.emit("cancelClick");
 };
@@ -100,9 +104,18 @@ defineEmits(["update:visible", "okClick", "cancelClick", "expandClick"]);
       </div>
       <div class="flex flex-row gap-2 justify-end p-2 text-center border-t border-neutral-100 dark:border-neutral-700 select-none">
         <div
-            class="border rounded-md dark:border-neutral-700 text-base leading-8 px-2 cursor-pointer hover:bg-neutral-200 active:bg-neutral-300 hover:dark:bg-neutral-700 active:dark:bg-neutral-600"
+            class="border rounded-md text-base leading-8 px-2 "
+            :class="[
+              cancelButtonLoading ?
+                'cursor-not-allowed text-neutral-500 dark:border-neutral-700 dark:bg-neutral-700' :
+                'cursor-pointer dark:border-neutral-700 hover:bg-neutral-200 active:bg-neutral-300 hover:dark:bg-neutral-700 active:dark:bg-neutral-600'
+            ]"
             @click.stop="cancelDialog"
         >
+          <i
+              v-if="cancelButtonLoading"
+              class="iconfont icon-loading text-base leading-4 animate-spin-slow inline-block"
+          />
           {{ propsCancelText }}
         </div>
         <div
@@ -114,9 +127,15 @@ defineEmits(["update:visible", "okClick", "cancelClick", "expandClick"]);
           {{ expandInfo.text }}
         </div>
         <div
-            class="border rounded-md text-base leading-8 px-2 cursor-pointer bg-cyan-400 border-cyan-400 hover:bg-cyan-500 hover:border-cyan-500 hover:text-neutral-900 active:bg-cyan-600 active:border-cyan-600 active:text-black dark:border-cyan-800 dark:bg-cyan-700 hover:dark:bg-cyan-600 hover:dark:text-neutral-100 dark:text-neutral-300 active:dark:bg-cyan-500"
-            @click.stop="$emit('okClick')"
+            class="border rounded-md text-base leading-8 px-2 "
+            :class="[
+              okButtonLoading ?
+                'cursor-not-allowed bg-cyan-400 border-cyan-400 dark:border-cyan-900 dark:bg-cyan-800 dark:text-neutral-500' :
+                'cursor-pointer bg-cyan-400 border-cyan-400 hover:bg-cyan-500 hover:border-cyan-500 hover:text-neutral-900 active:bg-cyan-600 active:border-cyan-600 active:text-black dark:border-cyan-800 dark:bg-cyan-700 hover:dark:bg-cyan-600 hover:dark:text-neutral-100 dark:text-neutral-300 active:dark:bg-cyan-500'
+            ]"
+            @click.stop="!okButtonLoading ? $emit('okClick', $event) : ()=> {}"
         >
+          <i v-if="okButtonLoading" class="iconfont icon-loading text-base leading-4 animate-spin-slow inline-block"/>
           {{ propsOkText }}
         </div>
       </div>

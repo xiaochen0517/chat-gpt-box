@@ -1,4 +1,4 @@
-/** @type {import('tailwindcss').Config} */
+/** @type {import("tailwindcss").Config} */
 export default {
   darkMode: "class",
   content: [
@@ -34,11 +34,15 @@ export default {
         "content": "96rem",
         "mobile": "76rem",
         "total": "116rem",
-      }
+      },
+      animation: {
+        "spin-slow": "spin 2s linear infinite",
+        "spin-fast": "spin .5s linear infinite",
+      },
     },
     screens: {
       "3xl": "1600px",
-    }
+    },
   },
   plugins: [],
 };

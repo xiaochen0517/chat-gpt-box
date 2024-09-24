@@ -7,6 +7,10 @@
     "add": "添加",
     "save": "保存"
   },
+  "updater": {
+    "cancelUpdate": "取消更新",
+    "openReleasePage": "打开发布页面"
+  },
   "settings": {
     "pageTitle": "设置",
     "basicSettings": "基础设置",

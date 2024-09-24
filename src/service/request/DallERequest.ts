@@ -24,6 +24,10 @@ export class DallERequest implements BaseRequest {
 
   stopFlag: boolean = false;
 
+  abortController: AbortController | null = null;
+
+  reader: ReadableStreamDefaultReader | null = null;
+
   constructor(chatInfo: ChatInfo, tabIndex: number, refreshCallbackFunc: () => void | null) {
     this.chatInfo = chatInfo;
     this.chatConfig = chatInfo.options as OpenAiDallEConfig;

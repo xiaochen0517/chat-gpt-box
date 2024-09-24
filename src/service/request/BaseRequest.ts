@@ -1,16 +1,4 @@
-import {ChatInfo, ChatOptions} from "@/types/chat/ChatInfo.ts";
-
 export interface BaseRequest {
-
-  chatInfo: ChatInfo;
-
-  chatConfig: ChatOptions;
-
-  tabIndex: number;
-
-  refreshCallbackFunc: () => void;
-
-  stopFlag: boolean;
 
   sendMessage(message: string): Promise<string>;
 
