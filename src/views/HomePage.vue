@@ -20,7 +20,7 @@ const changeChatClick = (chatInfo: ChatInfo) => {
 const newVersionInfoDialogRef = ref<InstanceType<typeof NewVersionInfoDialog> | null>(null);
 const checkUpdate = () => {
   setTimeout(async () => {
-    if (!await UpdateUtil.checkUpdate()) {
+    if (await UpdateUtil.checkUpdate()) {
       ElMessage.success("New version available");
       logger.info("New version available");
       newVersionInfoDialogRef.value?.show();

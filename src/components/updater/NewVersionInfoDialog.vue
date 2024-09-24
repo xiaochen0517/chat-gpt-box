@@ -49,15 +49,17 @@ const jumpToReleasePage = () => {
 
 <template>
   <CDialog
-      :title="latestReleaseInfo.name"
+      :title="`${$t('updater.title')} - ${latestReleaseInfo.tag_name}`"
       :visible="dialogVisible"
       :cancel-text="$t('updater.cancelUpdate')"
       :ok-text="$t('updater.openReleasePage')"
       :ok-button-loading="dataLoading"
       @okClick="jumpToReleasePage"
   >
-    <div class="flex flex-col gap-2" v-loading="dataLoading">
-      <MessageMarkdownComponent :content="latestReleaseInfo.body"/>
+    <div class="relative w-full h-60 overflow-y-auto">
+      <div class="absolute flex flex-col gap-4 pt-4" v-loading="dataLoading">
+        <MessageMarkdownComponent :content="latestReleaseInfo.body + '1\n\n2\n\n3\n\n4\n\n5\n\n6\n\n7\n\n8\n\n9'"/>
+      </div>
     </div>
   </CDialog>
 </template>

@@ -8,6 +8,7 @@
     "save": "保存"
   },
   "updater": {
+    "title": "有新版本可用",
     "cancelUpdate": "取消更新",
     "openReleasePage": "打开发布页面"
   },

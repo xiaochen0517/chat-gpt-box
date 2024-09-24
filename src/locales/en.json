@@ -8,6 +8,7 @@
     "save": "Save"
   },
   "updater": {
+    "title": "Update Available",
     "cancelUpdate": "Cancel Update",
     "openReleasePage": "Open Release Page"
   },
