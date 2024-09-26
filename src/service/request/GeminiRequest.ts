@@ -140,7 +140,7 @@ export class GeminiRequest implements BaseRequest {
     }
     // This is a Uint8Array type byte array that needs to be decoded.
     // It is possible that a single data packet contains multiple independent blocks, which are split using "data:".
-    let resultDecoded = decoder.decode(result.value).trim();
+    let resultDecoded = decoder.decode(result.value, {stream: true}).trim();
     if (resultDecoded.startsWith("[") || resultDecoded.startsWith("]") || resultDecoded.startsWith(",")) {
       // remove "[", "]" and "," from the beginning of the string
       resultDecoded = resultDecoded.substring(1).trim();
