@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-    <img alt="windows" width="80%" src="./doc/use_example.png">
+    <img alt="windows" width="80%" src="./doc/use_example.jpeg">
 </p>
 
 ## 特性
@@ -36,8 +36,6 @@
 - [x] Google Gemini
 - [x] Ollama 支持
 - [x] 多语言支持
-- [ ] TTS 语音合成
-- [ ] Whisper 语音识别
 
 ## 教程
 
@@ -104,6 +102,10 @@ async function handleRequest(request) {
 ```
 
 > 详细内容可自行搜索 `Cloudflare Workers` 部署教程。
+
+### 进阶
+
+- [使用文档](./doc/doc-cn.md)
 
 ## 联系我
 
