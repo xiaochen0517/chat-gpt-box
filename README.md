@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-    <img alt="windows" width="80%" src="./doc/use_example.png">
+    <img alt="windows" width="80%" src="./doc/use_example.jpeg">
 </p>
 
 ## Features
@@ -38,8 +38,6 @@
 - [x] Google Gemini
 - [x] Ollama support
 - [x] Multi-language support
-- [ ] TTS (Text-to-Speech) synthesis
-- [ ] Whisper speech recognition
 
 ## Tutorial
 
@@ -69,6 +67,10 @@ sudo dpkg -i chat-gpt-box_*.*.*_amd64.deb
 
 Directly run the `dmg` file, drag `ChatGPTBox.app` into the `Applications` folder,
 then open Finder, right-click on `ChatGPTBox.app`, select `open`, and the application will launch.
+
+### Advanced
+
+- [Document](./doc/doc.md)
 
 ## Contact Me
 
