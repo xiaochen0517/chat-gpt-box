@@ -43,7 +43,7 @@ const toggle = () => {
     >
       <div
           v-if="isOpen"
-          class="mt-2 p-3 text-neutral-700  dark:text-neutral-300 bg-white dark:bg-gray-700 rounded shadow-sm border border-gray-100 dark:border-gray-600"
+          class="mt-2 p-3 text-neutral-700  dark:text-neutral-300 bg-white dark:bg-gray-700 rounded shadow-sm border border-gray-100 dark:border-gray-600 break-words whitespace-pre-wrap"
       >
         {{ content }}
       </div>
