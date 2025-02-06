@@ -1,16 +1,13 @@
 import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
 import {BaseSettingsDialogUtil} from "@/utils/settings/BaseSettingsDialogUtil.ts";
-import {DallEModelList, ImageQualityList, ImageStyleList} from "@/models/DallEModelList.ts";
+import {ImageQualityList, ImageStyleList} from "@/models/DallEModelList.ts";
 import {SelectOptionItem} from "@/types/base/CSettingDialog.ts";
 import i18n from "@/i18n/i18n.ts";
 
 const {t} = i18n.global;
+
 export class DallESettingsDialogUtil extends BaseSettingsDialogUtil {
-  
-  static showDallEModelDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string) {
-    return this.showModelDialog(dialogRefs, DallEModelList, value);
-  }
-  
+
   static showImageCountDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: number) {
     return dialogRefs.show({
       type: "slider",
@@ -22,11 +19,11 @@ export class DallESettingsDialogUtil extends BaseSettingsDialogUtil {
         max: 4,
         step: 1,
         showInput: true,
-        size: "small"
-      }
+        size: "small",
+      },
     });
   }
-  
+
   static showImageSizeDialog(dialogRefs: InstanceType<typeof CBaseDialog>, list: SelectOptionItem[], value: string) {
     return dialogRefs.show({
       type: "select",
@@ -34,10 +31,10 @@ export class DallESettingsDialogUtil extends BaseSettingsDialogUtil {
       content: value,
       selectOptions: {
         list: list,
-      }
+      },
     });
   }
-  
+
   static showImageStyleDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string) {
     return dialogRefs.show({
       type: "select",
@@ -46,10 +43,10 @@ export class DallESettingsDialogUtil extends BaseSettingsDialogUtil {
       content: value,
       selectOptions: {
         list: ImageStyleList,
-      }
+      },
     });
   }
-  
+
   static showImageQualityDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string) {
     return dialogRefs.show({
       type: "select",
@@ -58,8 +55,8 @@ export class DallESettingsDialogUtil extends BaseSettingsDialogUtil {
       content: value,
       selectOptions: {
         list: ImageQualityList,
-      }
+      },
     });
   }
-  
+
 }

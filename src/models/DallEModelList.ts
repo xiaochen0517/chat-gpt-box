@@ -1,17 +1,5 @@
 import {SelectOptionItem} from "@/types/base/CSettingDialog.ts";
 
-export const DallEModelList: SelectOptionItem[] = [
-  {
-    label: "dall-e-2",
-    value: "dall-e-2"
-  },
-  {
-    label: "dall-e-3",
-    value: "dall-e-3"
-  }
-];
-
-
 export const DALLE2ImageSizeList: SelectOptionItem[] = [
   {
     label: "256x256",

@@ -107,6 +107,16 @@ export const useChatTabsStore = defineStore("chatTabs", {
       if (!id || !this.chatTabs[id]) return;
       this.chatTabs[id][tabIndex].chat.push({role: ChatMessageRole.Assistant, content: ""});
     },
+    appendAssistantReasoningMsgContent(id: string, tabIndex: number, content: string) {
+      if (!id || !this.chatTabs[id]) return;
+      const chat = this.chatTabs[id][tabIndex].chat;
+      if (chat.length === 0) return;
+      if (!chat[chat.length - 1].reasoningContent) {
+        chat[chat.length - 1].reasoningContent = content;
+      } else {
+        chat[chat.length - 1].reasoningContent += content;
+      }
+    },
     appendAssistantMsgContent(id: string, tabIndex: number, content: string) {
       if (!id || !this.chatTabs[id]) return;
       const chat = this.chatTabs[id][tabIndex].chat;

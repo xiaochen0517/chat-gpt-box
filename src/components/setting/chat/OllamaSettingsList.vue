@@ -76,7 +76,7 @@ const openApiUrlDialog = () => {
 };
 const openModelDialog = () => {
   if (!settingsDialogRefs.value) return;
-  OllamaSettingsDialogUtil.showOllamaModelDialog(
+  OllamaSettingsDialogUtil.showModelDialog(
       settingsDialogRefs.value,
       getConfig().model)
       .then((value: string | number) => {

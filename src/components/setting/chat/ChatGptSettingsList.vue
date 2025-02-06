@@ -60,7 +60,7 @@ const setConfig = <K extends keyof OpenAiChatGptConfig>(key: K, value: OpenAiCha
 const openApiKeyDialog = () => {
   if (!settingsDialogRefs.value) return;
   console.log(getConfig());
-  ChatGptSettingsDialogUtil.showApiKeyDialog(settingsDialogRefs.value, getConfig().apiKey)
+  ChatGptSettingsDialogUtil.showApiKeyDialog(settingsDialogRefs.value, getConfig().apiKey ?? "")
       .then((value: string | number) => {
         value = String(value);
         if (!value || value === "") {
@@ -92,7 +92,7 @@ const openApiUrlDialog = () => {
 };
 const openModelDialog = () => {
   if (!settingsDialogRefs.value) return;
-  ChatGptSettingsDialogUtil.showChatGptModelDialog(
+  ChatGptSettingsDialogUtil.showModelDialog(
       settingsDialogRefs.value,
       getConfig().model)
       .then((value: string | number) => {

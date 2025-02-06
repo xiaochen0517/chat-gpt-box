@@ -1,5 +1,5 @@
 import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
-import {ExpandButton, SelectOptionItem, ShowOption} from "@/types/base/CSettingDialog.ts";
+import {ExpandButton, ShowOption} from "@/types/base/CSettingDialog.ts";
 import {LanguageList} from "@/models/LanguageList.ts";
 import i18n from "@/i18n/i18n.ts";
 
@@ -47,7 +47,7 @@ export class BaseSettingsDialogUtil {
     } as ShowOption);
   }
 
-  static showModelDialog(dialogRefs: InstanceType<typeof CBaseDialog>, list: SelectOptionItem[], value: string) {
+  static showModelDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string) {
     return dialogRefs.show({
       type: "input",
       title: t("settings.model.title"),

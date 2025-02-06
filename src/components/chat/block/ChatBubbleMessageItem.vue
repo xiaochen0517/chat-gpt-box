@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import {EditOutlined} from "@ant-design/icons-vue";
-import MessageMarkdownBlock from "@/components/chat/block/MessageMarkdownComponent.vue";
+import MessageMarkdownComponent from "@/components/chat/block/MessageMarkdownComponent.vue";
 import {ref} from "vue";
-import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
+import {ChatMessageRole, ChatTabMessage} from "@/types/chat/ChatTabInfo.ts";
 import {Avatar, IAvatarProps} from "vue3-avataaars";
 import ChatMessageControlComponent from "@/components/chat/block/ChatMessageControlComponent.vue";
+import ReasoningMessageComponet from "@/components/chat/block/ReasoningMessageComponet.vue";
 
 type Props = {
-  message: ChatMessage;
+  message: ChatTabMessage;
   index: number | null;
   generating: boolean;
   showRefresh?: boolean;
@@ -58,11 +59,19 @@ const copyMessageContent = () => {
       >
         <EditOutlined/>
       </button>
-      <MessageMarkdownBlock
+      <ReasoningMessageComponet
+          v-if="!!message && !!message.reasoningContent && message.reasoningContent.length > 0"
+          class="mb-2"
+          :content="message.reasoningContent"
+      />
+      <MessageMarkdownComponent
           v-if="message.role !== 'user'"
           :content="message?.content + (props.generating?' ✨':'')"
       />
-      <div v-if="message.role === 'user'" class="py-3 px-6 rounded-3xl bg-neutral-200 dark:bg-neutral-700 dark:bg-opacity-60 text-base break-words whitespace-pre-wrap">
+      <div
+          v-if="message.role === 'user'"
+          class="py-3 px-6 rounded-3xl bg-neutral-200 dark:bg-neutral-700 dark:bg-opacity-60 text-base break-words whitespace-pre-wrap"
+      >
         {{ message?.content + (props.generating ? " ✨" : "") }}
       </div>
       <ChatMessageControlComponent

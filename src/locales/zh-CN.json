@@ -84,7 +84,7 @@
     },
     "model": {
       "title": "模型",
-      "description": "The model to use for the chat."
+      "description": "单独为当前聊天配置模型"
     },
     "temperature": {
       "title": "温度",
