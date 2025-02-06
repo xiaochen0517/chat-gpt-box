@@ -49,12 +49,9 @@ export class BaseSettingsDialogUtil {
 
   static showModelDialog(dialogRefs: InstanceType<typeof CBaseDialog>, list: SelectOptionItem[], value: string) {
     return dialogRefs.show({
-      type: "select",
+      type: "input",
       title: t("settings.model.title"),
       content: value,
-      selectOptions: {
-        list: list,
-      },
     });
   }
 

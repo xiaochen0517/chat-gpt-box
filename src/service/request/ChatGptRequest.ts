@@ -2,11 +2,12 @@ import {BaseRequest, getErrorMessage} from "@/service/request/BaseRequest.ts";
 import {useConfigStore} from "@/store/ConfigStore.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {ChatGptRequestBody} from "@/types/request/ChatGptRequest.ts";
-import {encoding_for_model, Tiktoken, TiktokenModel} from "tiktoken";
+import {encoding_for_model, Tiktoken} from "tiktoken";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
 import {OpenAiChatGptConfig} from "@/types/chat/BaseConfig.ts";
 import logger from "@/utils/logger/Logger.ts";
+import {TiktokenModelList} from "@/models/TiktokenModelList.ts";
 
 const CHAT_GPT_API_SUFFIX: string = "v1/chat/completions";
 const HTTP_REQ_TYPE: string = "POST";
@@ -150,9 +151,12 @@ export class ChatGptRequest implements BaseRequest {
   }
 
   private generateRequestHeader(): HeadersInit {
+    const chatConfigApikey = this.chatConfig.apiKey;
+    const defaultApiKey = configStore.defaultChatConfig.openAi.base.apiKey;
+    const apiKey = chatConfigApikey && chatConfigApikey.length > 0 ? chatConfigApikey : defaultApiKey;
     return {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + configStore.defaultChatConfig.openAi.base.apiKey,
+      "Authorization": "Bearer " + apiKey,
     };
   }
 
@@ -184,7 +188,8 @@ export class ChatGptRequest implements BaseRequest {
 
   private filterMessagesWithTokenLimit(messages: ChatMessage[]): ChatMessage[] {
     // check context messages token size
-    const tokenEncoder = encoding_for_model(this.chatConfig.model as TiktokenModel);
+    const modelName = TiktokenModelList.includes(this.chatConfig.model) ? this.chatConfig.model : "gpt-4o";
+    const tokenEncoder = encoding_for_model(modelName);
     while (this.getMessagesTokenSize(messages, tokenEncoder) > this.chatConfig.contextMaxTokens) {
       // if context messages token size is greater than contextMaxTokens, remove the first message
       messages.splice(1, 1);

@@ -22,6 +22,7 @@ export type OpenAiBaseConfig = {
   apiKey: string;
 }
 export type OpenAiChatGptConfig = {
+  apiKey?: string;
   apiUrl: string;
   model: string;
   temperature: number;
