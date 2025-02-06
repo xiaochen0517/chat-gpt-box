@@ -15,6 +15,7 @@ import dialogWidth from "@/plugins/DialogWidth.ts";
 import AppUtil from "@/utils/AppUtil.ts";
 
 import {markdownLinkOpenDirective} from "@/plugins/MarkdownLinkOpenDirective.ts";
+import logger from "@/utils/logger/Logger.ts";
 
 
 const pinia = createPinia();
@@ -32,4 +33,4 @@ app.use(i18n);
 app.mount("#app");
 
 const platform = AppUtil.checkPlatform();
-console.log("Current Platform: " + platform);
+logger.info("Current Platform: " + platform);

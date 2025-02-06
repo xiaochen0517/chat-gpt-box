@@ -3,15 +3,16 @@ import CTopNavBar from "@/components/base/nav/CTopNavBar.vue";
 import packageJson from "../../package.json";
 import CListItem from "@/components/base/list/CListItem.vue";
 import {LinkUtil} from "@/utils/LinkUtil.ts";
+import logger from "@/utils/logger/Logger.ts";
 
 const jumpToUrl = (url: string) => {
   if (!url) return;
   LinkUtil.openLink(url)
       .then((linkOpenTarget) => {
-        console.log("Link opened in", linkOpenTarget);
+        logger.info("Link opened in", linkOpenTarget);
       })
       .catch((error) => {
-        console.error("Error opening link:", error);
+        logger.info("Error opening link:", error);
       });
 };
 </script>

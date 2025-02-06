@@ -5,6 +5,7 @@ import {ElForm, ElInput, ElMessage} from "element-plus";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import CDialog from "@/components/base/dialog/CDialog.vue";
 import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
+import logger from "@/utils/logger/Logger.ts";
 
 const dialogVisible = ref(false);
 
@@ -40,7 +41,7 @@ const commit = async () => {
       chatTabsStore.updateMessage(chatId.value, tabIndex.value, messageIndex.value, formData.value);
       dialogVisible.value = false;
     } else {
-      console.log("error", fields);
+      logger.error("Edit message form validate failure", fields);
     }
   });
 };

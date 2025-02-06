@@ -5,6 +5,7 @@ import {encoding_for_model, Tiktoken, TiktokenModel} from "tiktoken";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
 import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
 import {OpenAiChatGptConfig} from "@/types/chat/BaseConfig.ts";
+import logger from "@/utils/logger/Logger.ts";
 
 const CHAT_GPT_API_SUFFIX: string = "v1/chat/completions";
 const HTTP_REQ_TYPE: string = "POST";
@@ -89,7 +90,7 @@ export class OllamaRequest implements BaseRequest {
     }
     if (!this.reader) return;
     this.reader.cancel().then(() => {
-      console.log("取消读取");
+      logger.info("read cancel");
       this.reader = null;
     }).catch((error) => {
       console.error(error);
@@ -199,13 +200,13 @@ export class OllamaRequest implements BaseRequest {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readResponse = async (result: ReadableStreamReadResult<any>): Promise<void> => {
     if (result.done || this.stopFlag) {
-      console.log("load data done");
+      logger.info("load data done");
       this.setGenerating(false);
       return;
     }
     // This is a Uint8Array type byte array that needs to be decoded.
     // It is possible that a single data packet contains multiple independent blocks, which are split using "data:".
-    let resultDecoded = decoder.decode(result.value);
+    let resultDecoded = decoder.decode(result.value, {stream: true});
     if (this.errorJson && this.errorJson.length > 0) {
       // append error json
       this.errorJson += resultDecoded;

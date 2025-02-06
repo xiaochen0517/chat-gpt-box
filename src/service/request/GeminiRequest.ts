@@ -6,6 +6,7 @@ import {GoogleGeminiConfig} from "@/types/chat/BaseConfig.ts";
 import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
 import {GeminiRequestParams, GenerationConfig} from "@/types/request/GeminiRequest.ts";
+import logger from "@/utils/logger/Logger.ts";
 
 // global store
 const configStore = useConfigStore();
@@ -26,6 +27,8 @@ export class GeminiRequest implements BaseRequest {
 
   stopFlag: boolean = false;
 
+  abortController: AbortController | null = null;
+
   reader: ReadableStreamDefaultReader | null = null;
 
   constructor(chatInfo: ChatInfo, tabIndex: number, refreshCallbackFunc: () => void | null) {
@@ -36,6 +39,7 @@ export class GeminiRequest implements BaseRequest {
   }
 
   sendMessage(message: string): Promise<string> {
+    this.abortController = new AbortController();
     this.stopFlag = false;
     this.setGenerating(true);
     try {
@@ -50,6 +54,26 @@ export class GeminiRequest implements BaseRequest {
       this.setErrorMsgContent(message);
       return Promise.reject(error);
     }
+  }
+
+  cancel(): void {
+    this.stopFlag = true;
+    if (this.abortController) {
+      this.abortController.abort();
+      this.abortController = null;
+      this.refreshCallbackFunc = () => {
+      };
+    }
+    if (!this.reader) return;
+    this.reader.cancel()
+      .then(() => {
+        logger.info("read cancel");
+        this.reader = null;
+      })
+      .catch((error) => {
+        console.error(error);
+        this.reader = null;
+      });
   }
 
   private async sendFetch(apiKey: string) {
@@ -79,6 +103,7 @@ export class GeminiRequest implements BaseRequest {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(startChatParams),
+        signal: this.abortController?.signal,
       };
     } catch (error) {
       const message = getErrorMessage(error);
@@ -107,7 +132,7 @@ export class GeminiRequest implements BaseRequest {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readResponse = async (result: ReadableStreamReadResult<any>): Promise<void> => {
     if (result.done || this.stopFlag) {
-      console.log("读取完成");
+      logger.info("read done");
       return;
     }
     if (!this.reader) {
@@ -115,7 +140,7 @@ export class GeminiRequest implements BaseRequest {
     }
     // This is a Uint8Array type byte array that needs to be decoded.
     // It is possible that a single data packet contains multiple independent blocks, which are split using "data:".
-    let resultDecoded = decoder.decode(result.value).trim();
+    let resultDecoded = decoder.decode(result.value, {stream: true}).trim();
     if (resultDecoded.startsWith("[") || resultDecoded.startsWith("]") || resultDecoded.startsWith(",")) {
       // remove "[", "]" and "," from the beginning of the string
       resultDecoded = resultDecoded.substring(1).trim();
@@ -194,10 +219,6 @@ export class GeminiRequest implements BaseRequest {
       topK: this.chatConfig.topK,
       topP: this.chatConfig.topP,
     };
-  }
-
-  cancel(): void {
-    this.stopFlag = true;
   }
 
   private addAssistantMessage() {

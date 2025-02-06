@@ -4,7 +4,10 @@ import {useConfigStore} from "@/store/ConfigStore.ts";
 import MarkdownIt from "markdown-it";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import markdownItKatex from "markdown-it-katex";
+import texmath from "@/utils/texmath/texmath.js";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import katex from "katex";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import markdownItTaskLists from "markdown-it-task-lists";
@@ -14,6 +17,7 @@ import "@/assets/style/highlight-github.less";
 import xmlLanguage from "highlight.js/lib/languages/xml";
 import {ElMessage} from "element-plus";
 import i18n from "@/i18n/i18n.ts";
+import logger from "@/utils/logger/Logger.ts";
 
 const {t} = i18n.global;
 hljs.registerLanguage("vue", xmlLanguage);
@@ -73,7 +77,10 @@ const escapeHtml = (unsafe: string) => {
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
 };
-md.use(markdownItKatex);
+md.use(texmath, {
+  engine: katex,
+  delimiters: ["brackets", "dollars"],
+});
 md.use(markdownItTaskLists);
 
 // default render
@@ -101,10 +108,8 @@ md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
 
 const html = ref("<h1>None Content</h1>");
 onMounted(() => {
-  html.value = md.render(props.content);
   nextTick(() => {
     setMarkdownCodeTheme(configStore.isDarkMode);
-    setCopyCodeButtonClickListener();
   });
 });
 watch(() => props.content, (value) => {
@@ -112,7 +117,7 @@ watch(() => props.content, (value) => {
   nextTick(() => {
     setCopyCodeButtonClickListener();
   });
-});
+}, {immediate: true});
 
 const markdownContainerRefs = ref<HTMLElement | null>(null);
 const setCopyCodeButtonClickListener = () => {
@@ -130,10 +135,10 @@ function copyCode() {
   if (!codeText) return;
   // copy to clipboard
   navigator.clipboard.writeText(codeText).then(() => {
-    console.log("copy success");
+    logger.info("copy success");
     ElMessage.success(t("chat.copy.success"));
   }).catch(() => {
-    console.log("copy failed");
+    logger.info("copy failed");
     ElMessage.error(t("chat.copy.error"));
   });
 }
