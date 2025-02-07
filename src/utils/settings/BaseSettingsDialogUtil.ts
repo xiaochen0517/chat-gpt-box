@@ -22,22 +22,23 @@ export class BaseSettingsDialogUtil {
     });
   }
 
-  static showApiKeyDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string) {
+  static showApiKeyDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string, inChatEdit: boolean = false) {
     return dialogRefs.show({
       type: "input",
       title: t("settings.basic.apiKey.title"),
+      description: inChatEdit ? t("settings.apiKey.description") : "",
       placeholder: "Please input api key.",
       content: value,
     });
   }
 
-  static showApiDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string, inChatEdit: boolean = false) {
+  static showApiUrlDialog(dialogRefs: InstanceType<typeof CBaseDialog>, value: string, inChatEdit: boolean = false) {
     return dialogRefs.show({
       type: "input",
       title: t("settings.apiUrl.title"),
       placeholder: t("settings.apiUrl.placeholder"),
       content: value,
-      description: inChatEdit ? "" : t("settings.apiUrl.description"),
+      description: inChatEdit ? t("settings.apiUrl.chatDescription") : t("settings.apiUrl.description"),
       expandButtons: inChatEdit ? [] : [
         {
           key: ApiDialogExpandButtons.ApiAllChange,

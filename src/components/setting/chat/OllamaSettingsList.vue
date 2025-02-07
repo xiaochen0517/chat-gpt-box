@@ -59,7 +59,7 @@ const setConfig = <K extends keyof OllamaDefaultConfig>(key: K, value: OllamaDef
 
 const openApiUrlDialog = () => {
   if (!settingsDialogRefs.value) return;
-  OllamaSettingsDialogUtil.showApiDialog(
+  OllamaSettingsDialogUtil.showApiUrlDialog(
       settingsDialogRefs.value,
       getConfig().apiUrl,
       props.noDefault)

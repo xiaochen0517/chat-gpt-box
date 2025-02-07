@@ -60,7 +60,7 @@ const setConfig = <K extends keyof OpenAiDallEConfig>(key: K, value: OpenAiDallE
 
 const openApiUrlDialog = () => {
   if (!settingsDialogRefs.value) return;
-  DallESettingsDialogUtil.showApiDialog(
+  DallESettingsDialogUtil.showApiUrlDialog(
       settingsDialogRefs.value,
       getConfig().apiUrl,
       props.noDefault)
