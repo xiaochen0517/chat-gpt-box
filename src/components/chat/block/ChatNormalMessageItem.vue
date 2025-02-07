@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import MessageMarkdownComponent from "@/components/chat/block/MessageMarkdownComponent.vue";
 import {ref} from "vue";
-import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
+import {ChatMessageRole, ChatTabMessage} from "@/types/chat/ChatTabInfo.ts";
 import {Avatar, IAvatarProps} from "vue3-avataaars";
 import ChatMessageControlComponent from "@/components/chat/block/ChatMessageControlComponent.vue";
 import ChatMessageControlButton from "@/components/base/button/ChatMessageControlButton.vue";
 
 type Props = {
-  message: ChatMessage;
+  message: ChatTabMessage;
   index: number | null;
   generating: boolean;
   showRefresh?: boolean;

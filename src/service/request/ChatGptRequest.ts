@@ -4,9 +4,10 @@ import {useChatTabsStore} from "@/store/ChatTabsStore.ts";
 import {ChatGptRequestBody} from "@/types/request/ChatGptRequest.ts";
 import {encoding_for_model, Tiktoken, TiktokenModel} from "tiktoken";
 import {ChatInfo} from "@/types/chat/ChatInfo.ts";
-import {ChatMessage, ChatMessageRole} from "@/types/chat/ChatTabInfo.ts";
+import {ChatMessage, ChatMessageRole, ChatTabMessage} from "@/types/chat/ChatTabInfo.ts";
 import {OpenAiChatGptConfig} from "@/types/chat/BaseConfig.ts";
 import logger from "@/utils/logger/Logger.ts";
+import {TiktokenModelList} from "@/models/TiktokenModelList.ts";
 
 const CHAT_GPT_API_SUFFIX: string = "v1/chat/completions";
 const HTTP_REQ_TYPE: string = "POST";
@@ -150,9 +151,12 @@ export class ChatGptRequest implements BaseRequest {
   }
 
   private generateRequestHeader(): HeadersInit {
+    const chatConfigApikey = this.chatConfig.apiKey;
+    const defaultApiKey = configStore.defaultChatConfig.openAi.base.apiKey;
+    const apiKey = chatConfigApikey && chatConfigApikey.length > 0 ? chatConfigApikey : defaultApiKey;
     return {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + configStore.defaultChatConfig.openAi.base.apiKey,
+      "Authorization": "Bearer " + apiKey,
     };
   }
 
@@ -175,16 +179,28 @@ export class ChatGptRequest implements BaseRequest {
 
   private getMaxContextMessage(): ChatMessage[] {
     const chatTabInfo = chatTabsStore.getChatTabInfo(this.chatInfo.id, this.tabIndex);
-    if (!chatTabInfo || chatTabInfo.chat.length === 0) return [];
-    const messages: ChatMessage[] = chatTabInfo.chat.slice(1, chatTabInfo.chat.length - 1);
+    if (!chatTabInfo || chatTabInfo.chat.length === 0) {
+      return [];
+    }
+    let messages: ChatTabMessage[] = chatTabInfo.chat.slice(1, chatTabInfo.chat.length - 1);
     // 获取最大指定数量的上下文消息
-    if (messages.length <= this.chatConfig.contextMaxMessage) return messages;
-    return messages.slice(messages.length - this.chatConfig.contextMaxMessage - 1, messages.length);
+    if (messages.length <= this.chatConfig.contextMaxMessage) {
+      return this.chatTabMessage2ChatMessage(messages);
+    }
+    messages = messages.slice(messages.length - this.chatConfig.contextMaxMessage - 1, messages.length);
+    return this.chatTabMessage2ChatMessage(messages);
+  }
+
+  private chatTabMessage2ChatMessage(messages: ChatTabMessage[]): ChatMessage[] {
+    return messages.map((message) => {
+      return {role: message.role, content: message.content} as ChatMessage;
+    });
   }
 
   private filterMessagesWithTokenLimit(messages: ChatMessage[]): ChatMessage[] {
     // check context messages token size
-    const tokenEncoder = encoding_for_model(this.chatConfig.model as TiktokenModel);
+    const modelName = TiktokenModelList.includes(this.chatConfig.model) ? this.chatConfig.model : "gpt-4o";
+    const tokenEncoder = encoding_for_model(modelName as TiktokenModel);
     while (this.getMessagesTokenSize(messages, tokenEncoder) > this.chatConfig.contextMaxTokens) {
       // if context messages token size is greater than contextMaxTokens, remove the first message
       messages.splice(1, 1);
@@ -245,8 +261,13 @@ export class ChatGptRequest implements BaseRequest {
       // parse choices
       for (const choice of resultData.choices) {
         if (!choice || !choice.delta) continue;
-        const content = choice.delta.content;
+        // check reasoning content
+        const reasoningContent = choice.delta.reasoning_content;
+        if (reasoningContent) {
+          this.appendAssistantReasoningMsgContent(reasoningContent);
+        }
         // check content
+        const content = choice.delta.content;
         if (content) {
           this.appendAssistantMsgContent(content);
         }
@@ -295,6 +316,11 @@ export class ChatGptRequest implements BaseRequest {
 
   private pushUserMessage2ChatTab(message: string) {
     chatTabsStore.addUserMessage(this.chatInfo.id, this.tabIndex, message);
+    this.refreshCallbackFunc();
+  }
+
+  private appendAssistantReasoningMsgContent(reasoningContent: string) {
+    chatTabsStore.appendAssistantReasoningMsgContent(this.chatInfo.id, this.tabIndex, reasoningContent);
     this.refreshCallbackFunc();
   }
 

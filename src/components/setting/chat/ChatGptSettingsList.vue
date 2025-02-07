@@ -57,9 +57,25 @@ const setConfig = <K extends keyof OpenAiChatGptConfig>(key: K, value: OpenAiCha
   }
 };
 
+const openApiKeyDialog = () => {
+  if (!settingsDialogRefs.value) return;
+  console.log(getConfig());
+  ChatGptSettingsDialogUtil.showApiKeyDialog(settingsDialogRefs.value, getConfig().apiKey ?? "", true)
+      .then((value: string | number) => {
+        value = String(value);
+        if (!value || value === "") {
+          ElMessage.warning("Api key can not be empty");
+          return;
+        }
+        if (!settingsDialogRefs.value) return;
+        setConfig("apiKey", value);
+        settingsDialogRefs.value.hide();
+      });
+};
+
 const openApiUrlDialog = () => {
   if (!settingsDialogRefs.value) return;
-  ChatGptSettingsDialogUtil.showApiDialog(
+  ChatGptSettingsDialogUtil.showApiUrlDialog(
       settingsDialogRefs.value,
       getConfig().apiUrl,
       props.noDefault)
@@ -76,7 +92,7 @@ const openApiUrlDialog = () => {
 };
 const openModelDialog = () => {
   if (!settingsDialogRefs.value) return;
-  ChatGptSettingsDialogUtil.showChatGptModelDialog(
+  ChatGptSettingsDialogUtil.showModelDialog(
       settingsDialogRefs.value,
       getConfig().model)
       .then((value: string | number) => {
@@ -167,6 +183,7 @@ const expandClick = (content: string | number, key: ApiDialogExpandButtons) => {
 
 <template>
   <div class="flex flex-col gap-2 rounded-2xl p-2 overflow-hidden text-base select-none border dark:border-0 bg-neutral-100 dark:bg-neutral-900">
+    <CListItem :content="$t('settings.basic.apiKey.title')" left-icon="icon-key" @click="openApiKeyDialog"/>
     <CListItem :content="$t('settings.apiUrl.title')" left-icon="icon-link1" @click="openApiUrlDialog"/>
     <CListItem :content="$t('settings.model.title')" left-icon="icon-rocket" @click="openModelDialog"/>
     <CListItem :content="$t('settings.temperature.title')" left-icon="icon-hot-for-ux" @click="openTemperatureDialog"/>

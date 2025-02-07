@@ -61,7 +61,7 @@ const setConfig = <K extends keyof GoogleGeminiConfig>(key: K, value: GoogleGemi
 
 const openApiUrlDialog = () => {
   if (!settingsDialogRefs.value) return;
-  GeminiSettingsDialogUtil.showApiDialog(
+  GeminiSettingsDialogUtil.showApiUrlDialog(
       settingsDialogRefs.value,
       getConfig().apiUrl,
       props.noDefault)
@@ -78,7 +78,7 @@ const openApiUrlDialog = () => {
 };
 const openModelDialog = () => {
   if (!settingsDialogRefs.value) return;
-  GeminiSettingsDialogUtil.showGeminiModelDialog(
+  GeminiSettingsDialogUtil.showModelDialog(
       settingsDialogRefs.value,
       getConfig().model)
       .then((value: string | number) => {

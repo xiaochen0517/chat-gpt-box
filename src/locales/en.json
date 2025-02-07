@@ -77,10 +77,14 @@
       }
     },
     "chatDefaultSettings": "Chat Default Settings",
+    "apiKey": {
+      "description": "The API Key configured in this chat overrides the API Key in the underlying settings."
+    },
     "apiUrl": {
       "title": "Api url",
       "placeholder": "Please enter the api url",
       "description": "Enter the request address of the API, for example: http:localhost:5000, and click OK to save to the default configuration, but the address of the existing chat will not be updated. If you need to update the address of an existing chat API, click the Modify All button.",
+      "chatDescription": "Configure the request address of the API separately for this chat, for example: http://localhost:5000/, please do not omit the last slash.",
       "allChange": "All Change"
     },
     "model": {

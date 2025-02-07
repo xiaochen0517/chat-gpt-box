@@ -76,15 +76,19 @@
       }
     },
     "chatDefaultSettings": "聊天默认设置",
+    "apiKey": {
+      "description": "在此聊天配置的 API Key 会覆盖基础设置中的 API Key。"
+    },
     "apiUrl": {
       "title": "请求地址",
       "placeholder": "请输入请求地址",
-      "description": "输入api的请求地址，例如：http://localhost:5000，点击确定保存到默认配置，但已有聊天的api地址不会更新。若需要更新已有聊天api地址，请点击修改所有按钮。",
+      "description": "输入api的请求地址，例如：http://localhost:5000/，请不要省略最后的斜杠。点击确定保存到默认配置，但已有聊天的api地址不会更新。若需要更新已有聊天api地址，请点击修改所有按钮。",
+      "chatDescription": "单独为此聊天配置api的请求地址，例如：http://localhost:5000/，请不要省略最后的斜杠。",
       "allChange": "修改所有"
     },
     "model": {
       "title": "模型",
-      "description": "The model to use for the chat."
+      "description": "单独为当前聊天配置模型"
     },
     "temperature": {
       "title": "温度",
