@@ -8,6 +8,8 @@ import {Avatar, IAvatarProps} from "vue3-avataaars";
 import {ChatDialogUtil} from "@/utils/dialog/ChatDialogUtil.ts";
 import CBaseDialog from "@/components/base/dialog/CBaseDialog.vue";
 import {AvatarUtil} from "@/utils/AvatarUtil.ts";
+import {ElMessage, ElMessageBox} from "element-plus";
+import i18n from "@/i18n/i18n.ts";
 
 type Props = {
   chatInfo: ChatInfo | null,
@@ -46,6 +48,23 @@ const editChatClick = (chatInfo: ChatInfo | null) => {
   router.push({path: `/chat/editor/${chatInfo.id}`});
 };
 
+const {t} = i18n.global;
+const copyChatClick = (chatInfo: ChatInfo | null) => {
+  if (!chatInfo) return;
+  ElMessageBox.confirm(t("chat.copyChat.dialog.description"), t("chat.copyChat.dialog.title"), {
+    confirmButtonText: t("dialog.confirm"),
+    cancelButtonText: t("dialog.cancel"),
+    type: "info",
+  }).then(() => {
+    const newChatInfo = {...chatInfo};
+    newChatInfo.id = "";
+    newChatInfo.name = `${chatInfo.name} Copy`;
+    chatListStore.addChat(newChatInfo);
+    ElMessage.success(t("chat.copyChat.success"));
+  }).catch(() => {
+  });
+};
+
 const chatListStore = useChatListStore();
 const baseDialogRefs = ref<InstanceType<typeof CBaseDialog> | null>(null);
 const deleteChatClick = (chatInfo: ChatInfo | null) => {
@@ -82,12 +101,18 @@ const isActive = computed(() => {
     </div>
     <el-popover overlayClassName="robot-editor-popover" placement="bottom" trigger="click" :show-arrow="false">
       <template #default>
-        <div class="p-2 m-0">
+        <div class="p-2 m-0 flex flex-col gap-1">
           <div
-              class="cursor-pointer rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-700 leading-6 box-border py-1 px-2 mb-1"
+              class="cursor-pointer rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-700 leading-6 box-border py-1 px-2"
               @click.stop="editChatClick(chatInfo)"
           >
             {{ $t("chat.editChat.title") }}
+          </div>
+          <div
+              class="cursor-pointer rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-700 leading-6 box-border py-1 px-2"
+              @click.stop="copyChatClick(chatInfo)"
+          >
+            {{ $t("chat.copyChat.title") }}
           </div>
           <div
               class="cursor-pointer rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-700 leading-6 box-border py-1 px-2"
