@@ -158,6 +158,15 @@
       "success": "删除聊天成功。",
       "error": "删除聊天失败。"
     },
+    "copyChat": {
+      "title": "复制聊天",
+      "success": "复制聊天成功。",
+      "error": "复制聊天失败。",
+      "dialog": {
+        "title": "复制聊天",
+        "description": "您确定要复制此聊天吗？"
+      }
+    },
     "editChat": {
       "title": "编辑聊天",
       "success": "编辑聊天成功。",

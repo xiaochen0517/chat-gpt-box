@@ -159,6 +159,15 @@
       "success": "Delete chat successfully.",
       "error": "Delete chat failed."
     },
+    "copyChat": {
+      "title": "Copy Chat",
+      "success": "Copy chat successfully.",
+      "error": "Copy chat failed.",
+      "dialog": {
+        "title": "Copy Chat",
+        "description": "Copy this chat, are you sure?"
+      }
+    },
     "editChat": {
       "title": "Edit Chat",
       "success": "Edit chat successfully.",
