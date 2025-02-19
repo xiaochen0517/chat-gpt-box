@@ -232,7 +232,10 @@ export class ChatGptRequest implements BaseRequest {
       resultDecoded = this.errorJson;
       this.errorJson = null;
     }
-    const dataList = resultDecoded.split("data:");
+    // Use \n to split the data, and then remove the leading and trailing spaces.
+    const dataList = resultDecoded.split(/\n/)
+      .map(item => item.trim().replace(/^data:\s*/, ""))
+      .filter(item => item.length > 0);
     // parse data
     try {
       this.parseDataList(dataList);
